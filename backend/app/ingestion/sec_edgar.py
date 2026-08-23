@@ -5,12 +5,15 @@ User-Agent header (see app.config.settings.sec_edgar_user_agent). Rate
 limit is a self-imposed ~5 req/sec, comfortably under SEC's ~10 req/sec
 fair-access guidance.
 
-Two calls to data.sec.gov:
-1. `company_tickers.json` — a static ticker -> CIK lookup table.
-2. `submissions/CIK{cik}.json` — a company's recent filings (form type,
-   filing date, accession number, primary document filename).
+Ticker -> CIK resolution is delegated to CompanyLookupService (see
+app/services/company_lookup.py) rather than duplicated here — that service
+is also what lets "add ticker" resolve arbitrary tickers on the fly, so
+both consumers share one cached lookup instead of each fetching SEC's
+ticker directory independently.
 
-The primary document for each filing is then fetched from
+The remaining call, `submissions/CIK{cik}.json`, returns a company's
+recent filings (form type, filing date, accession number, primary
+document filename); the primary document for each is then fetched from
 www.sec.gov/Archives/edgar/... and its text extracted.
 """
 
@@ -23,10 +26,10 @@ from selectolax.parser import HTMLParser
 
 from app.config import settings
 from app.ingestion.base import DocumentSourceAdapter, RawDocumentDTO
+from app.services.company_lookup import get_company_lookup_service
 
 logger = logging.getLogger(__name__)
 
-_TICKER_LOOKUP_URL = "https://www.sec.gov/files/company_tickers.json"
 _SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik10}.json"
 _ARCHIVES_BASE = "https://www.sec.gov/Archives/edgar/data"
 
@@ -47,13 +50,13 @@ class SecEdgarAdapter(DocumentSourceAdapter):
             headers={"User-Agent": settings.sec_edgar_user_agent},
             timeout=30.0,
         )
-        self._cik_cache: dict[str, str] | None = None
 
     def fetch(self, ticker: str, since: datetime | None = None) -> list[RawDocumentDTO]:
-        cik10 = self._lookup_cik(ticker)
-        if cik10 is None:
+        info = get_company_lookup_service().lookup(ticker)
+        if info is None:
             logger.warning("SEC EDGAR: no CIK found for ticker %s", ticker)
             return []
+        cik10 = info.cik
 
         submissions = self._fetch_submissions(cik10)
         if submissions is None:
@@ -95,18 +98,6 @@ class SecEdgarAdapter(DocumentSourceAdapter):
                 documents.append(dto)
 
         return documents
-
-    def _lookup_cik(self, ticker: str) -> str | None:
-        if self._cik_cache is None:
-            resp = self._client.get(_TICKER_LOOKUP_URL)
-            resp.raise_for_status()
-            data = resp.json()
-            # Payload shape: {"0": {"cik_str": 320193, "ticker": "AAPL", "title": "Apple Inc."}, ...}
-            self._cik_cache = {
-                entry["ticker"].upper(): str(entry["cik_str"]).zfill(10) for entry in data.values()
-            }
-            time.sleep(_RATE_LIMIT_SECONDS)
-        return self._cik_cache.get(ticker.upper())
 
     def _fetch_submissions(self, cik10: str) -> dict | None:
         resp = self._client.get(_SUBMISSIONS_URL.format(cik10=cik10))

@@ -1,0 +1,63 @@
+"""Resolves a ticker to a real company (name, CIK) on demand.
+
+This is what lets "add ticker" in the UI accept any real ticker directly,
+rather than requiring every company to be hand-seeded via a CLI script
+first. Uses the same public, free, keyless SEC EDGAR ticker directory the
+ingestion adapter needs anyway (see app/ingestion/sec_edgar.py) — this
+service is the single place that fetches and caches it, so the adapter
+and the "add ticker" flow share one lookup instead of duplicating it.
+"""
+
+import logging
+from dataclasses import dataclass
+from functools import lru_cache
+
+import httpx
+
+from app.config import settings
+
+logger = logging.getLogger(__name__)
+
+_TICKER_LOOKUP_URL = "https://www.sec.gov/files/company_tickers.json"
+
+
+@dataclass
+class CompanyInfo:
+    ticker: str
+    name: str
+    cik: str
+
+
+class CompanyLookupService:
+    def __init__(self):
+        self._client = httpx.Client(
+            headers={"User-Agent": settings.sec_edgar_user_agent}, timeout=30.0
+        )
+        self._cache: dict[str, CompanyInfo] | None = None
+
+    def _ensure_loaded(self) -> dict[str, CompanyInfo]:
+        if self._cache is None:
+            resp = self._client.get(_TICKER_LOOKUP_URL)
+            resp.raise_for_status()
+            data = resp.json()
+            self._cache = {
+                entry["ticker"].upper(): CompanyInfo(
+                    ticker=entry["ticker"].upper(),
+                    name=entry["title"],
+                    cik=str(entry["cik_str"]).zfill(10),
+                )
+                for entry in data.values()
+            }
+        return self._cache
+
+    def lookup(self, ticker: str) -> CompanyInfo | None:
+        try:
+            return self._ensure_loaded().get(ticker.upper())
+        except httpx.HTTPError:
+            logger.exception("Company lookup failed while resolving %s", ticker)
+            return None
+
+
+@lru_cache
+def get_company_lookup_service() -> CompanyLookupService:
+    return CompanyLookupService()

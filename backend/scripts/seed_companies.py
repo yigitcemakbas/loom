@@ -1,4 +1,9 @@
-"""Seed a couple of tickers + a default watchlist for local development.
+"""Optional convenience script: pre-populates AAPL and MSFT for local
+development. Not required to use Loom — the default watchlist is created
+automatically on first use, and any ticker can be added directly from the
+UI (it is resolved and ingested on the fly, see
+app/api/routes/watchlists.py). This just saves typing two tickers by hand
+when starting from a fresh database.
 
 Usage: python -m scripts.seed_companies
 """
