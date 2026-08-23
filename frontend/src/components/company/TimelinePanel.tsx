@@ -16,7 +16,14 @@ const SOURCE_LABELS: Record<RawDocument["source_type"], string> = {
  * with a date/title/source/link. */
 export function TimelinePanel({ documents }: Props) {
   if (documents.length === 0) {
-    return <div className="empty-state">No documents ingested yet for this ticker.</div>;
+    // A newly added ticker starts ingesting in the background the moment
+    // it's added (see the watchlist "add ticker" flow) — this page polls
+    // every 60s, so filings appear here on their own once that finishes.
+    return (
+      <div className="empty-state">
+        Gathering data for this ticker. Filings usually appear within a minute or two.
+      </div>
+    );
   }
 
   return (
