@@ -24,3 +24,18 @@ class RawDocumentDetail(RawDocumentOut):
     """Includes the actual content, fetched from the BlobStore on demand."""
 
     content: str
+
+
+class RawDocumentWithContext(RawDocumentOut):
+    """Cross-portfolio views (the Filings Browser) need the ticker, since a
+    single list mixes documents from every tracked company."""
+
+    ticker: str
+
+
+class SearchHitOut(RawDocumentWithContext):
+    """A search result: the document, its relevance, and the passage that
+    matched, so the reader can judge the hit without opening the filing."""
+
+    rank: float
+    snippet: str | None = None

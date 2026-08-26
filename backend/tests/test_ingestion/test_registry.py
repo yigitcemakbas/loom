@@ -1,4 +1,4 @@
-"""Unit tests for the pure-function pieces of ingestion/registry.py — the
+"""Unit tests for the pure-function pieces of ingestion/registry.py, the
 content-hash dedupe key that the Phase 1 verification steps rely on.
 """
 

@@ -25,10 +25,10 @@ export function AddTickerForm({ onAdd, disabled, label }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+    <form onSubmit={handleSubmit} style={{ display: "flex", gap: 6, flexShrink: 0 }}>
       <input
         type="text"
-        placeholder="Ticker (e.g. AAPL)"
+        placeholder="ticker" style={{ width: 90 }}
         value={ticker}
         onChange={(e) => setTicker(e.target.value)}
       />

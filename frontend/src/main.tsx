@@ -10,7 +10,7 @@ const queryClient = new QueryClient({
     queries: {
       // This app only ever talks to a local backend. TanStack Query's
       // browser online/offline detection is meant for real network loss and
-      // has no useful signal for "is localhost:8000 up" — left at its
+      // has no useful signal for "is localhost:8000 up", left at its
       // default, a failed local request can get stuck in a "paused" retry
       // state instead of surfacing an error. `always` makes retries purely
       // timer-based, which is what we actually want here.

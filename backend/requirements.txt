@@ -9,3 +9,5 @@ httpx==0.28.1
 selectolax==0.3.28
 apscheduler==3.11.0
 python-dotenv==1.0.1
+anthropic==1.0.0
+google-genai==2.19.0

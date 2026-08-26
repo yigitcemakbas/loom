@@ -1,193 +1,570 @@
+/* Loom, terminal design system.
+
+   The governing constraint is DENSITY. A Bloomberg panel, a Finviz screener,
+   and a YCharts table all put an order of magnitude more information on one
+   screen than a normal web page does, and that is the thing being copied here,
+   not the colour scheme. Practical consequences:
+
+   - Rows are ~22px, not ~44px. Padding is measured in single pixels.
+   - Numbers beat sentences. Anything expressible as a figure, a delta, or a
+     coloured cell is rendered that way; prose is truncated to one line and
+     expanded on demand, never allowed to set the height of a row.
+   - Layouts use the whole viewport width. A 1600px screen showing a 700px
+     column of text is the failure mode this file exists to prevent.
+   - No rounded corners, no shadows, no gradients. Hairline borders form the
+     grid, exactly like a terminal.
+   - Monospace with tabular figures for all data, so columns of numbers line up
+     digit for digit. Sans is reserved for actual prose.
+   - Colour is data, never decoration. Green and red mean direction; amber is
+     the single interactive/brand accent and means nothing about a value. */
+
 :root {
-  --bg-primary: #0a0e14;
-  --bg-elevated: #10151f;
-  --bg-hover: #161c29;
-  --border: #232a3a;
-  --text-primary: #e6e9ef;
-  --text-secondary: #8b93a7;
-  --accent: #37e0d1;
-  --accent-dim: #1c7a72;
-  --amber: #e0a537;
-  --sentiment-positive: #3ecf8e;
-  --sentiment-negative: #e0555f;
-  --sentiment-neutral: #8b93a7;
-  --priority-high: #e0555f;
-  --priority-medium: #e0a537;
-  --priority-low: #3a4256;
+  --bg: #08090b;
+  --bg-panel: #0e1013;
+  --bg-inset: #050506;
+  --bg-hover: #191d22;
+  --bg-header: #141619;
+  --border: #22252a;
+  --border-strong: #34383e;
+
+  --text: #e6e6e4;
+  --text-dim: #8a9096;
+  --text-faint: #5a5f65;
+
+  --accent: #d99a3f;
+  --accent-dim: #7a5c2b;
+
+  --positive: #35c46b;
+  --positive-dim: #1c6d3d;
+  --negative: #e0524a;
+  --negative-dim: #7d2f2a;
+  --neutral: #8a9096;
+  --warn: #d9a93f;
+
+  --font-mono: "Menlo", "IBM Plex Mono", "Consolas", ui-monospace, monospace;
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-mono: "SF Mono", "Menlo", "Consolas", monospace;
+
+  --row-h: 22px;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
+html, body, #root { height: 100%; margin: 0; }
 
 body {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: 14px;
-}
-
-a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.mono {
+  background: var(--bg);
+  color: var(--text);
   font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.35;
+  -webkit-font-smoothing: antialiased;
 }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.sans { font-family: var(--font-sans); }
+
+button, select, input, textarea {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* ---- shell ---- */
 
 .app-shell {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  min-height: 100vh;
+  grid-template-rows: 30px 1fr;
+  grid-template-columns: 150px 1fr;
+  grid-template-areas: "brand topbar" "sidebar main";
+  height: 100%;
+}
+
+.topbar {
+  grid-area: topbar;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-header);
+  font-size: 11px;
+}
+
+.topbar-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
 }
 
 .sidebar {
-  background: var(--bg-elevated);
+  grid-area: sidebar;
   border-right: 1px solid var(--border);
-  padding: 20px 16px;
-}
-
-.sidebar h1 {
-  font-size: 18px;
-  letter-spacing: 0.04em;
-  color: var(--accent);
-  margin: 0 0 24px;
-}
-
-.sidebar nav {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sidebar nav a {
-  color: var(--text-secondary);
-  padding: 8px 10px;
-  border-radius: 6px;
-}
-
-.sidebar nav a:hover,
-.sidebar nav a.active {
-  background: var(--bg-hover);
-  color: var(--text-primary);
-  text-decoration: none;
+  background: var(--bg-panel);
+  padding: 4px 0;
+  overflow-y: auto;
 }
 
 .main-content {
-  padding: 24px 32px;
-  max-width: 1100px;
+  grid-area: main;
+  overflow: auto;
+  padding: 8px;
 }
 
-.card {
-  background: var(--bg-elevated);
+/* ---- panels ---- */
+
+.panel {
   border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--bg-panel);
 }
 
-table.ticker-table {
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  height: 22px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-header);
+}
+
+.panel-title {
+  font-size: 10px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.panel-body { padding: 6px 8px; }
+.panel-body-flush { padding: 0; }
+
+/* Multi-panel layouts. A terminal shows several things at once; a single
+   scrolling column is the thing these replace. */
+.grid { display: grid; gap: 8px; align-items: start; }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-main-side { grid-template-columns: minmax(0, 1fr) 420px; }
+.grid-side-main { grid-template-columns: 330px minmax(0, 1fr); }
+.stack { display: grid; gap: 8px; }
+
+@media (max-width: 1250px) {
+  .grid-2, .grid-3, .grid-main-side, .grid-side-main { grid-template-columns: 1fr; }
+}
+
+/* ---- quote header (Yahoo/Bloomberg style identity strip) ---- */
+
+.quote-header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  background: var(--bg-header);
+}
+
+.quote-ticker {
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+
+.quote-name {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.quote-meta { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+
+/* Horizontal strip of key figures under the identity line. */
+.stat-strip {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.stat {
+  flex: 1 1 0;
+  min-width: 96px;
+  padding: 4px 8px;
+  border-right: 1px solid var(--border);
+}
+.stat:last-child { border-right: none; }
+
+.stat-label {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.stat-value {
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.stat-sub { font-size: 10px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+
+/* Same strip inside a narrow side panel, where four figures at the default
+   minimum would wrap onto a second line. */
+.stat-strip-tight .stat { min-width: 70px; padding: 3px 6px; }
+.stat-strip-tight .stat-value { font-size: 13px; }
+
+/* ---- data tables ---- */
+
+table.data-table {
   width: 100%;
   border-collapse: collapse;
-}
-
-table.ticker-table th {
-  text-align: left;
-  color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-table.ticker-table td {
-  padding: 12px;
-  border-bottom: 1px solid var(--border);
-}
-
-table.ticker-table tr:hover td {
-  background: var(--bg-hover);
-}
-
-.badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 999px;
+  font-variant-numeric: tabular-nums;
   font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
 }
 
-.badge-source {
-  background: var(--bg-hover);
-  color: var(--text-secondary);
+table.data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 20px;
+  padding: 0 6px;
+  text-align: left;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+  user-select: none;
+}
+
+table.data-table thead th.sortable { cursor: pointer; }
+table.data-table thead th.sortable:hover { color: var(--text); }
+
+table.data-table tbody td {
+  height: var(--row-h);
+  padding: 0 6px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+table.data-table tbody tr:hover td { background: var(--bg-hover); }
+table.data-table tbody tr.clickable { cursor: pointer; }
+
+/* Prose inside a grid must never dictate row height. */
+td.prose {
+  max-width: 0;
+  width: 100%;
+  font-family: var(--font-sans);
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.center, th.center { text-align: center; }
+
+.value-positive { color: var(--positive); }
+.value-negative { color: var(--negative); }
+.value-neutral { color: var(--text-dim); }
+
+/* Finviz-style filled cell: the value's own background carries its sign, so a
+   column can be read at a glance without reading any number in it. */
+.cell-pos { background: rgba(53, 196, 107, 0.13); color: var(--positive); }
+.cell-neg { background: rgba(224, 82, 74, 0.13); color: var(--negative); }
+
+.ticker-symbol {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+a.ticker-symbol:hover { text-decoration: underline; }
+
+/* ---- tags ---- */
+
+.tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0 4px;
+  border: 1px solid var(--border-strong);
+  color: var(--text-dim);
+  line-height: 15px;
+  white-space: nowrap;
+}
+
+.tag-risk { color: var(--negative); border-color: var(--negative-dim); }
+.tag-positive { color: var(--positive); border-color: var(--positive-dim); }
+.tag-accent { color: var(--accent); border-color: var(--accent-dim); }
+.tag-solid { background: var(--accent); color: #14100a; border-color: var(--accent); }
+
+/* ---- confidence / meters ---- */
+
+.confidence {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.confidence-bar {
+  width: 30px;
+  height: 4px;
+  background: var(--bg-inset);
   border: 1px solid var(--border);
 }
 
-.timeline {
+.confidence-bar-fill { height: 100%; background: var(--accent-dim); }
+
+.meter {
+  height: 4px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  min-width: 34px;
+}
+.meter-fill { height: 100%; display: block; }
+
+/* ---- controls ---- */
+
+.filter-bar {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  margin-bottom: 8px;
 }
 
-.timeline-item {
-  display: flex;
-  gap: 12px;
-  align-items: baseline;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+.filter-label {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
 }
 
-.timeline-item:last-child {
-  border-bottom: none;
+input[type="text"], select, textarea {
+  background: var(--bg-inset);
+  border: 1px solid var(--border-strong);
+  color: var(--text);
+  padding: 2px 5px;
+  height: 20px;
 }
-
-.timeline-date {
-  color: var(--text-secondary);
-  font-size: 12px;
-  min-width: 90px;
-}
-
-.empty-state {
-  color: var(--text-secondary);
-  padding: 32px;
-  text-align: center;
+textarea { height: auto; }
+input[type="text"]:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-dim);
 }
 
 .btn {
-  background: var(--accent-dim);
-  color: var(--bg-primary);
-  border: none;
-  border-radius: 6px;
-  padding: 8px 14px;
-  font-weight: 600;
+  background: transparent;
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+  padding: 2px 8px;
+  height: 20px;
   cursor: pointer;
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+}
+.btn:hover { background: var(--accent); color: #14100a; }
+.btn:disabled { opacity: 0.4; cursor: default; }
+.btn:disabled:hover { background: transparent; color: var(--accent); }
+
+.link-button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.link-button:hover { text-decoration: underline; }
+
+/* ---- page furniture ---- */
+
+.page-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
-.btn:hover {
-  background: var(--accent);
+.page-title-row h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
 }
 
-input[type="text"] {
-  background: var(--bg-primary);
-  border: 1px solid var(--border);
-  color: var(--text-primary);
-  border-radius: 6px;
-  padding: 8px 10px;
+.empty-state {
+  padding: 14px 8px;
+  color: var(--text-faint);
+  font-size: 11px;
+}
+
+.error-text { color: var(--negative); font-size: 11px; margin: 0 0 8px; }
+.notice { color: var(--text-dim); font-size: 11px; }
+
+/* ---- evidence ---- */
+
+.evidence {
+  margin: 4px 0 0;
+  padding: 5px 7px;
+  border-left: 2px solid var(--accent-dim);
+  background: var(--bg-inset);
+  color: var(--text-dim);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: normal;
+}
+
+.evidence-source {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+/* ---- expandable detail row ---- */
+
+tr.detail-row > td {
+  height: auto;
+  padding: 6px 8px 8px;
+  background: var(--bg-inset);
+  white-space: normal;
+}
+
+.detail-prose {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 5px;
+  max-width: 900px;
+}
+
+/* ---- misc ---- */
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--positive);
+  display: inline-block;
+}
+
+.trend-arrow-up { color: var(--positive); }
+.trend-arrow-down { color: var(--negative); }
+.trend-arrow-flat { color: var(--text-faint); }
+
+.nowrap { white-space: nowrap; }
+.dim { color: var(--text-dim); }
+.faint { color: var(--text-faint); }
+
+/* ---- sidebar nav ---- */
+
+.sidebar nav { display: flex; flex-direction: column; }
+
+.sidebar nav a {
+  display: block;
+  padding: 4px 10px;
+  color: var(--text-dim);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-left: 2px solid transparent;
+}
+
+.sidebar nav a:hover { background: var(--bg-hover); color: var(--text); text-decoration: none; }
+
+.sidebar nav a.active {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: var(--bg-hover);
+}
+
+.sidebar-section {
+  padding: 8px 10px 2px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.brand {
+  grid-area: brand;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-header);
+  color: var(--accent);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+}
+
+/* ---- section labels (brief view) ---- */
+
+.section-label {
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 2px 2px 0;
+}
+
+/* ---- rotating chart transitions ---- */
+
+/* Direction-aware so the motion agrees with the control that caused it:
+   pressing "next" moves content leftward, "previous" rightward. A rotation
+   that always slid the same way would feel wrong the moment someone stepped
+   backwards through it. */
+@keyframes chart-enter-from-right {
+  from { opacity: 0; transform: translateX(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes chart-enter-from-left {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.chart-slide-next { animation: chart-enter-from-right 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.chart-slide-prev { animation: chart-enter-from-left 320ms cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+
+/* The panel clips the incoming slide so it appears from the edge rather than
+   overflowing into the column beside it. */
+.chart-viewport { overflow: hidden; }
+
+/* Numbers crossfade rather than slide: a price jumping sideways reads as a
+   different price, which is the one thing this must not suggest. */
+.chart-value { transition: color 200ms ease; }
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-slide-next, .chart-slide-prev { animation: none; }
 }

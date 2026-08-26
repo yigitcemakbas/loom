@@ -1,12 +1,12 @@
 """Adapter interfaces and DTOs every ingestion source conforms to.
 
 Two interfaces, split by output shape (SRP: an adapter has exactly one
-job — produce documents, or produce facts, never both). `DocumentSourceAdapter`
+job, produce documents, or produce facts, never both). `DocumentSourceAdapter`
 is what Phase 1 needs (SEC EDGAR); `FactSourceAdapter` is here now so the
 contract is fixed early, even though its first concrete adapter doesn't
 land until Phase 5 (see docs/plan.md).
 
-Adding a new source later — of either shape — means writing one class that
+Adding a new source later, of either shape, means writing one class that
 implements one of these interfaces and registering it in registry.py. No
 other code needs to change.
 """
@@ -18,7 +18,7 @@ from datetime import datetime
 
 @dataclass
 class RawDocumentDTO:
-    """What every DocumentSourceAdapter hands back — one per ingested document.
+    """What every DocumentSourceAdapter hands back, one per ingested document.
 
     Deliberately plain data, no ORM/session/blob-store references: an
     adapter's only job is "go get the content," never "know how it's
@@ -39,7 +39,7 @@ class RawDocumentDTO:
 
 @dataclass
 class StructuredFactDTO:
-    """What every FactSourceAdapter hands back (Phase 5+) — one per fact
+    """What every FactSourceAdapter hands back (Phase 5+), one per fact
     (an insider transaction, a short-interest reading, a patent filing, ...).
     """
 

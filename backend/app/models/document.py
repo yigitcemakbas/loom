@@ -21,7 +21,7 @@ class RawDocument(Base):
     """Unified metadata row for every ingested document, regardless of source.
 
     The actual content lives in the BlobStore (see app/storage/blob_store.py)
-    and is referenced here only by `blob_uri` — this table intentionally does
+    and is referenced here only by `blob_uri`, this table intentionally does
     not carry a giant text column. See docs/plan.md "Storage Design".
     """
 

@@ -6,25 +6,34 @@ Loom does not forecast stock prices or issue buy or sell recommendations. Its pu
 
 ## Data sources
 
-- News articles
-- SEC filings
+- SEC filings (10-K, 10-Q, 8-K), including the exhibits attached to them, which is where an 8-K's earnings press release actually lives
 - Earnings call transcripts
-- Quarterly earnings reports
+- News articles, filtered to items that are genuinely about the company rather than merely mentioning it
+- Insider share transactions (SEC Form 4), separating genuine open-market trades from routine vesting and option exercises
 
 ## Core functions
 
+- Produces a single read per company: a plain-language verdict, the two or three things driving it, and what is new since you last looked. This is the product's main output; everything else exists to support it.
 - Maintains a watchlist of companies and a timeline of ingested documents for each one. Any valid ticker can be added directly. Loom resolves it and starts ingesting its filings automatically, with no manual setup required.
 - Reads filings and transcripts in full and extracts sentiment, risk factors, notable quotes, and quarter over quarter changes.
+- Compares each filing against the previous one of its kind: annual reports on risk factors, quarterly reports on management's discussion of results, so changes are caught at the cadence they happen rather than only once a year.
+- Tracks when each company is due to report, what the market expects of it, and surfaces that above everything else as the date approaches.
 - Distinguishes new information from information that repeats across prior filings.
+- Synthesises across documents, not just within them. When several disclosures land inside a short window and together change the picture, Loom says what the combination means rather than leaving the reader to join up separate signals.
+- Characterises the likely market reaction to each finding in qualitative terms (direction, magnitude, time horizon). It never states a percentage move or price target, because nothing in the pipeline is a pricing model.
 - Links each signal to its source document and the exact quote that supports it.
+- Applies plain arithmetic rules to filed data, such as several insiders selling in the same fortnight. These need no language model, so they keep working when the AI service is unavailable.
 - Ranks signals by priority so the most significant items appear first.
+- Searches the full text of every ingested document, not just titles and dates, and shows the passage that matched.
+- Refreshes on a schedule, so the dashboard reflects current filings without anyone running a command.
 
 ## System design
 
 - Each data source is handled by a dedicated adapter responsible for fetching data and returning clean text. Adding a new source does not require changes to other components.
 - Raw content is stored as an object separate from its metadata. Metadata is stored in the database.
-- Extraction logic is deterministic wherever a fixed rule applies. The language model is used only for tasks that require judgment: sentiment analysis, quote selection, and explanation of changes.
+- Extraction logic is deterministic wherever a fixed rule applies. The language model is used only for tasks that require judgment: sentiment analysis, quote selection, and explanation of changes. Deterministic gates also decide *whether* a model call is warranted, so cost stays proportional to actual signal rather than to document volume.
 - Each component has a single responsibility and does not access another component's internal state.
+- Scrapers obey `robots.txt` on every request, rate limit per domain, and send a User-Agent that identifies Loom honestly rather than impersonating a browser.
 
 ## Installation
 
@@ -40,7 +49,12 @@ alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-Open `backend/.env` and set `SEC_EDGAR_USER_AGENT` to a string identifying you, for example `"Loom your-name your-email@example.com"`. SEC requires a genuine identifying User-Agent on every request; the app runs without this step, but requests should not be sent under a placeholder value.
+Open `backend/.env` and set `SEC_EDGAR_USER_AGENT` and `SCRAPER_USER_AGENT` to strings identifying you, for example `"Loom your-name your-email@example.com"`. SEC requires a genuine identifying User-Agent on every request, and the transcript scraper sends one for the same reason; the app runs without this step, but requests should not be sent under a placeholder value.
+
+Two settings are optional:
+
+- `FINNHUB_API_KEY` enables the company-news source ([free tier](https://finnhub.io/register)). Left blank, Loom skips news and ingests filings and transcripts normally.
+- `SCHEDULER_ENABLED` (default `true`) re-ingests and re-analyses the watchlist every `SCHEDULER_INTERVAL_MINUTES` (default 360). Set it to `false` if you would rather trigger analysis by hand, for instance to stay inside a metered LLM tier.
 
 Open a second terminal and run the frontend:
 
@@ -52,7 +66,7 @@ npm run dev
 
 ## Usage
 
-Open `http://localhost:5173`. A default watchlist is created automatically on first load.
+Open the URL Vite prints on startup, normally `http://localhost:5173`. If that port is already taken, Vite binds the next free one (5174, 5175, and so on) and prints that instead; the app works on any of them. A default watchlist is created automatically on first load.
 
 To track a company, type its ticker into the field on the watchlist page and click "Add ticker." Loom resolves it against SEC's public company directory, adds it, and starts ingesting its filings in the background. This takes anywhere from a few seconds to about two minutes, depending on how many filings the company has on record.
 

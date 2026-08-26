@@ -3,7 +3,7 @@
 This is what lets "add ticker" in the UI accept any real ticker directly,
 rather than requiring every company to be hand-seeded via a CLI script
 first. Uses the same public, free, keyless SEC EDGAR ticker directory the
-ingestion adapter needs anyway (see app/ingestion/sec_edgar.py) — this
+ingestion adapter needs anyway (see app/ingestion/sec_edgar.py), this
 service is the single place that fetches and caches it, so the adapter
 and the "add ticker" flow share one lookup instead of duplicating it.
 """

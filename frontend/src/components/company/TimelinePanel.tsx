@@ -5,20 +5,33 @@ interface Props {
 }
 
 const SOURCE_LABELS: Record<RawDocument["source_type"], string> = {
-  sec_edgar_filing: "SEC",
-  news_api: "News",
-  scraped_transcript: "Transcript",
-  scraped_earnings_report: "Earnings PR",
+  sec_edgar_filing: "sec",
+  news_api: "news",
+  scraped_transcript: "transcript",
+  scraped_earnings_report: "earnings pr",
 };
 
-/** Phase 1: raw documents only, chronological. Phase 2 merges in `signals`
- * without changing this component's shape — it already renders anything
- * with a date/title/source/link. */
+// Colour carries evidence quality, not decoration. A filing is a legally
+// binding disclosure, a transcript is management answering questions it did
+// not choose, and a news item is a third party's account of one of those. The
+// timeline now mixes all three, so the reader needs to see which kind of
+// source a row is without reading the label.
+const SOURCE_TAG_CLASS: Record<RawDocument["source_type"], string> = {
+  sec_edgar_filing: "tag tag-accent",
+  scraped_transcript: "tag tag-positive",
+  news_api: "tag",
+  scraped_earnings_report: "tag tag-accent",
+};
+
+const TYPE_LABELS: Record<string, string> = {
+  earnings_call: "earnings call",
+  news: "news",
+};
+
+/** Chronological view of everything ingested for one company: filings,
+ * transcripts, and news interleaved, most recent first. */
 export function TimelinePanel({ documents }: Props) {
   if (documents.length === 0) {
-    // A newly added ticker starts ingesting in the background the moment
-    // it's added (see the watchlist "add ticker" flow) — this page polls
-    // every 60s, so filings appear here on their own once that finishes.
     return (
       <div className="empty-state">
         Gathering data for this ticker. Filings usually appear within a minute or two.
@@ -27,27 +40,43 @@ export function TimelinePanel({ documents }: Props) {
   }
 
   return (
-    <div className="timeline">
-      {documents.map((doc) => (
-        <div className="timeline-item" key={doc.id}>
-          <div className="timeline-date mono">
-            {doc.published_at ? new Date(doc.published_at).toLocaleDateString() : "—"}
-          </div>
-          <div style={{ flex: 1 }}>
-            <span className="badge badge-source">{SOURCE_LABELS[doc.source_type]}</span>
-            {doc.doc_subtype && <span className="badge badge-source">{doc.doc_subtype}</span>}
-            <div>
+    <table className="data-table">
+      <thead>
+        <tr>
+          <th className="num">Date</th>
+          <th>Source</th>
+          <th>Type</th>
+          <th>Filing</th>
+        </tr>
+      </thead>
+      <tbody>
+        {documents.map((doc) => (
+          <tr key={doc.id} onClick={() => doc.source_url && window.open(doc.source_url, "_blank")}>
+            <td className="num mono">
+              {doc.published_at ? new Date(doc.published_at).toLocaleDateString() : "-"}
+            </td>
+            <td>
+              <span className={SOURCE_TAG_CLASS[doc.source_type]}>
+                {SOURCE_LABELS[doc.source_type]}
+              </span>
+            </td>
+            <td>
+              {doc.doc_subtype && (
+                <span className="tag">{TYPE_LABELS[doc.doc_subtype] ?? doc.doc_subtype}</span>
+              )}
+            </td>
+            <td>
               {doc.source_url ? (
-                <a href={doc.source_url} target="_blank" rel="noreferrer">
+                <a href={doc.source_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
                   {doc.title ?? doc.source_url}
                 </a>
               ) : (
-                <span>{doc.title ?? "Untitled document"}</span>
+                doc.title ?? "untitled document"
               )}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }

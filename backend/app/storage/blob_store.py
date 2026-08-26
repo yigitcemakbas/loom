@@ -5,7 +5,7 @@ relational layer (Postgres, via app/repositories/) stores structured
 metadata and queryable columns; large raw content (filing text, transcript
 JSON, article HTML) is a separate concern, stored as an object and
 referenced only by a URI. `LocalFileBlobStore` is the Phase 1 (and beyond,
-until it's genuinely needed) implementation — a future `S3BlobStore` can
+until it's genuinely needed) implementation, a future `S3BlobStore` can
 implement the same interface with zero changes to ingestion adapters or
 the engine.
 """
@@ -30,7 +30,7 @@ class BlobStore(ABC):
 
 
 class LocalFileBlobStore(BlobStore):
-    """Writes blobs to a directory on disk. Zero operational overhead — the
+    """Writes blobs to a directory on disk. Zero operational overhead, the
     right choice for a single-machine MVP. `uri` is a `file://` path relative
     to `root_dir`.
     """

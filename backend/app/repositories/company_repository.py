@@ -1,7 +1,6 @@
 """The only module allowed to run SQL/ORM queries against `companies`.
 
-Routes, scripts, and ingestion code call this — never a raw Session query —
-so storage details stay decoupled from business logic (see docs/plan.md
+Routes, scripts, and ingestion code call this, never a raw Session query, so storage details stay decoupled from business logic (see docs/plan.md
 "Architecture Principles").
 """
 

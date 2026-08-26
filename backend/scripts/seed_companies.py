@@ -1,5 +1,5 @@
 """Optional convenience script: pre-populates AAPL and MSFT for local
-development. Not required to use Loom — the default watchlist is created
+development. Not required to use Loom, the default watchlist is created
 automatically on first use, and any ticker can be added directly from the
 UI (it is resolved and ingested on the fly, see
 app/api/routes/watchlists.py). This just saves typing two tickers by hand
@@ -31,7 +31,7 @@ def main() -> None:
         for data in SEED_COMPANIES:
             company = company_repo.get_or_create(data)
             watchlist_repo.add_company(watchlist.id, company.id)
-            print(f"  seeded {company.ticker} — {company.name}")
+            print(f"  seeded {company.ticker}, {company.name}")
     finally:
         db.close()
 

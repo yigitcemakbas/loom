@@ -1,7 +1,7 @@
 """Regression test for the inline-XBRL text-extraction bug found during
 Phase 1 manual verification: naive text extraction on a modern SEC filing
 picks up the hidden `<ix:header>` XBRL metadata block ahead of the actual
-readable filing text. No network access needed — this is a fixture of the
+readable filing text. No network access needed, this is a fixture of the
 real structure SEC's iXBRL filings use.
 """
 
