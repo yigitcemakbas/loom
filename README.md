@@ -1,62 +1,98 @@
 # Loom
 
-Loom is a research tool for equity investors. It collects data from multiple sources for a set of tracked companies, extracts the information relevant to an investment decision, and presents it as a small number of ranked, source-linked signals, to serve as actionable information.
+Loom is a research tool for equity investors. It collects everything a company publishes, reads it, and reduces it to a single plain-language verdict per company: which way the evidence leans, the two or three things driving that, and what has changed since you last looked.
 
-Loom does not forecast stock prices or issue buy or sell recommendations. Its purpose is to reduce the time required to review primary source material and to surface changes that would otherwise go unnoticed.
+The purpose is to save you reading primary source material. If you have to already know what a 10-Q is to understand the output, it has failed.
+
+Loom does not forecast prices or issue buy/sell recommendations. Nothing in it prices a stock or knows your position, so a recommendation would be fabricated authority. It gives you the inputs to a decision at the moment they matter, and leaves the decision to you.
+
+## What it does
+
+**Reads and reduces**
+
+- One verdict per company: a stance, a plain sentence explaining it, the drivers behind it, and what is new since the last read. This is the main output; everything else supports it.
+- Ranks companies worst-first, split into "needs a look" and "nothing to act on".
+- Every finding links back to the document and the verbatim sentence that produced it.
+
+**Compares over time**
+
+- Annual reports against the previous year, on risk factors.
+- Quarterly reports against the previous quarter, on management's discussion of results.
+- Across documents inside a short window, so a risk disclosed in a filing and then confirmed on an earnings call a week later is reported as one developing story rather than two unrelated findings.
+
+**Tracks non-prose data**
+
+- Insider share transactions, separating genuine open-market trades from routine vesting and option exercises. Most reported "insider selling" is tax withholding on vesting shares; Loom does not count it as a decision to sell.
+- Earnings dates and consensus estimates, surfaced above everything else as a date approaches.
+- Threshold rules over that data (for example several insiders selling in the same fortnight) that run without a language model at all.
+
+**Everything else**
+
+- Full-text search across every ingested document, showing the passage that matched.
+- Price charts from 1H to 1Y, auto-rotating through the watchlist.
+- A dense screener view for comparing companies side by side.
+- Refreshes on a schedule so the dashboard stays current without you running anything.
 
 ## Data sources
 
-- SEC filings (10-K, 10-Q, 8-K), including the exhibits attached to them, which is where an 8-K's earnings press release actually lives
-- Earnings call transcripts
-- News articles, filtered to items that are genuinely about the company rather than merely mentioning it
-- Insider share transactions (SEC Form 4), separating genuine open-market trades from routine vesting and option exercises
+All free. No paid API is used anywhere.
 
-## Core functions
+| Source | What it provides | Key needed |
+|---|---|---|
+| SEC EDGAR | Filings (10-K, 10-Q, 8-K) and their exhibits, insider transactions (Form 4) | No, just a User-Agent |
+| Finnhub (free tier) | Company news, earnings dates and estimates | Yes, free |
+| Google Gemini (free tier) | The language work: extraction, comparison, synthesis | Yes, free |
+| Motley Fool | Earnings call transcripts (scraped, robots.txt respected) | No |
+| Yahoo | Price history | No |
 
-- Produces a single read per company: a plain-language verdict, the two or three things driving it, and what is new since you last looked. This is the product's main output; everything else exists to support it.
-- Maintains a watchlist of companies and a timeline of ingested documents for each one. Any valid ticker can be added directly. Loom resolves it and starts ingesting its filings automatically, with no manual setup required.
-- Reads filings and transcripts in full and extracts sentiment, risk factors, notable quotes, and quarter over quarter changes.
-- Compares each filing against the previous one of its kind: annual reports on risk factors, quarterly reports on management's discussion of results, so changes are caught at the cadence they happen rather than only once a year.
-- Tracks when each company is due to report, what the market expects of it, and surfaces that above everything else as the date approaches.
-- Distinguishes new information from information that repeats across prior filings.
-- Synthesises across documents, not just within them. When several disclosures land inside a short window and together change the picture, Loom says what the combination means rather than leaving the reader to join up separate signals.
-- Characterises the likely market reaction to each finding in qualitative terms (direction, magnitude, time horizon). It never states a percentage move or price target, because nothing in the pipeline is a pricing model.
-- Links each signal to its source document and the exact quote that supports it.
-- Applies plain arithmetic rules to filed data, such as several insiders selling in the same fortnight. These need no language model, so they keep working when the AI service is unavailable.
-- Ranks signals by priority so the most significant items appear first.
-- Searches the full text of every ingested document, not just titles and dates, and shows the passage that matched.
-- Refreshes on a schedule, so the dashboard reflects current filings without anyone running a command.
+## Requirements
 
-## System design
+- **Python 3.12.** Not 3.13 or 3.14: some dependencies ship compiled extensions that do not build on newer versions yet. Check with `python3.12 --version`.
+- **Node.js 20+**
+- **Docker Desktop**, running. Postgres runs in a container.
 
-- Each data source is handled by a dedicated adapter responsible for fetching data and returning clean text. Adding a new source does not require changes to other components.
-- Raw content is stored as an object separate from its metadata. Metadata is stored in the database.
-- Extraction logic is deterministic wherever a fixed rule applies. The language model is used only for tasks that require judgment: sentiment analysis, quote selection, and explanation of changes. Deterministic gates also decide *whether* a model call is warranted, so cost stays proportional to actual signal rather than to document volume.
-- Each component has a single responsibility and does not access another component's internal state.
-- Scrapers obey `robots.txt` on every request, rate limit per domain, and send a User-Agent that identifies Loom honestly rather than impersonating a browser.
+## Setup
 
-## Installation
+**1. Get two free API keys.** Both take about a minute.
 
-Requires Python 3.12, Node.js, and Docker Desktop running. Newer Python versions are not yet supported: some dependencies (pydantic-core, in particular) ship compiled extensions that do not build on Python 3.14 yet. Run `python3.12 --version` first to confirm it is installed; if not, install it before continuing.
+- Gemini: https://aistudio.google.com/apikey
+- Finnhub: https://finnhub.io/register
+
+**2. Start the database.**
 
 ```bash
 docker compose up -d
+```
+
+**3. Configure.**
+
+```bash
 cp .env.example backend/.env
+```
+
+Open `backend/.env` and set four values:
+
+```
+GEMINI_API_KEY=your-key-here
+FINNHUB_API_KEY=your-key-here
+SEC_EDGAR_USER_AGENT="Loom research-tool your-name your-email@example.com"
+SCRAPER_USER_AGENT="Loom research-tool your-name your-email@example.com"
+```
+
+The two User-Agent strings are not optional. SEC requires a genuine identifying header on every request under its fair-access policy, and the transcript scraper sends one for the same reason. Put your real name and email in them.
+
+**4. Install and run the backend.**
+
+```bash
 cd backend
-python3.12 -m venv .venv && source .venv/bin/activate
+python3.12 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 alembic upgrade head
 uvicorn app.main:app --reload
 ```
 
-Open `backend/.env` and set `SEC_EDGAR_USER_AGENT` and `SCRAPER_USER_AGENT` to strings identifying you, for example `"Loom your-name your-email@example.com"`. SEC requires a genuine identifying User-Agent on every request, and the transcript scraper sends one for the same reason; the app runs without this step, but requests should not be sent under a placeholder value.
-
-Two settings are optional:
-
-- `FINNHUB_API_KEY` enables the company-news source ([free tier](https://finnhub.io/register)). Left blank, Loom skips news and ingests filings and transcripts normally.
-- `SCHEDULER_ENABLED` (default `true`) re-ingests and re-analyses the watchlist every `SCHEDULER_INTERVAL_MINUTES` (default 360). Set it to `false` if you would rather trigger analysis by hand, for instance to stay inside a metered LLM tier.
-
-Open a second terminal and run the frontend:
+**5. In a second terminal, run the frontend.**
 
 ```bash
 cd frontend
@@ -64,23 +100,85 @@ npm install
 npm run dev
 ```
 
-## Usage
+Open the URL Vite prints, normally `http://localhost:5173`. If that port is taken it will bind the next free one and print that instead; either works.
 
-Open the URL Vite prints on startup, normally `http://localhost:5173`. If that port is already taken, Vite binds the next free one (5174, 5175, and so on) and prints that instead; the app works on any of them. A default watchlist is created automatically on first load.
+## First run
 
-To track a company, type its ticker into the field on the watchlist page and click "Add ticker." Loom resolves it against SEC's public company directory, adds it, and starts ingesting its filings in the background. This takes anywhere from a few seconds to about two minutes, depending on how many filings the company has on record.
+The app starts empty. Type a ticker into the box at the top right and press add. Loom resolves it against SEC's public company directory, then starts pulling its filings, transcripts, news, insider records, and earnings dates in the background.
 
-Click a ticker to open its detail page. The timeline lists filings as they are ingested, most recent first, each linking to the source document on sec.gov. A ticker with no filings yet shows a status message until ingestion finishes; the page refreshes on its own.
+Ingestion takes anywhere from a few seconds to about two minutes depending on how much the company has filed. The page updates itself as data arrives.
 
-Click "Remove" next to a ticker on the watchlist page to stop tracking it.
+Analysis then runs automatically, and this is the slow part. Reading filings costs one AI request each, and Gemini's free tier allows roughly 20 requests per minute. A company with a full set of filings takes a few minutes to work through. Loom paces its own requests to stay under the limit and picks up where it left off if it is interrupted.
 
-`backend/scripts/seed_companies.py` is an optional shortcut that pre-populates AAPL and MSFT; it is not required for normal use.
+Until a company has been analysed, its card honestly says "not enough data yet" rather than pretending to a view.
 
-## Directory structure
+## Things worth knowing
+
+**The free AI tier is the main constraint.** Analysis is rate limited to about 20 requests per minute and has a daily ceiling. Loom handles this gracefully: it paces requests, retries transient failures, falls back across models, and stops cleanly when quota is exhausted rather than failing loudly. But a full watchlist takes more than one sitting to analyse. If you have a paid key, set `LLM_MIN_CALL_INTERVAL_SECONDS=0` in `.env` to remove the pacing.
+
+**It works without an AI key, partially.** Ingestion, search, insider tracking, earnings dates, price charts, and the threshold rules all run with no language model. Only the reading and synthesis need one. Leaving `GEMINI_API_KEY` blank gives you a working document and data browser.
+
+**Leaving `FINNHUB_API_KEY` blank** disables news and earnings dates. Filings and transcripts still work.
+
+**The scheduler** re-ingests and re-analyses the whole watchlist every 6 hours by default. Set `SCHEDULER_ENABLED=false` if you would rather trigger analysis by hand, which is worth doing while you are actively developing.
+
+## Configuration
+
+Everything lives in `backend/.env`. See `.env.example` for the full list with comments.
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `GEMINI_API_KEY` | empty | Enables analysis |
+| `FINNHUB_API_KEY` | empty | Enables news and earnings dates |
+| `SEC_EDGAR_USER_AGENT` | placeholder | Required by SEC, set it to something real |
+| `SCRAPER_USER_AGENT` | placeholder | Sent by the transcript scraper |
+| `LLM_PROVIDER` | `gemini` | `gemini` or `anthropic` |
+| `LLM_MIN_CALL_INTERVAL_SECONDS` | `6.5` | Request pacing; set 0 on a paid tier |
+| `SCHEDULER_ENABLED` | `true` | Background refresh |
+| `SCHEDULER_INTERVAL_MINUTES` | `360` | How often it refreshes |
+| `DATABASE_URL` | local Postgres | Matches docker-compose |
+| `BLOB_STORE_DIR` | `./data/blobs` | Where document text is stored on disk |
+
+## Design
+
+- **Adapters per source.** Each data source is one class producing plain data. Adding a source means writing one adapter and registering it; nothing else changes.
+- **Repositories per table.** Only repositories touch the database. Routes and the engine call them.
+- **Storage split by responsibility.** Postgres holds metadata and relationships; document text goes to a `BlobStore` behind an interface, so it can move to object storage without touching ingestion or the engine.
+- **Deterministic wherever a fixed rule applies.** The language model is used only for genuine language judgement: sentiment, quote selection, explaining what changed. Deterministic gates also decide *whether* a model call is worth making, so cost tracks real signal rather than document volume. The verdict itself is computed, not generated, which is why it still works when the AI quota is gone.
+- **Scrapers behave.** robots.txt is checked before every request, requests are rate limited per domain, and the User-Agent identifies Loom honestly rather than impersonating a browser.
+
+## Development
+
+```bash
+cd backend && source .venv/bin/activate
+pytest                  # 137 tests
+ruff check .            # lint
+alembic check           # confirms models and migrations agree
+```
+
+```bash
+cd frontend
+npx tsc --noEmit        # type check
+npm run build           # production build
+```
+
+## Project layout
 
 ```
 loom/
-├── docker-compose.yml       # Postgres
-├── backend/                 # FastAPI + SQLAlchemy + Alembic
-└── frontend/                 # Vite + React + TypeScript
+├── docker-compose.yml        # Postgres
+├── backend/
+│   ├── app/
+│   │   ├── ingestion/        # one adapter per data source
+│   │   ├── engine/           # extraction, comparison, rules, synthesis
+│   │   ├── repositories/     # the only code touching the database
+│   │   ├── api/routes/       # thin HTTP layer
+│   │   └── models/           # SQLAlchemy tables
+│   └── alembic/              # migrations
+├── frontend/src/
+│   ├── components/           # presentational only, never fetch
+│   ├── hooks/                # data fetching
+│   ├── api/                  # HTTP client
+│   └── pages/                # compose hooks and components
+└── docs/plan.md              # design decisions and why
 ```
