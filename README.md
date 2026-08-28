@@ -1,98 +1,168 @@
 # Loom
 
-Loom is a research tool for equity investors. It collects everything a company publishes, reads it, and reduces it to a single plain-language verdict per company: which way the evidence leans, the two or three things driving that, and what has changed since you last looked.
+Loom is an equity research system. It ingests the material a public company produces, evaluates it, and reduces the result to a single assessment per company: the direction the evidence points, the factors driving that direction, and what has changed since the previous assessment.
 
-The purpose is to save you reading primary source material. If you have to already know what a 10-Q is to understand the output, it has failed.
+The objective is to reduce the time required to review primary source material. Output is written for a reader who does not work in finance; terminology that assumes prior knowledge of filing structure is treated as a defect.
 
-Loom does not forecast prices or issue buy/sell recommendations. Nothing in it prices a stock or knows your position, so a recommendation would be fabricated authority. It gives you the inputs to a decision at the moment they matter, and leaves the decision to you.
+Loom does not forecast prices and does not issue buy or sell recommendations. The system contains no pricing model and no knowledge of the reader's position, so any recommendation would assert an authority it does not have. It presents the inputs to a decision and leaves the decision to the reader.
 
-## What it does
+## Capabilities
 
-**Reads and reduces**
+### Assessment
 
-- One verdict per company: a stance, a plain sentence explaining it, the drivers behind it, and what is new since the last read. This is the main output; everything else supports it.
-- Ranks companies worst-first, split into "needs a look" and "nothing to act on".
-- Every finding links back to the document and the verbatim sentence that produced it.
+- A single assessment per company, comprising a stance, a one-sentence rationale, the two or three factors driving it, and a summary of what has changed since the previous assessment.
+- Companies are ordered by severity and separated into those requiring attention and those that do not.
+- Every finding resolves to its source document and the verbatim passage that produced it.
+- Assessment is computed deterministically from stored findings. It does not require a language model and remains available when the model provider is unreachable.
 
-**Compares over time**
+### Comparison
 
-- Annual reports against the previous year, on risk factors.
-- Quarterly reports against the previous quarter, on management's discussion of results.
-- Across documents inside a short window, so a risk disclosed in a filing and then confirmed on an earnings call a week later is reported as one developing story rather than two unrelated findings.
+- Annual reports are compared against the prior year on risk factors.
+- Quarterly reports are compared against the prior quarter on management's discussion of results.
+- Disclosures occurring within a short window are evaluated jointly, so a risk disclosed in a filing and subsequently confirmed on an earnings call is reported as a single development rather than two independent findings.
 
-**Tracks non-prose data**
+### Structured data
 
-- Insider share transactions, separating genuine open-market trades from routine vesting and option exercises. Most reported "insider selling" is tax withholding on vesting shares; Loom does not count it as a decision to sell.
-- Earnings dates and consensus estimates, surfaced above everything else as a date approaches.
-- Threshold rules over that data (for example several insiders selling in the same fortnight) that run without a language model at all.
+- Insider transactions, with discretionary open-market trades separated from routine vesting, option exercises, and tax withholding. The latter categories are excluded from any conclusion about insider intent.
+- Scheduled earnings dates and consensus estimates, promoted in the interface as a reporting date approaches.
+- Threshold rules over structured data, such as multiple insiders selling within a defined window. These execute without a language model.
 
-**Everything else**
+### Interface
 
-- Full-text search across every ingested document, showing the passage that matched.
-- Price charts from 1H to 1Y, auto-rotating through the watchlist.
-- A dense screener view for comparing companies side by side.
-- Refreshes on a schedule so the dashboard stays current without you running anything.
+- Full-text search across all ingested documents, returning the matching passage.
+- Price history across intervals from one hour to one year.
+- A comparison table presenting all tracked companies against sortable quantitative columns.
+- Scheduled background refresh.
 
 ## Data sources
 
-All free. No paid API is used anywhere.
+All sources are free of charge. No paid API tier is used.
 
-| Source | What it provides | Key needed |
+| Source | Provides | Credential |
 |---|---|---|
-| SEC EDGAR | Filings (10-K, 10-Q, 8-K) and their exhibits, insider transactions (Form 4) | No, just a User-Agent |
-| Finnhub (free tier) | Company news, earnings dates and estimates | Yes, free |
-| Google Gemini (free tier) | The language work: extraction, comparison, synthesis | Yes, free |
-| Motley Fool | Earnings call transcripts (scraped, robots.txt respected) | No |
-| Yahoo | Price history | No |
+| SEC EDGAR | Filings (10-K, 10-Q, 8-K) with exhibits; insider transactions (Form 4) | None; identifying User-Agent required |
+| Finnhub | Company news; earnings dates and consensus estimates | Free API key |
+| Google Gemini | Extraction, comparison, and synthesis | Free API key |
+| Motley Fool | Earnings call transcripts, retrieved under robots.txt | None |
+| Yahoo | Price history | None |
 
 ## Requirements
 
-- **Python 3.12.** Not 3.13 or 3.14: some dependencies ship compiled extensions that do not build on newer versions yet. Check with `python3.12 --version`.
-- **Node.js 20+**
-- **Docker Desktop**, running. Postgres runs in a container.
+Docker Desktop. No other software is required.
 
-## Setup
-
-**1. Get two free API keys.** Both take about a minute.
-
-- Gemini: https://aistudio.google.com/apikey
-- Finnhub: https://finnhub.io/register
-
-**2. Start the database.**
+## Installation
 
 ```bash
-docker compose up -d
+git clone https://github.com/yigitcemakbas/loom.git
+cd loom
+docker compose up
 ```
 
-**3. Configure.**
+The initial build takes several minutes. Subsequent starts complete in seconds.
+
+The application is served at `http://localhost:5173`.
+
+Three containers are started: PostgreSQL, the backend API, and the frontend. Database migrations are applied automatically at startup. No further configuration is required to run the system.
+
+## Operation
+
+The watchlist is initially empty. Entering a ticker resolves it against the SEC company directory and begins retrieving its filings, earnings call transcripts, insider transactions, and price history.
+
+Retrieval of a company's full filing history takes several minutes. SEC rate limits constrain throughput, and the interface updates as records arrive.
+
+Selecting a company presents its assessment, findings, insider record, price history, and complete document text.
+
+## Credentials
+
+Loom operates without credentials. Two capabilities require one, both free of charge. The interface reports which are absent.
+
+| Capability | Credential | Registration |
+|---|---|---|
+| Reading and summarising filings | `gemini_api_key` | https://aistudio.google.com/apikey |
+| Company news and earnings dates | `finnhub_api_key` | https://finnhub.io/register |
+
+Credentials are supplied as files in the `secrets/` directory, one file per credential, containing the credential value only:
 
 ```bash
+echo -n "your-gemini-key"  > secrets/gemini_api_key
+echo -n "your-finnhub-key" > secrets/finnhub_api_key
+docker compose restart backend
+```
+
+The directory is excluded from version control and mounted read-only into the backend container at `/run/secrets`. Values are read at process start.
+
+Credentials are supplied as files rather than environment variables. An environment variable is reproduced in `docker inspect` output and in `/proc/1/environ`, and is therefore readable by any process with access to the Docker socket. A mounted file is read only by the process that requires it. Environment variables remain supported and take precedence, which accommodates continuous integration and short-lived runs.
+
+Changing a credential requires `docker compose restart backend`. A rebuild is not required.
+
+### Operation without credentials
+
+Without a Gemini credential, Loom collects and presents source material but does not evaluate it. Filings, transcripts, insider records, price history, and full-text search are available; assessments are not. As assessment is the system's primary output, this credential is the one of consequence.
+
+Without a Finnhub credential, company news and earnings dates are unavailable. No other capability is affected.
+
+### SEC identification
+
+SEC enforces its fair-access policy through the User-Agent header. The header must contain a contact email address and must not contain a URL; requests that do not comply are refused. The supplied default satisfies these constraints. Operators making sustained use of the system should substitute their own contact details in a `.env` file adjacent to `docker-compose.yml`:
+
+```
+SEC_EDGAR_USER_AGENT="Name email@example.com"
+SCRAPER_USER_AGENT="Name email@example.com"
+```
+
+## Operational characteristics
+
+**Analysis throughput is bounded by the free model tier.** Gemini's free tier permits approximately 20 requests per minute against a daily ceiling; evaluating one document consumes one request. Loom paces requests to remain within the limit, retries transient failures, falls back across models, and terminates cleanly on quota exhaustion. Evaluating a full watchlist therefore spans more than one session. On a paid tier, set `LLM_MIN_CALL_INTERVAL_SECONDS=0` to remove pacing.
+
+**Background refresh is disabled by default under Docker.** An initial run does not consume model quota until explicitly enabled. Set `SCHEDULER_ENABLED=true` to enable periodic re-ingestion and re-evaluation.
+
+**Companies without sufficient evaluated material report that state explicitly** rather than presenting an assessment unsupported by evidence.
+
+## Configuration
+
+Under Docker, configuration is read from a `.env` file adjacent to `docker-compose.yml`. Outside Docker, from `backend/.env`. Credentials are read from `secrets/`. `.env.example` documents the full set.
+
+| Setting | Default | Purpose |
+|---|---|---|
+| `gemini_api_key` | empty | Analysis. Supplied via `secrets/gemini_api_key` |
+| `finnhub_api_key` | empty | News and earnings data. Supplied via `secrets/finnhub_api_key` |
+| `SEC_EDGAR_USER_AGENT` | project default | SEC identification |
+| `SCRAPER_USER_AGENT` | project default | Transcript retrieval identification |
+| `LLM_PROVIDER` | `gemini` | `gemini` or `anthropic` |
+| `LLM_MIN_CALL_INTERVAL_SECONDS` | `6.5` | Request pacing; `0` disables |
+| `SCHEDULER_ENABLED` | `false` under Docker | Background refresh |
+| `SCHEDULER_INTERVAL_MINUTES` | `360` | Refresh interval |
+| `DATABASE_URL` | set by compose | Required only outside Docker |
+| `BLOB_STORE_DIR` | `data/blobs` | Document text storage location |
+
+## Architecture
+
+**Backend.** Python 3.12, FastAPI, SQLAlchemy, Alembic, PostgreSQL 16.
+
+**Frontend.** React 19, TypeScript, Vite, TanStack Query, served by nginx with a same-origin proxy to the API.
+
+**Design constraints.**
+
+- *Source adapters.* Each data source is a single class producing plain data structures. Adding a source requires implementing one adapter and registering it; no other component changes.
+- *Repository isolation.* Database access is confined to repository classes. Routes and the analysis engine do not issue queries.
+- *Storage separation.* PostgreSQL holds metadata and relationships. Document text is written through a `BlobStore` interface, permitting relocation to object storage without modifying ingestion or analysis. Stored references are relative, so the data set is portable across hosts and containers.
+- *Deterministic by default.* The language model is applied only where linguistic judgement is required: sentiment, passage selection, and characterising change. Deterministic gates additionally decide whether a model call is warranted, so cost tracks material signal rather than document volume. The assessment layer is fully deterministic.
+- *Retrieval conduct.* robots.txt is evaluated before each request, requests are rate limited per domain, and the User-Agent identifies the system rather than impersonating a browser.
+
+## Development
+
+Running the services directly requires Python 3.12 and Node.js 20 or later. Python 3.13 and 3.14 are not supported; several dependencies distribute compiled extensions that do not build against them.
+
+```bash
+docker compose up -d postgres
 cp .env.example backend/.env
-```
 
-Open `backend/.env` and set four values:
-
-```
-GEMINI_API_KEY=your-key-here
-FINNHUB_API_KEY=your-key-here
-SEC_EDGAR_USER_AGENT="Loom research-tool your-name your-email@example.com"
-SCRAPER_USER_AGENT="Loom research-tool your-name your-email@example.com"
-```
-
-The two User-Agent strings are not optional. SEC requires a genuine identifying header on every request under its fair-access policy, and the transcript scraper sends one for the same reason. Put your real name and email in them.
-
-**4. Install and run the backend.**
-
-```bash
 cd backend
-python3.12 -m venv .venv
-source .venv/bin/activate
+python3.12 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 alembic upgrade head
 uvicorn app.main:app --reload
 ```
-
-**5. In a second terminal, run the frontend.**
 
 ```bash
 cd frontend
@@ -100,85 +170,38 @@ npm install
 npm run dev
 ```
 
-Open the URL Vite prints, normally `http://localhost:5173`. If that port is taken it will bind the next free one and print that instead; either works.
-
-## First run
-
-The app starts empty. Type a ticker into the box at the top right and press add. Loom resolves it against SEC's public company directory, then starts pulling its filings, transcripts, news, insider records, and earnings dates in the background.
-
-Ingestion takes anywhere from a few seconds to about two minutes depending on how much the company has filed. The page updates itself as data arrives.
-
-Analysis then runs automatically, and this is the slow part. Reading filings costs one AI request each, and Gemini's free tier allows roughly 20 requests per minute. A company with a full set of filings takes a few minutes to work through. Loom paces its own requests to stay under the limit and picks up where it left off if it is interrupted.
-
-Until a company has been analysed, its card honestly says "not enough data yet" rather than pretending to a view.
-
-## Things worth knowing
-
-**The free AI tier is the main constraint.** Analysis is rate limited to about 20 requests per minute and has a daily ceiling. Loom handles this gracefully: it paces requests, retries transient failures, falls back across models, and stops cleanly when quota is exhausted rather than failing loudly. But a full watchlist takes more than one sitting to analyse. If you have a paid key, set `LLM_MIN_CALL_INTERVAL_SECONDS=0` in `.env` to remove the pacing.
-
-**It works without an AI key, partially.** Ingestion, search, insider tracking, earnings dates, price charts, and the threshold rules all run with no language model. Only the reading and synthesis need one. Leaving `GEMINI_API_KEY` blank gives you a working document and data browser.
-
-**Leaving `FINNHUB_API_KEY` blank** disables news and earnings dates. Filings and transcripts still work.
-
-**The scheduler** re-ingests and re-analyses the whole watchlist every 6 hours by default. Set `SCHEDULER_ENABLED=false` if you would rather trigger analysis by hand, which is worth doing while you are actively developing.
-
-## Configuration
-
-Everything lives in `backend/.env`. See `.env.example` for the full list with comments.
-
-| Setting | Default | Purpose |
-|---|---|---|
-| `GEMINI_API_KEY` | empty | Enables analysis |
-| `FINNHUB_API_KEY` | empty | Enables news and earnings dates |
-| `SEC_EDGAR_USER_AGENT` | placeholder | Required by SEC, set it to something real |
-| `SCRAPER_USER_AGENT` | placeholder | Sent by the transcript scraper |
-| `LLM_PROVIDER` | `gemini` | `gemini` or `anthropic` |
-| `LLM_MIN_CALL_INTERVAL_SECONDS` | `6.5` | Request pacing; set 0 on a paid tier |
-| `SCHEDULER_ENABLED` | `true` | Background refresh |
-| `SCHEDULER_INTERVAL_MINUTES` | `360` | How often it refreshes |
-| `DATABASE_URL` | local Postgres | Matches docker-compose |
-| `BLOB_STORE_DIR` | `./data/blobs` | Where document text is stored on disk |
-
-## Design
-
-- **Adapters per source.** Each data source is one class producing plain data. Adding a source means writing one adapter and registering it; nothing else changes.
-- **Repositories per table.** Only repositories touch the database. Routes and the engine call them.
-- **Storage split by responsibility.** Postgres holds metadata and relationships; document text goes to a `BlobStore` behind an interface, so it can move to object storage without touching ingestion or the engine.
-- **Deterministic wherever a fixed rule applies.** The language model is used only for genuine language judgement: sentiment, quote selection, explaining what changed. Deterministic gates also decide *whether* a model call is worth making, so cost tracks real signal rather than document volume. The verdict itself is computed, not generated, which is why it still works when the AI quota is gone.
-- **Scrapers behave.** robots.txt is checked before every request, requests are rate limited per domain, and the User-Agent identifies Loom honestly rather than impersonating a browser.
-
-## Development
+### Verification
 
 ```bash
 cd backend && source .venv/bin/activate
-pytest                  # 137 tests
-ruff check .            # lint
+pytest                  # 143 tests
+ruff check .
 alembic check           # confirms models and migrations agree
 ```
 
 ```bash
 cd frontend
-npx tsc --noEmit        # type check
-npm run build           # production build
+npm run build           # type check and production build
 ```
 
-## Project layout
+## Repository structure
 
 ```
 loom/
-├── docker-compose.yml        # Postgres
+├── docker-compose.yml        # PostgreSQL, backend, frontend
+├── secrets/                  # credential files, excluded from version control
 ├── backend/
 │   ├── app/
-│   │   ├── ingestion/        # one adapter per data source
-│   │   ├── engine/           # extraction, comparison, rules, synthesis
-│   │   ├── repositories/     # the only code touching the database
-│   │   ├── api/routes/       # thin HTTP layer
-│   │   └── models/           # SQLAlchemy tables
+│   │   ├── ingestion/        # source adapters
+│   │   ├── engine/           # extraction, comparison, rules, assessment
+│   │   ├── repositories/     # database access
+│   │   ├── api/routes/       # HTTP layer
+│   │   └── models/           # schema definitions
 │   └── alembic/              # migrations
 ├── frontend/src/
-│   ├── components/           # presentational only, never fetch
-│   ├── hooks/                # data fetching
+│   ├── components/           # presentation
+│   ├── hooks/                # data access
 │   ├── api/                  # HTTP client
-│   └── pages/                # compose hooks and components
-└── docs/plan.md              # design decisions and why
+│   └── pages/                # composition
+└── docs/plan.md              # design record
 ```
