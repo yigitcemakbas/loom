@@ -1,3 +1,9 @@
+# One command runs the whole application: `docker compose up`.
+#
+# No Python, no Node, no virtualenv, no second terminal, and no API keys
+# required to start. Keys are optional and only unlock the sources that need
+# them; see the `environment` block on `backend` and the README.
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -16,6 +22,66 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+
+  backend:
+    build: ./backend
+    container_name: loom-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Container-to-container, so the host name is the service name.
+      DATABASE_URL: postgresql+psycopg://loom:loom@postgres:5432/loom
+
+      # API keys are deliberately NOT listed here. They are mounted as files
+      # into /run/secrets and read at runtime (see the volumes block below and
+      # backend/app/config.py). Passing them as environment variables would put
+      # them in `docker inspect` output and in /proc/1/environ, readable by
+      # anything that can reach the Docker socket. Nothing is baked into the
+      # image either way, but a file the process reads is a smaller exposure
+      # than a variable the platform copies around.
+      #
+      # An environment variable still overrides a secret if you set one, which
+      # keeps throwaway local runs and CI simple.
+
+      # SEC enforces its fair-access policy through this header and is
+      # stricter than its wording suggests: measured against sec.gov, the
+      # User-Agent must contain an email-shaped token and must NOT contain a
+      # URL, or every request returns 403. These defaults work as-is; replace
+      # them with your own contact so SEC can reach a human about the traffic.
+      SEC_EDGAR_USER_AGENT: ${SEC_EDGAR_USER_AGENT:-Loom research-tool loom@example.com}
+      SCRAPER_USER_AGENT: ${SCRAPER_USER_AGENT:-Loom research-tool loom@example.com}
+
+      # Off by default in a fresh container: a first-time user should choose
+      # when to spend their AI quota, not have a background job start doing it.
+      SCHEDULER_ENABLED: ${SCHEDULER_ENABLED:-false}
+      LLM_MIN_CALL_INTERVAL_SECONDS: ${LLM_MIN_CALL_INTERVAL_SECONDS:-6.5}
+      BLOB_STORE_DIR: /app/data/blobs
+    volumes:
+      # Secrets, read-only. A bind mount rather than compose's `secrets:`
+      # primitive on purpose: that primitive fails the whole stack when a
+      # secret file is missing, which would make a no-key install impossible.
+      # An empty or absent directory here is simply a run with no keys.
+      - ./secrets:/run/secrets:ro
+
+      # Bind-mounted rather than a named volume, for two reasons: an existing
+      # local checkout keeps working (document text already on disk is visible
+      # to the container immediately), and the stored text stays inspectable
+      # and backup-able on the host instead of hiding inside Docker. A fresh
+      # clone just gets an empty directory, which is correct.
+      - ./backend/data/blobs:/app/data/blobs
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build: ./frontend
+    container_name: loom-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
 
 volumes:
   loom_pgdata:

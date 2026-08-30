@@ -41,9 +41,18 @@ export function SentimentTrendChart({ points }: Props) {
             maxWidth: 320,
           }}
           labelStyle={{ color: "var(--text-dim)" }}
-          formatter={(value: number, _name, entry) => [
-            `${value > 0 ? "+" : ""}${value}, ${entry.payload.summary}`, "tone",
-          ]}
+          // recharts 3 types `value` as ValueType | undefined and hands the
+          // datum through `item`, so both are narrowed here rather than
+          // asserted. The tooltip has to survive a null point in the series.
+          formatter={(value, _name, item) => {
+            const score = typeof value === "number" ? value : Number(value);
+            const summary = (item?.payload as { summary?: string } | undefined)?.summary;
+            if (!Number.isFinite(score)) return ["-", "tone"];
+            return [
+              `${score > 0 ? "+" : ""}${score}${summary ? `, ${summary}` : ""}`,
+              "tone",
+            ];
+          }}
         />
         <Line
           type="monotone" dataKey="sentiment" stroke="var(--accent)" strokeWidth={1.5}

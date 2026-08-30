@@ -62,3 +62,54 @@ app.include_router(prices.router)
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+@app.get("/capabilities")
+def capabilities():
+    """Which sources are active, and what is missing without a key.
+
+    Exists so the app can say plainly what it can and cannot do rather than
+    letting a user discover it by clicking something that quietly fails. No
+    key is required to run Loom: filings, transcripts, insider records and
+    prices all work unconfigured. This endpoint is what makes that legible.
+    """
+    from app.config import settings
+
+    has_gemini = bool(settings.gemini_api_key)
+    has_anthropic = bool(settings.anthropic_api_key)
+    has_llm = has_gemini if settings.llm_provider == "gemini" else has_anthropic
+    has_finnhub = bool(settings.finnhub_api_key)
+
+    return {
+        "sources": {
+            "sec_filings": {"active": True, "needs_key": False},
+            "insider_transactions": {"active": True, "needs_key": False},
+            "earnings_transcripts": {"active": True, "needs_key": False},
+            "prices": {"active": True, "needs_key": False},
+            "company_news": {
+                "active": has_finnhub,
+                "needs_key": True,
+                "key_name": "FINNHUB_API_KEY",
+                "get_key_at": "https://finnhub.io/register",
+            },
+            "earnings_calendar": {
+                "active": has_finnhub,
+                "needs_key": True,
+                "key_name": "FINNHUB_API_KEY",
+                "get_key_at": "https://finnhub.io/register",
+            },
+        },
+        "analysis": {
+            "active": has_llm,
+            "provider": settings.llm_provider,
+            "needs_key": True,
+            "key_name": "GEMINI_API_KEY" if settings.llm_provider == "gemini" else "ANTHROPIC_API_KEY",
+            "get_key_at": (
+                "https://aistudio.google.com/apikey"
+                if settings.llm_provider == "gemini"
+                else "https://console.anthropic.com"
+            ),
+        },
+        # Everything below works with no configuration at all.
+        "always_available": ["document search", "insider tracking", "price charts", "filing comparison"],
+    }

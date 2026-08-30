@@ -21,6 +21,11 @@ logger = logging.getLogger(__name__)
 _TICKER_LOOKUP_URL = "https://www.sec.gov/files/company_tickers.json"
 
 
+class SecAccessDenied(RuntimeError):
+    """SEC rejected our User-Agent. Distinct from "ticker not found" because
+    the fix is a config change, not a different ticker."""
+
+
 @dataclass
 class CompanyInfo:
     ticker: str
@@ -53,6 +58,20 @@ class CompanyLookupService:
     def lookup(self, ticker: str) -> CompanyInfo | None:
         try:
             return self._ensure_loaded().get(ticker.upper())
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code == 403:
+                # The single most confusing failure this app can have: SEC
+                # refuses the User-Agent, every lookup fails, and the user is
+                # told their ticker does not exist. Name the real cause.
+                raise SecAccessDenied(
+                    "SEC refused the request. This is the User-Agent, not the ticker: "
+                    "SEC requires it to contain a contact email address and to contain "
+                    "no URL. Set SEC_EDGAR_USER_AGENT to something like "
+                    "'Your Name your-email@example.com'. "
+                    f"Currently sending: {settings.sec_edgar_user_agent!r}"
+                ) from exc
+            logger.exception("Company lookup failed while resolving %s", ticker)
+            return None
         except httpx.HTTPError:
             logger.exception("Company lookup failed while resolving %s", ticker)
             return None

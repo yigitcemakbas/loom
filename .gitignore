@@ -21,3 +21,5 @@ frontend/dist/
 .DS_Store
 .vscode/
 .idea/
+secrets/*
+!secrets/README.md

@@ -4,7 +4,7 @@ from app.api.deps import CompanyRepo, WatchlistRepo
 from app.schemas.company import CompanyCreate, CompanyOut
 from app.schemas.watchlist import AddTickerRequest, WatchlistCreate, WatchlistOut
 from app.scheduling.jobs import run_initial_ingest
-from app.services.company_lookup import get_company_lookup_service
+from app.services.company_lookup import SecAccessDenied, get_company_lookup_service
 
 router = APIRouter(prefix="/watchlists", tags=["watchlists"])
 
@@ -50,7 +50,13 @@ def add_ticker(
     is_new_company = company is None
 
     if company is None:
-        info = get_company_lookup_service().lookup(ticker)
+        try:
+            info = get_company_lookup_service().lookup(ticker)
+        except SecAccessDenied as exc:
+            # 503 rather than 404: nothing is wrong with the ticker, the app
+            # cannot reach SEC at all. Reporting this as "unrecognised ticker"
+            # sent readers hunting for a typo in "AAPL".
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
         if info is None:
             raise HTTPException(status_code=404, detail=f"{ticker!r} isn't a recognized ticker.")
         company = company_repo.create(

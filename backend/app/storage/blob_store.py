@@ -31,8 +31,18 @@ class BlobStore(ABC):
 
 class LocalFileBlobStore(BlobStore):
     """Writes blobs to a directory on disk. Zero operational overhead, the
-    right choice for a single-machine MVP. `uri` is a `file://` path relative
-    to `root_dir`.
+    right choice for a single-machine MVP.
+
+    URIs are stored **relative** to `root_dir` (`file://AAPL/<hash>.txt`) and
+    resolved against whatever `root_dir` is configured at read time. Storing
+    the absolute path instead, which this originally did, silently welded the
+    database to one directory on one machine: moving the checkout, running in
+    a container, or restoring the data anywhere else left every document
+    unreadable while the rows still looked perfectly valid.
+
+    Absolute URIs written by that earlier version are still honoured, and
+    re-rooted under the current directory when the original path is gone, so
+    existing data keeps working without a migration.
     """
 
     def __init__(self, root_dir: Path):
@@ -43,13 +53,24 @@ class LocalFileBlobStore(BlobStore):
         path = self.root_dir / key
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(content)
-        return f"file://{path.resolve()}"
+        # Relative on purpose, see the class docstring.
+        return f"file://{key}"
 
     def get(self, uri: str) -> bytes:
         if not uri.startswith("file://"):
             raise ValueError(f"LocalFileBlobStore cannot resolve non-file URI: {uri}")
-        path = Path(uri[len("file://") :])
-        return path.read_bytes()
+        return self._resolve(uri[len("file://") :]).read_bytes()
+
+    def _resolve(self, path_part: str) -> Path:
+        path = Path(path_part)
+        if not path.is_absolute():
+            return self.root_dir / path
+        if path.exists():
+            return path
+        # An absolute URI written on another machine, or before this store
+        # went relative. The trailing "<TICKER>/<hash>.txt" is the real key,
+        # so re-root it under the directory in use now.
+        return self.root_dir.joinpath(*path.parts[-2:])
 
 
 @lru_cache

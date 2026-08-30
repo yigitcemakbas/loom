@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AddTickerForm } from "../components/watchlist/AddTickerForm";
 import { BriefCard } from "../components/brief/BriefCard";
 import { EarningsStrip } from "../components/earnings/EarningsStrip";
+import { SetupBanner } from "../components/layout/SetupBanner";
 import { TrendingCharts } from "../components/price/TrendingCharts";
 import { ScreenerTable } from "../components/dashboard/ScreenerTable";
 import { useBriefs } from "../hooks/useBriefs";
@@ -104,6 +105,8 @@ export function DashboardPage() {
         <p className="error-text">Can't reach the Loom API. Confirm the backend is running and reload.</p>
       )}
       {addTicker.isError && <p className="error-text">{addTickerErrorMessage(addTicker.error)}</p>}
+
+      <SetupBanner />
 
       {view === "briefs" && <EarningsStrip />}
 
