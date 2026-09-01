@@ -436,6 +436,7 @@ def regenerate_brief(ticker: str, db: Session):
         headline=result.headline,
         confidence=result.confidence,
         drivers=[d.__dict__ for d in result.drivers],
+        counterpoint=result.counterpoint.__dict__ if result.counterpoint else None,
         what_changed=result.what_changed,
         source_types=result.source_types,
         signal_count=result.signal_count,

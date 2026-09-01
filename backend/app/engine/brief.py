@@ -132,6 +132,11 @@ class Brief:
     headline: str
     confidence: float
     drivers: list[Driver]
+    # The strongest finding arguing the other way. Shown deliberately: a
+    # one-sided card invites the reader to assume the other side was never
+    # considered, and the single best objection is the thing a decision most
+    # needs to survive.
+    counterpoint: Driver | None
     what_changed: str | None
     source_types: list[str]
     signal_count: int
@@ -204,9 +209,41 @@ def _weighted_direction(signals: list[Signal]) -> tuple[float, float, dict[str, 
     return mean, total, counts
 
 
-def _pick_drivers(signals: list[Signal]) -> list[Driver]:
-    """Highest-priority findings, with repeats of one story collapsed."""
-    ordered = sorted(signals, key=lambda s: s.priority or 0.0, reverse=True)
+def _pick_counterpoint(signals: list[Signal], stance_direction: str | None) -> Driver | None:
+    """The highest-priority finding that argues against the stance."""
+    if stance_direction not in ("positive", "negative"):
+        return None
+    opposite = "negative" if stance_direction == "positive" else "positive"
+    against = [s for s in signals if s.market_direction == opposite]
+    if not against:
+        return None
+    best = max(against, key=lambda s: s.priority or 0.0)
+    drivers = _build_drivers([best], signals)
+    return drivers[0] if drivers else None
+
+
+def _pick_drivers(signals: list[Signal], stance_direction: str | None = None) -> list[Driver]:
+    """Findings that explain the stance, with repeats of one story collapsed.
+
+    Selection is filtered by the stance's own direction before ranking. Picking
+    purely by priority produced cards that contradicted themselves: Apple's
+    verdict read "more concerns than positives" (17 negative findings against
+    7) while listing three positive drivers underneath, because those three
+    happened to score highest. A verdict whose stated evidence argues the other
+    way gives a reader no reason to believe any of it.
+
+    The opposing side is not hidden, it is returned last and labelled as a
+    counterpoint, which is more useful than either burying it or leading with
+    it (see `counterpoint`).
+    """
+    aligned = signals
+    if stance_direction in ("positive", "negative"):
+        matching = [s for s in signals if s.market_direction == stance_direction]
+        # Fall back to everything if the stance came from weighting rather than
+        # a clear majority, so a brief never ends up with no drivers at all.
+        aligned = matching or signals
+
+    ordered = sorted(aligned, key=lambda s: s.priority or 0.0, reverse=True)
     chosen: list[Signal] = []
     seen: list[set[str]] = []
 
@@ -223,6 +260,12 @@ def _pick_drivers(signals: list[Signal]) -> list[Driver]:
         if len(chosen) >= MAX_DRIVERS:
             break
 
+    return _build_drivers(chosen, signals)
+
+
+def _build_drivers(chosen: list[Signal], population: list[Signal]) -> list[Driver]:
+    """Turn selected findings into drivers, recording every source that showed
+    the same story."""
     def _detail_for(signal: Signal, title: str) -> str:
         """Body text with the heading stripped, so a driver does not read
         'Tariffs / Tariffs: imposes additional cost friction'."""
@@ -236,7 +279,7 @@ def _pick_drivers(signals: list[Signal]) -> list[Driver]:
     for signal in chosen:
         tokens = _tokens(signal.summary)
         supporting = [
-            s for s in signals
+            s for s in population
             if s.id != signal.id and _overlap(_tokens(s.summary or ""), tokens) >= _DUPLICATE_OVERLAP
         ]
         sources = {_source_of(signal), *(_source_of(s) for s in supporting)}
@@ -419,6 +462,7 @@ def build_brief(
             headline=_headline(Stance.INSUFFICIENT, [], {"positive": 0, "negative": 0, "neutral": 0}, set()),
             confidence=0.0,
             drivers=[],
+            counterpoint=None,
             what_changed=None,
             source_types=[],
             signal_count=0,
@@ -436,7 +480,15 @@ def build_brief(
     )
 
     source_types = source_types_of(substantive)
-    drivers = _pick_drivers(substantive)
+
+    # Drivers must argue for the stance, not against it.
+    stance_direction = (
+        "negative" if stance in (Stance.STRONG_NEGATIVE, Stance.NEGATIVE)
+        else "positive" if stance in (Stance.STRONG_POSITIVE, Stance.STRONG_POSITIVE, Stance.POSITIVE)
+        else None
+    )
+    drivers = _pick_drivers(substantive, stance_direction)
+    counterpoint = _pick_counterpoint(substantive, stance_direction)
     # No view means no confidence in a view. Reporting "83% confident" beside
     # "no view is offered" reads as a contradiction and undermines both.
     confidence = (
@@ -452,6 +504,7 @@ def build_brief(
         ),
         confidence=confidence,
         drivers=drivers,
+        counterpoint=counterpoint,
         what_changed=_what_changed(substantive, previous_generated_at),
         source_types=sorted(source_types),
         signal_count=len(substantive),

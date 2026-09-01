@@ -57,6 +57,10 @@ class CompanyBrief(Base):
 
     # [{title, detail, direction, magnitude, sources: [...], signal_ids: [...]}]
     drivers: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+    # The strongest finding arguing against the stance, same shape as a driver.
+    # Stored rather than derived on read so a brief remains a complete record of
+    # what was concluded and what was weighed against it.
+    counterpoint: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     # What is new since the previous brief, so a returning reader can skip
     # everything they have already seen.
     what_changed: Mapped[str | None] = mapped_column(Text, nullable=True)

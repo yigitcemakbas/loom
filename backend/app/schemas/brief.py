@@ -27,6 +27,7 @@ class BriefOut(BaseModel):
     headline: str
     confidence: float
     drivers: list[DriverOut]
+    counterpoint: DriverOut | None = None
     what_changed: str | None
     source_types: list[str]
     source_labels: list[str]

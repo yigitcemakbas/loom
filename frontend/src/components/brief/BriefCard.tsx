@@ -126,6 +126,28 @@ export function BriefCard({ brief, ticker, name, compact = false, showIdentity =
         </>
       )}
 
+      {!compact && brief.counterpoint && (
+        <div style={{ padding: "5px 10px", borderTop: "1px solid var(--border)" }}>
+          <span className="mono faint" style={{ fontSize: 9, letterSpacing: "0.08em" }}>
+            AGAINST THIS
+          </span>
+          <div style={{ display: "flex", gap: 6, alignItems: "baseline", marginTop: 2 }}>
+            <span className={directionMark(brief.counterpoint.direction).cls} style={{ fontSize: 10 }}>
+              {directionMark(brief.counterpoint.direction).glyph}
+            </span>
+            <span className="sans" style={{ fontSize: 12 }}>{brief.counterpoint.title}</span>
+            <span className="faint" style={{ fontSize: 9, marginLeft: "auto", whiteSpace: "nowrap" }}>
+              {brief.counterpoint.sources.map((s) => SOURCE_LABELS[s] ?? s).join(" · ")}
+            </span>
+          </div>
+          {brief.counterpoint.detail && (
+            <p className="sans dim" style={{ margin: "2px 0 0 16px", fontSize: 11, lineHeight: 1.45 }}>
+              {brief.counterpoint.detail}
+            </p>
+          )}
+        </div>
+      )}
+
       {brief.what_changed && (
         <div style={{ padding: "5px 10px", borderTop: "1px solid var(--border)", background: "var(--bg-inset)" }}>
           <span className="mono" style={{ fontSize: 9, color: "var(--accent)", letterSpacing: "0.08em" }}>

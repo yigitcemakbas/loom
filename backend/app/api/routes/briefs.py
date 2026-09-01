@@ -23,6 +23,7 @@ def _to_out(brief) -> BriefOut:
         headline=brief.headline,
         confidence=brief.confidence,
         drivers=brief.drivers or [],
+        counterpoint=brief.counterpoint,
         what_changed=brief.what_changed,
         source_types=brief.source_types or [],
         source_labels=[SOURCE_LABELS.get(s, s) for s in (brief.source_types or [])],

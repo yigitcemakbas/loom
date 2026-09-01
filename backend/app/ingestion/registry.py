@@ -26,6 +26,7 @@ from app.ingestion.base import (
     StructuredFactDTO,
 )
 from app.ingestion.facts.earnings_calendar import EarningsCalendarAdapter
+from app.ingestion.facts.finra_short_interest import FinraShortInterestAdapter
 from app.ingestion.facts.sec_form4 import SecForm4Adapter
 from app.ingestion.news_api import FinnhubNewsAdapter
 from app.ingestion.scrapers.earnings_transcript_motley_fool import MotleyFoolTranscriptScraper
@@ -51,11 +52,12 @@ DOCUMENT_ADAPTERS: list[DocumentSourceAdapter] = [
 ]
 
 # Sources whose output is numbers rather than prose. Phase 5 continues with
-# SEC 13F and FINRA short interest; Phase 6 adds USPTO patents and Google
-# Trends. They route to FactRepository instead of BlobStore + DocumentRepository.
+# SEC 13F; Phase 6 adds USPTO patents and Google Trends. They route to
+# FactRepository instead of BlobStore + DocumentRepository.
 FACT_ADAPTERS: list[FactSourceAdapter] = [
     SecForm4Adapter(),
     EarningsCalendarAdapter(),
+    FinraShortInterestAdapter(),
 ]
 
 

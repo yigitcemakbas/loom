@@ -234,6 +234,8 @@ export interface Brief {
   headline: string;
   confidence: number;
   drivers: BriefDriver[];
+  /** The strongest finding arguing against the stance. */
+  counterpoint: BriefDriver | null;
   what_changed: string | null;
   source_types: string[];
   source_labels: string[];
