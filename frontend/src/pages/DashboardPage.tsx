@@ -2,10 +2,10 @@ import { isAxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { AddTickerForm } from "../components/watchlist/AddTickerForm";
 import { BriefCard } from "../components/brief/BriefCard";
-import { EarningsStrip } from "../components/earnings/EarningsStrip";
 import { SetupBanner } from "../components/layout/SetupBanner";
 import { TrendingCharts } from "../components/price/TrendingCharts";
 import { ScreenerTable } from "../components/dashboard/ScreenerTable";
+import { TickerTape } from "../components/tape/TickerTape";
 import { useBriefs } from "../hooks/useBriefs";
 import { useDashboard } from "../hooks/useDashboard";
 import { useLastUpdated } from "../hooks/useLastUpdated";
@@ -108,7 +108,9 @@ export function DashboardPage() {
 
       <SetupBanner />
 
-      {view === "briefs" && <EarningsStrip />}
+      {/* Above the view switch, unlike the strip it replaces: what is about to
+          happen and what just did are context for both views, not just one. */}
+      <TickerTape />
 
       {view === "data" ? (
         <ScreenerTable

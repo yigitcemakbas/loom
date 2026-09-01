@@ -56,9 +56,14 @@ interface Props {
  *  Every attribute a signal carries, direction, magnitude, horizon,
  *  confidence, priority, is a sortable column rather than a phrase buried in a
  *  sentence, which is what makes fifty findings scannable instead of a wall of
- *  text. The prose is truncated to exactly one line and never sets row height;
- *  clicking a row opens the full narrative, the verbatim evidence, and the
- *  actions beneath it. */
+ *  text.
+ *
+ *  The finding itself is clamped to two lines rather than one. One line was a
+ *  reasonable default when this table had the full page width, but on the
+ *  company page it shares the row with a 420px rail and a one-line clamp threw
+ *  away most of every summary. Two lines is still a bounded row height, so the
+ *  grid stays scannable. Clicking a row opens the full narrative, the verbatim
+ *  evidence, and the actions beneath it. */
 export function SignalTable({ signals, showTicker = true, emptyMessage }: Props) {
   const [open, setOpen] = useState<string | null>(null);
   const [noteFor, setNoteFor] = useState<string | null>(null);
@@ -123,7 +128,11 @@ export function SignalTable({ signals, showTicker = true, emptyMessage }: Props)
                 <td className="faint">{s.market_horizon ? HORIZON_LABELS[s.market_horizon] : "-"}</td>
                 <td className="num dim">{Math.round(s.confidence * 100)}</td>
                 <td className="num dim">{s.priority.toFixed(2)}</td>
-                <td className="prose">{s.summary}</td>
+                {/* title gives the untruncated text on hover, so a clamped
+                    finding can still be read without opening the row. */}
+                <td className="prose-wrap" title={s.summary}>
+                  <span>{s.summary}</span>
+                </td>
                 <td className="center faint">
                   {!s.reviewed_at && !dismissed && <span className="tag tag-accent">N</span>}
                   {s.note && <span title="annotated"> ✎</span>}

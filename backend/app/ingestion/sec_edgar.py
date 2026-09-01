@@ -36,7 +36,6 @@ accession.
 import html
 import logging
 import re
-import time
 from datetime import datetime, timezone
 
 import httpx
@@ -44,6 +43,7 @@ from selectolax.parser import HTMLParser
 
 from app.config import settings
 from app.ingestion.base import DocumentSourceAdapter, RawDocumentDTO
+from app.ingestion.rate_limit import limiter
 from app.services.company_lookup import get_company_lookup_service
 
 logger = logging.getLogger(__name__)
@@ -51,7 +51,9 @@ logger = logging.getLogger(__name__)
 _SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik10}.json"
 _ARCHIVES_BASE = "https://www.sec.gov/Archives/edgar/data"
 
-_RATE_LIMIT_SECONDS = 0.2  # ~5 req/sec, well under SEC's fair-access guidance
+# The ceiling itself now lives in ingestion/rate_limit.py, because it has to
+# hold across every adapter and every worker thread at once rather than
+# per call site.
 
 # Phase 1 form types. Phase 5 adds 'DEF 14A' (proxy statements) here too,
 # still a text document, just a new doc_subtype, no new adapter needed.
@@ -138,8 +140,9 @@ class SecEdgarAdapter(DocumentSourceAdapter):
         return documents
 
     def _fetch_submissions(self, cik10: str) -> dict | None:
-        resp = self._client.get(_SUBMISSIONS_URL.format(cik10=cik10))
-        time.sleep(_RATE_LIMIT_SECONDS)
+        url = _SUBMISSIONS_URL.format(cik10=cik10)
+        limiter.acquire(url)
+        resp = self._client.get(url)
         if resp.status_code != 200:
             logger.warning("SEC EDGAR: submissions fetch failed (%s) for CIK %s", resp.status_code, cik10)
             return None
@@ -161,8 +164,8 @@ class SecEdgarAdapter(DocumentSourceAdapter):
         cik_no_leading_zeros = str(int(cik10))
         url = f"{_ARCHIVES_BASE}/{cik_no_leading_zeros}/{accession_nodash}/{primary_doc}"
 
+        limiter.acquire(url)
         resp = self._client.get(url)
-        time.sleep(_RATE_LIMIT_SECONDS)
         if resp.status_code != 200:
             logger.warning("SEC EDGAR: document fetch failed (%s) for %s", resp.status_code, url)
             return None
@@ -210,8 +213,9 @@ class SecEdgarAdapter(DocumentSourceAdapter):
         base = f"{_ARCHIVES_BASE}/{cik_no_leading_zeros}/{accession_nodash}"
 
         try:
-            resp = self._client.get(f"{base}/{accession}-index-headers.html")
-            time.sleep(_RATE_LIMIT_SECONDS)
+            index_url = f"{base}/{accession}-index-headers.html"
+            limiter.acquire(index_url)
+            resp = self._client.get(index_url)
             if resp.status_code != 200:
                 logger.info("SEC EDGAR: no exhibit index (%s) for %s", resp.status_code, accession)
                 return ("", [], [])
@@ -246,8 +250,8 @@ class SecEdgarAdapter(DocumentSourceAdapter):
 
     def _fetch_exhibit_text(self, url: str) -> str:
         try:
+            limiter.acquire(url)
             resp = self._client.get(url)
-            time.sleep(_RATE_LIMIT_SECONDS)
         except Exception:
             logger.warning("SEC EDGAR: exhibit fetch failed for %s", url, exc_info=True)
             return ""

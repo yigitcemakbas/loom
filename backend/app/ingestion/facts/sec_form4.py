@@ -21,7 +21,6 @@ engine/fact_rules.py can weigh discretionary trades and ignore the plumbing.
 
 import hashlib
 import logging
-import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
@@ -29,13 +28,13 @@ import httpx
 
 from app.config import settings
 from app.ingestion.base import FactSourceAdapter, StructuredFactDTO
+from app.ingestion.rate_limit import limiter
 from app.services.company_lookup import get_company_lookup_service
 
 logger = logging.getLogger(__name__)
 
 _SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik10}.json"
 _ARCHIVES_BASE = "https://www.sec.gov/Archives/edgar/data"
-_RATE_LIMIT_SECONDS = 0.2
 
 # A large company files hundreds of Form 4s. Without a bound, a first ingest
 # would issue one request per filing before anything could be shown.
@@ -86,8 +85,9 @@ class SecForm4Adapter(FactSourceAdapter):
     def _recent_form4_filings(
         self, cik10: str, *, since: datetime | None
     ) -> list[tuple[str, str]]:
-        resp = self._client.get(_SUBMISSIONS_URL.format(cik10=cik10))
-        time.sleep(_RATE_LIMIT_SECONDS)
+        submissions_url = _SUBMISSIONS_URL.format(cik10=cik10)
+        limiter.acquire(submissions_url)
+        resp = self._client.get(submissions_url)
         if resp.status_code != 200:
             logger.warning("Form 4: submissions fetch failed (%s) for %s", resp.status_code, cik10)
             return []
@@ -129,8 +129,8 @@ class SecForm4Adapter(FactSourceAdapter):
         base = f"{_ARCHIVES_BASE}/{str(int(cik10))}/{accession_nodash}"
         url = f"{base}/{self._xml_filename(primary_doc)}"
 
+        limiter.acquire(url)
         resp = self._client.get(url)
-        time.sleep(_RATE_LIMIT_SECONDS)
         if resp.status_code != 200:
             logger.info("Form 4: document fetch returned %s for %s", resp.status_code, url)
             return []

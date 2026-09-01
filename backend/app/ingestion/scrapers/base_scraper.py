@@ -10,7 +10,10 @@ and a nuisance:
    exists is an override that eventually gets used.
 2. **One request per domain at a time, spaced.** Rate limiting is keyed by
    domain rather than by scraper, so two scrapers pointed at the same host
-   still cooperate.
+   still cooperate. It is delegated to `ingestion/rate_limit.py` so that
+   scrapers and the SEC adapters share one view of how busy this process is
+   being; a per-scraper limiter would have each source politely pacing itself
+   while the process as a whole was not.
 3. **The User-Agent identifies this tool honestly.** It never impersonates a
    browser. If a site wants to block Loom it must be able to, spoofing Chrome
    to evade a block is exactly the behaviour robots.txt exists to prevent.
@@ -29,12 +32,14 @@ from urllib.robotparser import RobotFileParser
 import httpx
 
 from app.config import settings
+from app.ingestion.rate_limit import DEFAULT_INTERVAL_SECONDS, limiter, set_interval
 
 logger = logging.getLogger(__name__)
 
 # Politeness gap between two requests to the same domain. Deliberately well
 # above what the sites involved require: nothing here is latency-sensitive.
-DEFAULT_REQUEST_INTERVAL_SECONDS = 1.5
+# The value now lives with the limiter, since it is one process-wide budget.
+DEFAULT_REQUEST_INTERVAL_SECONDS = DEFAULT_INTERVAL_SECONDS
 
 # robots.txt rarely changes; re-fetching it per request would itself be the
 # kind of traffic it is meant to limit.
@@ -115,20 +120,28 @@ class BaseScraper:
             timeout=30.0,
             follow_redirects=True,
         )
-        self._last_request_at: dict[str, float] = {}
-        self._lock = threading.Lock()
+        self._interval_registered = False
 
     def _throttle(self, url: str) -> None:
-        domain = urlparse(url).netloc
-        with self._lock:
-            last = self._last_request_at.get(domain)
-            now = time.monotonic()
-            if last is not None:
-                wait = self.request_interval - (now - last)
-                if wait > 0:
-                    time.sleep(wait)
-                    now = time.monotonic()
-            self._last_request_at[domain] = now
+        """Wait for this domain's turn.
+
+        The bookkeeping deliberately lives in the shared limiter rather than
+        here. The previous version kept a per-instance dict guarded by a lock
+        it held *while sleeping*, which was correct while ingestion was a
+        single sequential loop and became the dominant bottleneck the moment it
+        was not: every worker thread queued on that one lock, so a wait for
+        one domain blocked requests to every other domain, and concurrency
+        bought nothing.
+        """
+        if not self._interval_registered:
+            # Registered on first use rather than in __init__, so a scraper
+            # constructed but never run does not claim a budget, and so a
+            # scraper that wants a slower cadence than the default gets it.
+            if self.request_interval != DEFAULT_REQUEST_INTERVAL_SECONDS:
+                set_interval(url, self.request_interval)
+            self._interval_registered = True
+
+        limiter.acquire(url)
 
     def fetch_html(self, url: str) -> str | None:
         """Fetch one URL, or None if robots.txt forbids it or the request fails.

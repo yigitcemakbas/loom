@@ -9,12 +9,14 @@ and the "add ticker" flow share one lookup instead of duplicating it.
 """
 
 import logging
+import threading
 from dataclasses import dataclass
 from functools import lru_cache
 
 import httpx
 
 from app.config import settings
+from app.ingestion.rate_limit import limiter
 
 logger = logging.getLogger(__name__)
 
@@ -39,9 +41,24 @@ class CompanyLookupService:
             headers={"User-Agent": settings.sec_edgar_user_agent}, timeout=30.0
         )
         self._cache: dict[str, CompanyInfo] | None = None
+        # This service is a process-wide singleton and ingestion now runs
+        # tickers concurrently, so the lazy load is a race: without the lock
+        # every worker sees an empty cache at once and each downloads the same
+        # megabyte of ticker directory, which is both wasteful and the fastest
+        # way to earn a rate-limit block on the very first request of a run.
+        self._load_lock = threading.Lock()
 
     def _ensure_loaded(self) -> dict[str, CompanyInfo]:
-        if self._cache is None:
+        if self._cache is not None:
+            return self._cache
+
+        with self._load_lock:
+            # Re-checked inside the lock: the thread that waited here has
+            # nothing left to fetch.
+            if self._cache is not None:
+                return self._cache
+
+            limiter.acquire(_TICKER_LOOKUP_URL)
             resp = self._client.get(_TICKER_LOOKUP_URL)
             resp.raise_for_status()
             data = resp.json()

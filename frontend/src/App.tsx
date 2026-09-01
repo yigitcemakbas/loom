@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Sidebar } from "./components/layout/Sidebar";
+import { StaleBuildNotice } from "./components/layout/StaleBuildNotice";
 import { TopBar } from "./components/layout/TopBar";
 import { CompanyDetailPage } from "./pages/CompanyDetailPage";
 import { DashboardPage } from "./pages/DashboardPage";
@@ -15,6 +16,7 @@ function App() {
       <TopBar />
       <Sidebar />
       <main className="main-content">
+        <StaleBuildNotice />
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/signals" element={<SignalFeedPage />} />

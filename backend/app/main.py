@@ -14,6 +14,7 @@ from app.api.routes import (
     facts,
     signals,
     status,
+    tape,
     watchlists,
 )
 from app.scheduling.scheduler import shutdown_scheduler, start_scheduler
@@ -57,6 +58,7 @@ app.include_router(facts.router)
 app.include_router(briefs.router)
 app.include_router(earnings.router)
 app.include_router(prices.router)
+app.include_router(tape.router)
 
 
 @app.get("/health")

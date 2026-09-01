@@ -279,3 +279,21 @@ export interface PriceSeries {
   change: number | null;
   change_percent: number | null;
 }
+
+export type TapeKind = "earnings" | "news";
+export type TapeTone = "urgent" | "accent" | "positive" | "negative" | "neutral";
+
+/** One entry on the dashboard's running feed. Earnings items carry a `detail`
+ *  built by the backend (date, consensus, last realised move, positioning);
+ *  news items carry an `href` to the original story. */
+export interface TapeItem {
+  kind: TapeKind;
+  ticker: string;
+  label: string;
+  headline: string;
+  detail: string | null;
+  tone: TapeTone;
+  occurred_at: string | null;
+  href: string | null;
+  sources: string[];
+}

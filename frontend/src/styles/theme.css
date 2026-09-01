@@ -151,6 +151,19 @@ button, select, input, textarea {
 .grid-side-main { grid-template-columns: 330px minmax(0, 1fr); }
 .stack { display: grid; gap: 8px; }
 
+/* Grid items default to `min-width: auto`, meaning they refuse to shrink below
+   their own minimum content width. A panel holding a data table of nowrap
+   cells therefore grows past the column it was placed in and slides underneath
+   the next one: on the company page the signals table ran a full 300px under
+   the price chart and the short interest panel, and a reader saw findings
+   disappear behind a graph.
+
+   Sizing the track with `minmax(0, 1fr)` is necessary but not sufficient. The
+   track is then the right width and the item inside it still overflows, so the
+   item has to be allowed to shrink as well. With both in place the truncation
+   in `td.prose` finally has a width to truncate against. */
+.grid > *, .stack > * { min-width: 0; }
+
 @media (max-width: 1250px) {
   .grid-2, .grid-3, .grid-main-side, .grid-side-main { grid-template-columns: 1fr; }
 }
@@ -270,6 +283,40 @@ td.prose {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* The finding is the one column whose content is genuinely variable and
+   actually worth reading, so it gets two lines where the rest of the grid
+   holds one. Clamping beats truncating here: a summary that nearly fits is
+   shown whole rather than losing its last few words to an ellipsis.
+
+   The clamp lives on an inner span, not the cell. `display: -webkit-box` on a
+   `td` takes it out of the table formatting context, which collapses the
+   column widths the rest of this grid depends on. */
+/* Selector deliberately matches the reach of `table.data-table tbody td`
+   above. Written as a bare `td.prose-wrap` it loses on specificity, and the
+   fixed row height and nowrap from that rule silently win: the clamp is
+   applied, the cell stays 22px tall, and the second line is simply cut off. */
+table.data-table tbody td.prose-wrap {
+  max-width: 0;
+  width: 100%;
+  height: auto;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-family: var(--font-sans);
+  color: var(--text-dim);
+  white-space: normal;
+}
+
+table.data-table tbody td.prose-wrap > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  /* Long unbroken tokens (tickers, URLs, model identifiers) must wrap rather
+     than force the column wider, which is the overflow above in miniature. */
+  overflow-wrap: anywhere;
 }
 
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
@@ -567,4 +614,125 @@ tr.detail-row > td {
 
 @media (prefers-reduced-motion: reduce) {
   .chart-slide-next, .chart-slide-prev { animation: none; }
+}
+
+/* ---- ticker tape ------------------------------------------------------- */
+
+.tape {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+/* The label is pinned outside the moving area. A legend that scrolls away is
+   a legend that is absent exactly when a reader looks up to ask what they are
+   looking at. */
+.tape-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 0 auto;
+  padding: 0 10px;
+  border-right: 1px solid var(--border);
+  background: var(--bg-inset);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  z-index: 2;
+}
+
+.tape-viewport {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+/* Fades the strip into the panel edges so items appear and leave rather than
+   being sliced off by a hard border. */
+.tape-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to right,
+    var(--bg-panel) 0,
+    transparent 24px,
+    transparent calc(100% - 24px),
+    var(--bg-panel) 100%
+  );
+}
+
+.tape-track {
+  display: flex;
+  width: max-content;
+  animation: tape-scroll linear infinite;
+}
+
+/* Hovering is how a reader says "wait, I want to read that one". */
+.tape:hover .tape-track,
+.tape:focus-within .tape-track {
+  animation-play-state: paused;
+}
+
+@keyframes tape-scroll {
+  from { transform: translateX(0); }
+  /* The track holds the item list twice, so half a track is one full cycle
+     and the seam is never visible. */
+  to   { transform: translateX(-50%); }
+}
+
+.tape-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 6px 14px;
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.tape-item:hover { background: var(--bg-hover); }
+
+.tape-chip {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  padding: 1px 5px;
+  border: 1px solid var(--border-strong);
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.tape-chip-urgent {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #14100a;
+  font-weight: 600;
+}
+.tape-chip-accent { border-color: var(--accent-dim); color: var(--accent); }
+.tape-chip-positive { border-color: var(--positive-dim); color: var(--positive); }
+.tape-chip-negative { border-color: var(--negative-dim); color: var(--negative); }
+
+.tape-detail { color: var(--text-dim); }
+.tape-time { color: var(--text-faint); font-size: 10px; }
+
+/* A strip that moves on its own is exactly the pattern that triggers motion
+   sensitivity, and it carries real information, so it must stay readable
+   without the motion rather than simply stopping. */
+@media (prefers-reduced-motion: reduce) {
+  .tape-track {
+    animation: none;
+    width: auto;
+  }
+  .tape-viewport {
+    overflow-x: auto;
+  }
+  .tape-viewport::after { display: none; }
 }

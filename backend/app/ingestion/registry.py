@@ -5,6 +5,10 @@ Adding a new source means: write a `DocumentSourceAdapter` or
 else in the codebase needs to change, this is the concrete payoff of
 the adapter pattern described in docs/plan.md.
 
+`ingest_all` runs every adapter for one ticker; `ingest_many` runs several
+tickers concurrently and is what the scheduler uses. Both share the same
+per-adapter logic, so a new source is parallelised the moment it is registered.
+
 `ingest_all` is the one place that knows how to route each adapter's
 output to storage: RawDocumentDTOs go through BlobStore + DocumentRepository,
 StructuredFactDTOs (Phase 5+) go through FactRepository. Individual adapters
@@ -13,12 +17,16 @@ never touch either.
 
 import hashlib
 import logging
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
 import json
 
+from app.config import settings
+from app.db.session import SessionLocal
 from app.ingestion.base import (
     DocumentSourceAdapter,
     FactSourceAdapter,
@@ -222,3 +230,97 @@ def ingest_all(ticker: str, db: Session, since: datetime | None = None) -> dict[
         )
 
     return results
+
+
+@dataclass
+class TickerIngestResult:
+    """One ticker's outcome from a batch run.
+
+    `error` is a string rather than an exception because it crosses a thread
+    boundary and ends up in a log line or an API response, and because the
+    caller's only decision is whether to report it.
+    """
+
+    ticker: str
+    counts: dict[str, int]
+    error: str | None = None
+
+    @property
+    def ok(self) -> bool:
+        return self.error is None
+
+    @property
+    def total_new(self) -> int:
+        return sum(self.counts.values())
+
+
+def _ingest_one(ticker: str, since: datetime | None) -> TickerIngestResult:
+    """Ingest one ticker on its own session.
+
+    Opening the session here rather than accepting one is the whole reason this
+    is safe to run in a thread. A SQLAlchemy Session is not thread-safe and
+    holds a single connection, so sharing one across workers corrupts its
+    identity map and serialises every write behind one connection anyway.
+    """
+    db = SessionLocal()
+    try:
+        return TickerIngestResult(ticker=ticker, counts=ingest_all(ticker, db, since=since))
+    except Exception as exc:
+        # Isolated on purpose: one company's source being down, or its ticker
+        # having been delisted, must not cost the rest of the batch.
+        logger.exception("Ingestion failed for %s", ticker)
+        return TickerIngestResult(ticker=ticker, counts={}, error=f"{type(exc).__name__}: {exc}")
+    finally:
+        db.close()
+
+
+def ingest_many(
+    tickers: list[str],
+    *,
+    since: datetime | None = None,
+    max_workers: int | None = None,
+) -> list[TickerIngestResult]:
+    """Ingest several tickers concurrently, one worker per ticker in flight.
+
+    Ingestion is IO-bound almost to the exclusion of everything else: a run is
+    spent waiting on SEC, Finnhub and a transcript site, and the parsing
+    between waits is trivial. Threads therefore win despite the GIL, and win by
+    roughly the factor that the slowest host is idle.
+
+    What makes this safe is not the executor, it is the two things underneath
+    it. Every worker gets its own database session, and every outbound request
+    passes through the process-wide limiter in ingestion/rate_limit.py, so
+    concurrency here changes how requests to *different* hosts overlap without
+    changing how fast any single host is asked. Raising `max_workers` past the
+    point where SEC is saturated buys nothing, which is why the default is
+    deliberately small.
+
+    Results come back in the order tickers were given, not the order they
+    finished, so a caller's log reads the same way twice.
+    """
+    if not tickers:
+        return []
+
+    workers = max_workers if max_workers is not None else settings.ingest_max_workers
+    workers = max(1, min(workers, len(tickers)))
+
+    if workers == 1:
+        return [_ingest_one(ticker, since) for ticker in tickers]
+
+    results: dict[str, TickerIngestResult] = {}
+    with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="ingest") as pool:
+        futures = {pool.submit(_ingest_one, ticker, since): ticker for ticker in tickers}
+        for future in as_completed(futures):
+            ticker = futures[future]
+            # _ingest_one catches everything it can, so a raise here is the
+            # executor itself failing and is worth surfacing rather than
+            # silently dropping a ticker from the results.
+            try:
+                results[ticker] = future.result()
+            except Exception as exc:
+                logger.exception("Ingestion worker crashed for %s", ticker)
+                results[ticker] = TickerIngestResult(
+                    ticker=ticker, counts={}, error=f"{type(exc).__name__}: {exc}"
+                )
+
+    return [results[ticker] for ticker in tickers]

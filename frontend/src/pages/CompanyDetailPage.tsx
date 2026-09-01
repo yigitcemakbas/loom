@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ActivityPanel } from "../components/company/ActivityPanel";
+import { ShortInterestPanel } from "../components/company/ShortInterestPanel";
 import { BriefCard } from "../components/brief/BriefCard";
 import { CompanyPricePanel } from "../components/price/CompanyPricePanel";
 import { SentimentTrendChart } from "../components/company/SentimentTrendChart";
@@ -157,14 +158,21 @@ export function CompanyDetailPage() {
         <div className="stack">
           <CompanyPricePanel ticker={company.ticker} />
 
+          {/* Filed facts first, model-derived tone last. Insider trades and
+              short interest are things that happened and are checkable; the
+              tone line is a reading of language. Ordering them the other way
+              also pushed both fact panels below the fold, which is a strange
+              way to treat the only numbers on the page nobody had to infer. */}
+          <ActivityPanel ticker={ticker ?? ""} />
+
+          <ShortInterestPanel ticker={ticker ?? ""} />
+
           <div className="panel">
             <div className="panel-head"><span className="panel-title">Management tone</span></div>
             <div className="panel-body">
               <SentimentTrendChart points={sentiment ?? []} />
             </div>
           </div>
-
-          <ActivityPanel ticker={ticker ?? ""} />
         </div>
       </div>
     </div>

@@ -66,6 +66,15 @@ class Settings(BaseSettings):
     # with a full ingest for the same network and database.
     scheduler_startup_delay_seconds: int = 120
 
+    # How many tickers are ingested at once. Ingestion is almost entirely spent
+    # waiting on other people's servers, so threads (not processes) are the
+    # right tool and the useful ceiling is set by politeness rather than by
+    # this machine. The shared limiter in ingestion/rate_limit.py holds the
+    # per-host request rate constant no matter what this is set to, so raising
+    # it buys overlap across *different* hosts and deeper queueing on the same
+    # one, never a higher rate at SEC. Set 1 to restore fully sequential runs.
+    ingest_max_workers: int = 4
+
     # Which LLM backs the analysis engine: "gemini" (free tier) or
     # "anthropic" (paid). Only the selected provider's key is needed.
     llm_provider: str = "gemini"

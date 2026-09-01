@@ -5,18 +5,20 @@ finished (and its request-scoped session closed).
 
 `run_initial_ingest` is called as a FastAPI BackgroundTask right after a
 brand-new ticker is added to a watchlist, so filings start appearing without
-any manual CLI step. `run_scheduled_refresh` (Phase 3) runs the same
-`ingest_all` + analysis over every watchlist ticker on a timer. One code path,
-several triggers, which is why adding the scheduler needed no new ingestion
-logic at all.
+any manual CLI step. `run_scheduled_refresh` (Phase 3) covers the whole
+watchlist on a timer, ingesting tickers concurrently and then analysing them
+one at a time. One set of adapters, several triggers, which is why adding the
+scheduler needed no new ingestion logic at all.
 """
 
 import logging
+import time
 
+from app.config import settings
 from app.db.session import SessionLocal
 from app.engine.pipeline import analyze_company_recent
 from app.engine.llm_client import LLMUnavailableError
-from app.ingestion.registry import ingest_all
+from app.ingestion.registry import ingest_all, ingest_many
 from app.repositories.watchlist_repository import WatchlistRepository
 
 logger = logging.getLogger(__name__)
@@ -62,11 +64,23 @@ def run_analysis(ticker: str, force: bool = False) -> None:
 def run_scheduled_refresh() -> None:
     """Re-ingest and re-analyse every ticker on the watchlist.
 
-    Each ticker is isolated: one company's source going down, or its analysis
-    hitting a provider limit, must not stop the rest of the watchlist from
-    refreshing. Quota exhaustion is the one case that stops the pass early,
-    because it will apply equally to every remaining ticker and continuing
-    would just log the same failure N more times.
+    The two phases are deliberately different shapes.
+
+    Ingestion runs concurrently. It is pure IO against several unrelated hosts,
+    and the shared limiter in ingestion/rate_limit.py keeps the per-host rate
+    fixed regardless of worker count, so overlapping tickers costs nothing in
+    politeness and saves the sum of everybody's waiting.
+
+    Analysis stays sequential, and not by oversight. The LLM client paces its
+    own calls to stay inside a free-tier quota, so parallel analysis would
+    queue behind that same pacing and finish no sooner while making the quota
+    accounting harder to reason about. Running it after all ingestion, rather
+    than interleaved per ticker, also means a slow filing download no longer
+    delays analysis of a company whose documents are already stored.
+
+    Each ticker is isolated in both phases. Quota exhaustion is the one failure
+    that stops the pass early, because it applies equally to every remaining
+    ticker and continuing would only log the same failure N more times.
     """
     db = SessionLocal()
     try:
@@ -84,17 +98,33 @@ def run_scheduled_refresh() -> None:
         logger.info("Scheduled refresh: watchlist is empty, nothing to do.")
         return
 
-    logger.info("Scheduled refresh starting for %d tickers.", len(tickers))
-    for ticker in tickers:
-        session = SessionLocal()
-        try:
-            results = ingest_all(ticker, session)
-            logger.info("Scheduled ingest for %s: %s", ticker, results)
-        except Exception:
-            logger.exception("Scheduled ingest failed for %s", ticker)
-        finally:
-            session.close()
+    logger.info(
+        "Scheduled refresh starting for %d tickers, %d at a time.",
+        len(tickers),
+        settings.ingest_max_workers,
+    )
 
+    started = time.monotonic()
+    results = ingest_many(tickers)
+    elapsed = time.monotonic() - started
+
+    for result in results:
+        if result.ok:
+            logger.info("Scheduled ingest for %s: %s", result.ticker, result.counts)
+        else:
+            logger.warning("Scheduled ingest failed for %s: %s", result.ticker, result.error)
+
+    new_items = sum(result.total_new for result in results)
+    failed = [result.ticker for result in results if not result.ok]
+    logger.info(
+        "Ingestion complete in %.1fs: %d new items across %d tickers, %d failed.",
+        elapsed,
+        new_items,
+        len(results),
+        len(failed),
+    )
+
+    for ticker in tickers:
         try:
             analysis_session = SessionLocal()
             try:

@@ -146,13 +146,25 @@ def build_context(series: PriceSeries | None) -> MarketContext | None:
     )
 
 
-def reaction_since(series: PriceSeries | None, occurred_at: datetime) -> PriceReaction | None:
+def reaction_since(
+    series: PriceSeries | None,
+    occurred_at: datetime,
+    *,
+    sessions: int = REACTION_SESSIONS,
+) -> PriceReaction | None:
     """How the price moved in the sessions after a finding was disclosed.
 
     This is the context that decides whether a finding is news or history. A
     risk disclosed three weeks ago, after which the stock fell twelve percent,
     is largely reflected in the price. The same risk disclosed yesterday, with
     the price unmoved, is not.
+
+    `sessions` is adjustable because the right window depends on the event. A
+    disclosure buried in a filing takes days to be read and priced, which is
+    what the default covers. An earnings print is different: it is scheduled,
+    everyone is watching, and the move happens on the next open. Measuring that
+    over ten sessions would blend the reaction into a fortnight of unrelated
+    drift and call the mixture a reaction.
     """
     if series is None or len(series.points) < 2:
         return None
@@ -165,7 +177,7 @@ def reaction_since(series: PriceSeries | None, occurred_at: datetime) -> PriceRe
         return None
 
     start = at_or_after[0].c
-    window = at_or_after[: REACTION_SESSIONS + 1]
+    window = at_or_after[: sessions + 1]
     end = window[-1].c
     if not start:
         return None

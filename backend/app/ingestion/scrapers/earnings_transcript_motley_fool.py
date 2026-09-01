@@ -15,8 +15,11 @@ published that month. Transcript URLs carry the ticker and date in the slug:
 So one sitemap fetch per month yields (ticker, date, url) for every transcript
 that month, and only the URLs matching the requested ticker are then fetched.
 The parsed index is cached on the instance, which matters because ingestion
-runs ticker by ticker: without it, a ten-ticker run would pull the same
-sitemaps ten times over.
+runs many tickers against one scraper: without it, a ten-ticker run would pull
+the same sitemaps ten times over. The cache is built under a lock, because
+concurrent ingestion reintroduces that exact waste in a harder-to-see form,
+every worker finding the cache empty at the same moment and fetching the whole
+sitemap set in parallel.
 
 **Politeness** is inherited wholesale from BaseScraper: robots.txt is checked
 before every request including the sitemaps, requests to the domain are spaced,
@@ -25,6 +28,7 @@ and the User-Agent identifies Loom rather than impersonating a browser.
 
 import logging
 import re
+import threading
 from datetime import datetime, timezone
 
 from selectolax.parser import HTMLParser
@@ -64,6 +68,7 @@ class MotleyFoolTranscriptScraper(BaseScraper, DocumentSourceAdapter):
         super().__init__(**kwargs)
         self.lookback_months = lookback_months
         self._index: dict[str, list[dict]] | None = None
+        self._index_lock = threading.Lock()
 
     def fetch(self, ticker: str, since: datetime | None = None) -> list[RawDocumentDTO]:
         index = self._transcript_index()
@@ -84,10 +89,26 @@ class MotleyFoolTranscriptScraper(BaseScraper, DocumentSourceAdapter):
     # ---- discovery -----------------------------------------------------
 
     def _transcript_index(self) -> dict[str, list[dict]]:
-        """Ticker -> transcript entries, newest first. Built once per instance."""
+        """Ticker -> transcript entries, newest first. Built once per instance.
+
+        The lock is what makes "once" true when tickers are ingested
+        concurrently. Without it every worker starts with `self._index` still
+        None and fetches the full set of monthly sitemaps itself, which for
+        eight months and eight workers is sixty-four requests to one domain to
+        obtain one index. Since those requests are also correctly rate limited,
+        the redundant work does not merely waste bandwidth, it becomes the
+        slowest part of the entire run.
+        """
         if self._index is not None:
             return self._index
 
+        with self._index_lock:
+            # Whoever waited here has nothing left to fetch.
+            if self._index is not None:
+                return self._index
+            return self._build_index()
+
+    def _build_index(self) -> dict[str, list[dict]]:
         index: dict[str, list[dict]] = {}
         for year, month in self._months_to_scan():
             xml = self.fetch_html(_SITEMAP_URL.format(year=year, month=month))

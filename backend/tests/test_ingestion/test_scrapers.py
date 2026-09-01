@@ -126,3 +126,39 @@ def test_stub_pages_are_rejected():
 
 def test_page_without_a_transcript_container_is_rejected():
     assert MotleyFoolTranscriptScraper._extract_transcript("<html><body><p>x</p></body></html>") is None
+
+
+def test_transcript_index_is_built_once_under_concurrency():
+    """Concurrent ingestion made every worker find the cache empty at the same
+    moment and fetch the whole sitemap set itself: eight months times eight
+    workers, sixty-four requests to build one index, which became the slowest
+    part of a run because those requests are also correctly rate limited.
+    """
+    import threading
+
+    from app.ingestion.scrapers.earnings_transcript_motley_fool import (
+        MotleyFoolTranscriptScraper,
+    )
+
+    scraper = MotleyFoolTranscriptScraper(lookback_months=3)
+    fetched: list[str] = []
+    gate = threading.Barrier(6, timeout=5)
+
+    def fake_fetch(url: str):
+        fetched.append(url)
+        return None
+
+    scraper.fetch_html = fake_fetch
+
+    def worker():
+        gate.wait()
+        scraper._transcript_index()
+
+    threads = [threading.Thread(target=worker) for _ in range(6)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+
+    # Three months scanned, once, no matter how many workers asked at once.
+    assert len(fetched) == 3
