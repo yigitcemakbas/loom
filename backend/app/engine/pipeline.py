@@ -29,6 +29,9 @@ from app.repositories.signal_repository import SignalRepository
 from app.repositories.usage_repository import UsageRepository
 from app.storage.blob_store import get_blob_store
 
+from app.engine.statistics.features import EvidenceFeature
+from app.engine.statistics.engine import evaluate_evidence
+
 logger = logging.getLogger(__name__)
 
 # "Recent" scope: what gets analysed automatically. Everything older is
@@ -425,6 +428,26 @@ def regenerate_brief(ticker: str, db: Session):
     previous = brief_repo.latest_for(company.id)
     signals = SignalRepository(db).list_feed(company_id=company.id, limit=500)
 
+    # --- NEW SHADOW RUN ---
+    logger.info(f"--- RUNNING NEW STATS ENGINE FOR {ticker} ---")
+    for sig in signals:
+        feature = EvidenceFeature(
+            signal_id=str(sig.id),
+            signal_type=sig.signal_type.value,
+            direction=1.0 if sig.market_direction == "positive" else (
+                -1.0 if sig.market_direction == "negative" else 0.0),
+            confidence=sig.confidence or 0.0,
+            occurred_at=sig.occurred_at,
+            magnitude=2.0 if sig.market_magnitude == "major" else (0.5 if sig.market_magnitude == "minor" else 1.0),
+            sentiment=sig.sentiment_score
+        )
+
+        score = evaluate_evidence(feature, str(company.id), SignalRepository(db))
+        logger.info(
+            f"Signal: {feature.signal_type} | Old Priority: {sig.priority} | New Z-Score: {score.z_score:.2f} | Anomalous: {score.is_anomalous}")
+    # --- END SHADOW RUN ---
+
+    # EVERYTHING BELOW HERE IS ORIGINAL CODE
     result = brief_engine.build_brief(
         signals,
         previous_generated_at=previous.generated_at if previous else None,
