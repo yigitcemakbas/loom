@@ -26,6 +26,71 @@ class SignalRepository:
     def get_by_id(self, signal_id: uuid.UUID) -> Signal | None:
         return self.db.get(Signal, signal_id)
 
+    def list_for_baseline(
+        self,
+        *,
+        company_id: uuid.UUID,
+        signal_type: SignalType | None = None,
+        since: datetime,
+        until: datetime | None = None,
+        exclude_signal_id: uuid.UUID | None = None,
+        limit: int = 1000,
+    ) -> list[Signal]:
+        """Signals in a window, oldest first, for computing a statistical baseline.
+
+        Separate from `list_feed` on purpose, because the feed is a ranked
+        product surface and this is a sample. Three of its behaviours are wrong
+        here:
+
+          * it orders by `priority DESC`, so applying a limit keeps the
+            highest-priority rows. A baseline built from the most extreme
+            observations available is not a description of what is normal;
+          * it hides dismissed signals. Dismissing a finding is a statement
+            about what the reader wants to see, not a claim the finding never
+            happened, so the history still contains it;
+          * it has no upper bound, and a baseline must be able to end before
+            the observation it is going to judge.
+
+        `exclude_signal_id` keeps the signal under evaluation out of its own
+        baseline. Without it an observation contributes to the mean and spread
+        it is then measured against, which at these sample sizes drags every
+        result toward the middle.
+        """
+        stmt = select(Signal).where(
+            Signal.company_id == company_id,
+            Signal.occurred_at >= since,
+        )
+        if signal_type is not None:
+            stmt = stmt.where(Signal.signal_type == signal_type)
+        if until is not None:
+            stmt = stmt.where(Signal.occurred_at < until)
+        if exclude_signal_id is not None:
+            stmt = stmt.where(Signal.id != exclude_signal_id)
+        stmt = stmt.order_by(Signal.occurred_at.asc()).limit(limit)
+        return list(self.db.execute(stmt).scalars().all())
+
+    def list_for_global_prior(
+        self,
+        *,
+        signal_type: SignalType | None = None,
+        since: datetime,
+        until: datetime | None = None,
+        limit: int = 5000,
+    ) -> list[Signal]:
+        """The same window across every company, for the cross-company prior.
+
+        Most companies have too little history of any one signal type to
+        estimate a rate from alone, so the population supplies what the
+        individual cannot. See `statistics.shrunk_rate`.
+        """
+        stmt = select(Signal).where(Signal.occurred_at >= since)
+        if signal_type is not None:
+            stmt = stmt.where(Signal.signal_type == signal_type)
+        if until is not None:
+            stmt = stmt.where(Signal.occurred_at < until)
+        stmt = stmt.order_by(Signal.occurred_at.asc()).limit(limit)
+        return list(self.db.execute(stmt).scalars().all())
+
     def list_feed(
         self,
         *,

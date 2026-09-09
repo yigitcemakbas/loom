@@ -1,97 +1,148 @@
 """Historical baseline computation for evidence scoring.
 
-This module acts as the bridge between the database (SignalRepository)
-and our pure mathematical functions. It extracts a specific numerical
-metric from a company's past signals so we know what "normal" looks like.
+Bridges the repository and the pure math functions: it reads a company's past
+signals and describes what "normal" has looked like for them.
+
+The baseline is a **table of category rates**, not a mean and a standard
+deviation. Magnitude takes exactly three values, so a mean of 1.4 describes no
+finding that can actually occur, and a standard deviation of it invites a
+z-score whose "two sigma is the 95th percentile" reading depends on a normal
+distribution that a three-valued variable cannot have. Counting how often each
+label occurs makes no distributional assumption at all.
 """
 
-from dataclasses import dataclass
+from collections import Counter
+from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from typing import Callable, Optional, Sequence
 
-# Importing the database models and the repository that fetches them
-from app.models.signal import Signal, SignalType
+from app.engine.statistics.features import MAGNITUDE_LABELS
+from app.engine.statistics.statistics import shrunk_rate
+from app.models.signal import SignalType
 from app.repositories.signal_repository import SignalRepository
 
-# Importing the pure math functions we just wrote
-from app.engine.statistics.statistics import (
-    calculate_mean,
-    calculate_variance,
-    calculate_standard_deviation
-)
+# How far back "normal" is drawn from. A year rather than a quarter: magnitude
+# is assigned from disclosures that arrive on a roughly quarterly cadence, so 90
+# days is about one filing cycle and yields too few assessed findings to
+# estimate a rate from. Measured over the stored corpus, a 90-day window leaves
+# 5 company/signal-type pairs with enough history and a 365-day window leaves
+# 10, for the same statistical bar.
+DEFAULT_DAYS_BACK = 365
+
+# Below this many observations a company's own rates are not reported as its
+# baseline at all. Shrinkage already keeps a thin sample from producing a
+# confident answer, but a hard floor stops the engine claiming to describe a
+# company it has essentially never seen.
+MIN_SAMPLES = 10
+
+# Pseudo-observations behind the cross-company prior. At this weight a company
+# needs roughly its own MIN_SAMPLES of history before its rates outweigh the
+# population's, which is the intended crossover.
+PRIOR_WEIGHT = 10.0
 
 
 @dataclass
-class SignalBaseline:
-    """The mathematical baseline for a specific type of signal.
+class CategoryBaseline:
+    """How often each label has occurred, for one company and signal type."""
 
-    Instead of returning a loose tuple of numbers, we pack the results
-    into this strictly typed data structure so the engine knows exactly
-    what it is looking at.
-    """
     signal_type: SignalType
-    metric_name: str
-    mean: float
-    standard_deviation: float
+    counts: dict[str, int]
     sample_size: int
+    # Rates after shrinkage toward the population. These are the numbers to
+    # reason with; `counts` is kept so a conclusion can be audited.
+    rates: dict[str, float] = field(default_factory=dict)
+    # The population rates this baseline was shrunk toward.
+    prior_rates: dict[str, float] = field(default_factory=dict)
+
+    def rate_for(self, label: str) -> Optional[float]:
+        return self.rates.get(label)
 
 
-def get_historical_baseline(
-        company_id: str,
-        signal_type: SignalType,
-        metric_name: str,
-        repository: SignalRepository,
-        days_back: int = 90
-) -> SignalBaseline | None:
-    """Fetches historical signals and computes the baseline for a metric.
+def count_labels(signals: Sequence, extractor: Callable[[object], Optional[str]]) -> Counter:
+    """Tally labels, skipping observations the extractor declines to score.
 
-    Args:
-        company_id: The UUID of the company.
-        signal_type: The kind of signal (e.g., SENTIMENT_SHIFT).
-        metric_name: The attribute to measure (e.g., 'sentiment_score').
-        repository: The database access object.
-        days_back: How far back to look to establish "normal".
-
-    Returns:
-        A SignalBaseline object, or None if there isn't enough history to
-        form a mathematically valid baseline.
+    The extractor returns None for a signal that was never assessed, and such a
+    signal is *absent* from the tally rather than counted as some default. Just
+    under half the stored corpus is unassessed, so defaulting them would bury
+    the real distribution under one synthetic value.
     """
-    # 1. Define the time window (anchored to UTC to avoid timezone bugs)
-    cutoff_date = datetime.now(timezone.utc) - timedelta(days=days_back)
+    counts: Counter = Counter()
+    for signal in signals:
+        label = extractor(signal)
+        if label is not None:
+            counts[label] += 1
+    return counts
 
-    # 2. Fetch the raw signals from the database
-    # We use a high limit to ensure we capture the full historical distribution.
-    historical_signals = repository.list_feed(
-        company_id=company_id,
+
+def _rates(counts: Counter, total: int, labels: Sequence[str]) -> dict[str, float]:
+    if total <= 0:
+        return {label: 0.0 for label in labels}
+    return {label: counts.get(label, 0) / total for label in labels}
+
+
+def get_population_rates(
+    signal_type: SignalType,
+    repository: SignalRepository,
+    *,
+    as_of: datetime,
+    extractor: Callable[[object], Optional[str]],
+    labels: Sequence[str] = MAGNITUDE_LABELS,
+    days_back: int = DEFAULT_DAYS_BACK,
+) -> dict[str, float]:
+    """Label rates across every company, used as the prior.
+
+    A uniform prior would be a worse guess than the data plainly supports: if
+    only 8% of all findings are ever "major", assuming a third of them are
+    makes every company look unusually calm.
+    """
+    signals = repository.list_for_global_prior(
         signal_type=signal_type,
-        since=cutoff_date,
-        limit=500
+        since=as_of - timedelta(days=days_back),
+        until=as_of,
     )
+    counts = count_labels(signals, extractor)
+    total = sum(counts.values())
+    if total == 0:
+        # Nothing to learn from; fall back to a flat prior rather than
+        # dividing by zero or asserting rates of zero.
+        return {label: 1.0 / len(labels) for label in labels}
+    return _rates(counts, total, labels)
 
-    # 3. Extract the specific numerical values we want to measure
-    values = []
-    for signal in historical_signals:
-        # getattr dynamically fetches a property by its string name.
-        # If metric_name is "confidence", this gets signal.confidence.
-        val = getattr(signal, metric_name, None)
 
-        # We strictly verify it is a number before trusting it.
-        if isinstance(val, (int, float)):
-            values.append(float(val))
+def build_baseline(
+    counts: Counter,
+    signal_type: SignalType,
+    prior_rates: dict[str, float],
+    *,
+    labels: Sequence[str] = MAGNITUDE_LABELS,
+    min_samples: int = MIN_SAMPLES,
+) -> Optional[CategoryBaseline]:
+    """Turn a label tally into a shrunk rate table. Pure: no database.
 
-    # 4. Guardrail: We need at least 2 data points.
-    # Variance is undefined for a single data point.
-    if len(values) < 2:
+    Returns None when the company has fewer than `min_samples` assessed
+    findings of this type, which is the honest answer rather than a confident
+    one drawn from three data points. Shrinkage already stops a thin sample
+    producing a strong claim; the floor stops the engine describing a company
+    it has essentially never seen.
+    """
+    total = sum(counts.values())
+    if total < min_samples:
         return None
 
-    # 5. Route the raw numbers to our pure math functions
-    mean_val = calculate_mean(values)
-    variance_val = calculate_variance(values, mean_val)
-    std_dev = calculate_standard_deviation(variance_val)
+    rates = {
+        label: shrunk_rate(
+            successes=counts.get(label, 0),
+            total=total,
+            prior_rate=prior_rates.get(label, 0.0),
+            prior_weight=PRIOR_WEIGHT,
+        )
+        for label in labels
+    }
 
-    return SignalBaseline(
+    return CategoryBaseline(
         signal_type=signal_type,
-        metric_name=metric_name,
-        mean=mean_val,
-        standard_deviation=std_dev,
-        sample_size=len(values)
+        counts=dict(counts),
+        sample_size=total,
+        rates=rates,
+        prior_rates=dict(prior_rates),
     )
