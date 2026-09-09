@@ -675,10 +675,24 @@ tr.detail-row > td {
 }
 
 /* Hovering is how a reader says "wait, I want to read that one". */
-.tape:hover .tape-track,
-.tape:focus-within .tape-track {
-  animation-play-state: paused;
-}
+.tape:hover .tape-track { animation-play-state: paused; }
+
+/* Keyboard focus pauses too, so someone tabbing through the tape can reach an
+   item without chasing it.
+   
+   `:focus-visible` and not `:focus-within`, which is what this was and which
+   stopped the tape permanently. Clicking a link leaves that anchor as the
+   document's active element for the rest of the page's life: the mouse moves
+   away, the reader returns from the article, and the strip never scrolls
+   again, because nothing ever removes the focus that is pausing it.
+   `:focus-visible` matches keyboard focus and not a mouse click, which is
+   exactly the distinction wanted here.
+
+   Kept as its own rule rather than added to the selector list above on
+   purpose. A browser without `:has()` support discards an entire rule when any
+   selector in its list fails to parse, so combining them would take
+   hover-to-pause down with it on the browsers least able to spare it. */
+.tape:has(:focus-visible) .tape-track { animation-play-state: paused; }
 
 @keyframes tape-scroll {
   from { transform: translateX(0); }
