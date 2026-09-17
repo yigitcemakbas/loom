@@ -7,7 +7,7 @@ external dependencies.
 """
 
 import math
-from typing import Sequence
+from typing import Optional, Sequence
 
 
 def calculate_mean(values: Sequence[float]) -> float:
@@ -43,18 +43,67 @@ def calculate_standard_deviation(variance: float) -> float:
     return math.sqrt(variance)
 
 
-def calculate_z_score(value: float, mean_value: float, std_dev: float) -> float:
-    """Measures how anomalous a finding is against the company's own history.
+def calculate_z_score(value: float, mean_value: float, std_dev: float) -> Optional[float]:
+    """How far a value sits from a mean, in standard deviations.
 
-    A raw 5% move means nothing without context. The z-score normalizes the
-    magnitude against the stock's historical volatility.
+    Returns None when the standard deviation is zero, because the answer is
+    genuinely undefined rather than zero. The earlier version returned 0.0,
+    which a caller reads as "perfectly average" and therefore "not anomalous":
+    a company whose history is perfectly flat would have its first departure
+    from that history reported as unremarkable, which is the exact case the
+    engine exists to catch. None forces the caller to distinguish "not
+    anomalous" from "not computable".
 
-    When standard deviation is zero (the company's history is perfectly flat),
-    any deviation is mathematically undefined. We clamp it to 0.0 rather than
-    crashing, as a perfectly flat history implies the signal cannot be
-    meaningfully compared.
+    Retained for continuous metrics. It is deliberately *not* used for
+    magnitude, which is categorical; see `shrunk_rate`.
     """
     if std_dev == 0.0:
-        return 0.0
+        return None
 
     return (value - mean_value) / std_dev
+
+
+def shrunk_rate(
+    successes: int,
+    total: int,
+    prior_rate: float,
+    prior_weight: float,
+) -> float:
+    """A proportion pulled toward a prior in proportion to how little data backs it.
+
+    This is the standard empirical-Bayes estimate for a rate: the posterior
+    mean of a Beta prior with `prior_weight` pseudo-observations distributed at
+    `prior_rate`. It exists because raw proportions are wildly unstable at the
+    sample sizes actually available here. One "major" finding out of two is not
+    evidence that half of a company's findings are major, but that is precisely
+    what an unshrunk rate claims.
+
+    The behaviour is self-correcting at both ends. With no local history the
+    estimate is exactly the prior; as the company accumulates findings its own
+    rate takes over smoothly, with no threshold at which the answer jumps.
+    """
+    if total < 0 or successes < 0:
+        raise ValueError("Counts cannot be negative.")
+    if successes > total:
+        raise ValueError("Successes cannot exceed the number of observations.")
+    if not 0.0 <= prior_rate <= 1.0:
+        raise ValueError("Prior rate must be a probability.")
+    if prior_weight < 0:
+        raise ValueError("Prior weight cannot be negative.")
+
+    denominator = total + prior_weight
+    if denominator == 0:
+        return prior_rate
+    return (successes + prior_weight * prior_rate) / denominator
+
+
+def rate_lift(observed_rate: float, reference_rate: float) -> Optional[float]:
+    """How many times more often something happens here than in general.
+
+    Returns None when the reference rate is zero, since the comparison has no
+    meaning: everything is infinitely more common than something that never
+    occurs.
+    """
+    if reference_rate <= 0.0:
+        return None
+    return observed_rate / reference_rate

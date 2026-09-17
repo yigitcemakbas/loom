@@ -29,8 +29,8 @@ from app.repositories.signal_repository import SignalRepository
 from app.repositories.usage_repository import UsageRepository
 from app.storage.blob_store import get_blob_store
 
-from app.engine.statistics.features import EvidenceFeature
-from app.engine.statistics.engine import evaluate_evidence
+from app.engine.statistics.engine import BaselineCache, evaluate_evidence
+from app.engine.statistics.features import feature_from_signal
 
 logger = logging.getLogger(__name__)
 
@@ -413,6 +413,60 @@ def analyze_recent_news(
     return len(signals)
 
 
+
+def _log_shadow_scores(ticker: str, company_id, signals: list, db: Session) -> None:
+    """Run the statistics engine alongside the live one and log what it would say.
+
+    Shadow only: nothing here is written or returned, and the whole body is
+    guarded. The engine is new and the brief is the product's actual output, so
+    a defect in an experiment must not be able to take down the thing it is
+    being compared against. Previously this ran inline and unguarded, which
+    meant any exception in it aborted brief generation entirely.
+
+    Reports coverage as well as verdicts, because the failure this code is most
+    likely to have is silence: a run where every finding scores "not anomalous"
+    looks identical whether the engine is working and the company is calm, or
+    the engine is inert. Saying how many findings were actually scorable makes
+    the difference visible.
+    """
+    try:
+        repo = SignalRepository(db)
+        cache = BaselineCache(repo)
+
+        scored = anomalous = 0
+        for sig in signals:
+            feature = feature_from_signal(sig)
+            score = evaluate_evidence(
+                feature,
+                company_id,
+                repo,
+                signal_type=sig.signal_type,
+                exclude_signal_id=sig.id,
+                cache=cache,
+            )
+            if not score.is_computable:
+                continue
+            scored += 1
+            if score.is_anomalous:
+                anomalous += 1
+                logger.info(
+                    "shadow[%s]: %s %s is unusual for this company "
+                    "(rate %.1f%%, n=%d, priority %.2f)",
+                    ticker,
+                    feature.signal_type,
+                    feature.magnitude_label,
+                    score.rate * 100,
+                    score.baseline.sample_size,
+                    sig.priority or 0.0,
+                )
+
+        logger.info(
+            "shadow[%s]: %d/%d findings scorable, %d flagged unusual",
+            ticker, scored, len(signals), anomalous,
+        )
+    except Exception:
+        logger.exception("shadow[%s]: statistics engine failed, brief unaffected", ticker)
+
 def regenerate_brief(ticker: str, db: Session):
     """Fold everything known about a company into its current read.
 
@@ -428,26 +482,8 @@ def regenerate_brief(ticker: str, db: Session):
     previous = brief_repo.latest_for(company.id)
     signals = SignalRepository(db).list_feed(company_id=company.id, limit=500)
 
-    # --- NEW SHADOW RUN ---
-    logger.info(f"--- RUNNING NEW STATS ENGINE FOR {ticker} ---")
-    for sig in signals:
-        feature = EvidenceFeature(
-            signal_id=str(sig.id),
-            signal_type=sig.signal_type.value,
-            direction=1.0 if sig.market_direction == "positive" else (
-                -1.0 if sig.market_direction == "negative" else 0.0),
-            confidence=sig.confidence or 0.0,
-            occurred_at=sig.occurred_at,
-            magnitude=2.0 if sig.market_magnitude == "major" else (0.5 if sig.market_magnitude == "minor" else 1.0),
-            sentiment=sig.sentiment_score
-        )
+    _log_shadow_scores(ticker, company.id, signals, db)
 
-        score = evaluate_evidence(feature, str(company.id), SignalRepository(db))
-        logger.info(
-            f"Signal: {feature.signal_type} | Old Priority: {sig.priority} | New Z-Score: {score.z_score:.2f} | Anomalous: {score.is_anomalous}")
-    # --- END SHADOW RUN ---
-
-    # EVERYTHING BELOW HERE IS ORIGINAL CODE
     result = brief_engine.build_brief(
         signals,
         previous_generated_at=previous.generated_at if previous else None,

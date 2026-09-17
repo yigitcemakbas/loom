@@ -28,6 +28,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from app.models.brief import Stance
+from app.engine.statistics.features import MAGNITUDE_WEIGHT
 from app.models.signal import Signal, SignalType
 
 # Bumped when the synthesis rules change, so stored briefs can be regenerated
@@ -37,8 +38,10 @@ ENGINE_VERSION = "2026-08-26.1"
 WINDOW_DAYS = 90
 
 # How much each magnitude counts toward the stance. A "major" finding should
-# not be outvoted by two "minor" ones.
-_MAGNITUDE_WEIGHT = {"minor": 0.5, "moderate": 1.0, "major": 2.0}
+# not be outvoted by two "minor" ones. Imported rather than declared: the
+# statistics package needs the same vocabulary, and two copies of a scoring
+# table are two chances to disagree.
+_MAGNITUDE_WEIGHT = MAGNITUDE_WEIGHT
 
 # Stance thresholds on the weighted mean of finding directions (-1..1).
 _STRONG = 0.55
