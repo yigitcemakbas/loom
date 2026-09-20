@@ -59,6 +59,13 @@ SEEN_LOOKBACK_HOURS = 24
 # stays fast on the largest filing anyone might send.
 MAX_MATCH_CHARS = 60_000
 
+# How often the loop says it is still alive, in seconds. Without this a
+# watcher that is working perfectly and seeing nothing produces exactly the
+# same output as one that died on its first cycle, which is the failure this
+# whole file is least able to afford: it would be discovered only by noticing,
+# weeks later, that no event had ever been assessed.
+HEARTBEAT_SECONDS = 900
+
 _stop_event = threading.Event()
 _thread: threading.Thread | None = None
 
@@ -235,12 +242,31 @@ def run_cycle(db=None) -> int:
 
 def _loop(interval_seconds: int) -> None:
     logger.info("Filing watcher started, polling every %ds.", interval_seconds)
+
+    cycles = 0
+    assessed = 0
+    failures = 0
+    last_heartbeat = time.monotonic()
+
     while not _stop_event.is_set():
         try:
-            run_cycle()
+            assessed += run_cycle()
         except Exception:
             # Unattended loop: one bad cycle must never end the watch.
+            failures += 1
             logger.exception("Watcher cycle failed.")
+        cycles += 1
+
+        now = time.monotonic()
+        if now - last_heartbeat >= HEARTBEAT_SECONDS:
+            logger.info(
+                "Watcher alive: %d cycles, %d events assessed, %d failed cycles "
+                "since the last report.",
+                cycles, assessed, failures,
+            )
+            cycles = assessed = failures = 0
+            last_heartbeat = now
+
         _stop_event.wait(interval_seconds)
     logger.info("Filing watcher stopped.")
 

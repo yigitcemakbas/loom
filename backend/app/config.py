@@ -81,6 +81,13 @@ class Settings(BaseSettings):
     # One feed request covers the whole market, so the interval is bounded by
     # politeness rather than by universe size, and lowering it lowers Loom's
     # reaction lag almost exactly one for one.
+    # Application log level. Loom's background work reports what it is doing
+    # through logging and nothing else, so at the Python default of WARNING a
+    # running system is indistinguishable from a stopped one: the scheduler,
+    # the watcher and every ingest cycle go silent. INFO is the correct
+    # default for something meant to be watched while it runs.
+    log_level: str = "INFO"
+
     watcher_enabled: bool = False
     watcher_interval_seconds: int = 60
 

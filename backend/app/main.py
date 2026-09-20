@@ -1,9 +1,11 @@
+import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 import app.models  # noqa: F401  (registers all models before any relationship resolution)
+from app.config import settings
 from app.api.routes import (
     assessments,
     briefs,
@@ -22,6 +24,25 @@ from app.scheduling.scheduler import shutdown_scheduler, start_scheduler
 from app.scheduling.watcher import start_watcher, stop_watcher
 
 
+def _configure_logging() -> None:
+    """Make the background work visible.
+
+    Uvicorn configures only its own loggers, leaving the root logger at
+    WARNING, which silently discards every INFO line this application emits.
+    The symptom is badly misleading: the scheduler and filing watcher run
+    perfectly and report nothing, so a working system looks exactly like one
+    that never started.
+    """
+    logging.basicConfig(
+        level=settings.log_level.upper(),
+        format="%(asctime)s %(levelname)-7s %(name)s: %(message)s",
+        force=True,
+    )
+    # These are chatty at INFO and drown out everything worth reading.
+    for noisy in ("httpx", "httpcore", "google_genai", "urllib3"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     """Background refresh lives for exactly as long as the app does.
@@ -30,6 +51,7 @@ async def lifespan(_: FastAPI):
     (tests, Alembic, a CLI script) never silently spawns a scheduler thread
     that then competes for the database.
     """
+    _configure_logging()
     start_scheduler()
     start_watcher()
     yield

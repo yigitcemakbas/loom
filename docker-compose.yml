@@ -56,6 +56,17 @@ services:
       # Off by default in a fresh container: a first-time user should choose
       # when to spend their AI quota, not have a background job start doing it.
       SCHEDULER_ENABLED: ${SCHEDULER_ENABLED:-false}
+      SCHEDULER_INTERVAL_MINUTES: ${SCHEDULER_INTERVAL_MINUTES:-360}
+
+      # The live filing watcher. Separate switch from the scheduler because it
+      # serves a different clock: the scheduler rebuilds a corpus every few
+      # hours, while this notices an 8-K within a minute of EDGAR accepting
+      # it. It costs one HTTP request per interval regardless of how many
+      # companies are tracked, and no AI quota at all, so it is far cheaper to
+      # leave running than the scheduler is.
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      WATCHER_ENABLED: ${WATCHER_ENABLED:-false}
+      WATCHER_INTERVAL_SECONDS: ${WATCHER_INTERVAL_SECONDS:-60}
       LLM_MIN_CALL_INTERVAL_SECONDS: ${LLM_MIN_CALL_INTERVAL_SECONDS:-6.5}
       BLOB_STORE_DIR: /app/data/blobs
     volumes:
