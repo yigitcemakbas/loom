@@ -75,6 +75,15 @@ class Settings(BaseSettings):
     # one, never a higher rate at SEC. Set 1 to restore fully sequential runs.
     ingest_max_workers: int = 4
 
+    # The live filing watcher. Separate from the scheduler because it serves a
+    # different clock: the scheduler builds a corpus on a six hour cadence,
+    # while this exists to notice an 8-K within a minute of EDGAR accepting it.
+    # One feed request covers the whole market, so the interval is bounded by
+    # politeness rather than by universe size, and lowering it lowers Loom's
+    # reaction lag almost exactly one for one.
+    watcher_enabled: bool = False
+    watcher_interval_seconds: int = 60
+
     # Which LLM backs the analysis engine: "gemini" (free tier) or
     # "anthropic" (paid). Only the selected provider's key is needed.
     llm_provider: str = "gemini"

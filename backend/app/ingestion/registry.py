@@ -39,6 +39,7 @@ from app.ingestion.facts.sec_form4 import SecForm4Adapter
 from app.ingestion.news_api import FinnhubNewsAdapter
 from app.ingestion.scrapers.earnings_transcript_motley_fool import MotleyFoolTranscriptScraper
 from app.ingestion.sec_edgar import SecEdgarAdapter
+from app.models.company import CompanyTier
 from app.models.document import SourceType
 from app.models.structured_fact import FactType
 from app.repositories.company_repository import CompanyRepository
@@ -187,6 +188,13 @@ def ingest_all(ticker: str, db: Session, since: datetime | None = None) -> dict[
     (an 8-K now pulls its exhibit list and exhibits), so without a cutoff every
     refresh would re-download a company's entire filing history just to throw
     all of it away. A company with nothing stored still gets the full backfill.
+
+    Which adapters run depends on the company's tier. A wide-tier company gets
+    the numeric sources only: those cost one HTTP request each and no model
+    call, which is what makes a universe of hundreds affordable. Document
+    adapters are skipped for it entirely, because a stored filing that nothing
+    will ever read is pure cost, in bandwidth now and in the analysis queue
+    later. See `models/company.CompanyTier`.
     """
     company_repo = CompanyRepository(db)
     company = company_repo.get_by_ticker(ticker)
@@ -202,7 +210,11 @@ def ingest_all(ticker: str, db: Session, since: datetime | None = None) -> dict[
     blob_store = get_blob_store()
     results: dict[str, int] = {}
 
-    for adapter in DOCUMENT_ADAPTERS:
+    document_adapters = DOCUMENT_ADAPTERS if company.tier == CompanyTier.FOCUS else []
+    if not document_adapters:
+        logger.debug("Wide tier %s: numeric sources only, no documents fetched.", ticker)
+
+    for adapter in document_adapters:
         try:
             dtos = adapter.fetch(ticker, since=since)
         except Exception:

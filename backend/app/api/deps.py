@@ -12,10 +12,12 @@ from sqlalchemy.orm import Session
 
 from app.db.session import get_db
 from app.repositories.brief_repository import BriefRepository
+from app.repositories.assessment_repository import AssessmentRepository
 from app.repositories.company_repository import CompanyRepository
 from app.repositories.document_repository import DocumentRepository
 from app.repositories.fact_repository import FactRepository
 from app.repositories.search_repository import SearchRepository
+from app.repositories.prior_repository import PriorRepository
 from app.repositories.signal_repository import SignalRepository
 from app.repositories.usage_repository import UsageRepository
 from app.repositories.watchlist_repository import WatchlistRepository
@@ -55,6 +57,14 @@ def get_brief_repository(db: DbSession) -> BriefRepository:
     return BriefRepository(db)
 
 
+def get_assessment_repository(db: DbSession) -> AssessmentRepository:
+    return AssessmentRepository(db)
+
+
+def get_prior_repository(db: DbSession) -> PriorRepository:
+    return PriorRepository(db)
+
+
 CompanyRepo = Annotated[CompanyRepository, Depends(get_company_repository)]
 WatchlistRepo = Annotated[WatchlistRepository, Depends(get_watchlist_repository)]
 DocumentRepo = Annotated[DocumentRepository, Depends(get_document_repository)]
@@ -63,3 +73,5 @@ UsageRepo = Annotated[UsageRepository, Depends(get_usage_repository)]
 SearchRepo = Annotated[SearchRepository, Depends(get_search_repository)]
 FactRepo = Annotated[FactRepository, Depends(get_fact_repository)]
 BriefRepo = Annotated[BriefRepository, Depends(get_brief_repository)]
+AssessmentRepo = Annotated[AssessmentRepository, Depends(get_assessment_repository)]
+PriorRepo = Annotated[PriorRepository, Depends(get_prior_repository)]

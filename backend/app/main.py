@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 import app.models  # noqa: F401  (registers all models before any relationship resolution)
 from app.api.routes import (
+    assessments,
     briefs,
     companies,
     earnings,
@@ -18,6 +19,7 @@ from app.api.routes import (
     watchlists,
 )
 from app.scheduling.scheduler import shutdown_scheduler, start_scheduler
+from app.scheduling.watcher import start_watcher, stop_watcher
 
 
 @asynccontextmanager
@@ -29,7 +31,9 @@ async def lifespan(_: FastAPI):
     that then competes for the database.
     """
     start_scheduler()
+    start_watcher()
     yield
+    stop_watcher()
     shutdown_scheduler()
 
 
@@ -59,6 +63,7 @@ app.include_router(briefs.router)
 app.include_router(earnings.router)
 app.include_router(prices.router)
 app.include_router(tape.router)
+app.include_router(assessments.router)
 
 
 @app.get("/health")

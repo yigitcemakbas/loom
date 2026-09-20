@@ -17,8 +17,10 @@ import time
 from app.config import settings
 from app.db.session import SessionLocal
 from app.engine.pipeline import analyze_company_recent
+from app.engine.prior import build_prior
 from app.engine.llm_client import LLMUnavailableError
 from app.ingestion.registry import ingest_all, ingest_many
+from app.models.company import CompanyTier
 from app.repositories.watchlist_repository import WatchlistRepository
 
 logger = logging.getLogger(__name__)
@@ -91,7 +93,11 @@ def run_scheduled_refresh() -> None:
         db.close()
         return
 
+    # Ingestion covers every tier; analysis and priors cost model calls and
+    # so are confined to the focus tier. This split is the whole point of
+    # tiering: the universe can grow without the model bill growing with it.
     tickers = [company.ticker for company in companies]
+    focus_tickers = [c.ticker for c in companies if c.tier == CompanyTier.FOCUS]
     db.close()
 
     if not tickers:
@@ -99,8 +105,9 @@ def run_scheduled_refresh() -> None:
         return
 
     logger.info(
-        "Scheduled refresh starting for %d tickers, %d at a time.",
+        "Scheduled refresh starting for %d tickers (%d focus), %d at a time.",
         len(tickers),
+        len(focus_tickers),
         settings.ingest_max_workers,
     )
 
@@ -124,7 +131,7 @@ def run_scheduled_refresh() -> None:
         len(failed),
     )
 
-    for ticker in tickers:
+    for ticker in focus_tickers:
         try:
             analysis_session = SessionLocal()
             try:
@@ -138,4 +145,33 @@ def run_scheduled_refresh() -> None:
         except Exception:
             logger.exception("Scheduled analysis failed for %s", ticker)
 
+    _refresh_priors(focus_tickers)
+
     logger.info("Scheduled refresh complete.")
+
+
+def _refresh_priors(tickers: list[str]) -> None:
+    """Rebuild each focus company's standing prior after new material lands.
+
+    Runs last on purpose. A prior is only as good as the findings behind it, so
+    building one before the run's ingestion and analysis have landed would
+    describe the company as it was yesterday. Guarded per ticker for the usual
+    reason: a prior is preparation, and failing to prepare must not look like a
+    failed refresh.
+    """
+    for ticker in tickers:
+        db = SessionLocal()
+        try:
+            prior = build_prior(ticker, db)
+            if prior is not None:
+                logger.info(
+                    "Prior for %s: %d things to watch for.", ticker, len(prior.watch_items or [])
+                )
+        except LLMUnavailableError as exc:
+            logger.warning("Prior generation stopping early, LLM unavailable: %s", exc)
+            db.close()
+            return
+        except Exception:
+            logger.exception("Prior generation failed for %s", ticker)
+        finally:
+            db.close()

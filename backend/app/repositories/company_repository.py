@@ -9,7 +9,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.company import Company
+from app.models.company import Company, CompanyTier
 from app.schemas.company import CompanyCreate
 
 
@@ -36,21 +36,41 @@ class CompanyRepository:
     def list_all(self) -> list[Company]:
         return list(self.db.execute(select(Company)).scalars().all())
 
-    def create(self, data: CompanyCreate) -> Company:
+    def create(self, data: CompanyCreate, tier: CompanyTier = CompanyTier.WIDE) -> Company:
+        # Wide by default so that seeding a universe cannot accidentally commit
+        # the project to a model call per filing for every name added.
         company = Company(
             ticker=data.ticker.upper(),
             name=data.name,
             cik=data.cik,
             sector=data.sector,
             exchange=data.exchange,
+            tier=tier,
         )
         self.db.add(company)
         self.db.commit()
         self.db.refresh(company)
         return company
 
-    def get_or_create(self, data: CompanyCreate) -> Company:
+    def get_or_create(
+        self, data: CompanyCreate, tier: CompanyTier = CompanyTier.WIDE
+    ) -> Company:
         existing = self.get_by_ticker(data.ticker)
         if existing:
             return existing
-        return self.create(data)
+        return self.create(data, tier=tier)
+
+    def set_tier(self, ticker: str, tier: CompanyTier) -> Company | None:
+        """Move a company between tiers. The project's main cost control."""
+        company = self.get_by_ticker(ticker)
+        if company is None:
+            return None
+        company.tier = tier
+        self.db.commit()
+        self.db.refresh(company)
+        return company
+
+    def list_by_tier(self, tier: CompanyTier) -> list[Company]:
+        return list(
+            self.db.execute(select(Company).where(Company.tier == tier)).scalars().all()
+        )
