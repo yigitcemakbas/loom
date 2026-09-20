@@ -13,6 +13,7 @@ scheduler needed no new ingestion logic at all.
 
 import logging
 import time
+from datetime import datetime, timezone
 
 from app.config import settings
 from app.db.session import SessionLocal
@@ -21,6 +22,8 @@ from app.engine.prior import build_prior
 from app.engine.llm_client import LLMUnavailableError
 from app.ingestion.registry import ingest_all, ingest_many
 from app.models.company import CompanyTier
+from app.repositories.company_repository import CompanyRepository
+from app.repositories.prior_repository import PriorRepository
 from app.repositories.watchlist_repository import WatchlistRepository
 
 logger = logging.getLogger(__name__)
@@ -98,6 +101,12 @@ def run_scheduled_refresh() -> None:
     # tiering: the universe can grow without the model bill growing with it.
     tickers = [company.ticker for company in companies]
     focus_tickers = [c.ticker for c in companies if c.tier == CompanyTier.FOCUS]
+    # Priors, and therefore live coverage, extend to the watch tier. Document
+    # analysis does not, which is the entire cost difference between them.
+    prior_tickers = [
+        c.ticker for c in companies
+        if c.tier in (CompanyTier.FOCUS, CompanyTier.WATCH)
+    ]
     db.close()
 
     if not tickers:
@@ -105,9 +114,10 @@ def run_scheduled_refresh() -> None:
         return
 
     logger.info(
-        "Scheduled refresh starting for %d tickers (%d focus), %d at a time.",
+        "Scheduled refresh starting for %d tickers (%d focus, %d with priors), %d at a time.",
         len(tickers),
         len(focus_tickers),
+        len(prior_tickers),
         settings.ingest_max_workers,
     )
 
@@ -145,7 +155,7 @@ def run_scheduled_refresh() -> None:
         except Exception:
             logger.exception("Scheduled analysis failed for %s", ticker)
 
-    _refresh_priors(focus_tickers)
+    _refresh_priors(prior_tickers)
 
     logger.info("Scheduled refresh complete.")
 
@@ -159,6 +169,29 @@ def _refresh_priors(tickers: list[str]) -> None:
     reason: a prior is preparation, and failing to prepare must not look like a
     failed refresh.
     """
+    # Unarmed companies first. A quota-limited run stops partway through, so
+    # the order decides what gets covered: refreshing a three-day-old prior
+    # while another company has none at all is the wrong trade, because the
+    # second one is scoring every filing zero in the meantime.
+    db = SessionLocal()
+    try:
+        prior_repo = PriorRepository(db)
+        company_repo = CompanyRepository(db)
+        def _uncovered_first(ticker: str):
+            company = company_repo.get_by_ticker(ticker)
+            if company is None:
+                return (2, datetime.max.replace(tzinfo=timezone.utc))
+            latest = prior_repo.latest_for(company.id)
+            return (
+                1 if latest else 0,
+                latest.generated_at if latest else datetime.min.replace(tzinfo=timezone.utc),
+            )
+        tickers = sorted(tickers, key=_uncovered_first)
+    except Exception:
+        logger.exception("Could not order priors by coverage; using the given order.")
+    finally:
+        db.close()
+
     for ticker in tickers:
         db = SessionLocal()
         try:

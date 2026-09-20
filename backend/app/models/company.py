@@ -33,6 +33,18 @@ class CompanyTier(str, enum.Enum):
 
     # Filings, transcripts, news, model analysis, and a standing prior.
     FOCUS = "focus"
+    # The middle ground, and the tier that makes live coverage affordable at
+    # scale. A watched company gets a standing prior and is scored against
+    # live filings, but its documents are never analysed one by one.
+    #
+    # The economics are what justify a third tier rather than a flag. A prior
+    # costs one model call per company per refresh; analysing documents costs
+    # one call per document. Welding those together meant live coverage of a
+    # company cost the same as deep research into it, which put a universe
+    # large enough to learn anything from out of reach. Separated, a hundred
+    # and fifty companies can be watched for roughly the daily quota that
+    # eleven were consuming.
+    WATCH = "watch"
     # Numeric sources only: prices, insider transactions, short interest,
     # earnings dates and consensus. No documents, no model calls.
     WIDE = "wide"

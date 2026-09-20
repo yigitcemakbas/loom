@@ -210,9 +210,12 @@ def ingest_all(ticker: str, db: Session, since: datetime | None = None) -> dict[
     blob_store = get_blob_store()
     results: dict[str, int] = {}
 
+    # Only the focus tier stores a document corpus. A watched company still
+    # reads filings, but does so inside prior generation and does not keep
+    # them, because nothing downstream of it will ever query them.
     document_adapters = DOCUMENT_ADAPTERS if company.tier == CompanyTier.FOCUS else []
     if not document_adapters:
-        logger.debug("Wide tier %s: numeric sources only, no documents fetched.", ticker)
+        logger.debug("%s is %s tier: numeric sources only, no document corpus.", ticker, company.tier.value)
 
     for adapter in document_adapters:
         try:

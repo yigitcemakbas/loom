@@ -133,11 +133,15 @@ def run_cycle(db=None) -> int:
     db = db or SessionLocal()
     try:
         company_repo = CompanyRepository(db)
-        focus = company_repo.list_by_tier(CompanyTier.FOCUS)
+        # Both tiers that carry a prior are watched. The fast path costs
+        # nothing per company and the feed is one request regardless of how
+        # many are tracked, so breadth here is close to free.
+        watched = company_repo.list_by_tier(CompanyTier.FOCUS)
+        watched += company_repo.list_by_tier(CompanyTier.WATCH)
         # CIKs are stored zero-padded to ten, which is the form the feed uses.
-        by_cik = {c.cik: c for c in focus if c.cik}
+        by_cik = {c.cik: c for c in watched if c.cik}
         if not by_cik:
-            logger.debug("Watcher: no focus companies with a CIK, nothing to watch.")
+            logger.debug("Watcher: no watched companies with a CIK, nothing to watch.")
             return 0
 
         feed = SecRealtimeFeed()

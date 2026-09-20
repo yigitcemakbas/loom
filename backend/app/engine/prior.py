@@ -19,10 +19,12 @@ from typing import Optional
 from sqlalchemy.orm import Session
 
 from app.engine.earnings import build_outlook
+from app.engine.extraction import prepare_text
 from app.engine.llm_client import LLMClient, get_llm_client
 from app.engine.market_context import context_for
 from app.engine.prompts import standing_prior
 from app.engine.prompts.standing_prior import StandingPriorResult
+from app.ingestion.sec_edgar import SecEdgarAdapter
 from app.models.company import CompanyTier
 from app.models.structured_fact import FactType
 from app.repositories.company_repository import CompanyRepository
@@ -37,6 +39,14 @@ ENGINE_VERSION = "2026-09-20.1"
 # How much recent evidence the prior is built from.
 WINDOW_DAYS = 120
 MAX_SIGNALS = 40
+
+# Watched companies have no extracted findings, so their prior is built from
+# filing text directly. These bound that: the most recent few filings, with
+# the sections that carry risk and outlook, truncated to something one call
+# can read. Enough for a watch list, far short of a research corpus.
+DOCUMENT_LOOKBACK_DAYS = 240
+MAX_DOCUMENTS = 4
+MAX_DOCUMENT_CHARS = 24_000
 
 # Above this, an unwind has to buy stock back and a surprise lands harder.
 CROWDED_DAYS_TO_COVER = 5.0
@@ -116,9 +126,54 @@ def _positioning(company_id, ticker: str, fact_repo: FactRepository) -> Position
     return out
 
 
-def _evidence_block(signals, outlook, positioning: Positioning, ticker: str) -> str:
+def _document_material(ticker: str) -> str:
+    """Filing text for a company whose documents are never analysed.
+
+    The watch tier exists so that live coverage does not cost a model call per
+    document, which means there are no extracted findings to build a prior
+    from. The filings themselves are still free to read, so they are fetched
+    directly and handed to the one call that does happen.
+
+    Deliberately not stored. A watched company is not being researched, and
+    persisting a corpus nobody will query would trade the storage cost of the
+    focus tier for none of its benefit. `SecEdgarAdapter.fetch` returns the
+    text without writing it anywhere, which is exactly the shape wanted here.
+    """
+    try:
+        since = datetime.now(timezone.utc) - timedelta(days=DOCUMENT_LOOKBACK_DAYS)
+        documents = SecEdgarAdapter().fetch(ticker, since=since)
+    except Exception:
+        logger.warning("Prior: could not fetch filings for %s", ticker, exc_info=True)
+        return ""
+
+    documents.sort(key=lambda d: d.published_at or datetime.min.replace(tzinfo=timezone.utc), reverse=True)
+
+    parts: list[str] = []
+    budget = MAX_DOCUMENT_CHARS
+    for document in documents[:MAX_DOCUMENTS]:
+        if budget <= 0:
+            break
+        # Reuses the analysis layer's section selection: risk factors and
+        # management's discussion, rather than the whole filing.
+        text, _used_sections = prepare_text(document.raw_text, document.doc_subtype)
+        text = text[:budget]
+        budget -= len(text)
+        label = f"{document.doc_subtype or 'filing'} {document.published_at:%d %b %Y}" if document.published_at else (document.doc_subtype or "filing")
+        parts.append(f"=== {label} ===\n{text}")
+
+    return "\n\n".join(parts)
+
+
+def _evidence_block(
+    signals, outlook, positioning: Positioning, ticker: str, documents: str = ""
+) -> str:
     """The material the model reasons over. Assembled, not summarised."""
     lines: list[str] = [f"COMPANY: {ticker}", ""]
+
+    if documents:
+        lines.append("RECENT FILINGS:")
+        lines.append(documents)
+        lines.append("")
 
     lines.append("RECENT FINDINGS (most important first):")
     for s in signals:
@@ -190,8 +245,8 @@ def build_prior(ticker: str, db: Session, client: Optional[LLMClient] = None):
     if company is None:
         raise ValueError(f"No company found for ticker {ticker!r}, seed it first.")
 
-    if company.tier != CompanyTier.FOCUS:
-        logger.info("Prior skipped for %s: wide tier companies do not get model calls.", ticker)
+    if company.tier == CompanyTier.WIDE:
+        logger.info("Prior skipped for %s: wide tier is numeric sources only.", ticker)
         return None
 
     signal_repo = SignalRepository(db)
@@ -207,14 +262,24 @@ def build_prior(ticker: str, db: Session, client: Optional[LLMClient] = None):
     outlook = build_outlook(events)
     positioning = _positioning(company.id, company.ticker, fact_repo)
 
-    if not signals and outlook.next_date is None:
-        logger.info("Prior skipped for %s: no findings and no scheduled report.", ticker)
+    # A watched company has no findings by construction, so its prior is built
+    # from filing text instead. Focus companies fall back to the same path when
+    # their analysis has not run yet, which is better than having no prior:
+    # an unarmed watcher scores every filing zero and looks like a quiet market.
+    documents = ""
+    if company.tier == CompanyTier.WATCH or not signals:
+        documents = _document_material(company.ticker)
+
+    if not signals and not documents and outlook.next_date is None:
+        logger.info("Prior skipped for %s: no findings, no filings, no scheduled report.", ticker)
         return None
 
     client = client or get_llm_client()
     result: StandingPriorResult | None = client.parse(
         system=standing_prior.SYSTEM,
-        user_content=_evidence_block(signals, outlook, positioning, company.ticker),
+        user_content=_evidence_block(
+            signals, outlook, positioning, company.ticker, documents=documents
+        ),
         schema=StandingPriorResult,
     )
     if result is None:

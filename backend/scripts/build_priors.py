@@ -31,7 +31,20 @@ logger = logging.getLogger("build_priors")
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build standing priors for focus companies.")
-    parser.add_argument("tickers", nargs="*", help="Specific tickers. Default: the whole focus tier.")
+    parser.add_argument(
+        "tickers", nargs="*",
+        help="Specific tickers. Default: every focus and watch tier company.",
+    )
+    parser.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help=(
+            "Stop after this many companies. The free tier saturates well before "
+            "a large universe is covered, so filling it is a drip fed by repeated "
+            "runs rather than one pass."
+        ),
+    )
     parser.add_argument(
         "--stale-days",
         type=float,
@@ -48,7 +61,25 @@ def main() -> int:
         if args.tickers:
             companies = [c for c in (company_repo.get_by_ticker(t) for t in args.tickers) if c]
         else:
-            companies = company_repo.list_by_tier(CompanyTier.FOCUS)
+            # Every tier that carries a prior, not just focus. Listing focus
+            # alone silently left the whole watch tier unarmed while reporting
+            # success, and a watched company with no prior scores every filing
+            # zero, which is indistinguishable from a quiet market.
+            companies = (
+                company_repo.list_by_tier(CompanyTier.FOCUS)
+                + company_repo.list_by_tier(CompanyTier.WATCH)
+            )
+
+        # Companies with no prior at all come first. They are the ones that are
+        # watched but mute, scoring every filing zero, so covering them buys
+        # far more than refreshing a prior that already exists and is merely a
+        # few days old. Without this ordering a quota-limited run keeps
+        # re-doing the same alphabetical prefix and never reaches the rest.
+        def _coverage_key(company):
+            latest = prior_repo.latest_for(company.id)
+            return (latest is not None, latest.generated_at if latest else datetime.min.replace(tzinfo=timezone.utc))
+
+        companies.sort(key=_coverage_key)
 
         if args.stale_days is not None:
             cutoff = datetime.now(timezone.utc) - timedelta(days=args.stale_days)
@@ -61,6 +92,9 @@ def main() -> int:
             if skipped:
                 logger.info("%d priors still fresh, skipping them.", skipped)
             companies = fresh
+
+        if args.limit is not None:
+            companies = companies[: args.limit]
 
         if not companies:
             logger.info("Nothing to build.")
@@ -93,9 +127,19 @@ def main() -> int:
                 company.ticker, len(prior.watch_items or []), prior.summary[:88],
             )
 
+        remaining = len([
+            c for c in (
+                company_repo.list_by_tier(CompanyTier.FOCUS)
+                + company_repo.list_by_tier(CompanyTier.WATCH)
+            )
+            if prior_repo.latest_for(c.id) is None
+        ])
         logger.info(
-            "Built %d, failed %d, in %.0fs.", built, failed, time.monotonic() - started
+            "Built %d, failed %d, in %.0fs. %d watched companies still have no prior.",
+            built, failed, time.monotonic() - started, remaining,
         )
+        if remaining:
+            logger.info("Run again to continue; already-covered companies are skipped.")
         return 0
     finally:
         db.close()
