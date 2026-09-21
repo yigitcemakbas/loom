@@ -33,6 +33,12 @@ from datetime import datetime, timedelta, timezone
 
 from app.config import settings
 from app.db.session import SessionLocal
+from app.engine.earnings_extract import (
+    comparable_eps,
+    extract_figures,
+    is_results_filing,
+    surprise_is_credible,
+)
 from app.engine.reaction import MarketEvent, assess
 from app.ingestion.rate_limit import limiter
 from app.ingestion.sec_edgar import (
@@ -176,15 +182,46 @@ def run_cycle(db=None) -> int:
             # as a keyword and fire on the item code alone, before anyone
             # has read a word of the exhibit.
             item_line = " ".join(f"item {i}" for i in items)
+            prior = prior_repo.latest_for(company.id)
+
+            # An earnings release is the one event worth spending a model call
+            # on. Without the actual figures the engine can match keywords in a
+            # results announcement while completely ignoring that EPS came in
+            # twenty percent ahead of consensus, which is the single most
+            # informative thing in the document.
+            eps = revenue = None
+            eps_basis = "none"
+            if is_results_filing(items):
+                figures = extract_figures(text)
+                if figures is not None:
+                    eps, eps_basis = comparable_eps(figures)
+                    revenue = figures.revenue
+
+                    # Checked against the consensus the prior already holds.
+                    # An extraction can be a perfectly plausible number and
+                    # still be the wrong period, and only the comparison shows
+                    # it. Dropping the figure leaves the rest of the
+                    # assessment intact.
+                    consensus = (prior.expectations or {}).get("eps_estimate") if prior else None
+                    if eps is not None and not surprise_is_credible(eps, consensus):
+                        eps = None
+                        eps_basis = "discarded_implausible"
+
+                    logger.info(
+                        "%s filed results: EPS %s (%s), revenue %s",
+                        company.ticker, eps, eps_basis, revenue,
+                    )
+
             event = MarketEvent(
                 ticker=company.ticker,
-                kind="filing",
+                kind="earnings" if is_results_filing(items) else "filing",
                 occurred_at=notice.accepted_at or datetime.now(timezone.utc),
                 text=f"{notice.form} {notice.company_name} {item_line}\n{text}",
+                eps_actual=eps,
+                revenue_actual=revenue,
                 source_url=notice.index_url,
             )
 
-            prior = prior_repo.latest_for(company.id)
             result = assess(event, prior)
 
             latency = None
@@ -197,7 +234,7 @@ def run_cycle(db=None) -> int:
                 company_id=company.id,
                 prior_id=prior.id if prior is not None else None,
                 external_id=notice.accession,
-                kind="filing",
+                kind=event.kind,
                 form=notice.form,
                 source_url=notice.index_url,
                 score=result.score,
@@ -216,6 +253,13 @@ def run_cycle(db=None) -> int:
                 surprises={
                     "eps_percent": result.eps_surprise_percent,
                     "revenue_percent": result.revenue_surprise_percent,
+                    # Which basis the actual was taken on. A surprise shown
+                    # without this is unauditable: consensus is quoted on an
+                    # adjusted basis, so a GAAP comparison would be measuring
+                    # an accounting difference.
+                    "eps_basis": eps_basis,
+                    "eps_actual": eps,
+                    "revenue_actual": revenue,
                 },
                 amplifiers=result.amplifiers,
                 occurred_at=event.occurred_at,
