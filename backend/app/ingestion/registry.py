@@ -36,6 +36,7 @@ from app.ingestion.base import (
 from app.ingestion.facts.earnings_calendar import EarningsCalendarAdapter
 from app.ingestion.facts.finra_short_interest import FinraShortInterestAdapter
 from app.ingestion.facts.sec_form4 import SecForm4Adapter
+from app.ingestion.facts.sec_fundamentals import SecFundamentalsAdapter
 from app.ingestion.news_api import FinnhubNewsAdapter
 from app.ingestion.scrapers.earnings_transcript_motley_fool import MotleyFoolTranscriptScraper
 from app.ingestion.sec_edgar import SecEdgarAdapter
@@ -67,6 +68,9 @@ FACT_ADAPTERS: list[FactSourceAdapter] = [
     SecForm4Adapter(),
     EarningsCalendarAdapter(),
     FinraShortInterestAdapter(),
+    # Reported financials. Runs for every tier, including wide: it is free,
+    # keyless, and is the data that makes one company comparable to another.
+    SecFundamentalsAdapter(),
 ]
 
 
@@ -234,7 +238,17 @@ def ingest_all(ticker: str, db: Session, since: datetime | None = None) -> dict[
 
     for fact_adapter in FACT_ADAPTERS:
         try:
-            fact_dtos = fact_adapter.fetch(ticker, since=since)
+            # Deliberately not passed the document cutoff. That cutoff exists
+            # because document adapters do expensive per-document work before
+            # dedupe can see it, and it is derived from the newest stored
+            # *document*. Applying it to facts inverted coverage: a company
+            # with recent filings got a recent cutoff and therefore none of its
+            # financial history, while a company with no documents at all got
+            # the full series. The better-covered the company, the less data it
+            # received. Fact adapters bound their own lookback and dedupe on a
+            # content hash, so fetching from their own default is both correct
+            # and cheap.
+            fact_dtos = fact_adapter.fetch(ticker, since=None)
         except Exception:
             logger.exception("Fact adapter %s failed for %s", fact_adapter.source_name, ticker)
             results[fact_adapter.source_name] = 0

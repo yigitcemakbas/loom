@@ -23,6 +23,11 @@ class FactType(str, enum.Enum):
     SEARCH_TREND_INDEX = "search_trend_index"
     JOB_POSTING_COUNT = "job_posting_count"
     APP_STORE_RANKING = "app_store_ranking"
+    # A reported line from a company's own financial statements, taken from
+    # SEC XBRL. The largest dataset the project went without: every judgement
+    # before this was formed from prose and market positioning, with no access
+    # to what the company actually earned.
+    FUNDAMENTAL = "fundamental"
 
 
 class StructuredFact(Base):
