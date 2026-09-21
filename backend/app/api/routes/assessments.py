@@ -21,6 +21,7 @@ def _to_out(assessment, ticker: str) -> EventAssessmentOut:
         matches=assessment.matches or [],
         surprises=assessment.surprises or {},
         amplifiers=assessment.amplifiers or [],
+        exposed=assessment.exposed or [],
         occurred_at=assessment.occurred_at,
         assessed_at=assessment.assessed_at,
         latency_seconds=assessment.latency_seconds,

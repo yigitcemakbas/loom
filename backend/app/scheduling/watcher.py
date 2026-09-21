@@ -33,6 +33,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.config import settings
 from app.db.session import SessionLocal
+from app.engine.exposure import dependents_of
 from app.engine.earnings_extract import (
     comparable_eps,
     extract_figures,
@@ -224,6 +225,20 @@ def run_cycle(db=None) -> int:
 
             result = assess(event, prior)
 
+            # Propagation. An event's reach is not limited to the filer: the
+            # companies that re-rate on a chip maker's results are frequently
+            # its suppliers, its equipment vendors and its competitors, none of
+            # which filed anything that day. One indexed lookup, no network.
+            exposed = [
+                {"ticker": e.ticker, "mention_count": e.mention_count}
+                for e in dependents_of(db, company.id)
+            ]
+            if exposed and result.is_notable:
+                logger.warning(
+                    "LIVE %s event also reaches: %s",
+                    company.ticker, ", ".join(e["ticker"] for e in exposed),
+                )
+
             latency = None
             if notice.accepted_at is not None:
                 latency = (
@@ -262,6 +277,7 @@ def run_cycle(db=None) -> int:
                     "revenue_actual": revenue,
                 },
                 amplifiers=result.amplifiers,
+                exposed=exposed,
                 occurred_at=event.occurred_at,
                 latency_seconds=latency,
                 scoring_ms=result.elapsed_ms,

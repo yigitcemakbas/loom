@@ -59,6 +59,13 @@ class EventAssessment(Base):
     surprises: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
     amplifiers: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
 
+    # Tracked companies that move when this one does, resolved from the
+    # exposure graph at event time. The company an event is about is often not
+    # the company it is most tradeable in: NVIDIA's results set expectations
+    # for memory, equipment and GPU clouds that reported nothing that day.
+    # [{ticker, mention_count}]
+    exposed: Mapped[list] = mapped_column(JSONB, nullable=False, default=list)
+
     # When the market learned, versus when Loom did.
     occurred_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, index=True)
     assessed_at: Mapped[datetime] = mapped_column(

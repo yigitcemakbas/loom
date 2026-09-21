@@ -38,6 +38,7 @@ from app.ingestion.facts.finra_short_interest import FinraShortInterestAdapter
 from app.ingestion.facts.sec_form4 import SecForm4Adapter
 from app.ingestion.facts.sec_fundamentals import SecFundamentalsAdapter
 from app.ingestion.news_api import FinnhubNewsAdapter
+from app.ingestion.ecosystem import EcosystemMentionsAdapter
 from app.ingestion.scrapers.earnings_transcript_motley_fool import MotleyFoolTranscriptScraper
 from app.ingestion.sec_edgar import SecEdgarAdapter
 from app.models.company import CompanyTier
@@ -59,6 +60,9 @@ DOCUMENT_ADAPTERS: list[DocumentSourceAdapter] = [
     SecEdgarAdapter(),
     FinnhubNewsAdapter(),
     MotleyFoolTranscriptScraper(),
+    # What the rest of the industry filed about this company. The only source
+    # here that is not self-reported.
+    EcosystemMentionsAdapter(),
 ]
 
 # Sources whose output is numbers rather than prose. Phase 5 continues with

@@ -19,6 +19,7 @@ class EventAssessmentOut(BaseModel):
     matches: list
     surprises: dict
     amplifiers: list
+    exposed: list
     occurred_at: datetime
     assessed_at: datetime
     latency_seconds: float | None
