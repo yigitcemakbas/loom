@@ -2,14 +2,15 @@ import { useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { ActivityPanel } from "../components/company/ActivityPanel";
 import { ShortInterestPanel } from "../components/company/ShortInterestPanel";
-import { BriefCard } from "../components/brief/BriefCard";
 import { CompanyPricePanel } from "../components/price/CompanyPricePanel";
+import { CaseFilePanel } from "../components/case/CaseFile";
 import { FactorPanel } from "../components/factors/FactorPanel";
+import { TrackButton } from "../components/tracking/TrackButton";
+import { WatchingPanel } from "../components/priors/WatchingPanel";
 import { SentimentTrendChart } from "../components/company/SentimentTrendChart";
 import { TimelinePanel } from "../components/company/TimelinePanel";
 import { SignalTable } from "../components/signals/SignalTable";
 import { useCompany, useCompanyTimeline } from "../hooks/useCompanyDetail";
-import { useBrief } from "../hooks/useBriefs";
 import { useCompanyEarnings } from "../hooks/useEarnings";
 import { useInsiderActivity } from "../hooks/useFacts";
 import { useSentimentSeries, useSignals, useTriggerAnalysis } from "../hooks/useSignals";
@@ -37,7 +38,6 @@ export function CompanyDetailPage() {
   const { data: signals } = useSignals({ ticker });
   const { data: sentiment } = useSentimentSeries(ticker);
   const { data: insider } = useInsiderActivity(ticker ?? "", 90);
-  const { data: brief } = useBrief(ticker);
   const { data: earnings } = useCompanyEarnings(ticker);
   const analyze = useTriggerAnalysis(ticker);
 
@@ -69,6 +69,7 @@ export function CompanyDetailPage() {
         <span className="quote-name">{company.name}</span>
         <span className="quote-meta">{company.sector ?? "-"} · {company.exchange ?? "-"}</span>
         <span style={{ marginLeft: "auto" }}>
+          <TrackButton ticker={company.ticker} />{" "}
           <button className="btn" onClick={() => analyze.mutate()} disabled={analyze.isPending}>
             {analyze.isPending ? "starting…" : "analyse"}
           </button>
@@ -91,11 +92,11 @@ export function CompanyDetailPage() {
         </div>
       )}
 
-      {brief && (
-        <div style={{ margin: "8px 0" }}>
-          <BriefCard brief={brief} ticker={company.ticker} name={company.name} showIdentity={false} />
-        </div>
-      )}
+      {/* The case replaces the verdict card rather than sitting beside it.
+          They said the same thing in two places, and the case says it in the
+          order a reader should take it, with the objection surfaced and the
+          contradictions folded in at the top where they belong. */}
+      <CaseFilePanel ticker={company.ticker} />
 
       <div className="stat-strip" style={{ marginBottom: 8 }}>
         <Stat
@@ -164,6 +165,10 @@ export function CompanyDetailPage() {
               is available for the whole universe rather than the few companies
               deep reading has reached. */}
           <FactorPanel ticker={company.ticker} />
+
+          {/* The standing view, beside the numbers rather than buried below
+              the findings: it is what every arriving filing is scored against. */}
+          <WatchingPanel ticker={company.ticker} />
 
           {/* Filed facts first, model-derived tone last. Insider trades and
               short interest are things that happened and are checkable; the

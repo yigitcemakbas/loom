@@ -70,9 +70,9 @@ export function FundamentalsPage() {
             <tr>
               <th>Tkr</th>
               <th>Company</th>
-              <th className="num">Score</th>
-              <th className="num">Health</th>
               <th>Stands out on</th>
+              <th className="num">Health</th>
+              <th className="num" title="Average rank across themes. Measured as no better than chance; kept as a rough ordering only.">Rank</th>
             </tr>
           </thead>
           <tbody>
@@ -84,22 +84,25 @@ export function FundamentalsPage() {
                   </Link>
                 </td>
                 <td className="dim prose-wrap">{row.name}</td>
-                <td className="num">
-                  <span className={scoreTone(row.composite)}>{row.composite.toFixed(2)}</span>
-                  {/* The measure count travels with the score everywhere it is
-                      shown. A 0.82 from four measures and a 0.82 from eleven
-                      are different claims and look identical without it. */}
+                <td className="dim prose-wrap" style={{ fontSize: 10.5 }}>
+                  {row.extremes.length === 0
+                    ? <span className="faint">nothing unusual</span>
+                    : row.extremes.map((k) => FACTOR_LABELS[k] ?? k).join(", ")}
+                </td>
+                {/* Deliberately quiet. Two independent backtests over 203
+                    rebalances measured this number at t=-0.07 and t=-0.42,
+                    which is indistinguishable from zero, so it is kept as a
+                    rough sort key and stripped of the authority that a bold
+                    figure in a leading column carries. The readings beside it
+                    are the ones that held up. */}
+                <td className="num dim" style={{ fontSize: 10 }}>
+                  {row.composite.toFixed(2)}
                   <span className="faint" style={{ fontSize: 9 }}> /{row.factor_count}</span>
                 </td>
                 <td className="num dim">
                   {row.health_available
                     ? `${row.health_passed}/${row.health_available}`
                     : "-"}
-                </td>
-                <td className="dim prose-wrap" style={{ fontSize: 10.5 }}>
-                  {row.extremes.length === 0
-                    ? <span className="faint">nothing unusual</span>
-                    : row.extremes.map((k) => FACTOR_LABELS[k] ?? k).join(", ")}
                 </td>
               </tr>
             ))}
@@ -108,18 +111,18 @@ export function FundamentalsPage() {
       </div>
 
       <p className="today-uncovered">
-        Score is the average of where a company ranks among comparable companies
-        on each measure, from 0 (worst) to 1 (best). Health is how many standard
-        fundamental tests it passes, out of those Loom has the figures to run.
-        A high score is not a recommendation: these measures describe what has
-        already been reported, and none of them knows what a share costs.
+        "Stands out on" lists the measures where this company sits in the top or
+        bottom tenth of comparable companies. Those are the readings worth your
+        attention. Health is how many standard fundamental tests it passes, out of
+        those Loom has the figures to run.
+        <br /><br />
+        Rank averages a company's standing across every theme. Loom backtested it
+        over 203 rebalances and sixteen years and measured it as no better than
+        chance, so it is shown only as a rough ordering and should carry no weight
+        in a decision. The individual measures held up considerably better than
+        their average did.
       </p>
     </div>
   );
 }
 
-function scoreTone(score: number): string {
-  if (score >= 0.65) return "value-positive";
-  if (score <= 0.35) return "value-negative";
-  return "";
-}

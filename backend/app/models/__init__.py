@@ -3,6 +3,7 @@ registers all of them on Base.metadata, this is what Alembic autogenerate
 (and anything else needing the full metadata) should import.
 """
 
+from app.models.account import LoginCode, Position, Session, User  # noqa: F401
 from app.models.brief import CompanyBrief, Stance  # noqa: F401
 from app.models.company import Company, CompanyTier  # noqa: F401
 from app.models.document import RawDocument, SourceType  # noqa: F401

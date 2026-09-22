@@ -57,6 +57,40 @@ class Settings(BaseSettings):
 
     finnhub_api_key: str = ""
 
+    # Sign-in code delivery. Optional by design: with no SMTP configured the
+    # code is written to the server log, which is a legitimate channel for an
+    # install running on the machine of the person signing in, and it keeps
+    # Loom free of a paid email provider. Credentials arrive through the same
+    # /run/secrets mount as every other secret, never as environment variables.
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+    smtp_use_ssl: bool = False
+    # STARTTLS upgrade on a plain connection. Separate from smtp_use_ssl
+    # (which dials TLS from the first byte) because providers differ: 465 is
+    # implicit TLS, 587 is STARTTLS, and a local catcher on the same Docker
+    # bridge supports neither and fails if asked.
+    smtp_starttls: bool = True
+
+    # Usernames that receive admin on sign-up, and on their next sign-in if
+    # the list changes later. Kept in configuration rather than in the database
+    # so it survives a reset: a "first account wins" rule quietly hands the
+    # instance to whoever registers first after a wipe, which is the wrong
+    # default for something that can be redeployed.
+    #
+    # Comma separated, compared case-insensitively.
+    admin_usernames: str = ""
+
+    @property
+    def admin_username_set(self) -> set[str]:
+        return {
+            name.strip().lower()
+            for name in self.admin_usernames.split(",")
+            if name.strip()
+        }
+
     # Phase 3: periodic re-ingest + re-analysis of every watchlist ticker, so
     # the dashboard stays current without anyone running a CLI command.
     # Disabled during tests and any run that only wants the API surface.

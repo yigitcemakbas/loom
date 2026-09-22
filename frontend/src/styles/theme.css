@@ -1035,3 +1035,844 @@ tr.detail-row > td {
   color: var(--text-faint);
   font-style: italic;
 }
+
+/* ---- disagreement -------------------------------------------------------
+   Given more visual weight than the verdict it sits above, which is the whole
+   argument for the panel. Every other output on the page is an average, and
+   an average of two sources pointing opposite ways is the one number that
+   destroys the information it was built from. */
+.panel-contradiction { border-color: var(--accent-dim); }
+
+.contradiction {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.contradiction:last-of-type { border-bottom: none; }
+.contradiction h4 {
+  margin: 0 0 7px;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* The two sides sit side by side at equal weight on a wide screen and stack
+   on a narrow one. Equal weight matters: showing the optimistic reading
+   larger, or first and larger, would be taking the side the panel refuses
+   to take. */
+.contradiction-sides {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 7px;
+}
+@media (max-width: 720px) {
+  .contradiction-sides { grid-template-columns: 1fr; }
+}
+.contradiction-sides p {
+  margin: 0;
+  padding: 7px 9px;
+  font-size: 11.5px;
+  line-height: 1.5;
+  background: var(--bg-inset);
+  border-radius: 3px;
+  min-width: 0;
+}
+.side-better { border-left: 2px solid var(--positive); color: var(--text-dim); }
+.side-worse  { border-left: 2px solid var(--negative); color: var(--text-dim); }
+.side-mark { font-size: 9px; }
+.side-better .side-mark { color: var(--positive); }
+.side-worse .side-mark { color: var(--negative); }
+
+/* What the disagreement implies and what would settle it. This is the part
+   that makes it a thesis rather than an observation. */
+.contradiction-why {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.contradiction-note {
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 10px;
+  line-height: 1.5;
+  border-top: 1px solid var(--border);
+}
+
+.contradiction-agree {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+/* ---- what moved ---------------------------------------------------------
+   The first thing on the page, and the reason to open Loom rather than to
+   consult it. Given real vertical space: a reader who has to hunt for what
+   changed will stop looking for it. */
+.change-feed { margin-bottom: 18px; }
+
+.change-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+.change-head h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.change-group { margin-bottom: 12px; }
+.change-group h3 {
+  margin: 0 0 5px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.change-row {
+  display: grid;
+  /* Fixed ticker column so the sentences line up down the page and can be
+     read as a list rather than as a ragged stack. */
+  grid-template-columns: 58px 1fr auto;
+  gap: 10px;
+  align-items: start;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-left-width: 2px;
+  border-radius: 3px;
+  margin-bottom: 4px;
+  background: var(--bg-panel);
+  /* Grid children default to min-width:auto, which lets a long headline
+     expand the column past the container instead of wrapping. */
+  min-width: 0;
+}
+.change-row > * { min-width: 0; }
+
+/* Colour carries the kind, so the three are distinguishable at a glance
+   without a label taking up a column. */
+.change-row.verdict { border-left-color: var(--accent); }
+.change-row.factor  { border-left-color: var(--border-strong); }
+.change-row.event   { border-left-color: var(--border-strong); }
+.change-row.prominent { background: var(--bg-inset); }
+
+.change-ticker {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+}
+.change-ticker:hover { text-decoration: underline; }
+
+.change-headline {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text);
+  font-weight: 600;
+}
+.change-row:not(.prominent) .change-headline { font-weight: 500; }
+
+.change-detail {
+  margin: 2px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.change-when {
+  font-size: 10px;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+
+.change-quiet {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--bg-panel);
+}
+
+@media (max-width: 620px) {
+  .change-row { grid-template-columns: 1fr; }
+  .change-when { grid-column: 1; }
+}
+
+/* ---- search -------------------------------------------------------------
+   First item on the top strip. A research tool without a way to type a ticker
+   is a set of pages you read rather than a thing you use. */
+.company-search { position: relative; margin-right: 12px; }
+.search-input {
+  width: 190px;
+  padding: 3px 7px;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--accent-dim); }
+.search-input::placeholder { color: var(--text-faint); }
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0;
+  z-index: 40;
+  width: 320px;
+  max-width: 90vw;
+  margin: 0;
+  padding: 3px;
+  list-style: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 3px;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+}
+.search-results li {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 5px 7px;
+  border-radius: 2px;
+  cursor: pointer;
+  min-width: 0;
+}
+.search-results li.highlighted { background: var(--bg-inset); }
+.search-ticker { font-size: 11.5px; font-weight: 650; color: var(--accent); }
+.search-name {
+  font-size: 10.5px;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.search-empty { font-size: 10.5px; color: var(--text-faint); cursor: default; }
+
+/* ---- tracking -----------------------------------------------------------
+   A quiet, reversible preference. It changes what Loom shows first, not what
+   Loom ingests, and a prominent control would imply otherwise. */
+.track-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text-faint);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.track-btn:hover:not(:disabled) { color: var(--text-dim); border-color: var(--border); }
+.track-btn.on { color: var(--accent); }
+.track-btn:disabled { opacity: 0.4; cursor: default; }
+.track-btn.compact { font-size: 12px; padding: 0 3px; }
+
+/* ---- the standing view --------------------------------------------------
+   What every arriving filing is scored against. Shown so the fast path's
+   score is a conclusion a reader can check rather than an assertion. */
+.prior-summary {
+  margin: 0;
+  padding: 9px 11px;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  border-bottom: 1px solid var(--border);
+}
+.watch-list { display: flex; flex-direction: column; }
+.watch-item {
+  padding: 7px 11px;
+  border-bottom: 1px solid var(--border);
+  border-left: 2px solid var(--border-strong);
+  min-width: 0;
+}
+.watch-item.positive { border-left-color: var(--positive); }
+.watch-item.negative { border-left-color: var(--negative); }
+.watch-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.watch-topic { font-size: 11.5px; font-weight: 600; color: var(--text); }
+.watch-severity {
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.watch-why { margin: 3px 0 0; font-size: 10.5px; line-height: 1.5; color: var(--text-dim); }
+
+/* The literal phrases the matcher fires on. Unglamorous, and the thing that
+   makes the claim checkable rather than magical. */
+.watch-keywords { margin: 5px 0 0; display: flex; flex-wrap: wrap; gap: 3px; }
+.keyword {
+  padding: 0 4px;
+  font-size: 9.5px;
+  color: var(--text-faint);
+  background: var(--bg-inset);
+  border-radius: 2px;
+}
+.watch-note { margin: 0; padding: 7px 11px; font-size: 10px; line-height: 1.5; }
+
+/* ---- account in the rail ------------------------------------------------ */
+.sidebar-account {
+  margin-top: auto;
+  padding: 9px 10px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.account-email {
+  font-size: 9.5px;
+  color: var(--text-faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.account-signout {
+  align-self: flex-start;
+  padding: 0;
+  font-family: inherit;
+  font-size: 9.5px;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ---- portfolio ---------------------------------------------------------- */
+.portfolio-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.portfolio-figure {
+  padding: 9px 11px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  min-width: 0;
+}
+.pf-label {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.pf-value {
+  margin-top: 3px;
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.pf-sub { margin-top: 2px; font-size: 9.5px; color: var(--text-faint); }
+
+.position-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-inset);
+}
+.pos-input {
+  width: 130px;
+  padding: 4px 7px;
+  font-family: inherit;
+  font-size: 11px;
+  color: var(--text);
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  outline: none;
+}
+.pos-input:focus { border-color: var(--accent-dim); }
+
+.row-action {
+  padding: 0 4px;
+  font-family: inherit;
+  font-size: 10px;
+  color: var(--text-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.row-action:hover { color: var(--text-dim); }
+.row-action.danger:hover { color: var(--negative); }
+
+/* The rail becomes a column so the account block can sit at its foot. */
+.sidebar { display: flex; flex-direction: column; }
+.sidebar nav { flex: 1 1 auto; }
+
+/* ---- the front door -----------------------------------------------------
+   Two panels: what Loom is on the left, the form on the right. The left half
+   is not decoration. A signed-out person has no other way to learn what this
+   is, and a bare form on a black page tells them nothing at all.
+   Collapses to the form alone on a phone, where a pitch above a login is
+   something people scroll past rather than read. */
+.auth-shell {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  min-height: 100vh;
+  background: var(--bg);
+}
+@media (max-width: 860px) {
+  .auth-shell { grid-template-columns: 1fr; }
+  .auth-pitch { display: none; }
+}
+
+.auth-pitch {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 56px 54px;
+  border-right: 1px solid var(--border);
+  /* A single very soft wash, so the panel reads as a surface rather than as a
+     gradient somebody was proud of. */
+  background:
+    radial-gradient(900px 520px at 12% 18%, rgba(201, 162, 77, 0.055), transparent 62%),
+    var(--bg-panel);
+  min-width: 0;
+}
+.auth-brand {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.34em;
+  color: var(--accent);
+  margin-bottom: 30px;
+}
+.auth-headline {
+  margin: 0 0 14px;
+  font-size: 38px;
+  line-height: 1.08;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.auth-sub {
+  margin: 0 0 26px;
+  max-width: 44ch;
+  font-size: 13px;
+  line-height: 1.68;
+  color: var(--text-dim);
+}
+.auth-points { margin: 0; padding: 0; list-style: none; max-width: 46ch; }
+.auth-points li {
+  position: relative;
+  margin-bottom: 13px;
+  padding-left: 16px;
+  font-size: 12px;
+  line-height: 1.62;
+  color: var(--text-dim);
+}
+.auth-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-dim);
+}
+.auth-points strong { color: var(--text); font-weight: 600; }
+
+.auth-panel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 28px;
+  min-width: 0;
+}
+.auth-card { width: 100%; max-width: 348px; }
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  margin-bottom: 24px;
+  padding: 2px;
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.auth-tabs button {
+  padding: 7px;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-faint);
+  background: transparent;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.auth-tabs button.active { color: var(--text); background: var(--bg-panel); }
+
+.auth-field { display: block; margin-bottom: 15px; }
+.auth-label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.auth-hint { display: block; margin-top: 5px; font-size: 10.5px; color: var(--text-faint); }
+.auth-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.12s ease;
+}
+.auth-input:focus { border-color: var(--accent-dim); }
+/* A name that cannot be claimed is marked at the field, while it is being
+   typed, rather than after a submit that fails. */
+.auth-input.invalid { border-color: var(--negative); }
+.auth-input::placeholder { color: var(--text-faint); }
+
+/* Six digits read as six digits, not as a number. */
+.auth-code {
+  text-align: center;
+  font-size: 26px;
+  letter-spacing: 0.34em;
+  text-indent: 0.34em;
+  padding: 13px;
+  margin-bottom: 15px;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 11px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 650;
+  letter-spacing: 0.03em;
+  color: #15100a;
+  background: var(--accent);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity 0.12s ease;
+}
+.auth-btn:hover:not(:disabled) { opacity: 0.9; }
+.auth-btn:disabled { opacity: 0.35; cursor: default; }
+
+.auth-verify-head { margin-bottom: 14px; }
+.auth-verify-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.auth-verify-email {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.auth-links { display: flex; justify-content: space-between; margin-top: 13px; }
+.auth-link {
+  padding: 0;
+  font-family: inherit;
+  font-size: 10.5px;
+  color: var(--text-faint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.auth-link:hover:not(:disabled) { color: var(--text-dim); }
+.auth-link:disabled { opacity: 0.4; cursor: default; }
+
+.auth-fine { margin: 13px 0 0; font-size: 10.5px; line-height: 1.6; color: var(--text-faint); }
+.auth-note {
+  margin: 15px 0 0;
+  padding: 9px 11px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-dim);
+  background: var(--bg-inset);
+  border-left: 2px solid var(--accent-dim);
+  border-radius: 3px;
+}
+.auth-error {
+  margin: 13px 0 0;
+  padding: 9px 11px;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--negative);
+  background: var(--bg-inset);
+  border-left: 2px solid var(--negative);
+  border-radius: 3px;
+}
+
+
+/* ---- first run ----------------------------------------------------------
+   A new account follows nothing, so Today is genuinely empty. Saying so, and
+   saying what to do about it, beats filling the page with a hundred and thirty
+   companies nobody asked about. */
+.today-onboard {
+  max-width: 54ch;
+  margin: 46px auto;
+  text-align: center;
+}
+.today-onboard h1 {
+  margin: 0 0 12px;
+  font-size: 23px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.today-onboard p {
+  margin: 0 0 22px;
+  font-size: 13px;
+  line-height: 1.68;
+  color: var(--text-dim);
+}
+.today-onboard-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 11px;
+  font-size: 11px;
+}
+.today-onboard-btn {
+  display: inline-block;
+  width: auto;
+  padding: 10px 20px;
+  text-decoration: none;
+}
+.today-onboard kbd {
+  padding: 1px 5px;
+  font-family: inherit;
+  font-size: 10px;
+  color: var(--text-dim);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+/* ---- the case file ------------------------------------------------------
+   One argument, in the order it should be read. The ranking is the design:
+   a reader scanning a list stops near the top, so what sits there is doing
+   more for them than any amount of detail further down. */
+.case { margin: 10px 0 16px; }
+
+.case-head { margin-bottom: 14px; }
+.case-verdict-block { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.case-verdict {
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+.case-held {
+  padding: 1px 7px;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  border-radius: 10px;
+}
+.case-headline {
+  margin: 6px 0 0;
+  max-width: 78ch;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+.case-confidence { margin: 5px 0 0; font-size: 10.5px; color: var(--text-faint); }
+
+/* Its own block above the list, never a row inside it. A page showing only
+   the case for a conclusion is a sales pitch. */
+.case-counter {
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  background: var(--bg-inset);
+  border-left: 2px solid var(--accent);
+  border-radius: 3px;
+}
+.case-counter-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.case-counter-headline {
+  margin: 5px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--text);
+}
+.case-counter-detail {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+
+.case-points { margin: 0; padding: 0; list-style: none; }
+.case-point {
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  gap: 9px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.case-point > * { min-width: 0; }
+.case-point:last-child { border-bottom: none; }
+
+.case-mark { font-size: 9px; line-height: 1.9; }
+.case-point.for .case-mark { color: var(--positive); }
+.case-point.against .case-mark { color: var(--negative); }
+.case-point.unclear .case-mark { color: var(--accent); }
+
+.case-point-headline {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--text);
+}
+/* The rank is shown because the order is a claim, and a reader is owed the
+   fact that Loom put this third rather than leaving them to infer it. */
+.case-rank {
+  display: inline-block;
+  min-width: 15px;
+  margin-right: 6px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-faint);
+}
+.case-point-detail {
+  margin: 3px 0 0;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+
+.case-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-top: 5px;
+}
+.case-source { font-size: 10px; color: var(--text-faint); }
+.case-toggle {
+  padding: 0;
+  font-family: inherit;
+  font-size: 10px;
+  color: var(--text-dim);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.case-evidence { margin-top: 7px; }
+.case-quote {
+  margin: 0;
+  padding: 7px 10px;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  background: var(--bg-inset);
+  border-left: 2px solid var(--border-strong);
+  border-radius: 2px;
+}
+.case-settles {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.case-settles strong { color: var(--text); font-weight: 600; }
+
+.case-section { margin-top: 16px; }
+.case-section h4, .case-gaps h4 {
+  margin: 0 0 6px;
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.case-gaps { margin-top: 16px; }
+.case-gaps p {
+  margin: 0 0 6px;
+  max-width: 78ch;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+/* ---- digest preference --------------------------------------------------
+   Next to what it emails about. A preference buried in a settings screen is
+   a preference nobody finds, and one that is hard to switch off does not
+   deserve the inbox. */
+.digest-setting {
+  margin-top: 14px;
+  padding: 10px 12px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+.digest-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.digest-label { font-size: 11.5px; font-weight: 600; color: var(--text); }
+.digest-message {
+  margin: 7px 0 0;
+  font-size: 10.5px;
+  line-height: 1.55;
+  color: var(--text-faint);
+}
+.digest-message.warn { color: var(--accent); }

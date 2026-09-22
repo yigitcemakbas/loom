@@ -5,6 +5,8 @@ from datetime import datetime
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Query
 
 from app.api.deps import CompanyRepo, DbSession, DocumentRepo, SignalRepo
+from app.api.routes.auth import CurrentUser
+from app.models.account import User
 from app.models.signal import SignalType
 from app.schemas.signal import (
     AnalysisTriggerResponse,
@@ -133,15 +135,24 @@ def get_sentiment_series(ticker: str, signal_repo: SignalRepo, company_repo: Com
     ]
 
 
-@router.post("/admin/analyze/{ticker}", response_model=AnalysisTriggerResponse)
+@router.post("/companies/{ticker}/analyze", response_model=AnalysisTriggerResponse)
 def trigger_analysis(
     ticker: str,
     background_tasks: BackgroundTasks,
     db: DbSession,
     company_repo: CompanyRepo,
     force: bool = False,
+    _: User = CurrentUser,
 ):
-    """Queue analysis of a ticker's recent filings, run in the background."""
+    """Queue analysis of a ticker's recent filings, run in the background.
+
+    Moved off the /admin path and given a sign-in requirement, which were two
+    separate mistakes. It was never an administrative action: reading filings
+    is what Loom is for and every account should be able to ask for it. But it
+    was also open to anybody who could reach the port, and it spends model
+    quota, so an unauthenticated caller could exhaust a shared free tier on
+    somebody else's instance.
+    """
     company = company_repo.get_by_ticker(ticker)
     if company is None:
         raise HTTPException(status_code=404, detail=f"Unknown ticker {ticker!r}")

@@ -57,9 +57,10 @@ from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Optional, Sequence
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.ingestion.prices import PriceSeries, get_price_source
+from app.ingestion.prices import PricePoint, PriceSeries, get_price_source
 from app.repositories.assessment_repository import AssessmentRepository
 from app.repositories.company_repository import CompanyRepository
 from app.repositories.signal_repository import SignalRepository
@@ -370,20 +371,88 @@ def summarise(subject: str, horizon: int, outcomes: list[Outcome], skipped: int)
 
 
 class _PriceCache:
-    """One fetch per ticker for a whole evaluation run."""
+    """Prices for a whole evaluation run, read from storage rather than fetched.
 
-    def __init__(self, range_key: str = "1Y"):
+    This used to call the provider once per ticker with a one-year window, and
+    it was the quiet reason nothing could be measured. Two failures, both
+    invisible in the output except as a rising "skipped, no prices" count:
+
+    The fetch is live, so a run's answer depended on whether an undocumented
+    endpoint felt like serving that minute. Two runs over identical data could
+    disagree, which means no result from this module was ever reproducible.
+    Measured on the day this was written, 214 of 214 event assessments were
+    skipped for want of a price while half a million bars sat in the database.
+
+    And a one-year window silently truncated the sample. Anything older than a
+    year was unscoreable no matter how good the data was.
+
+    Both go away by reading `price_bars`, which the daily job keeps current.
+    One query for the whole run, split in memory.
+
+    **Adjusted closes, always.** Every number this module produces is a return
+    across time, and a raw close reads a two-for-one split as a fifty percent
+    crash. The unadjusted series has exactly one legitimate use, pairing with a
+    share count for a market capitalisation, and that is not what happens here.
+    """
+
+    # Session timestamps are placed at UTC midnight, which keeps the entry rule
+    # this module already had: the first session strictly after the event. An
+    # event at any time on a trading day therefore enters at the NEXT session's
+    # close, never that day's. That is conservative by a session in some cases
+    # and it errs toward understating an edge, which is the right direction for
+    # a measurement whose purpose is to avoid fooling us.
+    def __init__(self, db: Optional[Session] = None, range_key: str = "1Y"):
+        self.db = db
         self.range_key = range_key
         self._series: dict[str, Optional[PriceSeries]] = {}
+        self._loaded = False
+
+    def _load(self) -> None:
+        if self._loaded or self.db is None:
+            self._loaded = True
+            return
+        from app.models.company import Company
+        from app.models.price_bar import PriceBar
+
+        rows = self.db.execute(
+            select(PriceBar.session_date, PriceBar.adjusted_close, Company.ticker)
+            .join(Company, Company.id == PriceBar.company_id)
+            .order_by(Company.ticker, PriceBar.session_date)
+        ).all()
+
+        points: dict[str, list[PricePoint]] = {}
+        for session_date, adjusted, ticker in rows:
+            stamp = int(
+                datetime(
+                    session_date.year, session_date.month, session_date.day,
+                    tzinfo=timezone.utc,
+                ).timestamp()
+            )
+            points.setdefault(ticker, []).append(PricePoint(t=stamp, c=float(adjusted)))
+
+        for ticker, series in points.items():
+            self._series[ticker] = PriceSeries(
+                ticker=ticker, range="stored", currency=None,
+                points=series, previous_close=None,
+            )
+        self._loaded = True
+        logger.info("Loaded stored prices for %d tickers.", len(self._series))
 
     def get(self, ticker: str) -> Optional[PriceSeries]:
-        if ticker not in self._series:
-            try:
-                self._series[ticker] = get_price_source().get(ticker, self.range_key)
-            except Exception:
-                logger.warning("Prices unavailable for %s", ticker, exc_info=True)
-                self._series[ticker] = None
-        return self._series[ticker]
+        self._load()
+        if ticker in self._series:
+            return self._series[ticker]
+
+        # Nothing stored for this ticker. Falling back to the provider keeps a
+        # newly added company measurable before the daily job has reached it,
+        # and a failure here is a missing ticker rather than a broken run.
+        try:
+            fetched = get_price_source().get(ticker, self.range_key)
+        except Exception:
+            logger.warning("Prices unavailable for %s", ticker, exc_info=True)
+            fetched = None
+        self._series[ticker] = fetched
+        return fetched
 
 
 def _score_outcomes(raw: list[Outcome], horizon: int, cache: _PriceCache) -> tuple[list[Outcome], int]:
@@ -432,7 +501,7 @@ def evaluate_signals(db: Session, horizon: int = 1, limit: int = 2000) -> Evalua
         if s.company_id in tickers
     ]
 
-    scored, skipped = _score_outcomes(raw, horizon, _PriceCache())
+    scored, skipped = _score_outcomes(raw, horizon, _PriceCache(db))
     return summarise("signals", horizon, cluster_by_event(scored), skipped)
 
 
@@ -458,7 +527,7 @@ def evaluate_assessments(db: Session, horizon: int = 1, limit: int = 2000) -> Ev
         if a.company_id in tickers
     ]
 
-    scored, skipped = _score_outcomes(raw, horizon, _PriceCache())
+    scored, skipped = _score_outcomes(raw, horizon, _PriceCache(db))
     return summarise("assessments", horizon, cluster_by_event(scored), skipped)
 
 

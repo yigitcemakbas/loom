@@ -7,13 +7,20 @@ from fastapi.middleware.cors import CORSMiddleware
 import app.models  # noqa: F401  (registers all models before any relationship resolution)
 from app.config import settings
 from app.api.routes import (
+    admin,
     assessments,
+    auth,
     briefs,
+    case,
+    changes,
     companies,
+    contradictions,
     earnings,
     exposure,
     factors,
+    positions,
     prices,
+    priors,
     dashboard,
     documents,
     facts,
@@ -45,6 +52,44 @@ def _configure_logging() -> None:
         logging.getLogger(noisy).setLevel(logging.WARNING)
 
 
+def _reconcile_admins() -> None:
+    """Make the database agree with ADMIN_USERNAMES on every boot.
+
+    The policy is also applied at registration and on each sign-in, which
+    covers the normal cases. This covers the two that are easy to miss: an
+    account that existed before a username was added to the list, and an
+    account whose row was edited directly. Without it, promoting somebody
+    requires them to sign in again before the change takes effect, which looks
+    like the setting not working.
+
+    Idempotent and cheap: one statement over a table with as many rows as there
+    are people using the instance. Guarded because a database that is not ready
+    must not stop the API coming up.
+    """
+    from sqlalchemy import select
+
+    from app.db.session import SessionLocal
+    from app.models.account import User
+    from app.services.auth import apply_admin_policy
+
+    try:
+        with SessionLocal() as db:
+            changed = 0
+            for user in db.execute(select(User)).scalars():
+                before = user.is_admin
+                apply_admin_policy(user)
+                changed += int(before != user.is_admin)
+            if changed:
+                db.commit()
+                logging.getLogger(__name__).info(
+                    "Admin policy applied: %d account(s) changed.", changed
+                )
+    except Exception:
+        logging.getLogger(__name__).warning(
+            "Could not reconcile admin accounts at startup.", exc_info=True
+        )
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     """Background refresh lives for exactly as long as the app does.
@@ -54,6 +99,7 @@ async def lifespan(_: FastAPI):
     that then competes for the database.
     """
     _configure_logging()
+    _reconcile_admins()
     start_scheduler()
     start_watcher()
     yield
@@ -76,6 +122,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router)
+app.include_router(admin.router)
+app.include_router(positions.router)
 app.include_router(companies.router)
 app.include_router(watchlists.router)
 app.include_router(documents.router)
@@ -90,6 +139,10 @@ app.include_router(tape.router)
 app.include_router(assessments.router)
 app.include_router(exposure.router)
 app.include_router(factors.router)
+app.include_router(contradictions.router)
+app.include_router(changes.router)
+app.include_router(case.router)
+app.include_router(priors.router)
 
 
 @app.get("/health")

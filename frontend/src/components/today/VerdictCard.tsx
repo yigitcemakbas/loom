@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useBriefHorizon } from "../../hooks/useBriefs";
+import { TrackButton } from "../tracking/TrackButton";
 import type { Brief, EarningsOutlook } from "../../types/models";
 import {
   confidencePhrase,
@@ -56,6 +57,7 @@ export function VerdictCard({ brief, ticker, name, earnings }: Props) {
         <div>
           <Link className="verdict-ticker" to={`/companies/${ticker}`}>{ticker}</Link>
           <span className="verdict-name">{name}</span>
+          <TrackButton ticker={ticker} compact />
         </div>
         {reporting && (
           <span className={imminent ? "tag tag-solid" : "tag tag-accent"}>{reporting}</span>

@@ -383,3 +383,157 @@ export interface FactorLeaderboardRow {
   health_available: number | null;
   extremes: string[];
 }
+
+
+/** Two pieces of evidence about one company that do not agree.
+ *
+ *  Carries no direction and no score, deliberately. A contradiction is not
+ *  bullish or bearish; it is a statement that Loom's own sources are
+ *  inconsistent and that the reader should look. Giving it a direction would
+ *  be inventing the synthesis it exists to avoid. */
+export interface Contradiction {
+  key: string;
+  headline: string;
+  says_better: string;
+  says_worse: string;
+  why_it_matters: string;
+  signal_ids: string[];
+  factor_keys: string[];
+}
+
+export interface Contradictions {
+  ticker: string;
+  contradictions: Contradiction[];
+  /** What was compared, so an empty list reads as "these agree" rather than
+   *  as "Loom did not look". */
+  compared_sources: string[];
+}
+
+
+/** Something that moved since the reader last looked.
+ *
+ *  Three kinds, ordered by how much they should interrupt someone: a verdict
+ *  reversing, a factor crossing into or out of the extremes of its peer group,
+ *  and a filing matching a standing expectation. */
+export type ChangeKind = "verdict" | "factor" | "event";
+
+export interface Change {
+  ticker: string;
+  kind: ChangeKind;
+  headline: string;
+  detail: string;
+  occurred_at: string;
+  factor_key: string | null;
+}
+
+export interface Changes {
+  days: number;
+  changes: Change[];
+}
+
+
+/** One thing Loom decided in advance would be significant for a company.
+ *
+ *  The keywords are shown because they are what turns "Loom noticed this"
+ *  into something a reader can check: the fast path matches these literal
+ *  phrases against an arriving filing, and nothing else. */
+export interface WatchItem {
+  topic: string;
+  direction: string | null;
+  severity: string | null;
+  why_it_matters: string | null;
+  keywords: string[];
+}
+
+export interface CompanyPrior {
+  ticker: string;
+  summary: string;
+  generated_at: string;
+  watch_items: WatchItem[];
+  expectations: Record<string, unknown>;
+  positioning: Record<string, unknown>;
+  already_priced: unknown[];
+  source_signal_count: number;
+  matched: number;
+  notable: number;
+}
+
+export interface PriorCoverageRow {
+  ticker: string;
+  name: string;
+  has_prior: boolean;
+  generated_at: string | null;
+  watch_item_count: number;
+  matched: number;
+  notable: number;
+}
+
+
+/** A company a user owns or is watching.
+ *
+ *  A watch and a holding are the same object: the difference is whether
+ *  `shares` is set, which is one number rather than two concepts. */
+export interface Position {
+  ticker: string;
+  name: string;
+  shares: number | null;
+  cost_basis: number | null;
+  note: string | null;
+  opened_at: string | null;
+  is_held: boolean;
+  /** Live. Null when the provider is unreachable, never zero: a zero would
+   *  read as a wipeout rather than as a missing quote. */
+  last_price: number | null;
+  market_value: number | null;
+  unrealised: number | null;
+  unrealised_percent: number | null;
+  stance: Stance | null;
+  headline: string | null;
+  numbers_percentile: number | null;
+}
+
+export interface Portfolio {
+  positions: Position[];
+  held_count: number;
+  watching_count: number;
+  total_value: number | null;
+  total_cost: number | null;
+  total_unrealised: number | null;
+}
+
+
+/** One thing that should move a reader's view, and by how much.
+ *
+ *  `weight` is a stated ordering, not a calibrated scale: it decides what a
+ *  reader sees first and nothing else. `side` is "for", "against" or
+ *  "unclear", and a contradiction is always the last of those because saying
+ *  Loom's own evidence disagrees is not an argument in a direction. */
+export interface CasePoint {
+  key: string;
+  headline: string;
+  detail: string;
+  side: "for" | "against" | "unclear";
+  weight: number;
+  source: string;
+  /** The evidence that would resolve it. Absent where Loom does not know what
+   *  would, which is more honest than inventing a test. */
+  settles_it: string | null;
+  quote: string | null;
+}
+
+export interface CaseFile {
+  ticker: string;
+  name: string;
+  stance: Stance | null;
+  headline: string;
+  confidence: number;
+  points: CasePoint[];
+  /** Kept apart from the business case: they answer different questions, and
+   *  conflating them buys a good company at any price. */
+  valuation: CasePoint[];
+  /** What Loom has not read. A page that looks complete when it is not is
+   *  worse than an obviously empty one. */
+  gaps: string[];
+  held: boolean;
+  strongest_against: CasePoint | null;
+}

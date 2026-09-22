@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useIsFetching } from "@tanstack/react-query";
 import { useApiHealth } from "../../hooks/useApiHealth";
 import { useDashboard } from "../../hooks/useDashboard";
+import { CompanySearch } from "../search/CompanySearch";
 
 function clock(d: Date): string {
   return d.toLocaleTimeString(undefined, { hour12: false });
@@ -30,6 +31,9 @@ export function TopBar() {
 
   return (
     <div className="topbar">
+      {/* First item on the strip. The first thing anyone does with a research
+          tool is look up the company they were already thinking about. */}
+      <CompanySearch />
       <span className="topbar-item">
         <span
           className="live-dot"

@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
+import { AuthProvider } from "./auth/AuthContext";
 import "./styles/theme.css";
 
 const queryClient = new QueryClient({
@@ -23,7 +24,12 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+        {/* Inside the query client, because signing out clears the cache:
+            every response was fetched as somebody, and leaving them would show
+            one account's portfolio to the next person on this browser. */}
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>,

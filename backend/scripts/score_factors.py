@@ -17,7 +17,8 @@ import time
 from datetime import date
 
 from app.db.session import SessionLocal
-from app.engine.quant.composite import build_composite, build_f_score
+from app.engine.quant.composite import build_f_score
+from app.engine.quant.relevance import weighted_composite
 from app.engine.quant.runner import persist, score_universe
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -42,7 +43,13 @@ def main() -> int:
 
         composites = {}
         for ticker, ranks in scores.ranked.items():
-            composite = build_composite(ranks)
+            # The conditional composite, matching what gets persisted: themed
+            # rather than a flat mean, with factors switched off where the
+            # economics say they do not describe this kind of company.
+            composite = weighted_composite(
+                {k: r.percentile for k, r in ranks.items()},
+                sector=scores.sector.get(ticker),
+            )
             if composite is not None:
                 composites[ticker] = composite
 

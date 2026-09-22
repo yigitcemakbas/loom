@@ -22,6 +22,7 @@ from sqlalchemy.orm import Session
 from app.engine.quant.composite import build_composite, build_f_score
 from app.engine.quant.crosssection import Ranked, rank_universe
 from app.engine.quant.factors import FACTORS, CompanyView, FactorValue, compute_all
+from app.engine.quant.relevance import weighted_composite
 from app.engine.quant.sectors import comparable_group
 from app.engine.quant.prices import PriceHistory, history_from_bars
 from app.engine.quant.series import FactSeries, observations_from_facts
@@ -52,6 +53,10 @@ class UniverseScores:
     group: dict[str, str]
     skipped_stale: list[str]
     skipped_thin: list[str]
+    # ticker -> its sector, carried so that persistence and any caller can
+    # apply the same conditional weighting the scorer used without re-querying
+    # for it.
+    sector: dict[str, Optional[str]] = field(default_factory=dict)
     # Companies with no stored price history. Valuation and momentum are absent
     # for these rather than estimated, and the count is reported because it
     # changes what a percentile on those factors means.
@@ -82,6 +87,17 @@ def _series_by_company(db: Session, companies: list[Company]) -> dict[str, FactS
         rows = grouped.get(str(company.id), [])
         out[company.ticker] = FactSeries(observations_from_facts(rows))
     return out
+
+
+def _rnd_intensity(factors: dict) -> Optional[float]:
+    """Research spending as a share of revenue, where both were computed.
+
+    Used only to decide how much book value is worth for this company: book
+    counts factories and not research, so a research-heavy company looks
+    expensive on it by construction.
+    """
+    rnd = factors.get("rnd_intensity")
+    return rnd.value if rnd is not None else None
 
 
 def _prices_by_company(db: Session, companies: list[Company]) -> dict[str, PriceHistory]:
@@ -186,6 +202,7 @@ def score_universe(
     )
     return UniverseScores(
         as_of=as_of, ranked=ranked, raw=raw, group=group,
+        sector={t: sector_by_ticker.get(t) for t in raw},
         skipped_stale=skipped_stale, skipped_thin=skipped_thin,
         without_prices=without_prices,
     )
@@ -227,8 +244,17 @@ def persist(db: Session, scores: UniverseScores) -> int:
             )
             written += 1
 
+        # Themed and condition-weighted rather than a flat mean of every
+        # factor. The flat version backtested at t=0.40 over fifty-five
+        # rebalances, because it weighted themes by how many factors happened
+        # to be written and counted a bank's leverage as a warning.
+        conditional = weighted_composite(
+            {k: r.percentile for k, r in ranks.items()},
+            sector=scores.sector.get(ticker),
+            rnd_intensity=_rnd_intensity(factors),
+        )
         composite = build_composite(ranks)
-        if composite is None:
+        if conditional is None and composite is None:
             # No row at all rather than a null-scored one. A company that could
             # not be scored must be absent from a ranking of scored companies,
             # not present with a blank.
@@ -239,14 +265,20 @@ def persist(db: Session, scores: UniverseScores) -> int:
                 company_id=company_id,
                 as_of_date=scores.as_of,
                 factor_key=COMPOSITE_KEY,
-                value=composite.score,
-                percentile=composite.score,
+                # The conditional score is the one served. The flat mean is
+                # kept beside it so the two can be backtested against each
+                # other rather than one replacing the other on assertion.
+                value=conditional.score if conditional else composite.score,
+                percentile=conditional.score if conditional else composite.score,
                 universe_size=len(scores.raw),
                 inputs={
                     "peer_group": scores.group.get(ticker),
-                    "factor_count": composite.factor_count,
-                    "factors_used": composite.factors_used,
-                    "extremes": composite.extremes,
+                    "factor_count": (conditional.factor_count if conditional else composite.factor_count),
+                    "factors_used": composite.factors_used if composite else [],
+                    "extremes": composite.extremes if composite else [],
+                    "flat_score": composite.score if composite else None,
+                    "themes": conditional.themes if conditional else {},
+                    "excluded": conditional.excluded if conditional else {},
                     "health_passed": health.passed,
                     "health_available": health.available,
                     "health_failed": health.failed_tests,

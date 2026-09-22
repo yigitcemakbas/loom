@@ -5,6 +5,7 @@ import { useDashboard } from "../hooks/useDashboard";
 import { useUpcomingEarnings } from "../hooks/useEarnings";
 import { VerdictCard } from "../components/today/VerdictCard";
 import { TickerTape } from "../components/tape/TickerTape";
+import { useHeldTickers } from "../hooks/usePortfolio";
 import { TrendingCharts } from "../components/price/TrendingCharts";
 import type { Brief } from "../types/models";
 
@@ -32,6 +33,7 @@ export function TodayPage() {
   const briefs = useBriefs(200);
   const dashboard = useDashboard();
   const earnings = useUpcomingEarnings();
+  const tracked = useHeldTickers();
 
   const nameById = useMemo(() => {
     const map = new Map<string, { ticker: string; name: string }>();
@@ -47,17 +49,37 @@ export function TodayPage() {
   }, [earnings.data]);
 
   const all = briefs.data ?? [];
+  const tickerOf = useMemo(
+    () => (b: Brief) => nameById.get(b.company_id)?.ticker ?? "",
+    [nameById],
+  );
+
+  // Only what this person follows. Today used to show every company Loom had
+  // a view on, which made it the same page for everybody and meant a new
+  // account opened onto seven strangers' companies. The whole reason accounts
+  // exist is that attention is personal.
+  const mine = useMemo(
+    () => all.filter((b) => tracked.has(tickerOf(b))),
+    [all, tracked, tickerOf],
+  );
+
   const withView = useMemo(
     () =>
-      all
+      mine
         .filter(HAS_VIEW)
         .sort(
           (a, b) =>
             (CONVICTION[b.stance] ?? 0) - (CONVICTION[a.stance] ?? 0) ||
             b.confidence - a.confidence,
         ),
-    [all],
+    [mine],
   );
+
+  // Followed, but Loom has not read enough to say anything. Counted rather
+  // than hidden: "we have nothing on four of your companies" is information,
+  // and dropping them silently would make Today look complete when it is not.
+  const mineUnread = mine.length - withView.length;
+  const following = tracked.size;
 
   // The companies the page is actually about, so the rotating chart follows
   // the argument rather than cycling through names nobody just read about.
@@ -69,13 +91,39 @@ export function TodayPage() {
     return (dashboard.data?.companies ?? []).slice(0, 8).map((c) => c.ticker);
   }, [withView, nameById, dashboard.data]);
 
-  const uncovered = all.length - withView.length;
-  const reportingSoon = (earnings.data ?? []).filter(
-    (e) => e.days_until !== null && e.days_until <= 14,
-  );
+  const reportingSoon = (earnings.data ?? [])
+    .filter((e) => e.days_until !== null && e.days_until <= 14)
+    .filter((e) => tracked.has(e.ticker));
 
   if (briefs.isLoading) {
     return <p className="empty-state">Loading…</p>;
+  }
+
+  // A new account follows nothing, so Today is empty and says why rather than
+  // showing a hundred and thirty companies nobody asked about.
+  if (following === 0) {
+    return (
+      <div>
+        <TickerTape />
+        <div className="today-onboard">
+          <h1>Start by telling Loom what you follow</h1>
+          <p>
+            Loom tracks {dashboard.data?.companies.length ?? 130} companies and has no
+            idea which of them are yours. Add the ones you own or are considering,
+            and this page becomes the handful that need you today rather than a
+            list of strangers.
+          </p>
+          <div className="today-onboard-actions">
+            <Link className="auth-btn today-onboard-btn" to="/portfolio">
+              Add your first position
+            </Link>
+            <span className="faint">
+              or press <kbd>/</kbd> and search for a ticker
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -86,12 +134,12 @@ export function TodayPage() {
         <h1>
           {withView.length === 0
             ? "Nothing to decide today"
-            : `${withView.length} ${withView.length === 1 ? "company" : "companies"} worth a look`}
+            : `${withView.length} of yours ${withView.length === 1 ? "needs" : "need"} a look`}
         </h1>
         <p className="today-sub">
           {withView.length === 0
-            ? "Loom has read the filings and found nothing that points clearly either way. That is a real answer, not a gap."
-            : "Loom read the filings, transcripts, insider trades and news, and these are the companies where the evidence actually points somewhere."}
+            ? `Loom has read what it has on your ${following === 1 ? "company" : `${following} companies`} and found nothing that points clearly either way. That is a real answer, not a gap.`
+            : "Loom read the filings, transcripts, insider trades and news for the companies you follow, and these are the ones where the evidence actually points somewhere."}
         </p>
       </header>
 
@@ -138,12 +186,14 @@ export function TodayPage() {
       {/* The ratio is the honest part. Most of the universe is tracked for
           numbers but has not been read, and a reader deserves to know the
           difference between "nothing wrong" and "not looked at". */}
-      {uncovered > 0 && (
+      {mineUnread > 0 && (
         <p className="today-uncovered">
-          Loom tracks {all.length} companies and has read enough to form a view on{" "}
-          {withView.length}. The other {uncovered} are being watched for filings, insider
-          trades and short interest, but have not been analysed deeply enough to say
-          anything yet. <Link to="/terminal">See everything in the terminal →</Link>
+          {mineUnread} of the {following} companies you follow{" "}
+          {mineUnread === 1 ? "has" : "have"} not been read deeply enough for Loom to
+          have a view. {mineUnread === 1 ? "It is" : "They are"} still watched for
+          filings, insider trades and short interest, and{" "}
+          {mineUnread === 1 ? "its" : "their"} reported numbers are scored either way.{" "}
+          <Link to="/portfolio">See your portfolio →</Link>
         </p>
       )}
     </div>

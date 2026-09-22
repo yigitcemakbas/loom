@@ -23,6 +23,38 @@ services:
       timeout: 5s
       retries: 10
 
+  # A real SMTP server, running locally, that catches every message and shows
+  # it in a browser inbox instead of sending it on.
+  #
+  # This is the honest answer to "configure an email server" for a tool that
+  # must stay free and must work on a fresh clone. The alternatives both fail
+  # one of those: a transactional provider needs an account and an API key
+  # before anybody can sign in even once, and a real relay on a residential
+  # address gets its mail refused or filed as spam by every large mailbox
+  # provider, which is worse than not sending at all because it fails silently.
+  #
+  # Mail is genuinely delivered over SMTP here, so the application path is the
+  # real one rather than a stub. Point SMTP_HOST at a provider when you want
+  # messages to leave the machine; nothing in the app changes.
+  mail:
+    image: axllent/mailpit:latest
+    container_name: loom-mail
+    restart: unless-stopped
+    environment:
+      MP_MAX_MESSAGES: 500
+      MP_SMTP_AUTH_ACCEPT_ANY: 1
+      MP_SMTP_AUTH_ALLOW_INSECURE: 1
+    ports:
+      # 8025 is the inbox in a browser. 1025 is SMTP, published so a host-side
+      # script can use it too.
+      - "8025:8025"
+      - "1025:1025"
+    healthcheck:
+      test: ["CMD", "/mailpit", "readyz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
   backend:
     build: ./backend
     container_name: loom-backend
@@ -30,6 +62,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      mail:
+        condition: service_started
     environment:
       # Container-to-container, so the host name is the service name.
       DATABASE_URL: postgresql+psycopg://loom:loom@postgres:5432/loom
@@ -55,6 +89,34 @@ services:
 
       # Off by default in a fresh container: a first-time user should choose
       # when to spend their AI quota, not have a background job start doing it.
+      # Sign-in codes go to the local mail catcher by default, so a fresh
+      # clone can create an account without any configuration at all. Override
+      # these to send through a real provider; the password belongs in
+      # ./secrets/smtp_password rather than here, for the reason above.
+      SMTP_HOST: ${SMTP_HOST:-mail}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USERNAME: ${SMTP_USERNAME:-loom}
+      SMTP_FROM: ${SMTP_FROM:-Loom <no-reply@loom.local>}
+      SMTP_USE_SSL: ${SMTP_USE_SSL:-false}
+      # Mailpit accepts any credentials; a real provider will not, and this is
+      # the one value that should come from the secrets mount.
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-local}
+      # STARTTLS is meaningless against a container on the same bridge and
+      # fails outright, so it is off for the local catcher and on for anything
+      # else.
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-false}
+
+      # Accounts that get oversight of this instance: other accounts, and the
+      # engine's internals. Everything else Loom does is available to every
+      # account, because running the engine is the product rather than a
+      # privilege.
+      #
+      # Kept here rather than in the database so it survives a reset. A "first
+      # account wins" rule quietly hands a redeployed instance to whoever
+      # registers first, which is the wrong default for something that can be
+      # wiped and brought back.
+      ADMIN_USERNAMES: ${ADMIN_USERNAMES:-yca}
+
       SCHEDULER_ENABLED: ${SCHEDULER_ENABLED:-false}
       SCHEDULER_INTERVAL_MINUTES: ${SCHEDULER_INTERVAL_MINUTES:-360}
 

@@ -63,9 +63,22 @@ CONCEPTS: dict[str, tuple[str, ...]] = {
     "shares_diluted": ("WeightedAverageNumberOfDilutedSharesOutstanding",),
 }
 
-# How far back to store. Enough to compute multi-year trends without importing
-# two decades of history nothing will read.
-DEFAULT_YEARS = 4
+# How far back to store.
+#
+# This was four years, with a comment saying that was enough for multi-year
+# trends and that nothing would read two decades of history. That was true
+# until the factor backtest existed. It reads all of it, and four years capped
+# the backtest at fifty-five rebalances, which is too few to distinguish a real
+# factor from a lucky one: the best result in the first run reached t=2.36
+# against a multiple-testing bar of 2.99. A t-statistic grows with the square
+# root of the sample, so tripling the window is worth roughly 1.8x on every
+# t in the report.
+#
+# Sixteen years reaches back past the XBRL mandate for large filers, so this
+# asks for everything the endpoint has rather than a window that will need
+# revisiting. The payload is already downloaded in full either way; the old
+# constant only decided how much of it was thrown away.
+DEFAULT_YEARS = 16
 
 # How a fact's period is classified. XBRL publishes quarterly and cumulative
 # year-to-date figures under the same concept name, so Apple's "revenue" for a

@@ -208,3 +208,260 @@ def _refresh_priors(tickers: list[str]) -> None:
             logger.exception("Prior generation failed for %s", ticker)
         finally:
             db.close()
+
+
+# ---- the quantitative half -------------------------------------------
+#
+# These four are why Loom stops needing an operator. Every one of them is
+# arithmetic over stored data: no model call, no quota, no cost, and no reason
+# for a human to be the thing that decides when they run. Until now each was a
+# script somebody had to remember, which made the whole quantitative layer a
+# snapshot of whenever it was last run by hand.
+#
+# Ordered deliberately where they share a cadence: prices before factors,
+# because valuation is a ratio to a price, and factors before briefs, because a
+# brief reads the scores.
+
+
+def run_price_refresh() -> None:
+    """Pull yesterday's closes for the universe.
+
+    Incremental by construction: sessions already stored are skipped, so the
+    daily run fetches one bar per company rather than twenty years of them.
+    """
+    from app.ingestion.prices import get_price_source
+    from app.models.price_bar import PriceBar
+    from app.repositories.company_repository import CompanyRepository
+    from sqlalchemy import select
+
+    db = SessionLocal()
+    try:
+        source = get_price_source()
+        written = 0
+        for company in CompanyRepository(db).list_all():
+            existing = set(db.execute(
+                select(PriceBar.session_date).where(PriceBar.company_id == company.id)
+            ).scalars())
+            # A short window: the backfill established the history, and this
+            # only has to close the gap since the last run.
+            for bar in source.daily_history(company.ticker, years=1):
+                if bar.session_date in existing:
+                    continue
+                db.add(PriceBar(
+                    company_id=company.id, session_date=bar.session_date,
+                    close=bar.close, adjusted_close=bar.adjusted_close, volume=bar.volume,
+                ))
+                written += 1
+            db.commit()
+        logger.info("Price refresh: %d new sessions stored.", written)
+    except Exception:
+        logger.exception("Price refresh failed.")
+    finally:
+        db.close()
+
+
+def run_factor_scoring() -> None:
+    """Rescore the universe on its filed financials.
+
+    Weekly rather than daily: the fundamentals change only when somebody files,
+    and the price-dependent factors move slowly enough that a daily rescore
+    would burn cycles to redraw the same picture.
+    """
+    from app.engine.quant.runner import persist, score_universe
+
+    db = SessionLocal()
+    try:
+        scores = score_universe(db)
+        written = persist(db, scores)
+        logger.info(
+            "Factor scoring: %d companies, %d rows written.", len(scores.raw), written,
+        )
+    except Exception:
+        logger.exception("Factor scoring failed.")
+    finally:
+        db.close()
+
+
+def run_prior_replay() -> None:
+    """Score filings that arrived since the last pass against standing priors.
+
+    The watcher catches a filing only if it lands while Loom is running and the
+    company is armed. This closes the gap for everything else, and it is the
+    reason the fast path has a measurable record at all.
+    """
+    from datetime import timezone
+
+    from app.engine.exposure import dependents_of
+    from app.engine.reaction import MarketEvent, assess
+    from app.models.document import RawDocument
+    from app.repositories.assessment_repository import AssessmentRepository
+    from app.repositories.company_repository import CompanyRepository
+    from app.repositories.prior_repository import PriorRepository
+    from app.storage.blob_store import get_blob_store
+    from scripts.replay_priors import MAX_TEXT_CHARS, REPLAY_PREFIX
+    from sqlalchemy import select
+
+    db = SessionLocal()
+    try:
+        prior_repo = PriorRepository(db)
+        assessment_repo = AssessmentRepository(db)
+        blob_store = get_blob_store()
+        written = notable = 0
+
+        for company in CompanyRepository(db).list_all():
+            prior = prior_repo.latest_for(company.id)
+            if prior is None:
+                continue
+            # Strictly after the prior, always. A document the prior was built
+            # from cannot test it.
+            documents = db.execute(
+                select(RawDocument)
+                .where(RawDocument.company_id == company.id)
+                .where(RawDocument.published_at > prior.generated_at)
+            ).scalars()
+
+            exposed = [
+                {"ticker": e.ticker, "mention_count": e.mention_count}
+                for e in dependents_of(db, company.id)
+            ]
+            for document in documents:
+                try:
+                    body = blob_store.get(document.blob_uri).decode("utf-8", errors="ignore")
+                except Exception:
+                    continue
+                occurred = document.published_at
+                if occurred is not None and occurred.tzinfo is None:
+                    occurred = occurred.replace(tzinfo=timezone.utc)
+                result = assess(
+                    MarketEvent(
+                        ticker=company.ticker,
+                        kind="filing" if document.doc_subtype else "news",
+                        occurred_at=occurred,
+                        text=f"{document.doc_subtype or ''} {document.title or ''}\n{body[:MAX_TEXT_CHARS]}",
+                        source_url=document.source_url,
+                    ),
+                    prior,
+                )
+                created = assessment_repo.create(
+                    company_id=company.id, prior_id=prior.id,
+                    external_id=f"{REPLAY_PREFIX}{document.id}",
+                    kind="filing" if document.doc_subtype else "news",
+                    form=document.doc_subtype, source_url=document.source_url,
+                    score=result.score, direction=result.direction, headline=result.headline,
+                    matches=[
+                        {
+                            "topic": m.topic, "direction": m.direction,
+                            "severity": m.severity, "matched_keywords": m.matched_keywords,
+                            "already_priced": m.already_priced,
+                        }
+                        for m in result.matches
+                    ],
+                    surprises={}, amplifiers=result.amplifiers,
+                    exposed=exposed if result.is_notable else [],
+                    occurred_at=occurred,
+                    # Null, never zero. A replay has no latency, and a zero here
+                    # would claim an instant reaction that never happened.
+                    latency_seconds=None, scoring_ms=result.elapsed_ms,
+                )
+                if created is not None:
+                    written += 1
+                    if result.is_notable:
+                        notable += 1
+            db.commit()
+
+        logger.info("Prior replay: %d new assessments, %d notable.", written, notable)
+    except Exception:
+        logger.exception("Prior replay failed.")
+    finally:
+        db.close()
+
+
+def run_brief_refresh() -> None:
+    """Recompute every stored brief from the findings currently in the database.
+
+    A brief is a snapshot, which is right for an output that must not depend on
+    a provider being up at read time, and wrong if nothing ever refreshes it.
+    Free: no model call anywhere on this path.
+    """
+    from app.engine.pipeline import regenerate_brief
+    from app.repositories.company_repository import CompanyRepository
+
+    db = SessionLocal()
+    try:
+        rebuilt = 0
+        for company in CompanyRepository(db).list_all():
+            try:
+                if regenerate_brief(company.ticker, db) is not None:
+                    rebuilt += 1
+            except Exception:
+                logger.exception("Brief refresh failed for %s", company.ticker)
+        db.commit()
+        logger.info("Brief refresh: %d briefs rebuilt.", rebuilt)
+    except Exception:
+        logger.exception("Brief refresh failed.")
+    finally:
+        db.close()
+
+
+def run_digests() -> None:
+    """Send everybody who is due a digest of what moved in their companies.
+
+    Free, like the other scheduled jobs: it reads what the engine already
+    computed and sends plain text. The one thing it must not do is send when
+    nothing happened, which the digest service enforces rather than this job.
+    """
+    from app.services.digest import send_due_digests
+
+    db = SessionLocal()
+    try:
+        sent = send_due_digests(db)
+        if sent:
+            logger.info("Digests: %d sent.", sent)
+    except Exception:
+        logger.exception("Digest run failed.")
+    finally:
+        db.close()
+
+
+def run_coverage_drip() -> None:
+    """Close the coverage gap a few companies at a time.
+
+    The one scheduled job that spends model quota, and the reason it is safe to
+    put on a clock is that it is bounded twice: a small per-run limit, and a
+    clean stop the moment the provider refuses. A refusal is not an error here,
+    it is the expected steady state of a free tier, and the next run continues
+    where this one left off.
+
+    Priors before reads, because a prior covers every company and costs less,
+    so it buys more coverage per call than reading a filing does.
+    """
+    from app.engine.coverage import drip_priors, drip_reads
+
+    db = SessionLocal()
+    try:
+        priors = drip_priors(db)
+        db.commit()
+        if priors.covered or priors.remaining:
+            logger.info(
+                "Coverage: %d prior(s) built, %d still uncovered%s.",
+                priors.covered, priors.remaining,
+                ", quota exhausted" if priors.exhausted else "",
+            )
+
+        if priors.exhausted:
+            # Nothing left for the read drip either, and asking would produce
+            # the same refusal once more.
+            return
+
+        reads = drip_reads(db)
+        db.commit()
+        if reads.covered or reads.remaining:
+            logger.info(
+                "Coverage: %d compan%s read for the first time, %d never read%s.",
+                reads.covered, "y" if reads.covered == 1 else "ies",
+                reads.remaining, ", quota exhausted" if reads.exhausted else "",
+            )
+    except Exception:
+        logger.exception("Coverage drip failed.")
+    finally:
+        db.close()
