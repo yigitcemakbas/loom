@@ -111,13 +111,33 @@ function FactorRow({ factor, compact }: { factor: CompanyFactor; compact?: boole
   );
 }
 
-/** Percentages where the number is a rate, plain decimals where it is a
- *  multiple. Printing "0.8555" for cash conversion and "0.0599" for accruals
- *  side by side invites reading them on the same scale, and they are not. */
+/** Percentages where the number is a rate, multiples where it is a multiple.
+ *  Printing "0.8555" for cash conversion and "0.0599" for accruals side by
+ *  side invites reading them on the same scale, and they are not.
+ *
+ *  The valuation yields also get their reciprocal in brackets, because a
+ *  reader who knows any single number in finance knows the price-to-earnings
+ *  ratio. Loom ranks on the yield (it is continuous through zero, where a P/E
+ *  explodes) and shows the multiple, so the ranking stays sound and the
+ *  display stays familiar. */
+const AS_MULTIPLE = new Set(["cash_conversion"]);
+const SHOW_RECIPROCAL: Record<string, string> = {
+  earnings_yield: "P/E",
+  cash_flow_yield: "P/CF",
+  sales_yield: "P/S",
+  book_to_price: "P/B",
+};
+
 function formatValue(factor: CompanyFactor): string {
   const v = factor.value;
-  if (factor.key === "cash_conversion") return `${v.toFixed(2)}x`;
-  return `${(v * 100).toFixed(1)}%`;
+  if (AS_MULTIPLE.has(factor.key)) return `${v.toFixed(2)}x`;
+
+  const percent = `${(v * 100).toFixed(1)}%`;
+  const label = SHOW_RECIPROCAL[factor.key];
+  // Only where the reciprocal is meaningful. Near zero it runs to hundreds,
+  // which is exactly the instability that made the yield the ranked form.
+  if (label && v > 0.005) return `${percent}  ${label} ${(1 / v).toFixed(0)}`;
+  return percent;
 }
 
 function readable(key: string): string {

@@ -24,6 +24,7 @@ import logging
 import threading
 import time
 from dataclasses import dataclass
+from datetime import date, datetime, timezone
 
 import httpx
 
@@ -50,6 +51,22 @@ _TAIL_POINTS = {"1H": 30}
 # Long enough to stop a rotating chart hammering the provider, short enough
 # that an intraday line still looks live.
 _CACHE_SECONDS = 60.0
+
+
+@dataclass
+class DailyBar:
+    """One session's closes.
+
+    Both are kept because they answer different questions: `close` pairs with a
+    share count to give a market capitalisation, `adjusted_close` is the only
+    honest basis for a return across a split or a dividend. Using one for both
+    jobs produces an error that looks like a result.
+    """
+
+    session_date: date
+    close: float
+    adjusted_close: float
+    volume: float | None = None
 
 
 @dataclass
@@ -163,6 +180,76 @@ class PriceSource:
             points=points,
             previous_close=meta.get("chartPreviousClose") or meta.get("previousClose"),
         )
+
+    def daily_history(self, ticker: str, *, years: int = 6) -> list["DailyBar"]:
+        """Daily closes going back several years, for storing rather than drawing.
+
+        Deliberately not routed through the sixty-second cache above. That cache
+        exists so a rotating chart does not hammer the provider; a backfill runs
+        once per ticker and caching its answer would only hold megabytes of
+        history in memory for nothing.
+
+        Six years by default, which is what a five-year factor window needs with
+        room for the year-ago comparison at its far end.
+        """
+        try:
+            resp = self._client.get(
+                _CHART_URL.format(symbol=ticker.upper()),
+                params={
+                    "range": f"{years}y",
+                    "interval": "1d",
+                    # Without this the payload carries no adjusted series and
+                    # every return measured across a split is wrong.
+                    "events": "div,splits",
+                },
+            )
+        except Exception:
+            logger.warning("Price history fetch failed for %s", ticker, exc_info=True)
+            return []
+
+        if resp.status_code != 200:
+            logger.info("Price history returned %s for %s", resp.status_code, ticker)
+            return []
+
+        try:
+            result = resp.json()["chart"]["result"][0]
+        except (KeyError, IndexError, TypeError, ValueError):
+            logger.info("Price history payload was not in the expected shape for %s", ticker)
+            return []
+
+        return _history_bars(result)
+
+
+def _history_bars(result: dict) -> list[DailyBar]:
+    """Turn one chart payload into daily bars, dropping sessions with no trade.
+
+    The adjusted series is optional in the payload. When it is absent every bar
+    falls back to the raw close, which makes returns across a split wrong; that
+    is recorded on the bar rather than hidden, because a silently unadjusted
+    series produces a momentum factor that looks fine and is not.
+    """
+    stamps = result.get("timestamp") or []
+    quote = (result.get("indicators", {}).get("quote") or [{}])[0]
+    closes = quote.get("close") or []
+    volumes = quote.get("volume") or []
+    adjusted = (result.get("indicators", {}).get("adjclose") or [{}])[0].get("adjclose") or []
+
+    bars: list[DailyBar] = []
+    for index, stamp in enumerate(stamps):
+        close = closes[index] if index < len(closes) else None
+        if close is None:
+            continue
+        adj = adjusted[index] if index < len(adjusted) else None
+        volume = volumes[index] if index < len(volumes) else None
+        bars.append(
+            DailyBar(
+                session_date=datetime.fromtimestamp(int(stamp), tz=timezone.utc).date(),
+                close=float(close),
+                adjusted_close=float(adj if adj is not None else close),
+                volume=float(volume) if volume is not None else None,
+            )
+        )
+    return bars
 
 
 _source: PriceSource | None = None

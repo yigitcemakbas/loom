@@ -12,7 +12,7 @@ reading has reached.
 """
 
 import logging
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import date
 from typing import Iterable, Optional
 
@@ -21,11 +21,13 @@ from sqlalchemy.orm import Session
 
 from app.engine.quant.composite import build_composite, build_f_score
 from app.engine.quant.crosssection import Ranked, rank_universe
-from app.engine.quant.factors import FACTORS, FactorValue, compute_all
+from app.engine.quant.factors import FACTORS, CompanyView, FactorValue, compute_all
 from app.engine.quant.sectors import comparable_group
+from app.engine.quant.prices import PriceHistory, history_from_bars
 from app.engine.quant.series import FactSeries, observations_from_facts
 from app.models.company import Company
 from app.models.factor import COMPOSITE_KEY, FactorScore
+from app.models.price_bar import PriceBar
 from app.models.structured_fact import FactType, StructuredFact
 
 logger = logging.getLogger(__name__)
@@ -50,6 +52,10 @@ class UniverseScores:
     group: dict[str, str]
     skipped_stale: list[str]
     skipped_thin: list[str]
+    # Companies with no stored price history. Valuation and momentum are absent
+    # for these rather than estimated, and the count is reported because it
+    # changes what a percentile on those factors means.
+    without_prices: list[str] = field(default_factory=list)
 
 
 def _series_by_company(db: Session, companies: list[Company]) -> dict[str, FactSeries]:
@@ -78,6 +84,27 @@ def _series_by_company(db: Session, companies: list[Company]) -> dict[str, FactS
     return out
 
 
+def _prices_by_company(db: Session, companies: list[Company]) -> dict[str, PriceHistory]:
+    """One query for every stored bar, then split in memory, for the same
+    reason the facts are loaded that way: a hundred and thirty round trips for
+    data that is read in full anyway."""
+    ids = [c.id for c in companies]
+    if not ids:
+        return {}
+    bars = db.execute(
+        select(PriceBar).where(PriceBar.company_id.in_(ids))
+    ).scalars().all()
+
+    grouped: dict[str, list] = {}
+    for bar in bars:
+        grouped.setdefault(str(bar.company_id), []).append(bar)
+
+    return {
+        company.ticker: history_from_bars(grouped.get(str(company.id), []))
+        for company in companies
+    }
+
+
 def score_universe(
     db: Session, *, as_of: Optional[date] = None, tickers: Optional[Iterable[str]] = None
 ) -> UniverseScores:
@@ -90,10 +117,12 @@ def score_universe(
     companies = list(db.execute(query).scalars())
 
     series_by_ticker = _series_by_company(db, companies)
+    prices_by_ticker = _prices_by_company(db, companies)
 
     raw: dict[str, dict[str, FactorValue]] = {}
     skipped_stale: list[str] = []
     skipped_thin: list[str] = []
+    without_prices: list[str] = []
 
     for ticker, series in series_by_ticker.items():
         visible = series.as_of(as_of)
@@ -104,7 +133,13 @@ def score_universe(
         if (as_of - newest).days > MAX_STALENESS_DAYS:
             skipped_stale.append(ticker)
             continue
-        values = compute_all(visible)
+
+        history = prices_by_ticker.get(ticker)
+        if history is None or len(history) == 0:
+            history = None
+            without_prices.append(ticker)
+
+        values = compute_all(CompanyView(financials=visible, as_of=as_of, prices=history))
         if not values:
             skipped_thin.append(ticker)
             continue
@@ -145,12 +180,14 @@ def score_universe(
     unrankable = sorted(t for t in raw if t not in group)
     logger.info(
         "Scored %d companies as of %s (%d too stale, %d without usable figures, "
-        "%d with no comparable peer group).",
+        "%d with no comparable peer group, %d with no price history).",
         len(raw), as_of, len(skipped_stale), len(skipped_thin), len(unrankable),
+        len(without_prices),
     )
     return UniverseScores(
         as_of=as_of, ranked=ranked, raw=raw, group=group,
         skipped_stale=skipped_stale, skipped_thin=skipped_thin,
+        without_prices=without_prices,
     )
 
 

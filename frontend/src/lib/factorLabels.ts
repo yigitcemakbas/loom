@@ -13,4 +13,10 @@ export const FACTOR_LABELS: Record<string, string> = {
   asset_turnover_change: "asset efficiency",
   leverage_change: "debt direction",
   cash_to_assets: "cash cushion",
+  earnings_yield: "profit per dollar paid",
+  cash_flow_yield: "cash per dollar paid",
+  sales_yield: "sales per dollar paid",
+  book_to_price: "assets per dollar paid",
+  momentum: "twelve-month momentum",
+  volatility: "price steadiness",
 };
