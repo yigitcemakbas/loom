@@ -77,6 +77,9 @@ export interface Signal {
   sentiment_score: number | null;
   confidence: number;
   priority: number;
+  /** See BriefDriver: null means unscored, not ordinary. */
+  evidence_rate: number | null;
+  evidence_sample_size: number | null;
   evidence_quote: string | null;
   source_document_id: string | null;
   compared_document_id: string | null;
@@ -222,6 +225,12 @@ export interface BriefDriver {
   magnitude: string;
   sources: string[];
   signal_ids: string[];
+  /** How often this company produces findings of this severity, shrunk toward
+   *  the cross-company rate, and how many prior findings that rests on.
+   *  Null means no baseline could be formed, which is NOT the same as
+   *  ordinary and must not be rendered as though it were. */
+  evidence_rate: number | null;
+  evidence_sample_size: number | null;
 }
 
 /** The product's actual deliverable: one company's current read, folded from
@@ -296,4 +305,81 @@ export interface TapeItem {
   occurred_at: string | null;
   href: string | null;
   sources: string[];
+}
+
+export interface ExposureNode {
+  ticker: string;
+  name: string;
+  sector: string | null;
+  /** How many tracked companies move when this one does. */
+  reach: number;
+  /** How many companies this one is downstream of. */
+  upstream: number;
+}
+
+export interface ExposureEdge {
+  hub: string;
+  dependent: string;
+  mention_count: number;
+}
+
+export interface ExposureGraph {
+  nodes: ExposureNode[];
+  edges: ExposureEdge[];
+}
+
+
+/** One measure of a company's reported financials, ranked against its peers.
+ *
+ *  The percentile is the part a non-professional can use. "Accruals of 0.06"
+ *  is a complete answer to someone who already has a feel for the
+ *  distribution and no answer at all to anyone else; "worst 1% of the
+ *  companies Loom tracks" carries the same information without the feel. */
+export interface CompanyFactor {
+  key: string;
+  label: string;
+  meaning: string;
+  source: string;
+  /** False for the inverted factors, where a LOW raw value is the good one.
+   *  Rendering the raw number without consulting this colours them backwards. */
+  higher_is_better: boolean;
+  value: number;
+  /** 0 = worst in its peer group, 1 = best. Null when no group was large
+   *  enough to rank inside, which is not the same as average. */
+  percentile: number | null;
+  percentile_phrase: string | null;
+  universe_size: number | null;
+  /** Top or bottom decile: the readings worth putting in front of someone. */
+  is_extreme: boolean;
+  inputs: Record<string, unknown>;
+}
+
+/** Piotroski's fundamental tests, over those Loom's data can run. `available`
+ *  travels with `passed` because 4 of 7 and 4 of 5 are different statements,
+ *  and the denominator is a property of Loom's data, not of the company. */
+export interface FundamentalHealth {
+  passed: number;
+  available: number;
+  failed: string[];
+}
+
+export interface CompanyFactors {
+  ticker: string;
+  as_of: string;
+  /** Null when too few measures could be computed to fold one honestly. */
+  composite: number | null;
+  composite_phrase: string;
+  factor_count: number;
+  health: FundamentalHealth | null;
+  factors: CompanyFactor[];
+}
+
+export interface FactorLeaderboardRow {
+  ticker: string;
+  name: string;
+  composite: number;
+  factor_count: number;
+  health_passed: number | null;
+  health_available: number | null;
+  extremes: string[];
 }

@@ -13,6 +13,11 @@ class DriverOut(BaseModel):
     magnitude: str
     sources: list[str] = []
     signal_ids: list[str] = []
+    # How often this company produces findings of this severity, and how many
+    # prior findings that rests on. Null where no baseline could be formed,
+    # which the client must render differently from "ordinary".
+    evidence_rate: float | None = None
+    evidence_sample_size: int | None = None
 
 
 class BriefOut(BaseModel):

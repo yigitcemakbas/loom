@@ -20,6 +20,10 @@ class SignalOut(BaseModel):
     sentiment_score: float | None
     confidence: float
     priority: float
+    # How rare this severity is for this company. Null means no baseline, not
+    # "ordinary": the two must stay distinguishable in the interface.
+    evidence_rate: float | None = None
+    evidence_sample_size: int | None = None
     evidence_quote: str | None
     source_document_id: uuid.UUID | None
     compared_document_id: uuid.UUID | None

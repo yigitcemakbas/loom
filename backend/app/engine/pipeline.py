@@ -414,14 +414,31 @@ def analyze_recent_news(
 
 
 
-def _log_shadow_scores(ticker: str, company_id, signals: list, db: Session) -> None:
-    """Run the statistics engine alongside the live one and log what it would say.
+def score_evidence(ticker: str, company_id, signals: list, db: Session) -> int:
+    """Judge each finding's severity against what that company normally produces,
+    and write the result onto the finding.
 
-    Shadow only: nothing here is written or returned, and the whole body is
-    guarded. The engine is new and the brief is the product's actual output, so
-    a defect in an experiment must not be able to take down the thing it is
-    being compared against. Previously this ran inline and unguarded, which
-    meant any exception in it aborted brief generation entirely.
+    This ran in shadow until now: it computed a score, logged it, and discarded
+    it, so nothing could use the answer and no conclusion survived the log
+    rotating. It is live because the question it answers is one nothing else in
+    Loom asks. Severity as extracted is absolute, and absolute severity is a
+    poor guide to what deserves attention: a company that files a "major" risk
+    every quarter is telling you about its disclosure habits, while the same
+    label from a company that has never used it is telling you something
+    happened. The rate is what separates those two, and a reader cannot
+    reconstruct it from the feed.
+
+    What it does NOT do is change a verdict. The stance is still the weighted
+    direction of the findings and nothing here touches it. The engine decides
+    which findings surface and how they are framed, which is where being wrong
+    is cheap and visible, rather than voting on the conclusion, where being
+    wrong is neither. Keeping that line is what makes it safe to run live on an
+    engine whose predictive value is still unproven.
+
+    Still wrapped, for the original reason: this used to run inline and
+    unguarded, and any exception in it aborted brief generation entirely. The
+    brief is the product's output and must not depend on the experiment beside
+    it.
 
     Reports coverage as well as verdicts, because the failure this code is most
     likely to have is silence: a run where every finding scores "not anomalous"
@@ -445,12 +462,21 @@ def _log_shadow_scores(ticker: str, company_id, signals: list, db: Session) -> N
                 cache=cache,
             )
             if not score.is_computable:
+                # Cleared rather than left alone: a finding that used to be
+                # scorable and no longer is must not keep serving a stale rate
+                # as though it were current.
+                sig.evidence_rate = None
+                sig.evidence_sample_size = None
                 continue
+
+            sig.evidence_rate = score.rate
+            sig.evidence_sample_size = score.baseline.sample_size if score.baseline else None
             scored += 1
+
             if score.is_anomalous:
                 anomalous += 1
                 logger.info(
-                    "shadow[%s]: %s %s is unusual for this company "
+                    "%s: %s %s is unusual for this company "
                     "(rate %.1f%%, n=%d, priority %.2f)",
                     ticker,
                     feature.signal_type,
@@ -461,11 +487,14 @@ def _log_shadow_scores(ticker: str, company_id, signals: list, db: Session) -> N
                 )
 
         logger.info(
-            "shadow[%s]: %d/%d findings scorable, %d flagged unusual",
+            "%s evidence: %d/%d findings scorable, %d unusual for this company",
             ticker, scored, len(signals), anomalous,
         )
+        return scored
     except Exception:
-        logger.exception("shadow[%s]: statistics engine failed, brief unaffected", ticker)
+        logger.exception("%s: statistics engine failed, brief unaffected", ticker)
+        return 0
+
 
 def regenerate_brief(ticker: str, db: Session):
     """Fold everything known about a company into its current read.
@@ -482,7 +511,7 @@ def regenerate_brief(ticker: str, db: Session):
     previous = brief_repo.latest_for(company.id)
     signals = SignalRepository(db).list_feed(company_id=company.id, limit=500)
 
-    _log_shadow_scores(ticker, company.id, signals, db)
+    score_evidence(ticker, company.id, signals, db)
 
     result = brief_engine.build_brief(
         signals,

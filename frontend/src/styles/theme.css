@@ -750,3 +750,288 @@ tr.detail-row > td {
   }
   .tape-viewport::after { display: none; }
 }
+
+/* ---- today: the simple view ------------------------------------------- */
+
+.today-head { margin: 4px 0 14px; }
+.today-head h1 {
+  margin: 0 0 4px;
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.today-sub {
+  margin: 0;
+  max-width: 68ch;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+.today-banner {
+  margin: 0 0 14px;
+  padding: 8px 11px;
+  border: 1px solid var(--accent-dim);
+  background: var(--bg-inset);
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.today-banner strong { color: var(--accent); }
+
+/* Wide enough for an argument to be readable, narrow enough that two fit on a
+   large screen. Prose in a full-width column is where dashboards go to die. */
+.verdict-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(430px, 1fr));
+  gap: 10px;
+}
+
+.verdict-card {
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  padding: 13px 15px 11px;
+  font-family: var(--font-sans);
+}
+
+.verdict-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+}
+.verdict-ticker {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent);
+}
+.verdict-name { margin-left: 8px; font-size: 12px; color: var(--text-faint); }
+
+.verdict-label {
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+.verdict-meaning {
+  margin: 2px 0 9px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+.verdict-headline {
+  margin: 0 0 11px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+.verdict-section { margin-bottom: 10px; }
+.verdict-section h4 {
+  margin: 0 0 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.verdict-section ul { margin: 0; padding: 0; list-style: none; }
+.verdict-section li,
+.verdict-section p {
+  margin: 0 0 6px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.verdict-section strong { color: var(--text); font-weight: 600; }
+
+/* Why a finding matters more than its label says: the share of this company's
+   own findings that reach this severity. Set on its own line and in the accent
+   colour because it is a different kind of claim from the finding above it,
+   one about the company's history rather than about the disclosure, and
+   running the two together reads as if Loom were restating itself. Appears
+   only where a baseline exists; its absence means unscored, not ordinary. */
+.driver-rarity {
+  display: block;
+  margin-top: 3px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--accent);
+  letter-spacing: 0.01em;
+}
+
+/* Same weight as the reasons above it. A view showing only the case for a
+   conclusion is a sales pitch, and a beginner is the reader least able to
+   notice what was left out. */
+.verdict-against {
+  padding: 8px 10px;
+  border-left: 2px solid var(--accent-dim);
+  background: var(--bg-inset);
+}
+
+.verdict-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding-top: 9px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.verdict-more { margin-left: auto; color: var(--accent); white-space: nowrap; }
+
+.today-uncovered {
+  margin: 16px 0 0;
+  max-width: 78ch;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+/* ---- terminal: the dense view ----------------------------------------- */
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+.terminal-search {
+  width: 240px;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-inset);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.terminal-search:focus { outline: none; border-color: var(--accent-dim); }
+.sort-caret { margin-left: 3px; color: var(--accent); font-size: 7px; }
+
+/* ---- propagation map --------------------------------------------------- */
+
+.propagation-map {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--bg-inset);
+}
+.map-label {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.today-prices { margin-top: 16px; }
+
+/* ---- horizon selector -------------------------------------------------- */
+
+.horizon-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 7px;
+}
+.horizon-hint {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-right: 2px;
+}
+.horizon-btn {
+  padding: 1px 7px;
+  height: 18px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+.horizon-btn:hover { color: var(--text); border-color: var(--accent-dim); }
+.horizon-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #14100a;
+  font-weight: 600;
+}
+
+/* ---- the quantitative panel ---------------------------------------------
+   Percentile bars rather than raw values. These measures span several orders
+   of magnitude and share no unit, so a bar drawn from the numbers themselves
+   would compare nothing to nothing; drawn from the rank it compares the only
+   thing they have in common. */
+.factor-summary { padding: 9px 11px; border-bottom: 1px solid var(--border); }
+.factor-verdict {
+  margin: 0 0 5px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+  font-weight: 600;
+}
+.factor-health { margin: 0 0 5px; font-size: 11.5px; line-height: 1.5; color: var(--text-dim); }
+.factor-note { margin: 0; font-size: 10px; line-height: 1.5; }
+
+.factor-list { display: flex; flex-direction: column; }
+.factor-row {
+  padding: 7px 11px;
+  border-bottom: 1px solid var(--border);
+  min-width: 0;
+}
+.factor-row:last-child { border-bottom: none; }
+.factor-row-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.factor-label { font-size: 11.5px; color: var(--text); font-weight: 600; }
+.factor-value { font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text-dim); }
+
+.factor-bar {
+  margin: 4px 0 3px;
+  height: 3px;
+  background: var(--bg-inset);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.factor-bar-fill { height: 100%; background: var(--text-faint); }
+.factor-row.good .factor-bar-fill { background: var(--positive); }
+.factor-row.bad  .factor-bar-fill { background: var(--negative); }
+.factor-row.good .factor-value { color: var(--positive); }
+.factor-row.bad  .factor-value { color: var(--negative); }
+
+.factor-row-foot { font-size: 10px; color: var(--text-dim); line-height: 1.4; }
+.factor-meaning {
+  margin: 4px 0 0;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+/* The citation, small but present. A factor with no source is a hunch, and
+   showing where each one comes from is what lets a sceptical reader check
+   rather than trust. */
+.factor-source {
+  margin: 2px 0 0;
+  font-size: 9.5px;
+  line-height: 1.4;
+  color: var(--text-faint);
+  font-style: italic;
+}

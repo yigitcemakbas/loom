@@ -4,6 +4,7 @@ import { ActivityPanel } from "../components/company/ActivityPanel";
 import { ShortInterestPanel } from "../components/company/ShortInterestPanel";
 import { BriefCard } from "../components/brief/BriefCard";
 import { CompanyPricePanel } from "../components/price/CompanyPricePanel";
+import { FactorPanel } from "../components/factors/FactorPanel";
 import { SentimentTrendChart } from "../components/company/SentimentTrendChart";
 import { TimelinePanel } from "../components/company/TimelinePanel";
 import { SignalTable } from "../components/signals/SignalTable";
@@ -157,6 +158,12 @@ export function CompanyDetailPage() {
 
         <div className="stack">
           <CompanyPricePanel ticker={company.ticker} />
+
+          {/* Above the read findings on purpose. What a company reported is
+              the only thing on this page that is not an interpretation, and it
+              is available for the whole universe rather than the few companies
+              deep reading has reached. */}
+          <FactorPanel ticker={company.ticker} />
 
           {/* Filed facts first, model-derived tone last. Insider trades and
               short interest are things that happened and are checkable; the

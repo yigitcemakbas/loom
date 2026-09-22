@@ -28,6 +28,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from app.models.brief import Stance
+from app.engine.statistics.engine import ANOMALY_RATE
 from app.engine.statistics.features import MAGNITUDE_WEIGHT
 from app.models.signal import Signal, SignalType
 
@@ -42,6 +43,70 @@ WINDOW_DAYS = 90
 # statistics package needs the same vocabulary, and two copies of a scoring
 # table are two chances to disagree.
 _MAGNITUDE_WEIGHT = MAGNITUDE_WEIGHT
+
+
+@dataclass(frozen=True)
+class Horizon:
+    """A holding period, and what counts as evidence for it.
+
+    A verdict with no stated horizon is close to meaningless, because the same
+    evidence points opposite ways depending on how long you intend to hold. A
+    regulatory clampdown is ruinous for a one-week trade and may be irrelevant
+    to a five-year one; a capex cycle is the reverse. "Leaning negative" with
+    no period attached invites a reader to supply their own, which is exactly
+    the ambiguity this resolves.
+
+    Two axes, and both matter. `window_days` is how far back evidence is still
+    admissible: a one-week view cannot be built from a filing eight months old.
+    The weights are how much a finding counts given how long the extraction
+    said its effect would last, which Loom has always recorded on every signal
+    and, until now, never used for anything.
+    """
+
+    key: str
+    label: str
+    window_days: int
+    # market_horizon -> multiplier
+    weights: dict[str, float]
+    # Fewer findings than this and the horizon is reported as unsupported
+    # rather than answered from two observations.
+    min_findings: int
+
+
+# Unset horizons are given the middle weight rather than dropped. Just under
+# half the stored corpus predates horizon extraction, and excluding it would
+# empty every view; treating it as mid-duration matches how `market_magnitude`
+# already handles the same gap.
+_UNSET = "unset"
+
+HORIZONS: dict[str, Horizon] = {
+    "1w": Horizon(
+        key="1w", label="one week", window_days=45,
+        weights={"near_term": 1.0, "multi_quarter": 0.25, "structural": 0.05, _UNSET: 0.3},
+        min_findings=2,
+    ),
+    "1m": Horizon(
+        key="1m", label="one month", window_days=120,
+        weights={"near_term": 1.0, "multi_quarter": 0.6, "structural": 0.2, _UNSET: 0.5},
+        min_findings=2,
+    ),
+    "1y": Horizon(
+        key="1y", label="one year", window_days=400,
+        weights={"near_term": 0.35, "multi_quarter": 1.0, "structural": 0.85, _UNSET: 0.7},
+        min_findings=3,
+    ),
+    "5y": Horizon(
+        key="5y", label="five years", window_days=1825,
+        weights={"near_term": 0.1, "multi_quarter": 0.5, "structural": 1.0, _UNSET: 0.5},
+        min_findings=3,
+    ),
+}
+
+DEFAULT_HORIZON = "1y"
+
+
+def horizon_weight(signal, horizon: Horizon) -> float:
+    return horizon.weights.get(signal.market_horizon or _UNSET, horizon.weights[_UNSET])
 
 # Stance thresholds on the weighted mean of finding directions (-1..1).
 _STRONG = 0.55
@@ -124,6 +189,11 @@ class Driver:
     magnitude: str
     sources: list[str] = field(default_factory=list)
     signal_ids: list[str] = field(default_factory=list)
+    # How rare this severity is for this company, from the statistical engine.
+    # None means no baseline existed, which is not the same as ordinary, so the
+    # interface must not render the two alike.
+    evidence_rate: float | None = None
+    evidence_sample_size: int | None = None
     # True when the finding supplied its own short label. A clipped sentence
     # cannot be dropped into the middle of a headline and still read as English.
     is_label: bool = False
@@ -193,7 +263,9 @@ def _title_of(signal: Signal) -> tuple[str, bool]:
     return clipped.rstrip(" .,") + "…", False
 
 
-def _weighted_direction(signals: list[Signal]) -> tuple[float, float, dict[str, int]]:
+def _weighted_direction(
+    signals: list[Signal], horizon: Horizon | None = None
+) -> tuple[float, float, dict[str, int]]:
     """Return (mean_direction, total_weight, counts). Mean is -1..1."""
     counts = {"positive": 0, "negative": 0, "neutral": 0}
     total = 0.0
@@ -205,6 +277,11 @@ def _weighted_direction(signals: list[Signal]) -> tuple[float, float, dict[str, 
         counts[direction] += 1
         weight = _MAGNITUDE_WEIGHT.get(s.market_magnitude or "moderate", 1.0)
         weight *= max(s.priority or 0.0, 0.05)
+        if horizon is not None:
+            # A structural finding barely moves a one-week view, and a
+            # near-term one barely moves a five-year view. This is the whole
+            # mechanism by which the same evidence yields different verdicts.
+            weight *= horizon_weight(s, horizon)
         sign = 1.0 if direction == "positive" else -1.0 if direction == "negative" else 0.0
         weighted += weight * sign
         total += weight
@@ -223,6 +300,19 @@ def _pick_counterpoint(signals: list[Signal], stance_direction: str | None) -> D
     best = max(against, key=lambda s: s.priority or 0.0)
     drivers = _build_drivers([best], signals)
     return drivers[0] if drivers else None
+
+
+def is_unusual_for_company(signal) -> bool:
+    """Whether this finding's severity is rare for the company that produced it.
+
+    One definition, read from the stored rate rather than recomputed, so the
+    brief and the interface cannot disagree about which findings are unusual.
+    A finding with no stored rate is not unusual: it has no baseline to be
+    unusual against, and treating unscored as remarkable would let thin history
+    manufacture alarm.
+    """
+    rate = getattr(signal, "evidence_rate", None)
+    return rate is not None and rate < ANOMALY_RATE
 
 
 def _pick_drivers(signals: list[Signal], stance_direction: str | None = None) -> list[Driver]:
@@ -246,7 +336,18 @@ def _pick_drivers(signals: list[Signal], stance_direction: str | None = None) ->
         # a clear majority, so a brief never ends up with no drivers at all.
         aligned = matching or signals
 
-    ordered = sorted(aligned, key=lambda s: s.priority or 0.0, reverse=True)
+    # Findings whose severity is unusual for this company outrank routine ones.
+    # Priority alone ranks by the finding's own attributes, which means a
+    # company that files a "major" risk every quarter fills all three driver
+    # slots with its house style while the one genuinely uncharacteristic
+    # finding sits below the fold. This is the statistical engine's first job
+    # with teeth: it reorders what a reader sees, and it still cannot change
+    # what the verdict says.
+    ordered = sorted(
+        aligned,
+        key=lambda s: (is_unusual_for_company(s), s.priority or 0.0),
+        reverse=True,
+    )
     chosen: list[Signal] = []
     seen: list[set[str]] = []
 
@@ -298,6 +399,8 @@ def _build_drivers(chosen: list[Signal], population: list[Signal]) -> list[Drive
                 magnitude=signal.market_magnitude or "moderate",
                 sources=sorted(sources),
                 signal_ids=[str(signal.id), *[str(s.id) for s in supporting]],
+                evidence_rate=signal.evidence_rate,
+                evidence_sample_size=signal.evidence_sample_size,
             )
         )
     return drivers
@@ -448,10 +551,18 @@ def build_brief(
     *,
     previous_generated_at: datetime | None = None,
     now: datetime | None = None,
+    horizon: str | None = None,
 ) -> Brief:
-    """Fold one company's findings into a single read."""
+    """Fold one company's findings into a single read, for a stated holding period.
+
+    `horizon` decides both which findings are still admissible and how much
+    each counts. Omitting it keeps the original behaviour, a single undated
+    window, which is what every stored brief was built with.
+    """
     now = now or datetime.now(timezone.utc)
-    cutoff = now - timedelta(days=WINDOW_DAYS)
+    spec = HORIZONS.get(horizon or "") if horizon else None
+    window_days = spec.window_days if spec else WINDOW_DAYS
+    cutoff = now - timedelta(days=window_days)
 
     recent = [
         s for s in signals
@@ -459,20 +570,35 @@ def build_brief(
     ]
     substantive = [s for s in recent if s.signal_type in _SUBSTANTIVE_TYPES]
 
-    if not substantive:
+    # A short horizon over a thin recent record is the case most likely to
+    # mislead: two stale findings can produce a confident one-week verdict that
+    # nothing supports. Saying there is not enough to judge is the honest
+    # answer and is itself useful.
+    too_thin = spec is not None and len(substantive) < spec.min_findings
+
+    if not substantive or too_thin:
         return Brief(
             stance=Stance.INSUFFICIENT,
-            headline=_headline(Stance.INSUFFICIENT, [], {"positive": 0, "negative": 0, "neutral": 0}, set()),
+            headline=(
+                f"Not enough recent evidence to judge {spec.label}."
+                if spec is not None
+                else _headline(Stance.INSUFFICIENT, [], {"positive": 0, "negative": 0, "neutral": 0}, set())
+            ),
             confidence=0.0,
             drivers=[],
             counterpoint=None,
             what_changed=None,
             source_types=[],
-            signal_count=0,
-            evidence={"window_days": WINDOW_DAYS},
+            signal_count=len(substantive),
+            evidence={
+                "window_days": window_days,
+                "horizon": spec.key if spec else None,
+                "findings_available": len(substantive),
+                "findings_required": spec.min_findings if spec else None,
+            },
         )
 
-    mean, _weight, counts = _weighted_direction(substantive)
+    mean, _weight, counts = _weighted_direction(substantive, spec)
     directional = counts["positive"] + counts["negative"]
     assessed = directional + counts["neutral"]
     directional_share = directional / len(substantive) if substantive else 0.0
@@ -512,7 +638,9 @@ def build_brief(
         source_types=sorted(source_types),
         signal_count=len(substantive),
         evidence={
-            "window_days": WINDOW_DAYS,
+            "window_days": window_days,
+            "horizon": spec.key if spec else None,
+            "horizon_label": spec.label if spec else None,
             "direction_mean": round(mean, 3),
             "counts": counts,
             "directional_share": round(directional_share, 3),

@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, Float, ForeignKey, String, Text, UniqueConstraint, func
+from sqlalchemy import DateTime, Float, ForeignKey, Integer, String, Text, UniqueConstraint, func
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -58,6 +58,19 @@ class Signal(Base):
     market_direction: Mapped[str | None] = mapped_column(String, nullable=True)
     market_magnitude: Mapped[str | None] = mapped_column(String, nullable=True)
     market_horizon: Mapped[str | None] = mapped_column(String, nullable=True)
+
+    # How unusual this finding's severity is for THIS company, from the
+    # statistical engine (engine/statistics/). `evidence_rate` is the shrunk
+    # share of the company's own findings that carry this magnitude label, and
+    # `evidence_sample_size` is how many prior findings that rests on.
+    #
+    # Null means no verdict was reachable, not that the finding is ordinary.
+    # A company with too little assessed history has no baseline to be unusual
+    # against, and collapsing that into "normal" would let missing data read as
+    # reassurance. Whether a scored finding counts as anomalous is decided
+    # against ANOMALY_RATE at read time rather than stored.
+    evidence_rate: Mapped[float | None] = mapped_column(Float, nullable=True)
+    evidence_sample_size: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     sentiment_score: Mapped[float | None] = mapped_column(Float, nullable=True)  # -1.0 .. 1.0
     confidence: Mapped[float] = mapped_column(Float, nullable=False)             # 0.0 .. 1.0

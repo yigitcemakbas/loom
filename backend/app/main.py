@@ -11,6 +11,8 @@ from app.api.routes import (
     briefs,
     companies,
     earnings,
+    exposure,
+    factors,
     prices,
     dashboard,
     documents,
@@ -86,6 +88,8 @@ app.include_router(earnings.router)
 app.include_router(prices.router)
 app.include_router(tape.router)
 app.include_router(assessments.router)
+app.include_router(exposure.router)
+app.include_router(factors.router)
 
 
 @app.get("/health")

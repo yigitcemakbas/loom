@@ -13,7 +13,7 @@ exactly why they need tests rather than review.
 import uuid
 from datetime import datetime, timedelta, timezone
 
-from app.engine.brief import build_brief
+from app.engine.brief import build_brief, is_unusual_for_company
 from app.models.brief import Stance
 from app.models.signal import Signal, SignalType
 
@@ -30,6 +30,8 @@ def _sig(
     doc_subtype: str = "10-Q",
     signal_type: SignalType = SignalType.NEW_RISK_FACTOR,
     confidence: float = 0.9,
+    evidence_rate: float | None = None,
+    evidence_sample_size: int | None = None,
 ) -> Signal:
     return Signal(
         id=uuid.uuid4(),
@@ -42,6 +44,8 @@ def _sig(
         confidence=confidence,
         priority=priority,
         occurred_at=NOW - timedelta(days=days_ago),
+        evidence_rate=evidence_rate,
+        evidence_sample_size=evidence_sample_size,
         signal_metadata={"doc_subtype": doc_subtype},
     )
 
@@ -235,3 +239,88 @@ def test_empty_input_is_handled():
     assert brief.stance == Stance.INSUFFICIENT
     assert brief.drivers == []
     assert brief.confidence == 0.0
+
+
+# ---- the statistical engine, now that it is live ----------------------
+
+
+def test_a_finding_with_no_baseline_is_not_called_unusual():
+    """The engine scores only companies with enough assessed history. An
+    unscored finding has nothing to be unusual against, and reading "no
+    baseline" as "remarkable" would let thin history manufacture alarm."""
+    assert is_unusual_for_company(_sig(evidence_rate=None)) is False
+
+
+def test_a_common_severity_is_not_unusual():
+    # A third of this company's findings are this severe. That is its house style.
+    assert is_unusual_for_company(_sig(evidence_rate=0.33)) is False
+
+
+def test_a_rare_severity_is_unusual():
+    # One finding in fifty. Worth a reader's attention in a way the label alone
+    # does not convey.
+    assert is_unusual_for_company(_sig(evidence_rate=0.02)) is True
+
+
+def test_an_uncharacteristic_finding_outranks_a_higher_priority_routine_one():
+    """The engine's first job with teeth.
+
+    Priority ranks a finding by its own attributes, so a company that files a
+    "major" risk every quarter fills every driver slot with its house style
+    while the one genuinely uncharacteristic finding sits below the fold.
+    """
+    routine = _sig(
+        priority=0.95, evidence_rate=0.40,
+        summary="Routine: the usual quarterly caution about input costs.",
+    )
+    uncharacteristic = _sig(
+        priority=0.55, evidence_rate=0.02, evidence_sample_size=40,
+        summary="Unprecedented: a regulator has opened a structural remedy case.",
+    )
+    others = _many(4, direction="negative")
+
+    brief = build_brief([routine, uncharacteristic, *others], now=NOW)
+
+    assert brief.drivers, "expected the brief to name drivers"
+    assert brief.drivers[0].title.startswith("Unprecedented")
+
+
+def test_priority_still_decides_between_two_equally_unremarkable_findings():
+    """The engine reorders, it does not replace the ranking it sits on top of."""
+    louder = _sig(priority=0.95, summary="Louder: a large and specific charge this quarter.")
+    quieter = _sig(priority=0.20, summary="Quieter: a modest note about seasonal demand.")
+    others = _many(4, direction="negative")
+
+    brief = build_brief([louder, quieter, *others], now=NOW)
+
+    assert brief.drivers[0].title.startswith("Louder")
+
+
+def test_the_score_travels_with_the_driver_so_the_card_can_explain_itself():
+    """A reader shown "unusual" must be able to see what it was measured
+    against, or the claim is an assertion rather than evidence."""
+    flagged = _sig(
+        priority=0.9, evidence_rate=0.04, evidence_sample_size=25,
+        summary="Litigation: an antitrust remedy case has reached trial.",
+    )
+    brief = build_brief([flagged, *_many(4, direction="negative")], now=NOW)
+
+    driver = next(d for d in brief.drivers if d.title.startswith("Litigation"))
+    assert driver.evidence_rate == 0.04
+    assert driver.evidence_sample_size == 25
+
+
+def test_the_engine_does_not_move_the_verdict():
+    """Deliberate boundary. The engine decides what surfaces and how it reads,
+    never what the verdict is, because its predictive value is still unproven
+    and a wrong stance is neither cheap nor visible."""
+    plain = _many(5, direction="negative")
+    scored = [
+        _sig(
+            direction="negative", evidence_rate=0.01, evidence_sample_size=50,
+            summary=f"Theme {i}: distinct concern number {i} about operations.",
+        )
+        for i in range(5)
+    ]
+
+    assert build_brief(plain, now=NOW).stance == build_brief(scored, now=NOW).stance
