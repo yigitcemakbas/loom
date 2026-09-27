@@ -538,3 +538,79 @@ def test_nothing_is_marked_routine_without_measured_norms():
     case = _case(findings=[_Finding(id="f1")])
 
     assert all(p.routine is False for p in (*case.points, *case.withheld))
+
+
+# ---- what the case rests on -------------------------------------------
+
+
+def test_an_unread_company_says_what_loom_does_know():
+    """The brief is computed from findings alone, so a company Loom has never
+    read carried "not enough analysed yet" however much else was known about
+    it. On a page already showing twelve ranked measures, a valuation and a
+    year of price history, that answers a question nobody asked and hides the
+    answer to the one they did."""
+    brief = _Brief()
+    brief.stance = type("S", (), {"value": "insufficient"})()
+
+    case = _case(
+        brief=brief,
+        findings=[],
+        factors=[_Factor(key="earnings_yield", percentile=0.4), _Factor(key="accruals", percentile=0.05)],
+        standing=_Standing(),
+        peers=231,
+        sector="Technology",
+    )
+
+    assert "has not read" in case.headline
+    assert "reported numbers" in case.headline
+    # The detail belongs to the basis line, which renders directly beneath the
+    # headline. Putting it in both made the top of the page say the same thing
+    # twice before saying anything useful.
+    assert "2 measures" not in case.headline
+    assert "2 measures" in case.basis.summary
+    assert "231 technology companies" in case.basis.summary
+
+
+def test_the_stance_itself_is_untouched_by_what_the_numbers_say():
+    """There is genuinely no direction, and inventing one from the numbers is
+    exactly what this project refuses. Only the sentence changes."""
+    brief = _Brief()
+    brief.stance = type("S", (), {"value": "insufficient"})()
+
+    case = _case(
+        brief=brief, findings=[],
+        factors=[_Factor(key="accruals", percentile=0.02)],
+        peers=231, sector="Technology",
+    )
+
+    assert case.stance == "insufficient"
+    assert case.strongest_against is None
+
+
+def test_a_read_company_keeps_the_verdict_it_earned():
+    brief = _Brief()   # negative, with a headline of its own
+    case = _case(brief=brief, findings=[_Finding()], peers=231, sector="Technology")
+
+    assert case.headline == "More concerns than positives."
+    assert case.basis.is_read is True
+
+
+def test_a_company_loom_holds_nothing_on_says_so():
+    brief = _Brief()
+    brief.stance = type("S", (), {"value": "insufficient"})()
+
+    case = _case(brief=brief, findings=[], factors=[])
+
+    assert case.basis.summary.startswith("Loom holds almost nothing")
+
+
+def test_the_basis_counts_only_factors_that_computed():
+    """A factor that could not be computed has said nothing, and counting it
+    would inflate what the page claims to rest on."""
+    case = _case(
+        findings=[],
+        factors=[_Factor(key="accruals", percentile=0.3), _Factor(key="momentum", percentile=None)],
+        peers=100, sector="Utilities",
+    )
+
+    assert case.basis.factors == 1

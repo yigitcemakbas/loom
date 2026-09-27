@@ -111,6 +111,64 @@ class CasePoint:
 
 
 @dataclass(frozen=True)
+class CaseBasis:
+    """What this case actually rests on, stated before any of it is read.
+
+    The case file assembles everything Loom holds about a company and then
+    announced itself with a verdict computed from *findings alone*. For the
+    five companies with a directional read that was fine. For the other
+    thousand it was actively misleading: a company with twelve published
+    measures, a valuation, a peer ranking and a year of price history opened
+    with "not enough read yet", which is true of the reading and false of the
+    page underneath it.
+
+    Loom's own principle is that unmeasured and measured-as-nothing must never
+    render alike. It was applying that to companies and not to itself.
+    """
+
+    findings: int
+    factors: int
+    # How many companies the factor percentiles were computed against. A
+    # ranking is a statement about a peer group, and its size is the first
+    # thing that decides whether the statement is worth anything.
+    peers: int
+    sector: Optional[str]
+    has_valuation: bool
+    has_price: bool
+
+    @property
+    def is_read(self) -> bool:
+        return self.findings > 0
+
+    @property
+    def summary(self) -> str:
+        """One sentence naming what Loom has, in the order it should be read."""
+        parts: list[str] = []
+        if self.findings:
+            parts.append(f"read {_plural(self.findings, 'finding')} from its filings")
+        if self.factors:
+            where = (
+                f" against {self.peers} {self.sector.lower()} companies"
+                if self.sector and self.peers else ""
+            )
+            parts.append(f"ranked it on {_plural(self.factors, 'measure')}{where}")
+        if self.has_valuation:
+            parts.append("worked out what you would be paying")
+        if self.has_price:
+            parts.append("tracked what the market has already done")
+
+        if not parts:
+            return "Loom holds almost nothing on this company yet."
+        if len(parts) == 1:
+            return f"Loom has {parts[0]}."
+        return f"Loom has {', '.join(parts[:-1])}, and {parts[-1]}."
+
+
+def _plural(n: int, word: str) -> str:
+    return f"{n} {word}" if n == 1 else f"{n} {word}s"
+
+
+@dataclass(frozen=True)
 class CaseFile:
     ticker: str
     name: str
@@ -155,6 +213,11 @@ class CaseFile:
     # for: a case against something you own is a reason to act, not to browse.
     held: bool = False
 
+    # What the case rests on. Shown above everything, because a reader needs to
+    # know whether they are looking at a company Loom has read or one it has
+    # only measured before they weigh a single point on the page.
+    basis: Optional[CaseBasis] = None
+
     @property
     def strongest_against(self) -> Optional[CasePoint]:
         """The best argument on the other side, whichever side the verdict took.
@@ -163,7 +226,6 @@ class CaseFile:
         conclusion is reading a sales pitch, and it is the point a decision
         most needs.
         """
-        stance = self.stance or ""
         # A verdict has to point somewhere before anything can point against it.
         #
         # Without this, every stance that is not positive was treated as
@@ -172,9 +234,9 @@ class CaseFile:
         # — offering a rebuttal to a claim it had just refused to make. On
         # Coca-Cola that rendered as a *favourable* point presented as the
         # objection to it, which is the exact opposite of what the label says.
-        if not (stance.endswith("positive") or stance.endswith("negative")):
+        if not _is_directional(self.stance):
             return None
-        opposing = "against" if stance.endswith("positive") else "for"
+        opposing = "against" if (self.stance or "").endswith("positive") else "for"
         # Searched across the withheld points too. This is the one slot on the
         # page that must not be decided by the twelve-point cap: a company
         # whose twelve strongest points all argue one way is exactly the case
@@ -183,6 +245,16 @@ class CaseFile:
         # rather than "it did not fit".
         candidates = [p for p in (*self.points, *self.withheld) if p.side == opposing]
         return max(candidates, key=lambda p: p.weight) if candidates else None
+
+
+def _is_directional(stance: Optional[str]) -> bool:
+    """Whether a stance actually points somewhere.
+
+    Everything that is not positive was previously treated as negative, which
+    is how a company Loom had declined to judge came to display "the best
+    argument the other way" above its own refusal.
+    """
+    return bool(stance) and (stance.endswith("positive") or stance.endswith("negative"))
 
 
 def _aware(value: datetime) -> datetime:
@@ -214,6 +286,8 @@ def build_case(
     precedents: Optional[dict] = None,
     sector_move=None,
     routine_ids: Optional[set] = None,
+    peers: int = 0,
+    sector: Optional[str] = None,
 ) -> CaseFile:
     """Assemble and rank. Pure: every argument is already-computed data.
 
@@ -531,11 +605,48 @@ def build_case(
     withheld = points[MAX_POINTS:]
     points = points[:MAX_POINTS]
 
+    basis = CaseBasis(
+        findings=len(findings or []),
+        factors=sum(
+            1 for f in (factors or []) if getattr(f, "percentile", None) is not None
+        ),
+        peers=peers,
+        sector=sector,
+        has_valuation=bool(valuation),
+        has_price=bool(price_points),
+    )
+
+    stance_value = (
+        getattr(brief, "stance", None).value if getattr(brief, "stance", None) else None
+    )
+    headline = getattr(brief, "headline", "") or "Loom has not formed a view on this company."
+
+    # A refusal to judge the *reading* is not a statement about the page.
+    #
+    # The brief is computed from findings alone, so a company Loom has never
+    # read carries "not enough analysed yet" however much else is known about
+    # it. On a page already showing twelve ranked measures, a valuation and a
+    # year of price history, that sentence is answering a question nobody
+    # asked and hiding the answer to the one they did.
+    #
+    # The stance itself is untouched: there is genuinely no direction, and
+    # inventing one from the numbers is the thing this project refuses. Only
+    # the sentence changes, from what Loom lacks to what it has.
+    if not _is_directional(stance_value) and not basis.is_read and basis.factors:
+        # Deliberately does not restate the basis. That sentence is rendered
+        # directly beneath this one, and an earlier version put it in both,
+        # so the top of the page said the same thing twice before saying
+        # anything useful.
+        headline = (
+            "Loom has not read this company's filings. Everything below comes "
+            "from its reported numbers and its price, not from what it said."
+        )
+
     return CaseFile(
         ticker=ticker,
         name=name,
-        stance=getattr(brief, "stance", None).value if getattr(brief, "stance", None) else None,
-        headline=getattr(brief, "headline", "") or "Loom has not formed a view on this company.",
+        stance=stance_value,
+        headline=headline,
         confidence=float(getattr(brief, "confidence", 0.0) or 0.0),
         points=points,
         withheld=withheld,
@@ -543,6 +654,7 @@ def build_case(
         price=price_points,
         gaps=gaps,
         held=held,
+        basis=basis,
     )
 
 
@@ -634,6 +746,7 @@ __all__ = [
     "WEIGHT_PRICE_CONTEXT",
     "MAX_POINTS",
     "WEIGHT_UNUSUAL_EXTREME",
+    "CaseBasis",
     "CaseFile",
     "CasePoint",
     "build_case",

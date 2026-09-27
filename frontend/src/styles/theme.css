@@ -1926,6 +1926,31 @@ tr.detail-row > td {
   white-space: nowrap;
 }
 
+/* What the case rests on. Sits under the headline and above the argument,
+   because it changes how everything below it should be weighed. */
+.case-basis {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 6px 0 0;
+  max-width: 82ch;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.case-basis-mark {
+  flex: none;
+  padding: 1px 6px;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+.case-basis-mark.read { color: var(--text); border-color: var(--border-strong); }
+.case-basis-mark.measured { color: var(--text-faint); }
+
 .case-section { margin-top: 16px; }
 /* Price context reads as observation, not as argument, so the row markers in
    it are the neutral glyph and nothing here is tinted for or against. */

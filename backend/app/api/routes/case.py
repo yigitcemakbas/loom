@@ -24,6 +24,7 @@ from app.engine.contradiction import find_contradictions
 from app.engine.quant.crosssection import percentile_phrase
 from app.engine.quant.factors import FACTORS_BY_KEY
 from app.models.account import Position, User
+from app.models.company import Company
 from app.models.event_assessment import EventAssessment
 from app.models.factor import COMPOSITE_KEY, FactorScore
 from app.repositories.brief_repository import BriefRepository
@@ -58,6 +59,19 @@ class CasePointOut(BaseModel):
     routine: bool = False
 
 
+class CaseBasisOut(BaseModel):
+    """What the case rests on, so a reader knows before they weigh any of it."""
+
+    findings: int
+    factors: int
+    peers: int
+    sector: str | None
+    has_valuation: bool
+    has_price: bool
+    is_read: bool
+    summary: str
+
+
 class CaseFileOut(BaseModel):
     ticker: str
     name: str
@@ -79,6 +93,7 @@ class CaseFileOut(BaseModel):
     # Surfaced separately from `points` so the interface cannot bury it. A page
     # showing only the case for a conclusion is a sales pitch.
     strongest_against: CasePointOut | None = None
+    basis: CaseBasisOut | None = None
 
 
 class _FactorView:
@@ -205,6 +220,15 @@ def company_case(
         move=latest_move,
     )
 
+    # How many companies the percentiles were computed against. A ranking is a
+    # statement about a peer group, and its size is the first thing that
+    # decides whether the statement is worth anything.
+    peers = 0
+    if company.sector:
+        peers = db.execute(
+            select(func.count(Company.id)).where(Company.sector == company.sector)
+        ).scalar() or 0
+
     held = False
     if user is not None:
         held = db.execute(
@@ -231,6 +255,8 @@ def company_case(
         precedents=precedents,
         sector_move=sector_move,
         routine_ids=routine_ids,
+        peers=peers,
+        sector=company.sector,
     )
 
     strongest = case.strongest_against
@@ -243,4 +269,9 @@ def company_case(
         valuation=[CasePointOut(**p.__dict__) for p in case.valuation],
         gaps=case.gaps, held=case.held,
         strongest_against=CasePointOut(**strongest.__dict__) if strongest else None,
+        basis=CaseBasisOut(
+            **case.basis.__dict__,
+            is_read=case.basis.is_read,
+            summary=case.basis.summary,
+        ) if case.basis else None,
     )

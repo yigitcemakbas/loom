@@ -564,4 +564,22 @@ export interface CaseFile {
   gaps: string[];
   held: boolean;
   strongest_against: CasePoint | null;
+  /** What the case rests on. Shown above everything, because a reader needs to
+   *  know whether they are looking at a company Loom has read or one it has
+   *  only measured before they weigh a single point on it. */
+  basis: CaseBasis | null;
+}
+
+export interface CaseBasis {
+  findings: number;
+  factors: number;
+  /** How many companies the percentiles were computed against. A ranking is a
+   *  statement about a peer group, and its size decides whether the statement
+   *  is worth anything. */
+  peers: number;
+  sector: string | null;
+  has_valuation: boolean;
+  has_price: boolean;
+  is_read: boolean;
+  summary: string;
 }

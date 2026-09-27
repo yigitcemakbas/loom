@@ -31,10 +31,28 @@ export function CaseFilePanel({ ticker }: { ticker: string }) {
           {data.held && <span className="case-held">you hold this</span>}
         </div>
         <p className="case-headline">{data.headline}</p>
-        {verdict && (
+
+        {/* What the page rests on, before any of it is read. A company Loom
+            has measured but never read is not the same as one it knows
+            nothing about, and the verdict line alone cannot tell them apart:
+            it is computed from findings, and an unread company has none. */}
+        {data.basis && (
+          <p className="case-basis">
+            <span className={`case-basis-mark ${data.basis.is_read ? "read" : "measured"}`}>
+              {data.basis.is_read ? "read" : "not read"}
+            </span>
+            {data.basis.summary}
+          </p>
+        )}
+        {verdict && data.basis?.is_read && (
           <p className="case-confidence">
             {confidencePhrase(data.confidence)} · {data.points.length} things worth knowing
           </p>
+        )}
+        {/* An unread company has no confidence in a reading to report, but it
+            does have a count of what is on the page. */}
+        {!data.basis?.is_read && data.points.length > 0 && (
+          <p className="case-confidence">{data.points.length} things worth knowing</p>
         )}
       </header>
 
