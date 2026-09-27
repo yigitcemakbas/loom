@@ -48,7 +48,7 @@ from sqlalchemy.orm import Session
 
 from app.engine.evaluation import spearman
 from app.engine.quant.composite import build_composite
-from app.engine.quant.relevance import weighted_composite
+from app.engine.quant.relevance import THEMES, weighted_composite
 from app.engine.quant.factors import FACTORS
 from app.engine.quant.prices import PriceHistory, history_from_bars
 from app.engine.quant.runner import score_universe
@@ -75,6 +75,16 @@ REBALANCE_DAYS = 30
 # The conditional composite is scored under its own key so the two can be
 # compared in one run rather than across two runs of different windows.
 CONDITIONAL_KEY = "composite_conditional"
+
+# Themes are scored under their own keys so the pre-specified question can be
+# asked directly: does a family of related measures carry signal that averaging
+# it with six unrelated families destroys?
+#
+# This is legitimate and picking the four best-performing factors would not be.
+# The themes were named in quant/relevance.py from published economics before
+# any of these results existed, so testing them is a pre-registered hypothesis
+# rather than a search for whatever happened to work.
+THEME_PREFIX = "theme:"
 
 
 @dataclass
@@ -259,6 +269,9 @@ def run_backtest(
     # to know whether the second is an improvement rather than a preference.
     results[COMPOSITE_KEY] = FactorResult(key=COMPOSITE_KEY, label="Composite (flat)")
     results[CONDITIONAL_KEY] = FactorResult(key=CONDITIONAL_KEY, label="Composite (conditional)")
+    for theme in THEMES:
+        key = f"{THEME_PREFIX}{theme}"
+        results[key] = FactorResult(key=key, label=f"Theme: {theme}")
 
     universe_returns: list[float] = []
     benchmark_returns: list[float] = []
@@ -310,6 +323,11 @@ def run_backtest(
             )
             if conditional is not None:
                 percentiles.setdefault(CONDITIONAL_KEY, {})[ticker] = conditional.score
+                # Each theme as its own signal, from the same condition-weighted
+                # calculation, so a theme result cannot differ from the
+                # composite for any reason other than the averaging.
+                for theme, score in conditional.themes.items():
+                    percentiles.setdefault(f"{THEME_PREFIX}{theme}", {})[ticker] = score
 
         for key, by_ticker in percentiles.items():
             result = results.get(key)
@@ -390,6 +408,7 @@ __all__ = [
     "MIN_LEG",
     "QUANTILES",
     "CONDITIONAL_KEY",
+    "THEME_PREFIX",
     "REBALANCE_DAYS",
     "BacktestResult",
     "FactorResult",

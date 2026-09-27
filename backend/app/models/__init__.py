@@ -8,6 +8,7 @@ from app.models.brief import CompanyBrief, Stance  # noqa: F401
 from app.models.company import Company, CompanyTier  # noqa: F401
 from app.models.document import RawDocument, SourceType  # noqa: F401
 from app.models.event_assessment import EventAssessment  # noqa: F401
+from app.models.experiment import AgentDecision  # noqa: F401
 from app.models.exposure import CompanyExposure  # noqa: F401
 from app.models.factor import COMPOSITE_KEY, FactorScore  # noqa: F401
 from app.models.price_bar import PriceBar  # noqa: F401

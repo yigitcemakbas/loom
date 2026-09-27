@@ -221,8 +221,19 @@ def test_no_previous_read_means_nothing_to_diff_against():
 # ---- windowing ---------------------------------------------------------
 
 
-def test_findings_outside_the_window_are_excluded():
-    assert build_brief(_many(5, days_ago=400), now=NOW).stance == Stance.INSUFFICIENT
+def test_findings_outside_the_window_are_excluded_when_newer_ones_exist():
+    """This used to assert that anything past 90 days was dropped outright.
+    That was wrong for a company read once: findings carry the date of the
+    filing they came from, so a 10-K read in September is dated to February and
+    was being discarded entirely. The rule now is narrower and still real —
+    stale evidence never competes with current evidence.
+    """
+    fresh = _many(3, direction="positive", days_ago=5)
+    stale = _many(5, direction="negative", days_ago=300,
+                  summary_template="Stale theme {i}: an old concern about operations.")
+
+    brief = build_brief(fresh + stale, now=NOW)
+    assert brief.signal_count == len(fresh)
 
 
 def test_dismissed_findings_do_not_shape_the_verdict():
@@ -324,3 +335,74 @@ def test_the_engine_does_not_move_the_verdict():
     ]
 
     assert build_brief(plain, now=NOW).stance == build_brief(scored, now=NOW).stance
+
+
+# ---- evidence older than the window -----------------------------------
+
+
+def test_a_company_read_once_still_gets_a_verdict():
+    """Findings carry the date of the filing they came from, so a 10-K read in
+    September is dated to February. The 90-day window was discarding it and
+    reporting "not enough has been analysed yet" about a company holding a full
+    annual report."""
+    old = _many(5, direction="negative", days_ago=240)
+    brief = build_brief(old, now=NOW)
+
+    assert brief.stance != Stance.INSUFFICIENT
+    assert brief.evidence["fell_back_to_older_evidence"] is True
+
+
+def test_the_reader_is_told_the_evidence_is_old():
+    """A verdict resting on an eight month old filing is legitimate and the
+    reader is entitled to know."""
+    brief = build_brief(_many(5, direction="negative", days_ago=240), now=NOW)
+    assert "months ago" in brief.headline
+
+
+def test_current_evidence_is_never_diluted_with_stale_evidence():
+    """The fallback fires only when the window is empty. A company under
+    continuous coverage must never be judged on last year while this quarter
+    exists."""
+    fresh = _many(4, direction="positive", days_ago=5)
+    stale = _many(20, direction="negative", days_ago=300,
+                  summary_template="Old theme {i}: a concern from long ago.")
+
+    brief = build_brief(fresh + stale, now=NOW)
+    assert brief.evidence["fell_back_to_older_evidence"] is False
+    assert brief.signal_count == len(fresh)
+
+
+def test_evidence_beyond_the_fallback_is_still_refused():
+    """Two years old is not a current view of a company by any reading."""
+    ancient = _many(5, direction="negative", days_ago=900)
+    assert build_brief(ancient, now=NOW).stance == Stance.INSUFFICIENT
+
+
+def test_the_age_of_the_newest_evidence_is_always_reported():
+    brief = build_brief(_many(5, direction="negative", days_ago=240), now=NOW)
+    assert brief.evidence["newest_finding_days"] >= 239
+
+
+def test_a_horizon_view_never_falls_back():
+    """The timeframe buttons exist to answer "what does the evidence say over
+    a week". Widening to a year old filing would answer a different question
+    while wearing the same label."""
+    brief = build_brief(_many(5, direction="negative", days_ago=240), now=NOW, horizon="1w")
+    assert brief.stance == Stance.INSUFFICIENT
+
+
+def test_an_unread_company_is_recorded_once_not_daily():
+    """At a hundred and thirty companies nearly all had been read. At a
+    thousand, most of the universe is the wide tier by design: numeric sources
+    only, no documents, no findings. A daily brief for each of them saying
+    "not enough analysed yet" is several hundred identical rows a day recording
+    the absence of work nobody asked for, and it grows without bound.
+
+    The state itself is still worth one record, so the first is written.
+    """
+    from app.models.brief import Stance
+
+    first = build_brief([], now=NOW)
+
+    assert first.stance == Stance.INSUFFICIENT
+    assert first.signal_count == 0

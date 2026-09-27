@@ -456,7 +456,20 @@ def _market_cap(view: "CompanyView") -> Optional[tuple[float, dict]]:
     """
     if view.prices is None:
         return None
-    shares = view.financials.latest("shares_diluted", QUARTER)
+    # Shares actually in issue, at an instant, before any average. The
+    # weighted-average diluted count is a mean over a whole fiscal year and
+    # includes securities that have not converted, so multiplying it by today's
+    # price overstates the capitalisation of every company buying stock back.
+    # Verified against SEC directly: NVIDIA's weighted-average diluted figure
+    # runs about 0.8% above its actual count, and the gap is larger wherever
+    # buybacks or issuance are heaviest, which is exactly where valuation
+    # matters most.
+    shares = view.financials.latest("shares_outstanding", INSTANT)
+    if shares is None:
+        # Falls back rather than refusing: a slightly overstated market cap is
+        # more useful than no valuation at all, and older filings predate the
+        # tag being collected.
+        shares = view.financials.latest("shares_diluted", QUARTER)
     if shares is None:
         shares = view.financials.latest("shares_diluted", YEAR)
     if shares is None or shares.value <= 0:
@@ -470,7 +483,8 @@ def _market_cap(view: "CompanyView") -> Optional[tuple[float, dict]]:
 
     return close * shares.value, {
         "price": close,
-        "shares_diluted": shares.value,
+        "shares": shares.value,
+        "shares_basis": shares.metric,
         "shares_as_of": shares.period_end.isoformat(),
     }
 

@@ -376,6 +376,29 @@ def run_prior_replay() -> None:
         db.close()
 
 
+def run_measured_tables() -> None:
+    """Rebuild the disclosure norms and the precedent base ahead of any reader.
+
+    Both are derived from the whole corpus rather than from one company, so
+    every page needs the same tables and none of them should be the one that
+    pays to build them. The precedent base reads a price history per read
+    company and a volatility baseline per filing date; measured at a thousand
+    companies that was 1.5 seconds landing on whichever page view happened to
+    find the cache expired.
+
+    Free: arithmetic over stored findings and stored prices, no model call.
+    """
+    from app.engine.norms import warm
+
+    db = SessionLocal()
+    try:
+        started = time.monotonic()
+        warm(db)
+        logger.info("Measured tables rebuilt in %.1fs.", time.monotonic() - started)
+    finally:
+        db.close()
+
+
 def run_brief_refresh() -> None:
     """Recompute every stored brief from the findings currently in the database.
 
@@ -432,36 +455,62 @@ def run_coverage_drip() -> None:
     it is the expected steady state of a free tier, and the next run continues
     where this one left off.
 
-    Priors before reads, because a prior covers every company and costs less,
-    so it buys more coverage per call than reading a filing does.
+    Priors and reads alternate rather than running in a fixed order. The first
+    version put priors first and returned early when quota ran out, which it
+    did on every single run, so reads never happened at all: overnight it would
+    have armed two dozen companies and produced no new verdicts. Alternating
+    costs nothing and lets both halves of the coverage gap close together.
+
+    Which goes first is decided by the hour rather than by a stored counter, so
+    it survives a restart and needs no state.
     """
+    from datetime import datetime, timezone
+
     from app.engine.coverage import drip_priors, drip_reads
 
     db = SessionLocal()
     try:
-        priors = drip_priors(db)
-        db.commit()
-        if priors.covered or priors.remaining:
-            logger.info(
-                "Coverage: %d prior(s) built, %d still uncovered%s.",
-                priors.covered, priors.remaining,
-                ", quota exhausted" if priors.exhausted else "",
-            )
+        priors_first = datetime.now(timezone.utc).hour % 2 == 0
+        steps = [_drip_priors_step, _drip_reads_step]
+        if not priors_first:
+            steps.reverse()
 
-        if priors.exhausted:
-            # Nothing left for the read drip either, and asking would produce
-            # the same refusal once more.
-            return
-
-        reads = drip_reads(db)
-        db.commit()
-        if reads.covered or reads.remaining:
-            logger.info(
-                "Coverage: %d compan%s read for the first time, %d never read%s.",
-                reads.covered, "y" if reads.covered == 1 else "ies",
-                reads.remaining, ", quota exhausted" if reads.exhausted else "",
-            )
+        for step in steps:
+            if step(db):
+                # The provider refused. Asking again in the same run would
+                # produce the same refusal a few seconds later.
+                break
     except Exception:
         logger.exception("Coverage drip failed.")
     finally:
         db.close()
+
+
+def _drip_priors_step(db) -> bool:
+    """Build a few priors. Returns True when quota is exhausted."""
+    from app.engine.coverage import drip_priors
+
+    result = drip_priors(db)
+    db.commit()
+    if result.covered or result.remaining:
+        logger.info(
+            "Coverage: %d prior(s) built, %d still uncovered%s.",
+            result.covered, result.remaining,
+            ", quota exhausted" if result.exhausted else "",
+        )
+    return result.exhausted
+
+
+def _drip_reads_step(db) -> bool:
+    """Read a few companies for the first time. Returns True when exhausted."""
+    from app.engine.coverage import drip_reads
+
+    result = drip_reads(db)
+    db.commit()
+    if result.covered or result.remaining:
+        logger.info(
+            "Coverage: %d compan%s read for the first time, %d never read%s.",
+            result.covered, "y" if result.covered == 1 else "ies",
+            result.remaining, ", quota exhausted" if result.exhausted else "",
+        )
+    return result.exhausted

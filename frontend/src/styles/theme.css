@@ -1093,6 +1093,38 @@ tr.detail-row > td {
   color: var(--text);
 }
 
+.contradiction-settles {
+  margin: 8px 0 0;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--text-dim);
+}
+.contradiction-settles strong { color: var(--text); font-weight: 600; }
+
+/* The expert wording, one click away. A quiet control: the plain version is
+   the one meant to be read, and this exists so that offering it is not the
+   same as hiding the other. */
+.contradiction-more {
+  margin-top: 6px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.contradiction-more:hover { color: var(--text-dim); }
+.contradiction-technical {
+  margin: 6px 0 0;
+  padding-left: 8px;
+  border-left: 2px solid var(--border);
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
 .contradiction-note {
   margin: 0;
   padding: 7px 12px;
@@ -1832,7 +1864,72 @@ tr.detail-row > td {
 }
 .case-settles strong { color: var(--text); font-weight: 600; }
 
+/* The rest of the ranked list, closed by default.
+   Styled as a quiet control rather than a section heading: it must be findable
+   by a reader who wants it and must not compete with the twelve points above,
+   because the ordering is the product. */
+.case-withheld {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+.case-withheld-toggle {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0;
+  font-family: inherit;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-dim);
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.case-withheld-toggle:hover { color: var(--text); }
+.case-withheld-mix {
+  font-weight: 400;
+  color: var(--text-faint);
+}
+.case-withheld-note {
+  margin: 8px 0 6px;
+  max-width: 78ch;
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
+/* Evidence whose quoted period is years older than the filing that carried it.
+   Warning-coloured but not alarming: this does not mean the finding is wrong,
+   it means the reader is looking at an older period than the date suggests. */
+.driver-stale {
+  margin: 3px 0 0 16px;
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--warn);
+}
+
+/* Boilerplate the verdict already discounted. Quiet by design: it is a
+   qualifier on a row, not a finding of its own. */
+.case-routine-tag {
+  margin-left: 6px;
+  padding: 1px 5px;
+  font-size: 8.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  background: var(--bg-inset);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
 .case-section { margin-top: 16px; }
+/* Price context reads as observation, not as argument, so the row markers in
+   it are the neutral glyph and nothing here is tinted for or against. */
+.case-price .case-point { --case-tone: var(--text-dim); }
 .case-section h4, .case-gaps h4 {
   margin: 0 0 6px;
   font-size: 9.5px;

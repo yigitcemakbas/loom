@@ -67,7 +67,16 @@ export function CompanyDetailPage() {
       <div className="quote-header">
         <span className="quote-ticker">{company.ticker}</span>
         <span className="quote-name">{company.name}</span>
-        <span className="quote-meta">{company.sector ?? "-"} · {company.exchange ?? "-"}</span>
+        {/* Only the facts Loom actually has, joined by a separator that
+            appears between them rather than around them. Rendering a dash for
+            a missing value put "CONSUMER STAPLES · -" in the header of every
+            company whose exchange had never been filled, which reads as a
+            broken field rather than an absent one. */}
+        {[company.sector, company.exchange].filter(Boolean).length > 0 && (
+          <span className="quote-meta">
+            {[company.sector, company.exchange].filter(Boolean).join(" · ")}
+          </span>
+        )}
         <span style={{ marginLeft: "auto" }}>
           <TrackButton ticker={company.ticker} />{" "}
           <button className="btn" onClick={() => analyze.mutate()} disabled={analyze.isPending}>

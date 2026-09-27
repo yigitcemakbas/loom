@@ -93,6 +93,25 @@ class PriceHistory:
                 out.append(current.adjusted_close / previous.adjusted_close - 1.0)
         return out
 
+    def between(self, start: date, end: date) -> list["Bar"]:
+        """Every session in a window, oldest first."""
+        return [b for b in self._bars if start <= b.session_date <= end]
+
+    def returns_by_date(self, start: date, end: date) -> dict[date, float]:
+        """Session returns inside a window, keyed by session.
+
+        The dated form of `daily_returns`, and it exists so two series can be
+        differenced. Subtracting a benchmark from a company by position assumes
+        both traded on exactly the same days, which is true until one of them
+        is halted or newly listed, and wrong silently when it is not.
+        """
+        window = [b for b in self._bars if start <= b.session_date <= end]
+        return {
+            current.session_date: current.adjusted_close / previous.adjusted_close - 1.0
+            for previous, current in zip(window, window[1:])
+            if previous.adjusted_close > 0
+        }
+
     def covers(self, when: date, *, back_days: int) -> bool:
         """Whether the series actually reaches back far enough to answer.
 

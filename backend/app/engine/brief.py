@@ -28,15 +28,46 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from app.models.brief import Stance
+from app.engine.disclosure import (
+    RECURRENCE_DISCOUNT,
+    UNINFORMATIVE_FLOOR,
+    DisclosureNorms,
+    document_key,
+    effective_findings,
+    parity_weights,
+    restated,
+    routine_share,
+)
+from app.engine.staleness import (
+    STALE_DISCOUNT,
+    assess as staleness_of,
+    effective_age_days,
+    side_ages,
+    stale_ids,
+)
 from app.engine.statistics.engine import ANOMALY_RATE
 from app.engine.statistics.features import MAGNITUDE_WEIGHT
 from app.models.signal import Signal, SignalType
 
 # Bumped when the synthesis rules change, so stored briefs can be regenerated
 # deliberately rather than drifting silently.
-ENGINE_VERSION = "2026-08-26.1"
+ENGINE_VERSION = "2026-09-26.1"
 
 WINDOW_DAYS = 90
+
+# When nothing falls inside the window, the newest evidence is used instead,
+# up to this age. The window exists so a company under continuous coverage is
+# judged on what is current rather than on last year, which is right. It was
+# also silently discarding everything Loom knew about a company read once:
+# findings carry the date of the filing they came from, and a 10-K read in
+# September is dated to February, so eleven companies with seven to nine real
+# findings each reported "not enough has been analysed yet" while holding a
+# full annual report.
+#
+# An analyst reading a 10-K in September does not discard it for being eight
+# months old, they say so. So does this: `evidence.newest_finding_days` carries
+# the age, and the headline says what the verdict rests on.
+FALLBACK_WINDOW_DAYS = 400
 
 # How much each magnitude counts toward the stance. A "major" finding should
 # not be outvoted by two "minor" ones. Imported rather than declared: the
@@ -137,6 +168,12 @@ _DUPLICATE_OVERLAP = 0.4
 
 MAX_DRIVERS = 3
 
+# Below this, the routine share is not worth a clause: every corporate document
+# contains some required language, and reporting "about 12% of this was
+# boilerplate" on every company would train a reader to skip the sentence that
+# matters on the companies where the share is most of the record.
+_ROUTINE_WORTH_SAYING = 0.35
+
 # Findings whose type is inherently about the company's own disclosures. Used
 # to decide whether we have enough to say anything at all.
 _SUBSTANTIVE_TYPES = {
@@ -197,6 +234,15 @@ class Driver:
     # True when the finding supplied its own short label. A clipped sentence
     # cannot be dropped into the middle of a headline and still read as English.
     is_label: bool = False
+    # How old this evidence actually is, counting the period the quote describes
+    # rather than the date of the document that carried it. A filing published
+    # this month can quote a call from two years ago, and the finding's own
+    # timestamp gives a reader no way to tell.
+    age_days: int | None = None
+    # Set only where that gap is large enough to change how the evidence should
+    # be read. None the vast majority of the time, which is what keeps it worth
+    # reading when it appears.
+    stale_note: str | None = None
 
 
 @dataclass
@@ -264,12 +310,37 @@ def _title_of(signal: Signal) -> tuple[str, bool]:
 
 
 def _weighted_direction(
-    signals: list[Signal], horizon: Horizon | None = None
-) -> tuple[float, float, dict[str, int]]:
-    """Return (mean_direction, total_weight, counts). Mean is -1..1."""
+    signals: list[Signal],
+    horizon: Horizon | None = None,
+    *,
+    norms: DisclosureNorms | None = None,
+    parity: dict[str, float] | None = None,
+    restated_ids: set[str] | None = None,
+    stale_ids: set[str] | None = None,
+) -> tuple[float, float, dict[str, int], dict]:
+    """Return (mean_direction, total_weight, counts, workings). Mean is -1..1.
+
+    With `norms` supplied the mean is a **residual**, not a level: each finding
+    contributes how far its direction sits from what findings of its kind, from
+    that kind of document, normally carry. This is the correction described in
+    engine/disclosure.py, and it is what stops a company being marked down for
+    the number of risk factors it publishes. A negative risk factor in an
+    annual report contributes approximately nothing, because every annual
+    report's risk section is negative; a negative guidance change contributes
+    almost all of its weight, because guidance changes are not.
+
+    Without `norms` the behaviour is the original one, a plain weighted mean of
+    directions. Both paths are kept because the residual is only meaningful
+    against a measured corpus, and a caller that has not measured one should
+    get the honest older answer rather than a residual against nothing.
+    """
     counts = {"positive": 0, "negative": 0, "neutral": 0}
     total = 0.0
     weighted = 0.0
+    expected_total = 0.0
+    restated_count = 0
+    stale_count = 0
+    uninformative = 0
     for s in signals:
         direction = s.market_direction
         if direction not in ("positive", "negative", "neutral"):
@@ -282,22 +353,91 @@ def _weighted_direction(
             # near-term one barely moves a five-year view. This is the whole
             # mechanism by which the same evidence yields different verdicts.
             weight *= horizon_weight(s, horizon)
+        if parity is not None:
+            # Forty findings from one filing are one document read closely,
+            # not forty independent observations.
+            weight *= parity.get(str(s.id), 1.0)
+        if restated_ids and str(s.id) in restated_ids:
+            # The company said this before, in a different filing. Carrying a
+            # risk forward is weak evidence it is still live, and nothing more.
+            weight *= RECURRENCE_DISCOUNT
+            restated_count += 1
+        if stale_ids and str(s.id) in stale_ids:
+            # The quote is about a period years before the filing that carried
+            # it. Detecting that without acting on it would produce a page
+            # warning about evidence its own headline was computed from.
+            weight *= STALE_DISCOUNT
+            stale_count += 1
+
         sign = 1.0 if direction == "positive" else -1.0 if direction == "negative" else 0.0
-        weighted += weight * sign
+        contribution = sign
+        if norms is not None:
+            # Neutral findings are excluded rather than given a residual.
+            # "Neutral" here mostly means the extraction declined to call a
+            # direction, and against a genre whose expectation is near -1 a
+            # declined call would score as a strong positive, which would let
+            # one unjudged risk factor carry a verdict. A company that is
+            # mostly neutral is caught by `directional_share` instead.
+            if sign == 0.0:
+                continue
+            excess = norms.excess_for(s)
+            if excess is None:
+                continue
+            if abs(excess) < UNINFORMATIVE_FLOOR:
+                # Said nothing, so it neither votes nor dilutes. See
+                # disclosure.UNINFORMATIVE_FLOOR for why the second half of
+                # that sentence is the one that matters.
+                uninformative += 1
+                continue
+            contribution = excess
+            expected_total += weight * norms.expected_for(s).expected
+
+        weighted += weight * contribution
         total += weight
+
+    # No rescaling, deliberately. With uninformative findings excluded rather
+    # than diluting, the residual mean already runs -1 to +1 on the same scale
+    # as the plain direction mean it replaces, so the stance thresholds below
+    # apply unchanged. They stay universal on purpose: the quantity being
+    # tested is already relative to this company and to the genre of the
+    # document each finding came from, and a per-company threshold on top of a
+    # per-company measurement would be dynamism applied twice.
     mean = weighted / total if total else 0.0
-    return mean, total, counts
+    workings = {
+        "restated": restated_count,
+        "stale": stale_count,
+        "uninformative": uninformative,
+        "expected_mean": round(expected_total / total, 3) if total else None,
+        "raw_excess": round(mean, 3) if norms is not None else None,
+    }
+    return mean, total, counts, workings
 
 
-def _pick_counterpoint(signals: list[Signal], stance_direction: str | None) -> Driver | None:
-    """The highest-priority finding that argues against the stance."""
+def _pick_counterpoint(
+    signals: list[Signal],
+    stance_direction: str | None,
+    *,
+    norms: DisclosureNorms | None = None,
+) -> Driver | None:
+    """The strongest finding that argues against the stance.
+
+    Ranked by informativeness before priority for the same reason drivers are.
+    The best argument the other way is the one point a decision most needs, and
+    filling it with a sentence every company in the index also filed would
+    waste the most valuable slot on the screen.
+    """
     if stance_direction not in ("positive", "negative"):
         return None
     opposite = "negative" if stance_direction == "positive" else "positive"
     against = [s for s in signals if s.market_direction == opposite]
     if not against:
         return None
-    best = max(against, key=lambda s: s.priority or 0.0)
+
+    def rank(signal: Signal) -> tuple:
+        excess = norms.excess_for(signal) if norms is not None else None
+        return (abs(excess) if excess is not None else 0.0, signal.priority or 0.0)
+
+    best = max(against, key=rank)
     drivers = _build_drivers([best], signals)
     return drivers[0] if drivers else None
 
@@ -315,7 +455,12 @@ def is_unusual_for_company(signal) -> bool:
     return rate is not None and rate < ANOMALY_RATE
 
 
-def _pick_drivers(signals: list[Signal], stance_direction: str | None = None) -> list[Driver]:
+def _pick_drivers(
+    signals: list[Signal],
+    stance_direction: str | None = None,
+    *,
+    norms: DisclosureNorms | None = None,
+) -> list[Driver]:
     """Findings that explain the stance, with repeats of one story collapsed.
 
     Selection is filtered by the stance's own direction before ranking. Picking
@@ -343,11 +488,22 @@ def _pick_drivers(signals: list[Signal], stance_direction: str | None = None) ->
     # finding sits below the fold. This is the statistical engine's first job
     # with teeth: it reorders what a reader sees, and it still cannot change
     # what the verdict says.
-    ordered = sorted(
-        aligned,
-        key=lambda s: (is_unusual_for_company(s), s.priority or 0.0),
-        reverse=True,
-    )
+    # Informativeness comes first, where it has been measured. A risk factor
+    # that says what every annual report says should not take one of three
+    # driver slots from a finding that told Loom something, and priority alone
+    # cannot tell them apart: a boilerplate concentration risk and a genuine
+    # guidance cut can carry the same confidence and the same magnitude.
+    def rank(signal: Signal) -> tuple:
+        excess = norms.excess_for(signal) if norms is not None else None
+        informative = abs(excess) >= UNINFORMATIVE_FLOOR if excess is not None else True
+        return (
+            informative,
+            is_unusual_for_company(signal),
+            abs(excess) if excess is not None else 0.0,
+            signal.priority or 0.0,
+        )
+
+    ordered = sorted(aligned, key=rank, reverse=True)
     chosen: list[Signal] = []
     seen: list[set[str]] = []
 
@@ -401,6 +557,8 @@ def _build_drivers(chosen: list[Signal], population: list[Signal]) -> list[Drive
                 signal_ids=[str(signal.id), *[str(s.id) for s in supporting]],
                 evidence_rate=signal.evidence_rate,
                 evidence_sample_size=signal.evidence_sample_size,
+                age_days=effective_age_days(signal),
+                stale_note=staleness_of(signal).note,
             )
         )
     return drivers
@@ -428,6 +586,16 @@ def _confidence(signals: list[Signal], source_types: set[str], counts: dict[str,
     return round(min(max(score, 0.0), 1.0), 3)
 
 
+def _months_ago(days: int) -> str:
+    """Plain words for an age. Nobody reads "247 days"."""
+    if days < 45:
+        return "the past few weeks"
+    months = round(days / 30)
+    if months < 12:
+        return f"about {months} months ago"
+    return "more than a year ago"
+
+
 def _soften(stance: Stance) -> Stance:
     """Step a strong verdict down to its ordinary form."""
     if stance == Stance.STRONG_NEGATIVE:
@@ -444,7 +612,19 @@ def _stance_for(
     *,
     assessed_count: int = 0,
     source_count: int = 0,
+    informative: float | None = None,
 ) -> Stance:
+    """The stance, with every refusal checked before any verdict.
+
+    `informative` is how many genuinely informative observations the findings
+    amount to, from engine/disclosure.py, and where it is supplied it replaces
+    the raw count in both thinness tests. That substitution is the difference
+    between "this company filed six findings" and "this company told Loom
+    something six times": a record made entirely of the disclosures every
+    annual report contains satisfies a count of six and carries the evidence
+    of about one, and issuing a verdict off it is how the counting artifact
+    reappears with its sign reversed.
+    """
     # Unread is not the same as calm. Checked before anything else, because
     # every other branch assumes the evidence has actually been judged.
     if assessed_share < _MIN_ASSESSED_SHARE:
@@ -453,7 +633,8 @@ def _stance_for(
         return Stance.QUIET
 
     # A single finding cannot carry a verdict, however lopsided it looks.
-    if assessed_count < _MIN_FOR_ANY_VERDICT:
+    count = assessed_count if informative is None else informative
+    if count < _MIN_FOR_ANY_VERDICT:
         return Stance.INSUFFICIENT
 
     if mean <= -_STRONG:
@@ -467,7 +648,7 @@ def _stance_for(
     else:
         raw = Stance.MIXED
 
-    thin = assessed_count < _MIN_FINDINGS_FOR_STRONG or source_count < _MIN_SOURCES_FOR_STRONG
+    thin = count < _MIN_FINDINGS_FOR_STRONG or source_count < _MIN_SOURCES_FOR_STRONG
     return _soften(raw) if thin else raw
 
 
@@ -483,12 +664,27 @@ def _headline(
     *,
     unassessed: int = 0,
     total: int = 0,
+    adjusted: bool = False,
+    routine: float | None = None,
 ) -> str:
     """One plain sentence. Built from structure, not borrowed from the model.
 
     The rule of thumb is that this must be readable by someone who does not
     know what a 10-Q is, so source kinds are named in ordinary words and no
     finding jargon is repeated verbatim.
+
+    **Two different sentences, because the stance means two different things.**
+    Unadjusted, it is an absolute reading and "more positives than concerns" is
+    a true description of it. Genre-adjusted, it is a comparison against what
+    documents of this kind normally carry, and the same phrasing becomes a lie:
+    Microsoft holds 24 concerns against 13 positives and still reads better than
+    an annual report normally does, because nineteen of those concerns are risk
+    factors and every annual report's risk section is negative. Writing "more
+    positives than concerns" over those counts would be contradicted by the very
+    list printed underneath it, which is the failure the driver selection rules
+    already exist to prevent. So the adjusted sentence states the comparison it
+    is actually making, gives the raw counts anyway, and says how much of the
+    record was routine.
     """
     if stance == Stance.INSUFFICIENT:
         if total and unassessed:
@@ -498,9 +694,28 @@ def _headline(
                 f"{_plural(total, 'finding')} collected, but {unassessed} have not been "
                 f"assessed for market impact yet, so no view is offered."
             )
+        if adjusted and total:
+            # A third case, and the one the genre correction created. Loom did
+            # read this company and did assess what it found; almost all of it
+            # was the disclosure its documents are required to contain. Saying
+            # "not enough analysed" would be false, and saying anything
+            # directional would be reading a verdict off boilerplate.
+            how_much = (
+                f"about {round(routine * 100)}% of them are"
+                if routine is not None and routine >= _ROUTINE_WORTH_SAYING
+                else "nearly all of them are"
+            )
+            return (
+                f"{_plural(total, 'finding')} read here, but {how_much} the disclosures "
+                f"documents of this kind always contain, so there is not yet enough that "
+                f"is specific to this company to form a view."
+            )
         return "Not enough has been analysed yet to form a view."
     if stance == Stance.QUIET:
         return "Recent disclosures are routine, with nothing that changes the picture."
+
+    if adjusted:
+        return _adjusted_headline(stance, drivers, counts, source_types, routine)
 
     named = [SOURCE_LABELS.get(s, s) for s in sorted(source_types)]
     if len(named) > 2:
@@ -525,6 +740,50 @@ def _headline(
         f"Evidence points both ways: {_plural(counts['negative'], 'concern')} "
         f"against {_plural(counts['positive'], 'positive')}, across {where}."
     )
+
+
+def _adjusted_headline(
+    stance: Stance,
+    drivers: list[Driver],
+    counts: dict[str, int],
+    source_types: set[str],
+    routine: float | None,
+) -> str:
+    """The sentence for a stance measured against its genre rather than zero."""
+    named = [SOURCE_LABELS.get(s, s) for s in sorted(source_types)]
+    if len(named) > 2:
+        where = f"{', '.join(named[:-1])}, and {named[-1]}"
+    else:
+        where = " and ".join(named) if named else "recent disclosures"
+
+    lead = drivers[0] if drivers else None
+    led_by = f", led by {lead.title.rstrip('.').lower()}," if lead and lead.is_label else ","
+
+    frame = {
+        Stance.STRONG_NEGATIVE: "Reads considerably worse than companies of this kind usually do",
+        Stance.NEGATIVE: "Reads worse than companies of this kind usually do",
+        Stance.POSITIVE: "Reads better than companies of this kind usually do",
+        Stance.STRONG_POSITIVE: "Reads clearly better than companies of this kind usually do",
+        Stance.MIXED: "Reads about as companies of this kind usually do",
+    }.get(stance, "")
+
+    sentence = f"{frame}{led_by} across {where}."
+
+    # The raw counts, always, and unrounded. A reader must be able to see the
+    # tally the verdict was reached over, especially when the verdict points
+    # the other way from the obvious reading of it.
+    sentence += (
+        f" {_plural(counts['negative'], 'concern')} against "
+        f"{_plural(counts['positive'], 'positive')}"
+    )
+    if routine is not None and routine >= _ROUTINE_WORTH_SAYING:
+        sentence += (
+            f", of which about {round(routine * 100)}% is the disclosure documents of "
+            f"this kind always contain."
+        )
+    else:
+        sentence += "."
+    return sentence
 
 
 def _what_changed(signals: list[Signal], since: datetime | None) -> str | None:
@@ -552,23 +811,51 @@ def build_brief(
     previous_generated_at: datetime | None = None,
     now: datetime | None = None,
     horizon: str | None = None,
+    norms: DisclosureNorms | None = None,
 ) -> Brief:
     """Fold one company's findings into a single read, for a stated holding period.
 
     `horizon` decides both which findings are still admissible and how much
     each counts. Omitting it keeps the original behaviour, a single undated
     window, which is what every stored brief was built with.
+
+    `norms` is the measured expectation table from engine/disclosure.py. With
+    it, the stance is how far this company's disclosure departs from what
+    documents of the same kind normally say; without it, the stance is the
+    plain average of finding directions, which scores a company down for the
+    number of risk factors it publishes. Every production caller supplies one.
+    It stays a parameter rather than being fetched here so the synthesis keeps
+    its promise to hold no session and be testable without a database.
     """
     now = now or datetime.now(timezone.utc)
     spec = HORIZONS.get(horizon or "") if horizon else None
     window_days = spec.window_days if spec else WINDOW_DAYS
     cutoff = now - timedelta(days=window_days)
 
-    recent = [
-        s for s in signals
-        if _aware(s.occurred_at) >= cutoff and s.dismissed_at is None
-    ]
+    live = [s for s in signals if s.dismissed_at is None]
+    recent = [s for s in live if _aware(s.occurred_at) >= cutoff]
     substantive = [s for s in recent if s.signal_type in _SUBSTANTIVE_TYPES]
+
+    # Nothing current, but the company may still have been read. Falling back
+    # is not the same as widening the window: it only happens when the window
+    # is empty, so a company under continuous coverage is never judged on stale
+    # evidence while fresh evidence exists.
+    fell_back = False
+    if not substantive and spec is None:
+        older_cutoff = now - timedelta(days=FALLBACK_WINDOW_DAYS)
+        older = [
+            s for s in live
+            if _aware(s.occurred_at) >= older_cutoff and s.signal_type in _SUBSTANTIVE_TYPES
+        ]
+        if older:
+            substantive = older
+            recent = [s for s in live if _aware(s.occurred_at) >= older_cutoff]
+            fell_back = True
+
+    newest_age = (
+        (now - max(_aware(s.occurred_at) for s in substantive)).days
+        if substantive else None
+    )
 
     # A short horizon over a thin recent record is the case most likely to
     # mislead: two stale findings can produce a confident one-week verdict that
@@ -595,10 +882,43 @@ def build_brief(
                 "horizon": spec.key if spec else None,
                 "findings_available": len(substantive),
                 "findings_required": spec.min_findings if spec else None,
+                "newest_finding_days": newest_age,
+                "fell_back_to_older_evidence": fell_back,
             },
         )
 
-    mean, _weight, counts = _weighted_direction(substantive, spec)
+    # Computed over what is actually being folded, not over the whole history:
+    # a document whose findings were mostly cut by the window contributes the
+    # findings that survived it, and should be weighted for those.
+    parity = parity_weights(substantive)
+    # Restatement is judged against everything Loom holds for this company,
+    # including findings older than the window. That is the point: a risk
+    # first disclosed two years ago and repeated since is not news now, and a
+    # window that cannot see the original would call every copy the first one.
+    restated_ids = restated(substantive, population=live)
+
+    # Findings whose quoted period is years older than the filing that carried
+    # them. Computed over the folded set rather than the whole history: this is
+    # about what the current verdict rests on.
+    stale = stale_ids(substantive)
+
+    mean, _weight, counts, workings = _weighted_direction(
+        substantive, spec, norms=norms, parity=parity, restated_ids=restated_ids,
+        stale_ids=stale,
+    )
+    informative = (
+        effective_findings(
+            substantive, norms, parity=parity, restated_ids=restated_ids,
+        )
+        if norms is not None else None
+    )
+    # Two different questions, deliberately measured differently. `informative`
+    # decides whether there is enough independent evidence to say anything and
+    # therefore carries the clustering correction; `routine` is what the reader
+    # is told about the company's disclosure and must not.
+    routine = routine_share(substantive, norms) if norms is not None else None
+    # How old each side of the case is, by the period its evidence describes.
+    ages = side_ages(substantive, now=now)
     directional = counts["positive"] + counts["negative"]
     assessed = directional + counts["neutral"]
     directional_share = directional / len(substantive) if substantive else 0.0
@@ -606,6 +926,7 @@ def build_brief(
     stance = _stance_for(
         mean, directional_share, assessed_share,
         assessed_count=assessed, source_count=len(source_types_of(substantive)),
+        informative=informative,
     )
 
     source_types = source_types_of(substantive)
@@ -616,8 +937,8 @@ def build_brief(
         else "positive" if stance in (Stance.STRONG_POSITIVE, Stance.STRONG_POSITIVE, Stance.POSITIVE)
         else None
     )
-    drivers = _pick_drivers(substantive, stance_direction)
-    counterpoint = _pick_counterpoint(substantive, stance_direction)
+    drivers = _pick_drivers(substantive, stance_direction, norms=norms)
+    counterpoint = _pick_counterpoint(substantive, stance_direction, norms=norms)
     # No view means no confidence in a view. Reporting "83% confident" beside
     # "no view is offered" reads as a contradiction and undermines both.
     confidence = (
@@ -625,12 +946,23 @@ def build_brief(
         else _confidence(substantive, source_types, counts)
     )
 
+    headline = _headline(
+        stance, drivers, counts, source_types,
+        unassessed=len(substantive) - assessed, total=len(substantive),
+        adjusted=norms is not None, routine=routine,
+    )
+    if fell_back and newest_age is not None:
+        # Stated rather than implied. A reader deciding today is entitled to
+        # know the verdict rests on a filing from several months ago, and an
+        # analyst reading an old 10-K says so rather than discarding it.
+        headline = (
+            f"{headline} Based on filings from {_months_ago(newest_age)}, the most "
+            f"recent Loom has read for this company."
+        )
+
     return Brief(
         stance=stance,
-        headline=_headline(
-            stance, drivers, counts, source_types,
-            unassessed=len(substantive) - assessed, total=len(substantive),
-        ),
+        headline=headline,
         confidence=confidence,
         drivers=drivers,
         counterpoint=counterpoint,
@@ -646,5 +978,38 @@ def build_brief(
             "directional_share": round(directional_share, 3),
             "assessed_share": round(assessed_share, 3),
             "unassessed": len(substantive) - assessed,
+            # How old the newest evidence is, and whether the window had to be
+            # widened to find any. A verdict resting on an eight month old
+            # annual report is legitimate and the reader is told.
+            "newest_finding_days": newest_age,
+            "fell_back_to_older_evidence": fell_back,
+            # The workings behind the residual, so a stance can be audited
+            # rather than taken on faith. `expected_mean` is what documents of
+            # this composition normally carry; the stance is the gap between
+            # that and what this company's actually did.
+            "genre_adjusted": norms is not None,
+            # How many of those findings actually told Loom something, as
+            # distinct from how many there were. The gap between this and
+            # `counts` is the measure of how much of a company's disclosure is
+            # the boilerplate its genre requires.
+            "informative_findings": round(informative, 2) if informative is not None else None,
+            # The same quantity as a share, which is the form the interface and
+            # the digest both want.
+            "routine_share": round(routine, 3) if routine is not None else None,
+            "expected_mean": workings["expected_mean"],
+            "excess_mean": workings["raw_excess"],
+            "restated_findings": workings["restated"],
+            # How many findings said nothing Loom did not already expect from a
+            # document of that kind, and were therefore left out of the stance.
+            "uninformative_findings": workings["uninformative"],
+            # Evidence that is older than its timestamp suggests, and whether
+            # the two sides of the case are the same age. Both are reported even
+            # when there is nothing to report, so a reader can tell "Loom
+            # checked and found none" from "Loom did not check".
+            "stale_findings": workings["stale"],
+            "evidence_age_note": ages.note,
+            "positive_age_days": ages.positive_days,
+            "negative_age_days": ages.negative_days,
+            "documents": len({document_key(s) for s in substantive}),
         },
     )

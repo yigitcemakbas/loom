@@ -1,4 +1,4 @@
-.PHONY: up down migrate seed ingest run-api run-frontend test
+.PHONY: up down migrate seed seed-dev-account ingest run-api run-frontend test
 
 up:
 	docker compose up -d
@@ -11,6 +11,11 @@ migrate:
 
 seed:
 	cd backend && python -m scripts.seed_companies
+
+# A verified local account, so a fresh database is usable without walking
+# through the emailed sign-in code. Credentials are in the script.
+seed-dev-account:
+	cd backend && python -m scripts.seed_dev_account
 
 ingest:
 	cd backend && python -m scripts.ingest_once --ticker $(TICKER)

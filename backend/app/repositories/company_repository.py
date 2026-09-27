@@ -45,6 +45,7 @@ class CompanyRepository:
             cik=data.cik,
             sector=data.sector,
             exchange=data.exchange,
+            sec_rank=data.sec_rank,
             tier=tier,
         )
         self.db.add(company)

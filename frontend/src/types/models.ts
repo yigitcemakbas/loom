@@ -231,6 +231,13 @@ export interface BriefDriver {
    *  ordinary and must not be rendered as though it were. */
   evidence_rate: number | null;
   evidence_sample_size: number | null;
+  /** How old this evidence actually is, counting the period the quote
+   *  describes rather than the date of the document that carried it. */
+  age_days: number | null;
+  /** Set only where those two differ enough to change how the evidence should
+   *  be read. Null the vast majority of the time, which is what keeps it worth
+   *  reading when it appears. */
+  stale_note: string | null;
 }
 
 /** The product's actual deliverable: one company's current read, folded from
@@ -396,7 +403,15 @@ export interface Contradiction {
   headline: string;
   says_better: string;
   says_worse: string;
+  /** Written for a reader who already knows the vocabulary. */
   why_it_matters: string;
+  /** The same thing said to someone who does not, and the one the panel leads
+   *  with. One type defeated a reader outright in the paired agent trial while
+   *  being among the most-cited things Loom produced, which is a combination
+   *  worth fixing rather than explaining away. */
+  plain: string;
+  /** The observation that would resolve the disagreement. */
+  settled_by: string;
   signal_ids: string[];
   factor_keys: string[];
 }
@@ -519,6 +534,10 @@ export interface CasePoint {
    *  would, which is more honest than inventing a test. */
   settles_it: string | null;
   quote: string | null;
+  /** The disclosure its kind of document always contains, which carried no
+   *  weight in the verdict. Marked because a long list of concerns below the
+   *  cut otherwise reads as evidence the verdict ignored. */
+  routine: boolean;
 }
 
 export interface CaseFile {
@@ -528,9 +547,18 @@ export interface CaseFile {
   headline: string;
   confidence: number;
   points: CasePoint[];
+  /** Everything that ranked below the cap, in order. Served rather than
+   *  summarised as a count: a reader told that thirty further findings exist,
+   *  with no way to reach them, has been given a reason to doubt the twelve
+   *  that were shown. */
+  withheld: CasePoint[];
   /** Kept apart from the business case: they answer different questions, and
    *  conflating them buys a good company at any price. */
   valuation: CasePoint[];
+  /** What the price has already done. Not an argument for or against anything:
+   *  it is the condition the arguments are read in. The same risk factor means
+   *  different things at an all-time high and after a forty percent fall. */
+  price: CasePoint[];
   /** What Loom has not read. A page that looks complete when it is not is
    *  worse than an obviously empty one. */
   gaps: string[];

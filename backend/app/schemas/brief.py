@@ -18,6 +18,12 @@ class DriverOut(BaseModel):
     # which the client must render differently from "ordinary".
     evidence_rate: float | None = None
     evidence_sample_size: int | None = None
+    # How old this evidence actually is, counting the period the quote describes
+    # rather than the date of the document that carried it, and a note where
+    # those two differ enough to change how it should be read. Both default to
+    # None so briefs stored before this existed deserialise unchanged.
+    age_days: int | None = None
+    stale_note: str | None = None
 
 
 class BriefOut(BaseModel):

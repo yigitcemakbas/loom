@@ -40,6 +40,18 @@ def _keys(found) -> set[str]:
     return {c.key for c in found}
 
 
+class _Move:
+    """A price move, in the shape engine/price_context.py returns."""
+
+    def __init__(self, percent: float, *, material: bool = True):
+        self.abnormal_percent = percent
+        self.sigma = percent / 5.0
+        self.is_material = material
+        self.is_striking = abs(percent) > 20
+        self.sessions = 10
+        self.summary = "a move"
+
+
 # ---- the disagreements worth surfacing --------------------------------
 
 
@@ -143,3 +155,122 @@ def test_a_contradiction_never_claims_a_direction():
     for contradiction in found:
         assert not hasattr(contradiction, "direction")
         assert not hasattr(contradiction, "score")
+
+
+# ---- readable by the person who needs it most --------------------------
+
+
+def _every_contradiction() -> list:
+    """One of each type, by feeding the conditions that produce them.
+
+    Built by construction rather than by listing the keys, so a seventh type
+    added later is covered without anyone remembering to add it here.
+    """
+    produced: dict[str, object] = {}
+    # reading_vs_tape needs a price move, which the other fixtures do not carry.
+    for found in find_contradictions([], {}, stance="negative", move=_Move(+15.2)):
+        produced[found.key] = found
+    cases = [
+        # tone_vs_cash, growth_vs_quality
+        (
+            [
+                _sig(SignalType.SENTIMENT_SHIFT, sentiment=0.5),
+                _sig(SignalType.INSIDER_ACTIVITY, direction="negative"),
+            ],
+            {"accruals": 0.05, "revenue_growth": 0.95},
+            "positive",
+        ),
+        # expansion_vs_returns
+        ([], {"asset_growth": 0.05, "return_on_assets": 0.95}, None),
+        # price_vs_value
+        ([], {"momentum": 0.95, "earnings_yield": 0.05, "sales_yield": 0.1}, None),
+        # reading_vs_numbers, both branches
+        ([], {"composite": 0.05}, "positive"),
+        ([], {"composite": 0.95}, "negative"),
+    ]
+    for signals, factors, stance in cases:
+        for found in find_contradictions(signals, factors, stance=stance):
+            produced[found.key] = found
+    return list(produced.values())
+
+
+def test_every_contradiction_explains_itself_without_a_term_of_art():
+    """One type, `expansion_vs_returns`, defeated a reader outright on two
+    companies in the paired agent trial: its explanation turns on a ratio whose
+    numerator and denominator cover different periods, which is exactly the
+    point and is not something anybody absorbs on one reading.
+
+    A contradiction a reader cannot parse is worse than one Loom never found,
+    because it occupies the top of the case file. So the plain explanation is
+    required, and it may not fall back on the vocabulary that made the expert
+    version unreadable."""
+    jargon = (
+        "accrual", "asset base", "re-rate", "re-rating", "multiple", "recognition",
+        "cash conversion", "percentile", "denominator", "numerator", "basis point",
+    )
+
+    found = _every_contradiction()
+    assert len(found) >= 6, "the fixtures stopped producing contradictions"
+
+    for contradiction in found:
+        assert contradiction.plain, f"{contradiction.key} has no plain explanation"
+        # Long enough to have actually explained something. The failure mode is
+        # a one-line restatement of the headline, which reads as plain and
+        # teaches nothing.
+        assert len(contradiction.plain) > 180, f"{contradiction.key} explains too little"
+        lowered = contradiction.plain.lower()
+        for term in jargon:
+            assert term not in lowered, f"{contradiction.key} uses {term!r}"
+
+
+def test_every_contradiction_names_what_would_resolve_it():
+    """A point a reader cannot check is an assertion. Where Loom knows what
+    evidence would settle a question it says so, which is what turns an
+    observation into a thesis."""
+    for contradiction in _every_contradiction():
+        assert contradiction.settled_by, f"{contradiction.key} names no resolving evidence"
+
+
+# ---- the third independent source --------------------------------------
+
+
+def test_a_negative_reading_against_a_rising_market_is_a_disagreement():
+    """One reads language, one does arithmetic on filed statements, and this
+    one is a crowd with money at stake reading the same document Loom read."""
+    found = find_contradictions([], {}, stance="negative", move=_Move(+15.2))
+
+    assert "reading_vs_tape" in _keys(found)
+
+
+def test_a_positive_reading_against_a_falling_market_is_a_disagreement():
+    found = find_contradictions([], {}, stance="positive", move=_Move(-14.0))
+
+    assert "reading_vs_tape" in _keys(found)
+
+
+def test_the_market_agreeing_is_not_a_contradiction():
+    assert "reading_vs_tape" not in _keys(
+        find_contradictions([], {}, stance="negative", move=_Move(-14.0))
+    )
+
+
+def test_a_market_that_did_not_react_is_not_a_rebuttal():
+    """Silence is an absence, not a disagreement. Treating it as one would mean
+    Loom could only ever agree with the price, which is the whole thing this
+    project declines to do."""
+    assert "reading_vs_tape" not in _keys(
+        find_contradictions([], {}, stance="negative", move=_Move(+1.0, material=False))
+    )
+
+
+def test_no_price_history_produces_no_claim_either_way():
+    assert "reading_vs_tape" not in _keys(
+        find_contradictions([], {}, stance="negative", move=None)
+    )
+
+
+def test_a_shrug_is_not_contradicted_by_the_market():
+    """A stance has to be a lean before the market can disagree with it."""
+    assert "reading_vs_tape" not in _keys(
+        find_contradictions([], {}, stance="mixed", move=_Move(+15.0))
+    )

@@ -2,7 +2,7 @@ import enum
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, String, func
+from sqlalchemy import DateTime, Integer, String, func
 from sqlalchemy import Enum as SAEnum
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
@@ -70,6 +70,16 @@ class Company(Base):
         server_default=CompanyTier.WIDE.value,
         index=True,
     )
+    # Position in SEC's own filer directory, which is published in market
+    # capitalisation order. A size proxy that costs nothing to record and does
+    # not need a share count, used to pick representative peers for a sector
+    # rather than whichever rows the database happens to return first.
+    #
+    # Null for a company added by hand or resolved from a ticker somebody
+    # typed, which has no position in that directory. Inventing one would be
+    # worse than admitting there is not one.
+    sec_rank: Mapped[int | None] = mapped_column(Integer, nullable=True, index=True)
+
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     def __repr__(self) -> str:  # pragma: no cover - debugging aid only

@@ -14,6 +14,10 @@ def test_the_scheduled_jobs_are_the_expected_set():
     assert ids == {
         "refresh-prices", "replay-priors", "score-factors",
         "refresh-briefs", "send-digests", "coverage-drip",
+        # Corpus-wide tables every page reads and none should build. Measured
+        # at a thousand companies, the precedent base took 1.5 seconds, landing
+        # on whichever page view found the cache expired.
+        "refresh-tables",
     }
     # The watchlist refresh is unbounded model spend and stays on its own
     # cadence rather than joining this list.
@@ -98,3 +102,18 @@ def test_the_scheduler_stays_off_when_configured_off():
     finally:
         settings.scheduler_enabled = original
         scheduler_module._scheduler = None
+
+
+def test_the_measured_tables_refresh_before_they_can_expire():
+    """A refresh slower than the time-to-live guarantees a gap, and the reader
+    whose page view lands in the gap pays the build. The interval has to be
+    comfortably inside the hold."""
+    from app.engine.norms import PRECEDENT_TTL_SECONDS, TTL_SECONDS
+
+    interval = next(
+        minutes for job_id, _fn, _desc, minutes, _offset in scheduler_module._FREE_JOBS
+        if job_id == "refresh-tables"
+    )
+
+    assert interval * 60 < PRECEDENT_TTL_SECONDS
+    assert TTL_SECONDS <= PRECEDENT_TTL_SECONDS

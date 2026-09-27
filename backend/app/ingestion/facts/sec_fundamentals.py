@@ -140,8 +140,30 @@ class SecFundamentalsAdapter(FactSourceAdapter):
         return list(self._to_facts(ticker, payload, since))
 
     def _to_facts(self, ticker: str, payload: dict, since) -> Iterable[StructuredFactDTO]:
-        gaap = (payload.get("facts") or {}).get("us-gaap") or {}
+        facts = payload.get("facts") or {}
+        gaap = facts.get("us-gaap") or {}
         cutoff_year = datetime.now(timezone.utc).year - self.years
+
+        # Shares actually in issue, which lives in the dei namespace rather
+        # than us-gaap. Collected separately because market capitalisation
+        # needs a point-in-time count and the only share figure Loom had was
+        # `WeightedAverageNumberOfDilutedSharesOutstanding`: an average across
+        # a whole fiscal year, including dilutive securities. Multiplying that
+        # by today's price overstates the capitalisation of any company that
+        # has been buying its own stock back, which is most large ones, and it
+        # is wrong in a consistent direction rather than a random one.
+        for concept in ("EntityCommonStockSharesOutstanding",):
+            entry = (facts.get("dei") or {}).get(concept)
+            if not entry:
+                continue
+            for unit, observations in (entry.get("units") or {}).items():
+                for obs in observations:
+                    fact = self._to_fact(
+                        ticker, "shares_outstanding", concept, unit, obs, cutoff_year, since
+                    )
+                    if fact is not None:
+                        yield fact
+            break
 
         for metric, aliases in self.concepts.items():
             for concept in aliases:

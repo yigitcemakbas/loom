@@ -29,6 +29,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from app.config import settings
 from app.scheduling.jobs import (
     run_brief_refresh,
+    run_measured_tables,
     run_coverage_drip,
     run_digests,
     run_factor_scoring,
@@ -96,6 +97,14 @@ _FREE_JOBS: tuple[tuple[str, object, str, int, int], ...] = (
         # means a daily digest lands near the same hour rather than drifting by
         # however long the last run took. Nothing is sent on a quiet day.
         60, 29,
+    ),
+    (
+        "refresh-tables", run_measured_tables,
+        "Rebuild the disclosure norms and precedent base so no page view builds them",
+        # Every thirty minutes, comfortably inside the one hour the tables are
+        # held for, so the cache is refreshed before it can expire under a
+        # reader rather than after.
+        30, 17,
     ),
     (
         "refresh-briefs", run_brief_refresh,

@@ -114,6 +114,11 @@ export function BriefCard({ brief, ticker, name, compact = false, showIdentity =
                       {d.sources.map((s) => SOURCE_LABELS[s] ?? s).join(" · ")}
                     </span>
                   </div>
+                  {/* Above the detail, not below it. The point of the warning
+                      is that the sentence underneath should be read
+                      differently, so a reader who stops after one line has to
+                      have seen it. */}
+                  {d.stale_note && <p className="driver-stale">{d.stale_note}</p>}
                   {d.detail && (
                     <p className="sans dim" style={{ margin: "2px 0 0 16px", fontSize: 11, lineHeight: 1.45 }}>
                       {d.detail}
@@ -140,6 +145,9 @@ export function BriefCard({ brief, ticker, name, compact = false, showIdentity =
               {brief.counterpoint.sources.map((s) => SOURCE_LABELS[s] ?? s).join(" · ")}
             </span>
           </div>
+          {brief.counterpoint.stale_note && (
+            <p className="driver-stale">{brief.counterpoint.stale_note}</p>
+          )}
           {brief.counterpoint.detail && (
             <p className="sans dim" style={{ margin: "2px 0 0 16px", fontSize: 11, lineHeight: 1.45 }}>
               {brief.counterpoint.detail}

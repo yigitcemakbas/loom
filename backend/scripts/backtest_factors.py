@@ -104,6 +104,11 @@ def main() -> int:
             )
         logger.info("  * long excess is survivorship-contaminated; the spread is not.")
 
+        from app.engine.quant.backtest import THEME_PREFIX
+
+        themes = [f for f in result.factors if f.key.startswith(THEME_PREFIX)]
+        singles = [f for f in result.factors if not f.key.startswith(THEME_PREFIX)]
+
         trials = len(result.factors)
         threshold = multiple_testing_threshold(trials)
         survivors = [
@@ -112,7 +117,20 @@ def main() -> int:
         ]
 
         logger.info("\n=== multiple testing ===")
-        logger.info("  %d factors tested, so |t| must clear %.2f, not 2.00.", trials, threshold)
+        logger.info("  %d things tested in total, so |t| must clear %.2f, not 2.00.", trials, threshold)
+        if themes:
+            # Both numbers, deliberately. The themes are a separate
+            # pre-registered question and could defensibly carry their own,
+            # lower bar; splitting trials into families to lower a threshold is
+            # also exactly how a result gets manufactured. Printing both means
+            # nobody has to take the generous reading on trust.
+            logger.info(
+                "  Treated as two families (%d measures, %d themes) the bars would be "
+                "%.2f and %.2f. The stricter number above is the one to believe.",
+                len(singles), len(themes),
+                multiple_testing_threshold(len(singles)),
+                multiple_testing_threshold(len(themes)),
+            )
         if survivors:
             for factor in survivors:
                 logger.info(

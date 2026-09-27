@@ -21,6 +21,7 @@ from app.engine.prompts.news_digest import NewsDigestResult
 from app.engine.prompts.quarter_comparison import QuarterComparisonResult
 from app.engine.prompts.risk_diff import RiskDiffResult
 from app.models.signal import AnalysisStatus
+from app.engine.norms import load_norms
 from app.repositories.company_repository import CompanyRepository
 from app.repositories.document_repository import DocumentRepository
 from app.repositories.brief_repository import BriefRepository
@@ -511,11 +512,29 @@ def regenerate_brief(ticker: str, db: Session):
     previous = brief_repo.latest_for(company.id)
     signals = SignalRepository(db).list_feed(company_id=company.id, limit=500)
 
+    # A company Loom has never read needs one record saying so, not one a day.
+    #
+    # This did not matter at a hundred and thirty companies, where nearly all
+    # of them had been read. At a thousand, most of the universe is the wide
+    # tier by design: numeric sources only, no documents, no findings. Writing
+    # each of them a daily brief that says "not enough analysed yet" is several
+    # hundred identical rows a day recording the absence of work nobody asked
+    # for, and it grows without bound.
+    #
+    # The first one is still written, because "Loom has not read this" is a
+    # real state a reader is entitled to see. Only the repetition stops.
+    if not signals and previous is not None:
+        return previous
+
     score_evidence(ticker, company.id, signals, db)
 
     result = brief_engine.build_brief(
         signals,
         previous_generated_at=previous.generated_at if previous else None,
+        # What documents of each kind normally say, measured from the corpus.
+        # Without it the stance is a plain average of finding directions, which
+        # marks a company down for the number of risk factors it publishes.
+        norms=load_norms(db),
     )
 
     stored = brief_repo.create(

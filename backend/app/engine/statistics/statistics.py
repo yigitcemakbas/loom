@@ -107,3 +107,29 @@ def rate_lift(observed_rate: float, reference_rate: float) -> Optional[float]:
     if reference_rate <= 0.0:
         return None
     return observed_rate / reference_rate
+
+
+def shrunk_mean(
+    values: Sequence[float],
+    prior_mean: float,
+    prior_weight: float,
+) -> float:
+    """A mean pulled toward a prior in proportion to how little data backs it.
+
+    The continuous counterpart to `shrunk_rate`, and it exists for the same
+    reason. Some quantities here are bounded means rather than proportions:
+    the average direction of a company's findings runs from -1 to +1 and is
+    not a rate of anything, so the Beta form does not apply, but the small
+    sample problem is identical. Three findings averaging -1.0 is not evidence
+    that a company's disclosures are uniformly negative.
+
+    `prior_weight` is in the same units as the observations, so it reads
+    directly: at a weight of eight, a company needs roughly eight of its own
+    observations before its average outweighs the one it is shrunk toward.
+    """
+    if prior_weight < 0:
+        raise ValueError("Prior weight cannot be negative.")
+    total = len(values) + prior_weight
+    if total == 0:
+        return prior_mean
+    return (sum(values) + prior_weight * prior_mean) / total

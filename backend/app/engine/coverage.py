@@ -110,20 +110,74 @@ def companies_needing_priors(db: Session, *, now: Optional[datetime] = None) -> 
 
 
 def companies_needing_a_read(db: Session) -> list[Company]:
-    """Watch-tier companies Loom has never read, with documents worth reading.
+    """Watch-tier companies Loom has never read, least-covered sector first.
 
     Focus companies are excluded: they are already on the continuous path, and
     a drip competing with it would spend quota re-reading what the scheduled
     refresh is about to read anyway.
+
+    **Ordered by how little Loom has read of the company's sector**, not by
+    ticker. The module docstring already promised ordering by need, and the
+    prior drip delivers it; this path did not, and the consequence was
+    measurable rather than cosmetic.
+
+    Reading alphabetically inside a quota that covers two companies per run
+    produces a corpus shaped like the alphabet. What it actually produced was a
+    corpus shaped like one sector: of the thirty companies Loom has read,
+    thirteen are Technology and two are Industrials, so every cross-sectional
+    measurement over findings was really a measurement of Technology. The
+    sector-drift test failed on exactly this, twice, and the second failure
+    survived a fivefold increase in the price universe because the *disclosures*
+    were still 50 to 90 percent one sector.
+
+    So the ordering asks which sector Loom knows least about and goes there
+    first. Within a sector, the largest companies come first: they file more,
+    are written about more, and their disclosures reach further, so they are
+    worth more per unit of quota than a micro-cap that files once a year.
     """
     with_findings = select(Signal.company_id).distinct().subquery()
-    rows = db.execute(
+    rows = list(db.execute(
         select(Company)
         .where(Company.tier == CompanyTier.WATCH)
         .where(Company.id.not_in(select(with_findings.c.company_id)))
-        .order_by(Company.ticker)
-    ).scalars()
-    return list(rows)
+    ).scalars())
+
+    # How many companies Loom has already read in each sector. Counted over the
+    # whole universe rather than the candidates, because the question is what
+    # Loom knows, not what is left.
+    read_counts = dict(db.execute(
+        select(Company.sector, func.count(Company.id.distinct()))
+        .join(Signal, Signal.company_id == Company.id)
+        .group_by(Company.sector)
+    ).all())
+
+    return read_order(rows, read_counts)
+
+
+# Unranked companies sort last rather than first. `sec_rank` is absent for a
+# company added by hand rather than seeded from SEC's directory, and treating a
+# missing size as the largest size would put every hand-added ticker at the
+# front of the queue.
+_UNRANKED = 10**9
+
+
+def read_order(companies: list, read_counts: dict) -> list:
+    """Order candidates by how little Loom knows about their sector.
+
+    Pure, and separated from the query for that reason: the ordering is the
+    part with a judgement in it, and it should be testable without a database.
+    """
+    def rank(company) -> tuple:
+        return (
+            read_counts.get(getattr(company, "sector", None), 0),
+            # Largest first within a sector. They file more, are written about
+            # more, and their disclosures reach further, so they are worth more
+            # per unit of quota than a micro-cap that files once a year.
+            getattr(company, "sec_rank", None) if getattr(company, "sec_rank", None) is not None else _UNRANKED,
+            getattr(company, "ticker", ""),
+        )
+
+    return sorted(companies, key=rank)
 
 
 def drip_priors(

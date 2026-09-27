@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useContradictions } from "../../hooks/useContradictions";
 
 /** Where Loom's own sources disagree.
@@ -13,6 +14,18 @@ import { useContradictions } from "../../hooks/useContradictions";
  *  contradiction is not a component of a conclusion, it is a reason to
  *  distrust one, and a reader who sees the conclusion first has already
  *  formed a view by the time they reach the objection. */
+function TechnicalNote({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button className="contradiction-more" onClick={() => setOpen(!open)} aria-expanded={open}>
+        {open ? "less" : "the short version"}
+      </button>
+      {open && <p className="contradiction-technical">{text}</p>}
+    </>
+  );
+}
+
 export function ContradictionPanel({ ticker }: { ticker: string }) {
   const { data, isLoading } = useContradictions(ticker);
 
@@ -57,9 +70,19 @@ export function ContradictionPanel({ ticker }: { ticker: string }) {
               <span className="side-mark">▼</span> {c.says_worse}
             </p>
           </div>
-          {/* The part that makes it a thesis rather than an observation:
-              what the disagreement implies and what would settle it. */}
-          <p className="contradiction-why">{c.why_it_matters}</p>
+          {/* The part that makes it a thesis rather than an observation.
+              Leads with the version written for a reader who does not already
+              know the vocabulary, because in testing that was the difference
+              between the most-cited output Loom has and one a reader gave up
+              on. The expert wording is still here, one click away, for whoever
+              wants the shorter form. */}
+          <p className="contradiction-why">{c.plain || c.why_it_matters}</p>
+          {c.settled_by && (
+            <p className="contradiction-settles">
+              <strong>What would settle it:</strong> {c.settled_by}
+            </p>
+          )}
+          {c.plain && c.why_it_matters !== c.plain && <TechnicalNote text={c.why_it_matters} />}
         </article>
       ))}
 

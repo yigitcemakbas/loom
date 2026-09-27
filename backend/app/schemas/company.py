@@ -22,3 +22,6 @@ class CompanyCreate(BaseModel):
     cik: str | None = None
     sector: str | None = None
     exchange: str | None = None
+    # Position in SEC's filer directory, which is ordered by market
+    # capitalisation. None for anything not seeded from it.
+    sec_rank: int | None = None

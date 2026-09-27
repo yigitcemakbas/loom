@@ -62,7 +62,28 @@ class Contradiction:
     says_worse: str
     # Why the disagreement is worth a reader's attention rather than being
     # noise. This is the part that makes it a thesis instead of an observation.
+    # Written for a reader who already knows what accruals are.
     why_it_matters: str
+    # The same thing said to someone who does not.
+    #
+    # Added because it was tested and failed. In the paired agent trial the
+    # contradictions were the most-cited thing Loom produced, and one type,
+    # `expansion_vs_returns`, defeated a reader outright on two companies: its
+    # explanation turns on the idea that a ratio's numerator and denominator
+    # are measured over different periods, which is true, is the whole point,
+    # and is not a sentence anybody learns by reading it once.
+    #
+    # The rule for this field is that it may not contain a term of art. No
+    # accruals, no asset base, no re-rating, no multiples. It says what
+    # happened, what the other thing is, and why a person should care, and it
+    # is allowed to be longer than the expert version to get there.
+    plain: str = ""
+    # The observation that would resolve the disagreement. Previously the
+    # pessimistic side was passed into this slot by the case file, which put
+    # "the cash conversion is among the worst of its peers" under the heading
+    # "What would settle it", where it answers a different question than the one
+    # the reader asked.
+    settled_by: str = ""
     signal_ids: list[str] = field(default_factory=list)
     factor_keys: list[str] = field(default_factory=list)
 
@@ -99,6 +120,7 @@ def find_contradictions(
     factors: dict[str, float],
     *,
     stance: Optional[str] = None,
+    move=None,
 ) -> list[Contradiction]:
     """Every disagreement Loom can see between its own sources.
 
@@ -133,6 +155,18 @@ def find_contradictions(
                 "disappointing quarter. The thing that settles it is next quarter's "
                 "cash conversion."
             ),
+            plain=(
+                "The company's own language about recent results is upbeat. At the same "
+                "time, less of the profit it reported actually turned up as cash than at "
+                "almost any comparable company. Reported profit involves judgement calls "
+                "about when a sale counts and what a cost is worth; cash in the bank does "
+                "not. When the confident version and the cash version of the same quarter "
+                "disagree, the cash version is the one that cannot be written persuasively."
+            ),
+            settled_by=(
+                "The next quarterly cash flow statement. If the profit was real, the cash "
+                "follows it within a quarter or two."
+            ),
             signal_ids=[str(s.id) for s in signals if s.signal_type == SignalType.SENTIMENT_SHIFT],
             factor_keys=["accruals"],
         ))
@@ -149,6 +183,18 @@ def find_contradictions(
                 "means nothing. What makes this worth reading is the disagreement: the "
                 "people writing the optimistic language and the people trading the "
                 "stock are the same people."
+            ),
+            plain=(
+                "Management is talking the business up. Over the same period, the "
+                "company's own executives and directors have been selling their shares. "
+                "People sell for ordinary reasons all the time, a house or a tax bill, so "
+                "one sale means nothing at all. What is worth a second look is that the "
+                "people writing the optimistic language and the people selling into it "
+                "are the same people."
+            ),
+            settled_by=(
+                "The next set of insider filings. Buying, or the selling stopping, would "
+                "resolve it; more selling while the language stays upbeat would not."
             ),
             signal_ids=[str(insiders[1].id)],
         ))
@@ -169,6 +215,19 @@ def find_contradictions(
                 "anything improper; it is the combination that deserves the next "
                 "cash flow statement read carefully rather than skimmed."
             ),
+            plain=(
+                "Sales are growing faster than at almost every comparable company. But a "
+                "large share of the profit behind those sales has not arrived as cash. A "
+                "company deciding when a sale counts as made has the most room to be "
+                "optimistic precisely when it is growing fast, because there is so much "
+                "genuine activity to account for. None of this says the company did "
+                "anything wrong. It says the growth is worth confirming in cash before "
+                "relying on it."
+            ),
+            settled_by=(
+                "Whether cash collected catches up with sales reported over the next two "
+                "or three quarters."
+            ),
             factor_keys=["revenue_growth", "accruals"],
         ))
 
@@ -178,7 +237,7 @@ def find_contradictions(
     if expansion is not None and expansion <= WEAK_PERCENTILE and returns is not None and returns >= STRONG_PERCENTILE:
         found.append(Contradiction(
             key="expansion_vs_returns",
-            headline="Returns are excellent, the balance sheet is expanding fast.",
+            headline="It is earning well on what it owns, and it is buying a great deal more.",
             says_better="Profit per dollar of assets is among the best of comparable companies.",
             says_worse="Total assets grew faster than almost every comparable company.",
             why_it_matters=(
@@ -186,6 +245,22 @@ def find_contradictions(
                 "expanding this fast has to earn the same rate on the new assets to "
                 "hold the ratio, and the companies that expand fastest have "
                 "historically failed to. The two numbers are measuring different years."
+            ),
+            plain=(
+                "Two facts that are each good news and together are a question. The "
+                "company makes an unusually large profit relative to the size of the "
+                "business, and the business has just grown much larger, faster than "
+                "almost any comparable company. The catch is timing: the profit was "
+                "earned by the smaller company that existed before the expansion, and it "
+                "is being compared against a business that has only just got big. For "
+                "that flattering number to hold, everything just bought has to earn as "
+                "well as everything already owned, which is the hardest thing for a "
+                "fast-growing company to do and the thing the fastest growers have "
+                "historically failed at."
+            ),
+            settled_by=(
+                "The same profit-per-dollar figure one or two years from now, once the "
+                "new assets have had time to earn. If it holds up, the expansion worked."
             ),
             factor_keys=["asset_growth", "return_on_assets"],
         ))
@@ -213,6 +288,20 @@ def find_contradictions(
                     "companies have tended to disappoint over several. The disagreement is "
                     "really about how long you intend to hold."
                 ),
+                plain=(
+                    "The share has risen more over the past year than almost every "
+                    "comparable company. It now also costs more, relative to what the "
+                    "company actually earns and owns, than almost every comparable "
+                    "company. Those two facts have historically pointed opposite ways: a "
+                    "share that has been rising has tended to keep rising for about a "
+                    "year, and a share that is expensive has tended to disappoint over "
+                    "several. So this is not really a disagreement about the company. It "
+                    "is a question about how long you intend to hold it."
+                ),
+                settled_by=(
+                    "Nothing in the next filing. This one is resolved by your own holding "
+                    "period, not by the company."
+                ),
                 factor_keys=["momentum", *weak_value],
             ))
 
@@ -232,6 +321,15 @@ def find_contradictions(
                     "least one is wrong, and the arithmetic is the half that cannot be "
                     "written persuasively."
                 ),
+                plain=(
+                    "What this company says about itself reads well. What it reported "
+                    "ranks among the weakest of its peers. These are two independent "
+                    "halves of Loom: one reads the words in filings and calls, the other "
+                    "does arithmetic on the filed numbers. When they disagree, one of "
+                    "them is wrong, and the numbers are the half nobody can make sound "
+                    "better than it is."
+                ),
+                settled_by="The next set of filed accounts, against the same peer group.",
                 factor_keys=["composite"],
             ))
         elif not reading_positive and composite >= STRONG_PERCENTILE:
@@ -246,7 +344,77 @@ def find_contradictions(
                     "that has not reached the accounts yet, and that gap is usually "
                     "where the next quarter's surprise comes from."
                 ),
+                plain=(
+                    "The reported numbers still rank among the best of comparable "
+                    "companies, but what the company has started saying has turned "
+                    "cautious. That order is the usual one: a company describes a problem "
+                    "in words before it shows up in the accounts, because the words are "
+                    "written about the quarter that is happening and the accounts are "
+                    "about the one that finished. The gap between the two is where next "
+                    "quarter's surprise usually comes from."
+                ),
+                settled_by="The next quarterly results, which is when the words become numbers.",
                 factor_keys=["composite"],
+            ))
+
+    # --- what Loom read against what the market paid ------------------
+    #
+    # The third independent source. One reads language, one does arithmetic on
+    # filed statements, and this one is a crowd of people with money at stake
+    # reading the same document Loom read. When the first and the third reach
+    # opposite conclusions about the same filing, that is the most informative
+    # thing on the page, and it is a question rather than an answer: the market
+    # is not always right, it is merely expensive to disagree with.
+    #
+    # Only a move *against* the reading counts. A filing the market ignored is
+    # not a disagreement, it is an absence, and treating silence as a rebuttal
+    # would mean Loom could only ever agree with the price.
+    if stance in DIRECTIONAL_STANCES and move is not None and move.is_material:
+        reading_positive = stance.endswith("positive")
+        market_positive = move.abnormal_percent > 0
+        if reading_positive != market_positive:
+            rose = "rose" if market_positive else "fell"
+            read_as = "encouraging" if reading_positive else "concerning"
+            found.append(Contradiction(
+                key="reading_vs_tape",
+                headline=(
+                    f"Loom read the filings as {read_as}. The market did the opposite."
+                ),
+                says_better=(
+                    f"The shares {rose} {abs(move.abnormal_percent):.1f}% against the market "
+                    f"in the fortnight after the most recent filing."
+                    if market_positive else
+                    "The filings and transcripts Loom analysed point positive."
+                ),
+                says_worse=(
+                    "The filings and transcripts Loom analysed point negative."
+                    if market_positive else
+                    f"The shares {rose} {abs(move.abnormal_percent):.1f}% against the market "
+                    f"in the fortnight after the most recent filing."
+                ),
+                why_it_matters=(
+                    "Loom's reading and the tape are independent assessments of the same "
+                    "disclosure, and a move of this size is not drift. Either the market "
+                    "is weighing something the extraction did not reach, or it has not "
+                    "finished reading. Both are worth establishing before acting on "
+                    "either."
+                ),
+                plain=(
+                    f"Loom read this company's recent filings as {read_as}. In the "
+                    f"fortnight after the most recent one, the shares {rose} "
+                    f"{abs(move.abnormal_percent):.1f}% more than the market did, which is "
+                    f"a bigger move than this company usually makes. So two readers of the "
+                    f"same document came to opposite conclusions, and one of them is Loom. "
+                    f"That does not mean Loom is wrong. It means there is something in "
+                    f"this filing that one of the two has weighed and the other has not, "
+                    f"and finding out which is the useful next step."
+                ),
+                settled_by=(
+                    "Reading the filing itself, which is linked from every finding below. "
+                    "The disagreement is about its contents, not about anything Loom holds "
+                    "separately."
+                ),
+                factor_keys=[],
             ))
 
     return found

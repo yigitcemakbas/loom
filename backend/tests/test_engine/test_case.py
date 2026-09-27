@@ -8,7 +8,7 @@ thing that mattered.
 """
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Optional
 
 from app.engine.case import (
@@ -57,6 +57,30 @@ class _Event:
     direction: str = "negative"
     form: str = "8-K"
     occurred_at: datetime = NOW
+
+
+@dataclass
+class _Standing:
+    summary: str = "The shares are up 12% over the past year."
+    range_position: float | None = 0.5
+    drawdown: float | None = 0.1
+    near_high: bool = False
+    near_low: bool = False
+
+
+@dataclass
+class _Move:
+    abnormal_percent: float = -14.0
+    sessions: int = 10
+    as_of: date = date(2026, 9, 1)
+    sigma: float | None = -2.6
+    summary: str = "In the fortnight after this was filed, the shares fell 14.0% against the market."
+    short: str = "after which the shares fell 14.0% against the market"
+    standalone: str = (
+        "The most recent filing Loom read here was followed by the shares falling 14.0%."
+    )
+    is_material: bool = True
+    is_striking: bool = False
 
 
 @dataclass
@@ -204,8 +228,20 @@ def test_a_fully_covered_company_reports_no_gaps():
         findings=[_Finding()],
         factors=[_Factor(key="earnings_yield", percentile=0.95)],
         prior=type("P", (), {"watch_items": [{"topic": "A thing"}]})(),
+        standing=_Standing(),
     )
     assert case.gaps == []
+
+
+def test_a_company_with_no_price_history_says_so():
+    """Without it, nothing on the page accounts for what the market has already
+    done with the same information, and the page does not look any different."""
+    case = _case(
+        findings=[_Finding()],
+        factors=[_Factor(key="earnings_yield", percentile=0.95)],
+        prior=type("P", (), {"watch_items": [{"topic": "A thing"}]})(),
+    )
+    assert any("what the market has already done" in gap for gap in case.gaps)
 
 
 def test_an_empty_company_still_produces_a_readable_case():
@@ -229,14 +265,55 @@ def test_a_case_is_capped_at_a_readable_length():
     assert len(case.points) == MAX_POINTS
 
 
-def test_the_withheld_count_is_reported_rather_than_hidden():
-    """A case built from fifty findings and one built from twelve are different
-    objects, and silently truncating makes them look identical."""
+def test_the_withheld_points_are_reachable_rather_than_merely_counted():
+    """What changed after the agent trial. Every case file announced that
+    thirty to sixty further findings existed and offered no way to see them,
+    which two readers independently called out: being told evidence is being
+    held back and given no means to reach it is a reason to distrust the
+    twelve that were shown, not a mark of honesty.
+
+    So they are returned, in rank order, and the interface opens them on
+    request. The count is still derivable, and now so is the content."""
     from app.engine.case import MAX_POINTS
 
     many = [_Finding(id=f"f{i}", summary=f"Finding {i}.") for i in range(30)]
     case = _case(findings=many)
-    assert any(f"{30 - MAX_POINTS} further findings" in gap for gap in case.gaps)
+
+    assert len(case.points) == MAX_POINTS
+    assert len(case.withheld) == 30 - MAX_POINTS
+    # Still ranked, and still ranked below everything shown.
+    assert max(p.weight for p in case.withheld) <= min(p.weight for p in case.points)
+
+
+def test_nothing_is_withheld_from_a_short_case():
+    case = _case(findings=[_Finding(id="f1", summary="One finding.")])
+
+    assert case.withheld == []
+
+
+def test_the_best_objection_is_found_even_when_it_ranked_off_the_list():
+    """The one slot the cap must not decide. A company whose twelve strongest
+    points all argue one way is exactly the case where the best argument
+    against has been ranked off, and showing nothing there reads as "there is
+    no argument the other way" rather than "it did not fit"."""
+    from app.engine.case import MAX_POINTS
+
+    supporting = [
+        _Finding(id=f"f{i}", summary=f"Positive finding {i}.", market_direction="positive",
+                 market_magnitude="major")
+        for i in range(MAX_POINTS + 6)
+    ]
+    objection = _Finding(
+        id="objection", summary="The one concern.", market_direction="negative",
+    )
+
+    positive_brief = _Brief()
+    positive_brief.stance = type("S", (), {"value": "positive"})()
+    case = _case(brief=positive_brief, findings=[*supporting, objection])
+
+    assert all(p.key != "finding:objection" for p in case.points)
+    assert case.strongest_against is not None
+    assert case.strongest_against.key == "finding:objection"
 
 
 def test_valuation_is_shown_even_when_unremarkable():
@@ -262,3 +339,202 @@ def test_price_is_only_reported_missing_when_it_could_not_be_computed():
     reading was merely ordinary would be false."""
     case = _case(factors=[_Factor(key="earnings_yield", percentile=0.5)])
     assert not any("what you would be paying" in gap for gap in case.gaps)
+
+
+def test_one_story_is_one_row():
+    """Three filings can each match the same standing expectation and each
+    arrives with its own id, so three identical rows reached the list. It was
+    invisible while everything past the twelfth sat behind a count; it is the
+    first thing a reader sees now that the rest is reachable.
+
+    The same failure was fixed in the change feed for the same reason, and
+    walking into it twice is what makes it worth a test rather than a comment.
+    """
+    same = [
+        _Event(id=f"e{i}", headline="AAA: confirms 3 standing concerns", occurred_at=NOW)
+        for i in range(3)
+    ]
+
+    case = _case(events=same)
+
+    headlines = [p.headline for p in (*case.points, *case.withheld)]
+    assert len(headlines) == len(set(headlines))
+
+
+def test_a_headline_does_not_repeat_the_ticker_on_that_company_page():
+    """Event headlines carry the ticker because they are written for a feed
+    covering every company. Here it is the heading of the page."""
+    case = _case(events=[_Event(headline="AAA: confirms a standing concern", occurred_at=NOW)])
+
+    assert any(p.headline == "confirms a standing concern" for p in case.points)
+
+
+# ---- what the price already did ---------------------------------------
+
+
+def test_a_finding_the_market_repriced_outranks_one_it_ignored():
+    """The only confirmation in the whole list that comes from outside Loom.
+    A filing the market moved on is one an independent party, with money at
+    stake, agreed said something."""
+    from app.engine.case import WEIGHT_MARKET_MOVED
+
+    moved = _Finding(id="moved", summary="The filing the market repriced.")
+    ignored = _Finding(id="ignored", summary="The filing nobody reacted to.")
+
+    case = _case(
+        findings=[moved, ignored],
+        moves={"moved": _Move()},
+        standing=_Standing(),
+    )
+
+    by_key = {p.key: p for p in case.points}
+    assert by_key["finding:moved"].weight == WEIGHT_MARKET_MOVED
+    assert by_key["finding:ignored"].weight < WEIGHT_MARKET_MOVED
+
+
+def test_the_market_ignoring_a_finding_carries_no_penalty():
+    """The subtle version of letting price forecast, and the easier one to walk
+    into. Discounting a finding because nobody priced it reads as calibration
+    and is not: a disclosure the market has not reacted to is the only kind
+    Loom can add anything to, and burying those would delete the reason to read
+    filings at all."""
+    alone = _case(findings=[_Finding(id="f1")], standing=_Standing())
+    with_prices = _case(findings=[_Finding(id="f1")], moves={}, standing=_Standing())
+
+    assert alone.points[0].weight == with_prices.points[0].weight
+
+
+def test_price_is_never_an_argument_for_or_against():
+    """Treating a rising share as a point in a company's favour is momentum
+    wearing a verdict's clothes, which is predictive in exactly the sense this
+    project refuses."""
+    case = _case(findings=[_Finding()], standing=_Standing())
+
+    assert case.price
+    assert all(p.side == "unclear" for p in case.price)
+
+
+def test_price_context_is_kept_out_of_the_argument():
+    """A separate block, because it is not a reason. It is the condition the
+    reasons are read in."""
+    case = _case(findings=[_Finding()], standing=_Standing())
+
+    assert all(not p.key.startswith("price:") for p in (*case.points, *case.withheld))
+
+
+def test_the_market_reaction_is_stated_once_not_on_every_row():
+    """One annual report yields forty findings and all of them measure the
+    same fortnight. The full sentence appeared forty times on a single page,
+    which is the fact repeated rather than the fact reported."""
+    findings = [_Finding(id=f"f{i}", summary=f"Finding {i}.") for i in range(6)]
+    case = _case(
+        findings=findings,
+        moves={f"f{i}": _Move() for i in range(6)},
+        standing=_Standing(),
+    )
+
+    full_sentence = sum(
+        1 for p in (*case.points, *case.withheld, *case.price)
+        if "The most recent filing Loom read here" in (p.headline + p.detail)
+    )
+    assert full_sentence == 1
+
+    # The fact still rides on each row, as a clause on the source line.
+    rows = [p for p in case.points if p.key.startswith("finding:")]
+    assert rows and all("against the market" in p.source for p in rows)
+
+
+def test_a_topics_calibration_is_shown_once_and_on_the_highest_ranked_row():
+    """Apple's case carries fifteen separate findings about costs and margins.
+    Attaching the calibration to each printed the same two-line paragraph
+    fifteen times down one page, which is the sentence repeated rather than the
+    sentence read.
+
+    It goes on the highest-ranked row of that topic, which is not known until
+    the ranking exists, so it is applied after sorting rather than during
+    assembly."""
+    quiet = _Finding(id="quiet", summary="An ordinary cost finding.")
+    loud = _Finding(id="loud", summary="A serious cost finding.", market_magnitude="major")
+    third = _Finding(id="third", summary="Another cost finding.")
+    precedent = type("P", (), {
+        "topic": "margin_cost",
+        "summary": "Of the 21 comparable disclosures Loom has read, nothing much followed.",
+    })()
+
+    case = _case(
+        findings=[quiet, loud, third],
+        precedents={"quiet": precedent, "loud": precedent, "third": precedent},
+    )
+
+    carrying = [
+        p for p in (*case.points, *case.withheld)
+        if "comparable disclosures" in p.detail
+    ]
+    assert len(carrying) == 1
+    assert carrying[0].key == "finding:loud"
+
+
+def test_different_topics_each_get_their_own_calibration():
+    cost = _Finding(id="cost", summary="A cost finding.")
+    trade = _Finding(id="trade", summary="A tariff finding.")
+
+    def _p(topic):
+        return type("P", (), {"topic": topic, "summary": f"Comparable disclosures about {topic}."})()
+
+    case = _case(findings=[cost, trade], precedents={"cost": _p("margin_cost"), "trade": _p("trade")})
+
+    carrying = [p for p in case.points if "Comparable disclosures" in p.detail]
+    assert len(carrying) == 2
+
+
+def test_a_refusal_has_no_argument_to_contradict():
+    """A verdict has to point somewhere before anything can point against it.
+
+    Every stance that was not positive got treated as negative, so a company
+    Loom had explicitly declined to judge displayed "the best argument the
+    other way" directly beneath its own "not enough read yet". On Coca-Cola
+    that surfaced a *favourable* point labelled as the objection to it."""
+    for undirected in ("insufficient", "quiet", "mixed"):
+        brief = _Brief()
+        brief.stance = type("S", (), {"value": undirected})()
+        case = _case(brief=brief, findings=[
+            _Finding(id="pos", summary="Something good.", market_direction="positive"),
+            _Finding(id="neg", summary="Something bad.", market_direction="negative"),
+        ])
+        assert case.strongest_against is None, undirected
+
+
+def test_a_directional_verdict_still_shows_its_best_objection():
+    brief = _Brief()
+    brief.stance = type("S", (), {"value": "positive"})()
+    case = _case(brief=brief, findings=[
+        _Finding(id="pos", summary="Something good.", market_direction="positive"),
+        _Finding(id="neg", summary="Something bad.", market_direction="negative"),
+    ])
+
+    assert case.strongest_against is not None
+    assert case.strongest_against.side == "against"
+
+
+def test_routine_findings_are_marked_so_a_long_list_is_not_misread():
+    """Apple reads positive and the points below the cut run 26 against to 14
+    for. A reader counting them concludes the verdict contradicts its own
+    evidence. It does not: most of those 26 are risk factors every annual
+    report contains, which the stance already scored at approximately zero.
+    The reader had no way to see that."""
+    boilerplate = _Finding(id="boiler", summary="A risk every filing carries.")
+    real = _Finding(id="real", summary="Something specific happened.")
+
+    case = _case(findings=[boilerplate, real], routine_ids={"boiler"})
+
+    by_key = {p.key: p for p in (*case.points, *case.withheld)}
+    assert by_key["finding:boiler"].routine is True
+    assert by_key["finding:real"].routine is False
+
+
+def test_nothing_is_marked_routine_without_measured_norms():
+    """No norms means no judgement about what is ordinary, and guessing would
+    label real findings as boilerplate."""
+    case = _case(findings=[_Finding(id="f1")])
+
+    assert all(p.routine is False for p in (*case.points, *case.withheld))

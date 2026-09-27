@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import BriefRepo, CompanyRepo, DbSession, WatchlistRepo
 from app.engine.brief import HORIZONS, SOURCE_LABELS, STANCE_LABELS, build_brief
+from app.engine.norms import load_norms
 from app.engine.pipeline import regenerate_brief
 from app.repositories.signal_repository import SignalRepository
 from app.schemas.brief import BriefOut
@@ -84,7 +85,7 @@ def brief_for_horizon(
         raise HTTPException(status_code=404, detail=f"Unknown ticker {ticker!r}")
 
     signals = SignalRepository(db).list_feed(company_id=company.id, limit=500)
-    result = build_brief(signals, horizon=horizon)
+    result = build_brief(signals, horizon=horizon, norms=load_norms(db))
 
     # Shaped like a stored brief so the client renders one component either
     # way, but never written: this is a view of the evidence, not a new record.

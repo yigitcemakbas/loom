@@ -16,6 +16,7 @@ from app.api.routes import (
     companies,
     contradictions,
     earnings,
+    experiment,
     exposure,
     factors,
     positions,
@@ -90,6 +91,29 @@ def _reconcile_admins() -> None:
         )
 
 
+def _warm_measured_tables() -> None:
+    """Build the corpus-wide tables before the first request rather than during it.
+
+    The scheduler refreshes these on a timer, but its first run is minutes
+    away, and without this the first reader after a restart pays the build.
+    Deliberately synchronous: a second and a half of startup is a better place
+    to spend it than somebody's page view.
+    """
+    from app.db.session import SessionLocal
+    from app.engine.norms import warm
+
+    db = SessionLocal()
+    try:
+        warm(db)
+    except Exception:
+        logging.getLogger(__name__).warning(
+            "Could not warm the measured tables at startup; they build on demand.",
+            exc_info=True,
+        )
+    finally:
+        db.close()
+
+
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     """Background refresh lives for exactly as long as the app does.
@@ -100,6 +124,7 @@ async def lifespan(_: FastAPI):
     """
     _configure_logging()
     _reconcile_admins()
+    _warm_measured_tables()
     start_scheduler()
     start_watcher()
     yield
@@ -138,6 +163,7 @@ app.include_router(prices.router)
 app.include_router(tape.router)
 app.include_router(assessments.router)
 app.include_router(exposure.router)
+app.include_router(experiment.router)
 app.include_router(factors.router)
 app.include_router(contradictions.router)
 app.include_router(changes.router)
