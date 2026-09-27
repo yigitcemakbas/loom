@@ -56,11 +56,25 @@ def load_norms(db, *, force: bool = False) -> DisclosureNorms:
             return _cached[1]
 
     try:
+        from sqlalchemy import select
+
+        from app.models.company import Company
+
         signals = SignalRepository(db).list_for_global_prior(
             since=now - timedelta(days=365 * LOOKBACK_YEARS),
             limit=100_000,
         )
-        norms = measure_norms(signals)
+        # Which industry each company is in. Loaded here rather than inside the
+        # measurement, which holds no session by design; without it the table
+        # loses its sector rung and every company is scored against a corpus
+        # that is half technology.
+        sectors = {
+            str(cid): sector
+            for cid, sector in db.execute(
+                select(Company.id, Company.sector).where(Company.sector.isnot(None))
+            ).all()
+        }
+        norms = measure_norms(signals, sectors)
     except Exception:
         logger.exception("disclosure norms could not be measured; briefs fall back to raw direction")
         return DisclosureNorms()

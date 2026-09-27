@@ -17,6 +17,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.engine.brief import build_brief
 from app.engine.disclosure import (
+    MIN_SECTOR_OBSERVATIONS,
     RECURRENCE_DISCOUNT,
     DisclosureNorms,
     document_key,
@@ -380,3 +381,142 @@ def test_a_guidance_change_is_never_a_restatement():
     )
 
     assert restated([earlier, later]) == set()
+
+
+def test_the_stance_label_describes_a_residual_not_a_level():
+    """The labels were written when the stance was an absolute average of
+    finding directions, and "more positives than concerns" was then a fair
+    description of a positive stance. Since the genre correction it is not:
+    Microsoft reads positive while holding fifteen concerns against twelve
+    positives, because most of those concerns are the risk factors every
+    annual report contains.
+
+    The headline was migrated to the new meaning and the labels were not,
+    which left one screen asserting both things. A label that can contradict
+    the counts printed beside it is worse than no label."""
+    from app.engine.brief import STANCE_LABELS
+
+    for stance, label in STANCE_LABELS.items():
+        lowered = label.lower()
+        # Nothing may claim a tally the residual does not measure.
+        assert "more positives" not in lowered
+        assert "more concerns" not in lowered
+
+    directional = {
+        Stance.STRONG_NEGATIVE, Stance.NEGATIVE,
+        Stance.POSITIVE, Stance.STRONG_POSITIVE, Stance.MIXED,
+    }
+    for stance in directional:
+        # Every directional label states what the comparison is against.
+        assert "usual" in STANCE_LABELS[stance].lower(), stance
+
+
+def test_a_positive_stance_can_hold_more_concerns_than_positives():
+    """The case the labels have to survive. This is not an edge case, it is
+    the normal shape of a well-disclosed company under the correction."""
+    norms = measure_norms(_corpus())
+    company = uuid.uuid4()
+    findings = [
+        _sig(company=company, document=f"filing-{i}", summary=f"Risk {i}: a thing could go wrong.")
+        for i in range(9)
+    ] + [
+        _sig(company=company, document=f"call-{i}", direction="positive",
+             signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call",
+             summary=f"Call {i}: demand and pricing both held up.")
+        for i in range(4)
+    ]
+
+    brief = build_brief(findings, now=NOW, norms=norms)
+
+    assert brief.stance in (Stance.POSITIVE, Stance.STRONG_POSITIVE)
+    assert brief.evidence["counts"]["negative"] > brief.evidence["counts"]["positive"]
+
+
+# ---- the rung that was missing ----------------------------------------
+
+
+def test_a_sector_with_enough_history_is_judged_against_itself():
+    """Loom learned once that ranking a bank against a software company is not
+    a hard comparison but a meaningless one: its first universe-wide factor run
+    returned eight banks as the eight weakest companies in the database, in
+    order, having read nothing about any of them.
+
+    These norms made the same mistake in a different currency. With no sector
+    rung, "what an annual report normally says" was measured over a corpus that
+    is 52% technology, and every utility, bank and retailer was scored against
+    it."""
+    corpus = _corpus()
+    utilities = [uuid.uuid4() for _ in range(4)]
+    sectors = {str(c): "Utilities" for c in utilities}
+    # Utilities whose calls read positively, against a corpus whose calls do not.
+    corpus += [
+        _sig(
+            direction="positive", signal_type=SignalType.NOTABLE_QUOTE,
+            doc_subtype="10-K", document=f"util-{i}",
+            company=utilities[i % len(utilities)],
+            summary=f"Utility note {i}: rates were approved as filed.",
+        )
+        for i in range(14)
+    ]
+
+    norms = measure_norms(corpus, sectors)
+    probe = _sig(signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="10-K",
+                 company=uuid.uuid4())
+
+    theirs = norms.expected_for(probe, sector="Utilities").expected
+    everyone = norms.expected_for(probe).expected
+
+    assert ("Utilities", "10-K", "notable_quote") in norms.by_sector
+    assert theirs > everyone
+
+
+def test_a_barely_seen_sector_gets_no_norm_of_its_own():
+    """Seventeen findings from two utilities is two companies' habits wearing a
+    sector's name. Shrinkage stops a thin sample producing a confident number;
+    the floor stops the engine claiming to describe an industry at all."""
+    company = uuid.uuid4()
+    corpus = _corpus() + [
+        _sig(direction="positive", signal_type=SignalType.NOTABLE_QUOTE,
+             doc_subtype="10-K", document=f"thin-{i}", company=company,
+             summary=f"Thin note {i}: something happened.")
+        for i in range(MIN_SECTOR_OBSERVATIONS - 1)
+    ]
+
+    norms = measure_norms(corpus, {str(company): "Consumer Staples"})
+
+    assert not any(k[0] == "Consumer Staples" for k in norms.by_sector)
+
+
+def test_without_sectors_the_table_behaves_as_it_did_before():
+    """A caller that cannot say which industry a company is in should not have
+    one guessed for it."""
+    norms = measure_norms(_corpus())
+
+    assert norms.by_sector == {}
+    assert norms.by_genre and norms.by_type
+
+
+def test_a_company_shrinks_toward_its_own_sector_not_the_corpus():
+    """The rung that carries the correction. Without it a utility's own
+    disclosure history was pulled toward a benchmark that is half technology."""
+    utilities = [uuid.uuid4() for _ in range(4)]
+    subject = utilities[0]
+    sectors = {str(c): "Utilities" for c in utilities}
+
+    corpus = _corpus() + [
+        _sig(direction="positive", signal_type=SignalType.NOTABLE_QUOTE,
+             doc_subtype="10-K", document=f"u-{i}",
+             company=utilities[i % len(utilities)],
+             summary=f"Utility note {i}: rates approved.")
+        for i in range(16)
+    ]
+
+    norms = measure_norms(corpus, sectors)
+    theirs = norms.by_company.get(
+        (str(subject), "10-K", "notable_quote")
+    )
+
+    assert theirs is not None
+    # Pulled toward its own industry, which reads positive, rather than toward
+    # the technology-dominated genre, which does not.
+    assert theirs.expected > norms.by_genre[("10-K", "notable_quote")].expected

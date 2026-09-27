@@ -18,29 +18,44 @@ export interface PlainVerdict {
 }
 
 const VERDICTS: Record<Stance, PlainVerdict> = {
+  // These describe a *residual*, not a level, and the wording has to carry
+  // that or it contradicts the page it sits on.
+  //
+  // The stance stopped being an average of finding directions when the genre
+  // correction landed: it is now how far a company's disclosure departs from
+  // what documents of its kind normally say. Microsoft reads positive while
+  // holding fifteen concerns against twelve positives, because most of those
+  // concerns are the risk factors every annual report contains. The old
+  // wording here said "more positives than concerns" directly above those
+  // counts, which was not a nuance being lost but a flat contradiction.
   strong_negative: {
-    label: "Clearly negative",
-    meaning: "Several serious problems, with little pointing the other way.",
+    label: "Reads much worse than usual",
+    meaning:
+      "Its disclosures are considerably more negative than documents of this kind normally are.",
     tone: "negative",
   },
   negative: {
-    label: "Leaning negative",
-    meaning: "More concerns than positives in what the company has disclosed.",
+    label: "Reads worse than usual",
+    meaning:
+      "Its disclosures are more negative than documents of this kind normally are.",
     tone: "negative",
   },
   mixed: {
-    label: "Genuinely mixed",
-    meaning: "Real arguments on both sides. Not a shrug, a disagreement.",
+    label: "Reads about as usual",
+    meaning:
+      "Its disclosures are about as positive or negative as documents of this kind normally are, with real arguments both ways.",
     tone: "mixed",
   },
   positive: {
-    label: "Leaning positive",
-    meaning: "More positives than concerns in what the company has disclosed.",
+    label: "Reads better than usual",
+    meaning:
+      "Its disclosures are less negative than documents of this kind normally are. That is not the same as good news, and it may still list more concerns than positives.",
     tone: "positive",
   },
   strong_positive: {
-    label: "Clearly positive",
-    meaning: "Several strong positives, with little pointing the other way.",
+    label: "Reads much better than usual",
+    meaning:
+      "Its disclosures are considerably less negative than documents of this kind normally are. That is not the same as good news.",
     tone: "positive",
   },
   quiet: {

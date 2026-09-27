@@ -82,6 +82,16 @@ from app.engine.statistics.statistics import shrunk_mean
 # habit outweighs the genre's, which is about two filings' worth.
 NORM_PRIOR_WEIGHT = 8.0
 
+# Observations a sector needs in one (genre, type) cell before it gets a norm
+# of its own rather than falling through to the genre's.
+#
+# Shrinkage already stops a thin sample producing a confident number, but a
+# floor stops the engine claiming to describe an industry it has barely seen:
+# seventeen findings from two utilities is two companies' habits wearing a
+# sector's name. The same argument, and roughly the same number, as
+# MIN_SECTOR_MEMBERS in the factor library.
+MIN_SECTOR_OBSERVATIONS = 10
+
 # Two findings above this token overlap are the same disclosure filed twice.
 #
 # Measured rather than guessed, and the first value was wrong. Set at 0.5 on the
@@ -243,25 +253,51 @@ class DisclosureNorms:
 
     by_type: dict[str, Norm] = field(default_factory=dict)
     by_genre: dict[tuple[str, str], Norm] = field(default_factory=dict)
+    # (sector, genre, signal_type). The level this table was missing.
+    #
+    # Loom learned once already that ranking a bank against a software company
+    # is not a hard comparison but a meaningless one: its first universe-wide
+    # factor run returned eight banks as the eight weakest companies in the
+    # database, in order, having read nothing about any of them. The factor
+    # library was rebuilt around sector peer groups because of it.
+    #
+    # These norms made exactly the same mistake in a different currency. With
+    # no sector level, "what an annual report normally says" was measured over
+    # a corpus that is 52% technology, and every utility, bank and retailer was
+    # scored against it. Same error, same fix.
+    by_sector: dict[tuple[str, str, str], Norm] = field(default_factory=dict)
     by_company: dict[tuple[str, str, str], Norm] = field(default_factory=dict)
+    # Which sector each company belongs to, carried so a caller that has only
+    # a signal can still reach the sector level. Built with the table rather
+    # than looked up per call, because the table is the thing that knows which
+    # sectors it actually measured.
+    sector_of: dict[str, str] = field(default_factory=dict)
+
     # The expectation everything is ultimately shrunk toward. Zero: with
     # nothing measured, assuming disclosure leans neither way is the weakest
     # claim available, and any other value would be an opinion smuggled in as
     # a default.
     root: float = 0.0
 
-    def expected_for(self, signal) -> Norm:
+    def expected_for(self, signal, sector: Optional[str] = None) -> Norm:
         """What a finding like this one normally carries.
 
-        Resolved most specific first. Each level was already shrunk toward the
-        one above it when the table was built, so reading the deepest
-        available entry is reading the full hierarchy, not just its last rung.
+        Resolved most specific first: this company, then its industry, then the
+        kind of document, then the kind of finding. Each level was already
+        shrunk toward the one above it when the table was built, so reading the
+        deepest available entry is reading the whole hierarchy rather than just
+        its last rung.
         """
         signal_type = type_of(signal)
         genre = genre_of(signal)
         company_id = getattr(signal, "company_id", None)
         if company_id is not None:
             found = self.by_company.get((str(company_id), genre, signal_type))
+            if found is not None:
+                return found
+        sector = sector or self.sector_of.get(str(company_id)) if company_id else sector
+        if sector:
+            found = self.by_sector.get((sector, genre, signal_type))
             if found is not None:
                 return found
         found = self.by_genre.get((genre, signal_type))
@@ -297,8 +333,20 @@ class DisclosureNorms:
         return max(-1.0, min(1.0, excess))
 
 
-def measure_norms(signals: Iterable) -> DisclosureNorms:
+def measure_norms(
+    signals: Iterable, sectors: Optional[dict] = None
+) -> DisclosureNorms:
     """Measure the expectation table from findings. Pure: no database.
+
+    Four rungs, each shrunk toward the one above it, so a thin cell inherits
+    its parent's answer smoothly rather than at a threshold:
+
+        this company  ->  its sector  ->  the document genre  ->  the finding type
+
+    `sectors` maps a company id to its industry. Without it the sector rung is
+    simply absent and the table behaves as it did before, which is the honest
+    degradation: a caller that cannot say which industry a company is in should
+    not have one guessed for it.
 
     Only *directional* findings are measured. A finding assessed as neutral is
     a judgement that it does not point either way, and folding those into the
@@ -306,8 +354,11 @@ def measure_norms(signals: Iterable) -> DisclosureNorms:
     the extraction declined to call one, which is a property of the prompt
     rather than of the documents.
     """
+    sectors = {str(k): v for k, v in (sectors or {}).items() if v}
+
     per_type: dict[str, list[float]] = defaultdict(list)
     per_genre: dict[tuple[str, str], list[float]] = defaultdict(list)
+    per_sector: dict[tuple[str, str, str], list[float]] = defaultdict(list)
     per_company: dict[tuple[str, str, str], list[float]] = defaultdict(list)
 
     for signal in signals:
@@ -321,8 +372,11 @@ def measure_norms(signals: Iterable) -> DisclosureNorms:
         per_genre[(genre, signal_type)].append(sign)
         if company_id is not None:
             per_company[(str(company_id), genre, signal_type)].append(sign)
+            sector = sectors.get(str(company_id))
+            if sector:
+                per_sector[(sector, genre, signal_type)].append(sign)
 
-    norms = DisclosureNorms()
+    norms = DisclosureNorms(sector_of=dict(sectors))
 
     for signal_type, values in per_type.items():
         norms.by_type[signal_type] = Norm(
@@ -339,8 +393,32 @@ def measure_norms(signals: Iterable) -> DisclosureNorms:
             sample_size=len(values),
         )
 
-    for (company_id, genre, signal_type), values in per_company.items():
+    for (sector, genre, signal_type), values in per_sector.items():
+        # Below the floor the sector gets no entry at all, so a lookup falls
+        # through to the genre. Storing a shrunk value from four observations
+        # would be technically defensible and practically a lie: it reads as a
+        # statement about an industry and is a statement about two companies.
+        if len(values) < MIN_SECTOR_OBSERVATIONS:
+            continue
         parent = norms.by_genre.get((genre, signal_type)) or norms.by_type.get(signal_type)
+        norms.by_sector[(sector, genre, signal_type)] = Norm(
+            expected=shrunk_mean(
+                values, parent.expected if parent else norms.root, NORM_PRIOR_WEIGHT
+            ),
+            sample_size=len(values),
+        )
+
+    for (company_id, genre, signal_type), values in per_company.items():
+        # A company shrinks toward its own industry where Loom has measured
+        # one, and toward the genre otherwise. This is the rung that carries
+        # the correction: without it a utility's disclosure was pulled toward
+        # a benchmark that is half technology.
+        sector = sectors.get(company_id)
+        parent = (
+            (norms.by_sector.get((sector, genre, signal_type)) if sector else None)
+            or norms.by_genre.get((genre, signal_type))
+            or norms.by_type.get(signal_type)
+        )
         norms.by_company[(company_id, genre, signal_type)] = Norm(
             expected=shrunk_mean(
                 values, parent.expected if parent else norms.root, NORM_PRIOR_WEIGHT
@@ -504,6 +582,7 @@ def routine_share(signals: list, norms: "DisclosureNorms") -> Optional[float]:
 
 __all__ = [
     "GENRE_UNKNOWN",
+    "MIN_SECTOR_OBSERVATIONS",
     "NORM_PRIOR_WEIGHT",
     "RECURRENCE_DISCOUNT",
     "RECURRENCE_OVERLAP",

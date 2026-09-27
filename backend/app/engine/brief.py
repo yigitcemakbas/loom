@@ -207,14 +207,27 @@ SOURCE_LABELS = {
     "filing": "regulatory filing",
 }
 
+# What each stance is called, in words that describe what it actually measures.
+#
+# These were written when the stance was an absolute average of finding
+# directions, and "Leaning positive" was then a fair description of it. It is
+# not one now. Since the genre correction the stance is a *residual*: how far
+# this company's disclosure departs from what documents of its kind normally
+# carry. Microsoft reads positive while holding fifteen concerns against twelve
+# positives, because most of those concerns are the risk factors every annual
+# report contains.
+#
+# So the old labels asserted the opposite of the counts printed beside them.
+# The headline was migrated to the new meaning and these were not, which left
+# one screen saying both things.
 STANCE_LABELS = {
-    Stance.STRONG_NEGATIVE: "Serious concerns",
-    Stance.NEGATIVE: "Leaning negative",
-    Stance.MIXED: "Mixed picture",
-    Stance.POSITIVE: "Leaning positive",
-    Stance.STRONG_POSITIVE: "Clearly positive",
+    Stance.STRONG_NEGATIVE: "Reads much worse than usual",
+    Stance.NEGATIVE: "Reads worse than usual",
+    Stance.MIXED: "Reads about as usual",
+    Stance.POSITIVE: "Reads better than usual",
+    Stance.STRONG_POSITIVE: "Reads much better than usual",
     Stance.QUIET: "Nothing notable",
-    Stance.INSUFFICIENT: "Not enough data yet",
+    Stance.INSUFFICIENT: "Not enough read yet",
 }
 
 
