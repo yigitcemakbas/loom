@@ -1,0 +1,172 @@
+{
+ "cell": "2026-04-01__professional__control__seed1",
+ "as_of": "2026-04-01",
+ "persona": "professional",
+ "arm": "control",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "5839faad457682ac",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "negative",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-03-13",
+  "newest_bar": "2026-04-01",
+  "newest_fact": "2026-04-01",
+  "as_of": "2026-04-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional momentum in a market dominated by technology, with positive near-term price action and substantial long-term gains suggesting the market is recognizing a turnaround.\",\n      \"evidence\": [\"up 118% over the past year and up 6% over the past month\"],\n      \"counterargument\": \"Technology sector valuations are extended and the market could reprice downward if economic growth slows.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"XOM\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Energy sector outperformance continues with persistent positive momentum, suggesting structural strength in commodity demand.\",\n      \"evidence\": [\"up 40% over the past year and up 4% over the past month\"],\n      \"counterargument\": \"Energy is cyclical and vulnerable to recession or demand destruction.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"JPM\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Financial sector strength with consistent outperformance provides exposure to economic resilience and net interest margins.\",\n      \"evidence\": [\"up 24% over the past year and down 1% over the past month\"],\n      \"counterargument\": \"Interest rate environment could turn negative or credit conditions could deteriorate.\",\n      \"confidence\": 0.59\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Semiconductor equipment exposure with significant downside absorbed; positioned for recovery in capital spending cycles.\",\n      \"evidence\": [\"up 106% over the past year and down 4% over the past month\", \"about 24% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Semiconductor capital spending could remain depressed if end-market demand weakens.\",\n      \"confidence\": 0.57\n    },\n    {\n      \"ticker\": \"AVGO\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Broadcom infrastructure exposure with attractive risk-reward given downside already priced in.\",\n      \"evidence\": [\"up 88% over the past year and down 1% over the past month\", \"about 24% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Chip cycle uncertainty and customer concentration risk remain.\",\n      \"confidence\": 0.56\n    },\n    {\n      \"ticker\": \"AMZN\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Consumer discretionary strength with recent momentum indicating resilient demand in e-commerce.\",\n      \"evidence\": [\"up 10% over the past year and up 1% over the past month\"],\n      \"counterargument\": \"Consumer spending could face pressure from macro headwinds or higher unemployment.\",\n      \"confidence\": 0.57\n    },\n    {\n      \"ticker\": \"BAC\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Financial sector participation with solid performance and reasonable valuation support.\",\n      \"evidence\": [\"up 21% over the past year and down 1% over the past month\"],\n      \"counterargument\": \"Banking sector vulnerable to economic slowdown and credit cycle downturns.\",\n      \"confidence\": 0.56\n    },\n    {\n      \"ticker\": \"BSX\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Medical device sector showing sustained weakness with accelerating deterioration, signaling structural or cyclical headwinds.\",\n      \"evidence\": [\"down 39% over the past year and down 19% over the past month\", \"about 43% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Valuation may be too depressed and could snap back on reversal in procedure volumes.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"V\",\n      \"weight\": 0.06,\n      \"direction\": \"short\",\n      \"thesis\": \"Payment processor weakness persists despite financial sector strength elsewhere, suggesting sector-specific challenges.\",\n      \"evidence\": [\"down 13% over the past year and down 7% over the past month\"],\n      \"counterargument\": \"Digital payments remain a structural tailwind and valuation reset could attract buyers.\",\n      \"confidence\": 0.56\n    }\n  ],\n  \"cash\": 0.33,\n  \"reasoning\": \"Portfolio emphasizes technology and financial sector strength with conviction positions in INTC and JPM based on momentum signals, semiconductor plays (ASML, AVGO) where downside is priced in, and energy outperformance (XOM). Selective shorts in BSX and V based on sustained weakness diverging from broader sector trends. Cash allocation reflects inability to reposition over 63 trading sessions and discipline around deploying capital only where conviction is supported by evidence.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "INTC",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Exceptional momentum in a market dominated by technology, with positive near-term price action and substantial long-term gains suggesting the market is recognizing a turnaround.",
+    "evidence": [
+     "up 118% over the past year and up 6% over the past month"
+    ],
+    "counterargument": "Technology sector valuations are extended and the market could reprice downward if economic growth slows.",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "XOM",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Energy sector outperformance continues with persistent positive momentum, suggesting structural strength in commodity demand.",
+    "evidence": [
+     "up 40% over the past year and up 4% over the past month"
+    ],
+    "counterargument": "Energy is cyclical and vulnerable to recession or demand destruction.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "JPM",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Financial sector strength with consistent outperformance provides exposure to economic resilience and net interest margins.",
+    "evidence": [
+     "up 24% over the past year and down 1% over the past month"
+    ],
+    "counterargument": "Interest rate environment could turn negative or credit conditions could deteriorate.",
+    "confidence": 0.59
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Semiconductor equipment exposure with significant downside absorbed; positioned for recovery in capital spending cycles.",
+    "evidence": [
+     "up 106% over the past year and down 4% over the past month",
+     "about 24% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Semiconductor capital spending could remain depressed if end-market demand weakens.",
+    "confidence": 0.57
+   },
+   {
+    "ticker": "AVGO",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Broadcom infrastructure exposure with attractive risk-reward given downside already priced in.",
+    "evidence": [
+     "up 88% over the past year and down 1% over the past month",
+     "about 24% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Chip cycle uncertainty and customer concentration risk remain.",
+    "confidence": 0.56
+   },
+   {
+    "ticker": "AMZN",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Consumer discretionary strength with recent momentum indicating resilient demand in e-commerce.",
+    "evidence": [
+     "up 10% over the past year and up 1% over the past month"
+    ],
+    "counterargument": "Consumer spending could face pressure from macro headwinds or higher unemployment.",
+    "confidence": 0.57
+   },
+   {
+    "ticker": "BAC",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Financial sector participation with solid performance and reasonable valuation support.",
+    "evidence": [
+     "up 21% over the past year and down 1% over the past month"
+    ],
+    "counterargument": "Banking sector vulnerable to economic slowdown and credit cycle downturns.",
+    "confidence": 0.56
+   },
+   {
+    "ticker": "BSX",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Medical device sector showing sustained weakness with accelerating deterioration, signaling structural or cyclical headwinds.",
+    "evidence": [
+     "down 39% over the past year and down 19% over the past month",
+     "about 43% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Valuation may be too depressed and could snap back on reversal in procedure volumes.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "V",
+    "weight": 0.06,
+    "direction": "short",
+    "thesis": "Payment processor weakness persists despite financial sector strength elsewhere, suggesting sector-specific challenges.",
+    "evidence": [
+     "down 13% over the past year and down 7% over the past month"
+    ],
+    "counterargument": "Digital payments remain a structural tailwind and valuation reset could attract buyers.",
+    "confidence": 0.56
+   }
+  ],
+  "cash": 0.32999999999999996,
+  "reasoning": "Portfolio emphasizes technology and financial sector strength with conviction positions in INTC and JPM based on momentum signals, semiconductor plays (ASML, AVGO) where downside is priced in, and energy outperformance (XOM). Selective shorts in BSX and V based on sustained weakness diverging from broader sector trends. Cash allocation reflects inability to reposition over 63 trading sessions and discipline around deploying capital only where conviction is supported by evidence.",
+  "gross_before_scaling": 0.67,
+  "scaled_back": false
+ },
+ "parsed": true
+}

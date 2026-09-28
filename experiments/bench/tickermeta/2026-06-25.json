@@ -1,0 +1,642 @@
+{
+ "MSFT": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.265,
+  "evidence_sign": 1,
+  "confidence": 0.718,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 2,
+  "counts": {
+   "positive": 1,
+   "negative": 6,
+   "neutral": 3
+  },
+  "n_findings": 10
+ },
+ "AXP": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": -0.514,
+  "evidence_sign": -1,
+  "confidence": 0.0,
+  "evidence_strength": 0.35,
+  "informative_count": 1,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 6,
+   "neutral": 2
+  },
+  "n_findings": 8
+ },
+ "AMZN": {
+  "stance": "mixed",
+  "verdict_sign": 0,
+  "evidence_mean": 0.027,
+  "evidence_sign": 1,
+  "confidence": 0.702,
+  "evidence_strength": 2.15,
+  "informative_count": 3,
+  "documents_read": 2,
+  "counts": {
+   "positive": 2,
+   "negative": 1,
+   "neutral": 3
+  },
+  "n_findings": 6
+ },
+ "ABT": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": 1.0,
+  "evidence_sign": 1,
+  "confidence": 0.0,
+  "evidence_strength": 0.41,
+  "informative_count": 1,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 4,
+   "neutral": 1
+  },
+  "n_findings": 6
+ },
+ "AMGN": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.591,
+  "evidence_sign": -1,
+  "confidence": 0.644,
+  "evidence_strength": 1.41,
+  "informative_count": 4,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 7,
+   "neutral": 1
+  },
+  "n_findings": 8
+ },
+ "BLK": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.463,
+  "evidence_sign": -1,
+  "confidence": 0.609,
+  "evidence_strength": 0.71,
+  "informative_count": 2,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 6,
+   "neutral": 2
+  },
+  "n_findings": 8
+ },
+ "KO": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.374,
+  "evidence_sign": -1,
+  "confidence": 0.592,
+  "evidence_strength": 1.0,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 7,
+   "neutral": 1
+  },
+  "n_findings": 9
+ },
+ "NEE": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.405,
+  "evidence_sign": 1,
+  "confidence": 0.549,
+  "evidence_strength": 1.13,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 2,
+   "negative": 5,
+   "neutral": 0
+  },
+  "n_findings": 7
+ },
+ "SNDK": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.846,
+  "evidence_sign": 1,
+  "confidence": 0.519,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 3,
+   "negative": 4,
+   "neutral": 1
+  },
+  "n_findings": 8
+ },
+ "CMCSA": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.202,
+  "evidence_sign": -1,
+  "confidence": 0.591,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 6,
+   "neutral": 1
+  },
+  "n_findings": 8
+ },
+ "ABBV": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.548,
+  "evidence_sign": 1,
+  "confidence": 0.541,
+  "evidence_strength": 1.22,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 2,
+   "negative": 4,
+   "neutral": 0
+  },
+  "n_findings": 6
+ },
+ "ADI": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": 1.0,
+  "evidence_sign": 1,
+  "confidence": 0.0,
+  "evidence_strength": 0.45,
+  "informative_count": 1,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 4,
+   "neutral": 0
+  },
+  "n_findings": 5
+ },
+ "BKNG": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.357,
+  "evidence_sign": 1,
+  "confidence": 0.551,
+  "evidence_strength": 1.0,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 2,
+   "negative": 6,
+   "neutral": 1
+  },
+  "n_findings": 9
+ },
+ "BSX": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.639,
+  "evidence_sign": 1,
+  "confidence": 0.549,
+  "evidence_strength": 1.13,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 2,
+   "negative": 5,
+   "neutral": 0
+  },
+  "n_findings": 7
+ },
+ "ABNB": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.282,
+  "evidence_sign": 1,
+  "confidence": 0.554,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 2,
+   "negative": 6,
+   "neutral": 0
+  },
+  "n_findings": 8
+ },
+ "PEP": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.213,
+  "evidence_sign": -1,
+  "confidence": 0.612,
+  "evidence_strength": 1.33,
+  "informative_count": 4,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 8,
+   "neutral": 0
+  },
+  "n_findings": 9
+ },
+ "MU": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.737,
+  "evidence_sign": -1,
+  "confidence": 0.624,
+  "evidence_strength": 1.07,
+  "informative_count": 4,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 13,
+   "neutral": 1
+  },
+  "n_findings": 14
+ },
+ "WMT": {
+  "stance": "mixed",
+  "verdict_sign": 0,
+  "evidence_mean": -0.099,
+  "evidence_sign": -1,
+  "confidence": 0.576,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 4,
+   "neutral": 3
+  },
+  "n_findings": 8
+ },
+ "BA": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.463,
+  "evidence_sign": -1,
+  "confidence": 0.604,
+  "evidence_strength": 0.82,
+  "informative_count": 2,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 6,
+   "neutral": 0
+  },
+  "n_findings": 6
+ },
+ "RTX": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.446,
+  "evidence_sign": 1,
+  "confidence": 0.554,
+  "evidence_strength": 0.82,
+  "informative_count": 2,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 4,
+   "neutral": 1
+  },
+  "n_findings": 6
+ },
+ "CVX": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": 1.0,
+  "evidence_sign": 1,
+  "confidence": 0.0,
+  "evidence_strength": 0.45,
+  "informative_count": 1,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 3,
+   "neutral": 1
+  },
+  "n_findings": 5
+ },
+ "AVGO": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": -0.528,
+  "evidence_sign": -1,
+  "confidence": 0.0,
+  "evidence_strength": 0.35,
+  "informative_count": 1,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 4,
+   "neutral": 4
+  },
+  "n_findings": 8
+ },
+ "APD": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.229,
+  "evidence_sign": -1,
+  "confidence": 0.612,
+  "evidence_strength": 1.33,
+  "informative_count": 4,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 8,
+   "neutral": 0
+  },
+  "n_findings": 9
+ },
+ "NDAQ": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.518,
+  "evidence_sign": -1,
+  "confidence": 0.606,
+  "evidence_strength": 0.87,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 8,
+   "neutral": 1
+  },
+  "n_findings": 12
+ },
+ "ADBE": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": -0.528,
+  "evidence_sign": -1,
+  "confidence": 0.0,
+  "evidence_strength": 0.35,
+  "informative_count": 1,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 6,
+   "neutral": 2
+  },
+  "n_findings": 8
+ },
+ "BAC": {
+  "stance": "mixed",
+  "verdict_sign": 0,
+  "evidence_mean": -0.068,
+  "evidence_sign": -1,
+  "confidence": 0.594,
+  "evidence_strength": 1.13,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 6,
+   "neutral": 0
+  },
+  "n_findings": 7
+ },
+ "NVDA": {
+  "stance": "insufficient",
+  "verdict_sign": 0,
+  "evidence_mean": -0.569,
+  "evidence_sign": -1,
+  "confidence": 0.0,
+  "evidence_strength": 1.0,
+  "informative_count": 1,
+  "documents_read": 2,
+  "counts": {
+   "positive": 0,
+   "negative": 1,
+   "neutral": 0
+  },
+  "n_findings": 11
+ },
+ "T": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.463,
+  "evidence_sign": -1,
+  "confidence": 0.611,
+  "evidence_strength": 0.76,
+  "informative_count": 2,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 6,
+   "neutral": 1
+  },
+  "n_findings": 7
+ },
+ "VZ": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.209,
+  "evidence_sign": 1,
+  "confidence": 0.592,
+  "evidence_strength": 1.0,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 7,
+   "neutral": 1
+  },
+  "n_findings": 9
+ },
+ "AMD": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.433,
+  "evidence_sign": 1,
+  "confidence": 0.576,
+  "evidence_strength": 1.63,
+  "informative_count": 4,
+  "documents_read": 1,
+  "counts": {
+   "positive": 4,
+   "negative": 1,
+   "neutral": 1
+  },
+  "n_findings": 6
+ },
+ "AEP": {
+  "stance": "mixed",
+  "verdict_sign": 0,
+  "evidence_mean": 0.039,
+  "evidence_sign": 1,
+  "confidence": 0.585,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 7,
+   "neutral": 0
+  },
+  "n_findings": 8
+ },
+ "TMUS": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.169,
+  "evidence_sign": 1,
+  "confidence": 0.559,
+  "evidence_strength": 0.71,
+  "informative_count": 2,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 4,
+   "neutral": 3
+  },
+  "n_findings": 8
+ },
+ "AMT": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.421,
+  "evidence_sign": -1,
+  "confidence": 0.616,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 7,
+   "neutral": 1
+  },
+  "n_findings": 8
+ },
+ "TSLA": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.456,
+  "evidence_sign": 1,
+  "confidence": 0.464,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 3,
+   "negative": 3,
+   "neutral": 2
+  },
+  "n_findings": 8
+ },
+ "BMY": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.443,
+  "evidence_sign": -1,
+  "confidence": 0.63,
+  "evidence_strength": 1.13,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 6,
+   "neutral": 1
+  },
+  "n_findings": 7
+ },
+ "GOOGL": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.833,
+  "evidence_sign": 1,
+  "confidence": 0.591,
+  "evidence_strength": 3.12,
+  "informative_count": 5,
+  "documents_read": 4,
+  "counts": {
+   "positive": 4,
+   "negative": 2,
+   "neutral": 4
+  },
+  "n_findings": 10
+ },
+ "ADSK": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.162,
+  "evidence_sign": 1,
+  "confidence": 0.563,
+  "evidence_strength": 0.71,
+  "informative_count": 2,
+  "documents_read": 1,
+  "counts": {
+   "positive": 1,
+   "negative": 6,
+   "neutral": 1
+  },
+  "n_findings": 8
+ },
+ "COST": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.907,
+  "evidence_sign": 1,
+  "confidence": 0.572,
+  "evidence_strength": 1.22,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 3,
+   "negative": 1,
+   "neutral": 2
+  },
+  "n_findings": 6
+ },
+ "AMAT": {
+  "stance": "negative",
+  "verdict_sign": -1,
+  "evidence_mean": -0.432,
+  "evidence_sign": -1,
+  "confidence": 0.626,
+  "evidence_strength": 1.06,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 0,
+   "negative": 7,
+   "neutral": 1
+  },
+  "n_findings": 8
+ },
+ "AAPL": {
+  "stance": "positive",
+  "verdict_sign": 1,
+  "evidence_mean": 0.456,
+  "evidence_sign": 1,
+  "confidence": 0.502,
+  "evidence_strength": 1.13,
+  "informative_count": 3,
+  "documents_read": 1,
+  "counts": {
+   "positive": 3,
+   "negative": 2,
+   "neutral": 2
+  },
+  "n_findings": 7
+ }
+}

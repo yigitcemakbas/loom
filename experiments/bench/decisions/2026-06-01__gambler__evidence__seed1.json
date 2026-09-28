@@ -1,0 +1,144 @@
+{
+ "cell": "2026-06-01__gambler__evidence__seed1",
+ "as_of": "2026-06-01",
+ "persona": "gambler",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "0da8fe2484117a05",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "NVDA": "insufficient",
+  "MSFT": "positive",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "AMZN": "insufficient",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-01",
+  "newest_bar": "2026-06-01",
+  "newest_fact": "2026-06-01",
+  "as_of": "2026-06-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"AMD\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Management doubled addressable market forecast and locked multi-year revenue with hyperscale customers, supported by ambitious $20+ EPS target. Strong underlying demand for server CPUs in AI infrastructure.\",\n      \"evidence\": [\"Management doubled its target market forecast for server central...\", \"Management provided explicit multi-year revenue expectations for...\", \"Management committed to a long-term profit benchmark of over $20 in...\"],\n      \"counterargument\": \"Rising memory costs slowing consumer gaming sales by over 20% in second-half creates material drag on consumer segment profits.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"NVDA\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Extreme profitability metrics (ranked 1.00 on gross profitability and ROA) with secular AI demand tailwinds. Geopolitical risks real but fundamental business strength exceptional.\",\n      \"evidence\": [\"Gross profitability 1.00\", \"Return on assets 1.00\"],\n      \"counterargument\": \"Geopolitical exclusion from Chinese market, nearly zero cash conversion (earnings backed by cash 0.00), minimal balance sheet expansion (0.03) raises sustainability questions.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"LLY\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Unmatched revenue growth (ranked 1.00 vs all comparables) driven by GLP-1 franchise expansion. Positioned for multi-year secular expansion in obesity treatment.\",\n      \"evidence\": [\"Revenue growth 1.00\"],\n      \"counterargument\": \"Zero earnings backed by cash (0.00) and minimal sales per dollar paid (0.05) indicate reported profits are not converting to cash, suggesting accounting quality concerns.\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Critical semiconductor equipment supplier with fortress balance sheet (0.91 cash cushion, 0.79 asset efficiency) positioned to benefit from structural chip capex cycle.\",\n      \"evidence\": [\"Cash cushion 0.91\", \"Asset efficiency 0.79\", \"Balance sheet expansion 0.72\"],\n      \"counterargument\": \"Up 123% over past year and 14% over past month trading near all-time highs leaves limited margin of safety.\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional cash generation (0.94 earnings backed by cash, 0.93 cash per dollar paid) trading 24% below yearly high represents undervalued cash compounder.\",\n      \"evidence\": [\"Earnings backed by cash 0.94\", \"Cash per dollar paid 0.93\", \"It is about 24% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Down 7% over past year and 1% over past month without clear near-term catalyst identified.\",\n      \"confidence\": 0.66\n    },\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"Turnaround inflection evident in margin improvement trajectory (0.91 ranked) and strong 12-month momentum (0.92) following 459% annual gain.\",\n      \"evidence\": [\"Margin direction 0.91\", \"Twelve-month momentum 0.92\"],\n      \"counterargument\": \"Gross profitability ranked 0.00 (worst tier), return on assets only 0.09, reflects deep structural challenges in manufacturing competitiveness.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": -0.10,\n      \"direction\": \"short\",\n      \"thesis\": \"Extreme bubble valuation (up 4573% YoY, 91% past month) on weak fundamentals (ROA 0.01) with all upside priced in. Mean reversion likely over 63-day horizon.\",\n      \"evidence\": [\"The shares are up 4573% over the past year and up 91% over the past month\", \"The share has run hard and is now expensive on the numbers. The share now also costs more, relative to what the company actually earns and owns, than almost every comparable company\", \"Return on assets 0.01\", \"Price steadiness 0.11\"],\n      \"counterargument\": \"Elevated memory prices currently support margins and cash generation; capex investment shows confidence in demand sustainability.\",\n      \"confidence\": 0.76\n    },\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": -0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Major red flag disconnect between management optimism and cash reality. Only 0.09 earnings backed by cash despite 14-17% growth guidance suggests earnings quality deterioration.\",\n      \"evidence\": [\"Management sounds confident, the cash does not agree\", \"Earnings backed by cash 0.09\", \"Cash per dollar of profit 0.11\", \"The shares are up 53% over the past year and up 9% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\"],\n      \"counterargument\": \"Strong forward guidance of 14-17% sales growth, excellent ROA (0.97) and price steadiness (0.97) suggest business strength despite cash concerns.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"KO\",\n      \"weight\": -0.02,\n      \"direction\": \"short\",\n      \"thesis\": \"Multiple fundamental deteriorations including brand write-downs (BodyArmor), $14B tax liability overhang, and input cost inflation with zero cash conversion (earnings backed by cash 0.00).\",\n      \"evidence\": [\"Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns\", \"A potential $14 billion tax liability creates a major financial overhang\", \"Earnings backed by cash 0.00\", \"Cash per dollar of profit 0.00\"],\n      \"counterargument\": \"Exceptional price steadiness (1.00 ranked) and minimal recent movement suggests market has already priced in known issues.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": -0.01,\n      \"direction\": \"short\",\n      \"thesis\": \"Up 4573% YoY places it among most expensive valuations relative to earnings. Described as costing more relative to company's actual earnings and assets than almost any comparable company.\",\n      \"evidence\": [\"The shares are up 4573% over the past year and up 48% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\", \"The share has run hard and is now expensive on the numbers. The share now also costs more, relative to what the company actually earns and owns, than almost every comparable company\"],\n      \"counterargument\": \"Prepaid $2B term loan demonstrates robust cash generation; strong pricing environment supports margins and capex investments validate management confidence.\",\n      \"confidence\": 0.65\n    }\n  ],\n  \"cash\": 0.29,\n  \"reasoning\": \"Built aggressive long portfolio concentrated in secular growth leaders (semiconductor/AI and healthcare) with strong momentum while hedging with well-sized short positions in stocks displaying extreme valuations (MU, SNDK) or profit quality deterioration (AAPL, KO). The strategy leverages the aggressive speculator mandate by concentrating capital in high-conviction secular trends while using shorts to express skepticism on valuation excesses, leaving 29% cash to maintain flexibility given the 63-day lockup horizon.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "AMD",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Management doubled addressable market forecast and locked multi-year revenue with hyperscale customers, supported by ambitious $20+ EPS target. Strong underlying demand for server CPUs in AI infrastructure.",
+    "evidence": [
+     "Management doubled its target market forecast for server central...",
+     "Management provided explicit multi-year revenue expectations for...",
+     "Management committed to a long-term profit benchmark of over $20 in..."
+    ],
+    "counterargument": "Rising memory costs slowing consumer gaming sales by over 20% in second-half creates material drag on consumer segment profits.",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "NVDA",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Extreme profitability metrics (ranked 1.00 on gross profitability and ROA) with secular AI demand tailwinds. Geopolitical risks real but fundamental business strength exceptional.",
+    "evidence": [
+     "Gross profitability 1.00",
+     "Return on assets 1.00"
+    ],
+    "counterargument": "Geopolitical exclusion from Chinese market, nearly zero cash conversion (earnings backed by cash 0.00), minimal balance sheet expansion (0.03) raises sustainability questions.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "LLY",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Unmatched revenue growth (ranked 1.00 vs all comparables) driven by GLP-1 franchise expansion. Positioned for multi-year secular expansion in obesity treatment.",
+    "evidence": [
+     "Revenue growth 1.00"
+    ],
+    "counterargument": "Zero earnings backed by cash (0.00) and minimal sales per dollar paid (0.05) indicate reported profits are not converting to cash, suggesting accounting quality concerns.",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Critical semiconductor equipment supplier with fortress balance sheet (0.91 cash cushion, 0.79 asset efficiency) positioned to benefit from structural chip capex cycle.",
+    "evidence": [
+     "Cash cushion 0.91",
+     "Asset efficiency 0.79",
+     "Balance sheet expansion 0.72"
+    ],
+    "counterargument": "Up 123% over past year and 14% over past month trading near all-time highs leaves limited margin of safety.",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "META",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Exceptional cash generation (0.94 earnings backed by cash, 0.93 cash per dollar paid) trading 24% below yearly high represents undervalued cash compounder.",
+    "evidence": [
+     "Earnings backed by cash 0.94",
+     "Cash per dollar paid 0.93",
+     "It is about 24% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Down 7% over past year and 1% over past month without clear near-term catalyst identified.",
+    "confidence": 0.66
+   },
+   {
+    "ticker": "INTC",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "Turnaround inflection evident in margin improvement trajectory (0.91 ranked) and strong 12-month momentum (0.92) following 459% annual gain.",
+    "evidence": [
+     "Margin direction 0.91",
+     "Twelve-month momentum 0.92"
+    ],
+    "counterargument": "Gross profitability ranked 0.00 (worst tier), return on assets only 0.09, reflects deep structural challenges in manufacturing competitiveness.",
+    "confidence": 0.62
+   }
+  ],
+  "cash": 0.47,
+  "reasoning": "Built aggressive long portfolio concentrated in secular growth leaders (semiconductor/AI and healthcare) with strong momentum while hedging with well-sized short positions in stocks displaying extreme valuations (MU, SNDK) or profit quality deterioration (AAPL, KO). The strategy leverages the aggressive speculator mandate by concentrating capital in high-conviction secular trends while using shorts to express skepticism on valuation excesses, leaving 29% cash to maintain flexibility given the 63-day lockup horizon.",
+  "gross_before_scaling": 0.53,
+  "scaled_back": false
+ },
+ "parsed": true
+}

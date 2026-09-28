@@ -1,0 +1,199 @@
+{
+ "cell": "2026-05-01__amateur__evidence__seed1",
+ "as_of": "2026-05-01",
+ "persona": "amateur",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "7b2c8597dc19c18c",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-05-01",
+  "newest_bar": "2026-05-01",
+  "newest_fact": "2026-05-01",
+  "as_of": "2026-05-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"V\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Payment processing leader with exceptional price stability and returns on assets. As a conservative investor, the 0.97 price steadiness ranking and 0.89 return on assets provide reliable downside protection.\",\n      \"evidence\": [\"Price steadiness                 0.97\", \"Return on assets                 0.89\"],\n      \"counterargument\": \"Payment volumes could decline if economic growth slows or consumer spending weakens over the 63-day period.\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Technology leader trading 47% below its year high offers deep discount entry point with stable cash generation metrics.\",\n      \"evidence\": [\"it is about 47% below its high of the past year, so some bad news is already reflected in the price\", \"Cash per dollar of profit        0.65\", \"Cash per dollar paid             0.61\"],\n      \"counterargument\": \"Legacy database business faces long-term cloud competition which could erode competitive positioning and margins.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Resolution of SEC regulatory probe removes major downside risk. Strong cash conversion metrics indicate reliable fundamentals.\",\n      \"evidence\": [\"This lifts a major regulatory cloud after the SEC (Securities and\u2026: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks\", \"Cash per dollar of profit        0.78\", \"Earnings backed by cash          0.78\"],\n      \"counterargument\": \"Migration of legacy software users to cloud-based subscriptions could slow, creating growth concerns.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"JNJ\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Diversified healthcare leader with exceptional price stability (0.98 ranking) and strong asset returns indicate quality business.\",\n      \"evidence\": [\"Price steadiness                 0.98\", \"Return on assets                 0.82\", \"The shares are up 51% over the past year and down 7% over the past month\"],\n      \"counterargument\": \"Recent 51% year gain suggests momentum may have peaked; down 7% in past month indicates potential exhaustion.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Trading 23% below year high with strong cash balance sheet and cash-backed earnings. Positioned for long-term AI opportunity.\",\n      \"evidence\": [\"it is about 23% below its high of the past year, so some bad news is currently reflected in the price\", \"Cash cushion                     0.12\", \"Cash per dollar paid             0.89\", \"Earnings backed by cash          0.93\"],\n      \"counterargument\": \"Massive capital expenditure acceleration for AI infrastructure creates near-term profit uncertainty and cash burn.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional margin direction (0.95) and revenue growth (0.93) rankings signal strong operational momentum.\",\n      \"evidence\": [\"Margin direction                 0.95\", \"Revenue growth                   0.93\", \"it is about 30% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"High-growth profile makes execution risk significant; stock is momentum-driven and vulnerable to any business slowdown.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Semiconductor equipment supplier with strong asset efficiency (0.82) and solid momentum (0.82). Position benefits from AI infrastructure buildout.\",\n      \"evidence\": [\"Asset efficiency                 0.82\", \"Twelve-month momentum            0.82\", \"The shares are up 116% over the past year and up 5% over the past month\"],\n      \"counterargument\": \"Up 116% in one year raises valuation concerns; China export restrictions and geopolitical risks pose long-term headwinds.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Technology leader positioned 23% below year high with massive backlog from future corporate orders.\",\n      \"evidence\": [\"This shows a massive build-up of future corporate orders that\u2026: Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand\", \"it is about 23% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Declining console business suggests weakness in hardware segments; competition in cloud services intensifying.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.04,\n      \"direction\": \"long\",\n      \"thesis\": \"Defensive retailer with capital investment in automation and e-commerce. Twelve-month momentum strong (0.92) and earnings backed by cash (0.88).\",\n      \"evidence\": [\"Walmart expects capital expenditures (money spent on long-term\u2026: Continuing high investment in automation and online shopping capabilities is widely seen as necessary for the company to maintain its competitive edge against tech-first retailers\", \"Twelve-month momentum            0.92\", \"Earnings backed by cash          0.88\"],\n      \"counterargument\": \"Trading near year highs limits upside; rising labor costs and commodity input pressures could squeeze margins.\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"AEP\",\n      \"weight\": 0.04,\n      \"direction\": \"long\",\n      \"thesis\": \"Positioned to benefit from AI data center power demand growth. Strong margin direction (0.80) and debt metrics (0.80).\",\n      \"evidence\": [\"It establishes that AEP's future growth and capital spending plans\u2026: Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations\", \"Margin direction                 0.80\", \"Debt direction                   0.80\"],\n      \"counterargument\": \"Extreme customer concentration and rising financing uncertainty could choke off growth plans if capital markets tighten.\",\n      \"confidence\": 0.50\n    }\n  ],\n  \"cash\": 0.25,\n  \"reasoning\": \"As a conservative, nervous investor with limited training, I focused on companies with strong cash generation, exceptional price stability, and valuations offering downside protection by being significantly below recent highs. I built a diversified portfolio weighted toward established leaders (V, ORCL, JNJ, ADSK) that rank highly on financial stability metrics, with smaller positions in higher-growth opportunities (PLTR, ASML) and broader tech exposure (META, MSFT). I maintained 25% cash for safety and to avoid overcommitting on what may be elevated valuations in the technology sector.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "V",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Payment processing leader with exceptional price stability and returns on assets. As a conservative investor, the 0.97 price steadiness ranking and 0.89 return on assets provide reliable downside protection.",
+    "evidence": [
+     "Price steadiness                 0.97",
+     "Return on assets                 0.89"
+    ],
+    "counterargument": "Payment volumes could decline if economic growth slows or consumer spending weakens over the 63-day period.",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Technology leader trading 47% below its year high offers deep discount entry point with stable cash generation metrics.",
+    "evidence": [
+     "it is about 47% below its high of the past year, so some bad news is already reflected in the price",
+     "Cash per dollar of profit        0.65",
+     "Cash per dollar paid             0.61"
+    ],
+    "counterargument": "Legacy database business faces long-term cloud competition which could erode competitive positioning and margins.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Resolution of SEC regulatory probe removes major downside risk. Strong cash conversion metrics indicate reliable fundamentals.",
+    "evidence": [
+     "This lifts a major regulatory cloud after the SEC (Securities and\u2026: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks",
+     "Cash per dollar of profit        0.78",
+     "Earnings backed by cash          0.78"
+    ],
+    "counterargument": "Migration of legacy software users to cloud-based subscriptions could slow, creating growth concerns.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "JNJ",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Diversified healthcare leader with exceptional price stability (0.98 ranking) and strong asset returns indicate quality business.",
+    "evidence": [
+     "Price steadiness                 0.98",
+     "Return on assets                 0.82",
+     "The shares are up 51% over the past year and down 7% over the past month"
+    ],
+    "counterargument": "Recent 51% year gain suggests momentum may have peaked; down 7% in past month indicates potential exhaustion.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "META",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Trading 23% below year high with strong cash balance sheet and cash-backed earnings. Positioned for long-term AI opportunity.",
+    "evidence": [
+     "it is about 23% below its high of the past year, so some bad news is currently reflected in the price",
+     "Cash cushion                     0.12",
+     "Cash per dollar paid             0.89",
+     "Earnings backed by cash          0.93"
+    ],
+    "counterargument": "Massive capital expenditure acceleration for AI infrastructure creates near-term profit uncertainty and cash burn.",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Exceptional margin direction (0.95) and revenue growth (0.93) rankings signal strong operational momentum.",
+    "evidence": [
+     "Margin direction                 0.95",
+     "Revenue growth                   0.93",
+     "it is about 30% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "High-growth profile makes execution risk significant; stock is momentum-driven and vulnerable to any business slowdown.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Semiconductor equipment supplier with strong asset efficiency (0.82) and solid momentum (0.82). Position benefits from AI infrastructure buildout.",
+    "evidence": [
+     "Asset efficiency                 0.82",
+     "Twelve-month momentum            0.82",
+     "The shares are up 116% over the past year and up 5% over the past month"
+    ],
+    "counterargument": "Up 116% in one year raises valuation concerns; China export restrictions and geopolitical risks pose long-term headwinds.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Technology leader positioned 23% below year high with massive backlog from future corporate orders.",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that\u2026: Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand",
+     "it is about 23% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Declining console business suggests weakness in hardware segments; competition in cloud services intensifying.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.04,
+    "direction": "long",
+    "thesis": "Defensive retailer with capital investment in automation and e-commerce. Twelve-month momentum strong (0.92) and earnings backed by cash (0.88).",
+    "evidence": [
+     "Walmart expects capital expenditures (money spent on long-term\u2026: Continuing high investment in automation and online shopping capabilities is widely seen as necessary for the company to maintain its competitive edge against tech-first retailers",
+     "Twelve-month momentum            0.92",
+     "Earnings backed by cash          0.88"
+    ],
+    "counterargument": "Trading near year highs limits upside; rising labor costs and commodity input pressures could squeeze margins.",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "AEP",
+    "weight": 0.04,
+    "direction": "long",
+    "thesis": "Positioned to benefit from AI data center power demand growth. Strong margin direction (0.80) and debt metrics (0.80).",
+    "evidence": [
+     "It establishes that AEP's future growth and capital spending plans\u2026: Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations",
+     "Margin direction                 0.80",
+     "Debt direction                   0.80"
+    ],
+    "counterargument": "Extreme customer concentration and rising financing uncertainty could choke off growth plans if capital markets tighten.",
+    "confidence": 0.5
+   }
+  ],
+  "cash": 0.25,
+  "reasoning": "As a conservative, nervous investor with limited training, I focused on companies with strong cash generation, exceptional price stability, and valuations offering downside protection by being significantly below recent highs. I built a diversified portfolio weighted toward established leaders (V, ORCL, JNJ, ADSK) that rank highly on financial stability metrics, with smaller positions in higher-growth opportunities (PLTR, ASML) and broader tech exposure (META, MSFT). I maintained 25% cash for safety and to avoid overcommitting on what may be elevated valuations in the technology sector.",
+  "gross_before_scaling": 0.75,
+  "scaled_back": false
+ },
+ "parsed": true
+}

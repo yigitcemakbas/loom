@@ -1,0 +1,178 @@
+{
+ "cell": "2026-06-01__professional__full__seed1",
+ "as_of": "2026-06-01",
+ "persona": "professional",
+ "arm": "full",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "12820ff3bc35b326",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "NVDA": "insufficient",
+  "MSFT": "positive",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "AMZN": "insufficient",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-01",
+  "newest_bar": "2026-06-01",
+  "newest_fact": "2026-06-01",
+  "as_of": "2026-06-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"BKKING\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Trading 27% below recent highs with positive verdict on solid fundamentals. Market has overcorrected; strong travel demand and management cost discipline visible.\",\n      \"evidence\": [\"Strong booking volume growth demonstrates resilient consumer demand\", \"Achieving higher-than-expected cost savings from corporate restructuring is a positive signal\"],\n      \"counterargument\": \"KAYAK weakness and rising customer acquisition costs create drag on profitability\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Major regulatory overhang removed with SEC investigation resolution. Down 24% from highs provides safety margin. Financial metrics strong (0.92 gross profitability, 0.84 cash cushion).\",\n      \"evidence\": [\"Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks\"],\n      \"counterargument\": \"Friction risk if legacy software users resist migration to cloud subscriptions\",\n      \"confidence\": 0.71\n    },\n    {\n      \"ticker\": \"ADBE\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 34% from highs but carries exceptional cash metrics (0.98 cash per dollar paid, 0.96 profit per dollar paid). Acquisition attempt shows management conviction.\",\n      \"evidence\": [\"Cash per dollar paid 0.98\", \"Profit per dollar paid 0.96\", \"Gross profitability 0.95\"],\n      \"counterargument\": \"High server power and infrastructure costs for AI features could squeeze software profit margins\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"AMD\",\n      \"weight\": 0.13,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict with concrete structural catalyst: doubled TAM forecast and locked multi-year contracts. Gaming volume decline is small portion of overall profit. Strong momentum justified by fundamentals.\",\n      \"evidence\": [\"Management doubled its target market forecast for server central processors\", \"Multi-year revenue visibility with major hyper-scale customers reassures investors about the sustainability of high AI hardware spending\"],\n      \"counterargument\": \"Rising memory costs slowing consumer gaming sales create material drag despite small profit contribution\",\n      \"confidence\": 0.69\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict on massive enterprise order build indicating strong sustained demand. Only 1% return YTD keeps valuation reasonable. Price steadiness ranks 0.94.\",\n      \"evidence\": [\"This shows a massive build-up of future corporate orders that\"],\n      \"counterargument\": \"Physical console business shrinking signals hardware weakness in gaming segment\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict with strong 14-17% growth guidance and new search monetization opportunity. Balance sheet flexibility unlocked by dropping cash target. Sizing conservatively due to poor earnings-to-cash conversion.\",\n      \"evidence\": [\"Strong revenue growth guidance signals persistent buyer demand across hardware and services lineups\", \"Ending the strict cash balance target provides additional balance sheet flexibility for shareholder payouts\"],\n      \"counterargument\": \"Rising memory chip costs threaten hardware margins; earnings backed by cash ranks only 0.09\",\n      \"confidence\": 0.56\n    },\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": 0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"Up 4573% in one year at the market extremes. Early debt payoff demonstrates cash strength but cannot justify current valuation (0.05 profit per dollar paid). Trading at highs with little bad news reflected.\",\n      \"evidence\": [\"The share has risen more over the past year than almost every comparable company\", \"It now also costs more, relative to what the company actually earns and owns, than almost every comparable company\"],\n      \"counterargument\": \"Massive surge in average selling prices drives strong near-term revenue and cash flow growth; early debt prepayment of $2.0 billion signals robust cash generation\",\n      \"confidence\": 0.66\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": 0.07,\n      \"direction\": \"short\",\n      \"thesis\": \"Up 999% YTD with negative verdict. At recent highs, little bad news is priced in. High capex guidance and tax rate increase will materially depress future cash flows.\",\n      \"evidence\": [\"The dual headwind of elevated near-term capital expenditure guidance and an increased projected tax rate will likely depress profitability and cash flow projections\", \"Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions\"],\n      \"counterargument\": \"Twelve-month momentum ranks 0.94 and pricing surge might validate strong underlying demand for memory chips\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Up 459% on fundamentals that cannot support the move. Gross profitability ranks 0.00, asset efficiency 0.09. This is a short at extremes regardless of recent momentum.\",\n      \"evidence\": [\"Gross profitability 0.00\", \"Return on assets 0.09\", \"Profit per dollar paid 0.09\"],\n      \"counterargument\": \"Twelve-month momentum 0.92 and Margin direction 0.91 indicate operational momentum may justify some valuation re-rating\",\n      \"confidence\": 0.68\n    }\n  ],\n  \"cash\": 0.22,\n  \"reasoning\": \"Portfolio concentrates conviction on out-of-favor names with positive verdicts trading substantially below recent highs (BKKING, ADSK, ADBE) where bad news appears priced in. Core longs in AMD and MSFT leverage multi-year structural visibility. Shorts target extreme momentum moves (SNDK, MU, INTC) where valuations have decoupled from fundamentals, with particular skepticism on INTC given complete absence of profitability metrics. Modest cash position acknowledges limited company-specific analysis across the universe.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "BKKING",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Trading 27% below recent highs with positive verdict on solid fundamentals. Market has overcorrected; strong travel demand and management cost discipline visible.",
+    "evidence": [
+     "Strong booking volume growth demonstrates resilient consumer demand",
+     "Achieving higher-than-expected cost savings from corporate restructuring is a positive signal"
+    ],
+    "counterargument": "KAYAK weakness and rising customer acquisition costs create drag on profitability",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Major regulatory overhang removed with SEC investigation resolution. Down 24% from highs provides safety margin. Financial metrics strong (0.92 gross profitability, 0.84 cash cushion).",
+    "evidence": [
+     "Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks"
+    ],
+    "counterargument": "Friction risk if legacy software users resist migration to cloud subscriptions",
+    "confidence": 0.71
+   },
+   {
+    "ticker": "ADBE",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Down 34% from highs but carries exceptional cash metrics (0.98 cash per dollar paid, 0.96 profit per dollar paid). Acquisition attempt shows management conviction.",
+    "evidence": [
+     "Cash per dollar paid 0.98",
+     "Profit per dollar paid 0.96",
+     "Gross profitability 0.95"
+    ],
+    "counterargument": "High server power and infrastructure costs for AI features could squeeze software profit margins",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "AMD",
+    "weight": 0.13,
+    "direction": "long",
+    "thesis": "Positive verdict with concrete structural catalyst: doubled TAM forecast and locked multi-year contracts. Gaming volume decline is small portion of overall profit. Strong momentum justified by fundamentals.",
+    "evidence": [
+     "Management doubled its target market forecast for server central processors",
+     "Multi-year revenue visibility with major hyper-scale customers reassures investors about the sustainability of high AI hardware spending"
+    ],
+    "counterargument": "Rising memory costs slowing consumer gaming sales create material drag despite small profit contribution",
+    "confidence": 0.69
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Positive verdict on massive enterprise order build indicating strong sustained demand. Only 1% return YTD keeps valuation reasonable. Price steadiness ranks 0.94.",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that"
+    ],
+    "counterargument": "Physical console business shrinking signals hardware weakness in gaming segment",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "AAPL",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Positive verdict with strong 14-17% growth guidance and new search monetization opportunity. Balance sheet flexibility unlocked by dropping cash target. Sizing conservatively due to poor earnings-to-cash conversion.",
+    "evidence": [
+     "Strong revenue growth guidance signals persistent buyer demand across hardware and services lineups",
+     "Ending the strict cash balance target provides additional balance sheet flexibility for shareholder payouts"
+    ],
+    "counterargument": "Rising memory chip costs threaten hardware margins; earnings backed by cash ranks only 0.09",
+    "confidence": 0.56
+   },
+   {
+    "ticker": "SNDK",
+    "weight": 0.08,
+    "direction": "short",
+    "thesis": "Up 4573% in one year at the market extremes. Early debt payoff demonstrates cash strength but cannot justify current valuation (0.05 profit per dollar paid). Trading at highs with little bad news reflected.",
+    "evidence": [
+     "The share has risen more over the past year than almost every comparable company",
+     "It now also costs more, relative to what the company actually earns and owns, than almost every comparable company"
+    ],
+    "counterargument": "Massive surge in average selling prices drives strong near-term revenue and cash flow growth; early debt prepayment of $2.0 billion signals robust cash generation",
+    "confidence": 0.66
+   },
+   {
+    "ticker": "MU",
+    "weight": 0.07,
+    "direction": "short",
+    "thesis": "Up 999% YTD with negative verdict. At recent highs, little bad news is priced in. High capex guidance and tax rate increase will materially depress future cash flows.",
+    "evidence": [
+     "The dual headwind of elevated near-term capital expenditure guidance and an increased projected tax rate will likely depress profitability and cash flow projections",
+     "Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions"
+    ],
+    "counterargument": "Twelve-month momentum ranks 0.94 and pricing surge might validate strong underlying demand for memory chips",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "INTC",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Up 459% on fundamentals that cannot support the move. Gross profitability ranks 0.00, asset efficiency 0.09. This is a short at extremes regardless of recent momentum.",
+    "evidence": [
+     "Gross profitability 0.00",
+     "Return on assets 0.09",
+     "Profit per dollar paid 0.09"
+    ],
+    "counterargument": "Twelve-month momentum 0.92 and Margin direction 0.91 indicate operational momentum may justify some valuation re-rating",
+    "confidence": 0.68
+   }
+  ],
+  "cash": 0.21999999999999997,
+  "reasoning": "Portfolio concentrates conviction on out-of-favor names with positive verdicts trading substantially below recent highs (BKKING, ADSK, ADBE) where bad news appears priced in. Core longs in AMD and MSFT leverage multi-year structural visibility. Shorts target extreme momentum moves (SNDK, MU, INTC) where valuations have decoupled from fundamentals, with particular skepticism on INTC given complete absence of profitability metrics. Modest cash position acknowledges limited company-specific analysis across the universe.",
+  "gross_before_scaling": 0.78,
+  "scaled_back": false
+ },
+ "parsed": true
+}

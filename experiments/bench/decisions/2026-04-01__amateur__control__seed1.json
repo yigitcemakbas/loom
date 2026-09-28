@@ -1,0 +1,180 @@
+{
+ "cell": "2026-04-01__amateur__control__seed1",
+ "as_of": "2026-04-01",
+ "persona": "amateur",
+ "arm": "control",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "5839faad457682ac",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "negative",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-03-13",
+  "newest_bar": "2026-04-01",
+  "newest_fact": "2026-04-01",
+  "as_of": "2026-04-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"JPM\",\n      \"weight\": 0.14,\n      \"direction\": \"long\",\n      \"thesis\": \"JPMorgan Chase is a major financial institution that sounds authoritative and stable. It shows solid positive returns with minimal recent decline.\",\n      \"evidence\": [\"up 24% over the past year\", \"down 1% over the past month\", \"about 22% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Being 22% below its high suggests the correction may not be complete\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Apple is an established, well-known technology company that I trust. It shows positive returns with only modest recent weakness.\",\n      \"evidence\": [\"up 15% over the past year\", \"down 3% over the past month\"],\n      \"counterargument\": \"Technology sector has shown mixed signals recently with several stocks declining\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"JNJ\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Johnson & Johnson represents a trusted healthcare company with exceptional performance. Trading near its high suggests market confidence.\",\n      \"evidence\": [\"up 64% over the past year\", \"down 2% over the past month\", \"trading close to its highest point of the past year\"],\n      \"counterargument\": \"Trading near highs leaves little room for upside and little bad news is reflected in the price\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Walmart is an established retail giant showing strong returns with minimal recent decline, providing defensive stability.\",\n      \"evidence\": [\"up 42% over the past year\", \"down 2% over the past month\"],\n      \"counterargument\": \"Consumer discretionary can be sensitive to economic downturns\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Intel shows exceptional performance with positive recent momentum, suggesting market confidence in technology despite my nervousness.\",\n      \"evidence\": [\"up 118% over the past year\", \"up 6% over the past month\"],\n      \"counterargument\": \"Such a large YTD gain raises valuation concerns and potential overextension\",\n      \"confidence\": 0.59\n    },\n    {\n      \"ticker\": \"KO\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Coca-Cola represents a trusted consumer staples company providing defensive characteristics.\",\n      \"evidence\": [\"up 9% over the past year\", \"down 5% over the past month\"],\n      \"counterargument\": \"Recent monthly weakness and modest overall returns limit upside potential\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"VZ\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Verizon is a stable, authoritative telecommunications company with consistent positive returns and minimal recent decline.\",\n      \"evidence\": [\"up 16% over the past year\", \"down 1% over the past month\"],\n      \"counterargument\": \"Limited growth potential from a mature industry\",\n      \"confidence\": 0.57\n    },\n    {\n      \"ticker\": \"NVDA\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"NVIDIA shows strong YTD performance, though recent weakness concerns me as a nervous investor.\",\n      \"evidence\": [\"up 60% over the past year\", \"down 4% over the past month\"],\n      \"counterargument\": \"Recent decline despite strong YTD performance suggests potential reversal or weakness\",\n      \"confidence\": 0.54\n    },\n    {\n      \"ticker\": \"AMZN\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Amazon is an established company with positive recent momentum, a rare quality in technology this month.\",\n      \"evidence\": [\"up 10% over the past year\", \"up 1% over the past month\"],\n      \"counterargument\": \"Still carries technology sector exposure amid broader sector weakness\",\n      \"confidence\": 0.60\n    }\n  ],\n  \"cash\": 0.13,\n  \"reasoning\": \"I built this portfolio around established, authoritative companies in trusted sectors like finance, healthcare, and consumer staples. I emphasized JPMorgan, Johnson & Johnson, and Apple as anchors because they represent stability and trustworthiness. I held 13% in cash to mitigate risk, as a nervous investor should. I mostly avoided obvious problems like Adobe and Boston Scientific, which are down over 30% and showing no signs of stopping.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "JPM",
+    "weight": 0.14,
+    "direction": "long",
+    "thesis": "JPMorgan Chase is a major financial institution that sounds authoritative and stable. It shows solid positive returns with minimal recent decline.",
+    "evidence": [
+     "up 24% over the past year",
+     "down 1% over the past month",
+     "about 22% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Being 22% below its high suggests the correction may not be complete",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "AAPL",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Apple is an established, well-known technology company that I trust. It shows positive returns with only modest recent weakness.",
+    "evidence": [
+     "up 15% over the past year",
+     "down 3% over the past month"
+    ],
+    "counterargument": "Technology sector has shown mixed signals recently with several stocks declining",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "JNJ",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Johnson & Johnson represents a trusted healthcare company with exceptional performance. Trading near its high suggests market confidence.",
+    "evidence": [
+     "up 64% over the past year",
+     "down 2% over the past month",
+     "trading close to its highest point of the past year"
+    ],
+    "counterargument": "Trading near highs leaves little room for upside and little bad news is reflected in the price",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Walmart is an established retail giant showing strong returns with minimal recent decline, providing defensive stability.",
+    "evidence": [
+     "up 42% over the past year",
+     "down 2% over the past month"
+    ],
+    "counterargument": "Consumer discretionary can be sensitive to economic downturns",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "INTC",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Intel shows exceptional performance with positive recent momentum, suggesting market confidence in technology despite my nervousness.",
+    "evidence": [
+     "up 118% over the past year",
+     "up 6% over the past month"
+    ],
+    "counterargument": "Such a large YTD gain raises valuation concerns and potential overextension",
+    "confidence": 0.59
+   },
+   {
+    "ticker": "KO",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Coca-Cola represents a trusted consumer staples company providing defensive characteristics.",
+    "evidence": [
+     "up 9% over the past year",
+     "down 5% over the past month"
+    ],
+    "counterargument": "Recent monthly weakness and modest overall returns limit upside potential",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "VZ",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Verizon is a stable, authoritative telecommunications company with consistent positive returns and minimal recent decline.",
+    "evidence": [
+     "up 16% over the past year",
+     "down 1% over the past month"
+    ],
+    "counterargument": "Limited growth potential from a mature industry",
+    "confidence": 0.57
+   },
+   {
+    "ticker": "NVDA",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "NVIDIA shows strong YTD performance, though recent weakness concerns me as a nervous investor.",
+    "evidence": [
+     "up 60% over the past year",
+     "down 4% over the past month"
+    ],
+    "counterargument": "Recent decline despite strong YTD performance suggests potential reversal or weakness",
+    "confidence": 0.54
+   },
+   {
+    "ticker": "AMZN",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Amazon is an established company with positive recent momentum, a rare quality in technology this month.",
+    "evidence": [
+     "up 10% over the past year",
+     "up 1% over the past month"
+    ],
+    "counterargument": "Still carries technology sector exposure amid broader sector weakness",
+    "confidence": 0.6
+   }
+  ],
+  "cash": 0.13,
+  "reasoning": "I built this portfolio around established, authoritative companies in trusted sectors like finance, healthcare, and consumer staples. I emphasized JPMorgan, Johnson & Johnson, and Apple as anchors because they represent stability and trustworthiness. I held 13% in cash to mitigate risk, as a nervous investor should. I mostly avoided obvious problems like Adobe and Boston Scientific, which are down over 30% and showing no signs of stopping.",
+  "gross_before_scaling": 0.87,
+  "scaled_back": false
+ },
+ "parsed": true
+}

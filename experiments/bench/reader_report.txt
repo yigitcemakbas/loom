@@ -1,0 +1,110 @@
+==============================================================================
+LOOM READER BENCHMARK — does giving a decision-maker Loom improve decisions?
+==============================================================================
+
+45 decisions, 15 paired cells, 5 decision dates, reader = haiku
+arms {'control': 15, 'evidence': 15, 'full': 15}
+personas {'amateur': 15, 'gambler': 15, 'professional': 15}
+
+INTEGRITY: NO leakage detected
+
+--- MAIN RESULT: did Loom improve decisions? ---
+
+  Loom's evidence, no verdict  (evidence_minus_control, n=15 pairs)
+     benchmark-adjusted return  -0.22 pts   CI [-5.16, +4.66]   permutation p=0.937   9/15 pairs positive
+     max_drawdown         +2.91 pts   CI [-0.10, +6.19]   p=0.206
+     sharpe               +0.06   CI [-0.70, +0.74]   p=0.913
+     sortino              +0.02   CI [-1.45, +1.35]   p=0.986
+
+  full Loom, as a user sees it  (full_minus_control, n=15 pairs)
+     benchmark-adjusted return  -10.32 pts   CI [-22.12, +0.40]   permutation p=0.077   6/15 pairs positive
+     max_drawdown         -0.00 pts   CI [-4.89, +4.00]   p=0.999
+     sharpe               -2.10   CI [-3.88, -0.45]   p=0.013
+     sortino              -3.54   CI [-6.36, -0.91]   p=0.009   survives BH
+
+  the verdict, on top of the evidence  (full_minus_evidence, n=15 pairs)
+     benchmark-adjusted return  -10.10 pts   CI [-18.15, -3.07]   permutation p=0.005   4/15 pairs positive
+     max_drawdown         -2.91 pts   CI [-6.57, +0.00]   p=0.209
+     sharpe               -2.15   CI [-3.64, -0.79]   p=0.002
+     sortino              -3.56   CI [-5.88, -1.39]   p=0.002   survives BH
+
+--- READER INTERACTION: does the effect depend on who is reading? ---
+
+  evidence_minus_control   spread across personas: +8.69 pts
+     amateur        -3.09 pts  n=5  p=0.558  2/5 positive
+     gambler        -3.12 pts  n=5  p=0.626  2/5 positive
+     professional   +5.56 pts  n=5  p=0.065  5/5 positive
+
+  full_minus_control   spread across personas: +21.65 pts
+     amateur        -4.47 pts  n=5  p=0.317  1/5 positive
+     gambler        -24.07 pts  n=5  p=0.248  2/5 positive
+     professional   -2.42 pts  n=5  p=0.875  3/5 positive
+
+  full_minus_evidence   spread across personas: +19.57 pts
+     amateur        -1.38 pts  n=5  p=0.500  2/5 positive
+     gambler        -20.94 pts  n=5  p=0.122  1/5 positive
+     professional   -7.98 pts  n=5  p=0.122  1/5 positive
+
+--- MECHANISM: what did Loom change? ---
+
+  evidence_minus_control
+     captured_upside   n=  47  +80.60 pts
+     added_loss        n=  72  -81.14 pts
+     missed_upside     n=  57  -67.23 pts
+     avoided_loss      n=  63  +62.73 pts
+     NET                      -5.04 pts
+     positions_added=+4.400  positions_removed=+7.400  positions_resized=+4.000  cash_change=+0.087  hhi_change=+0.033  conviction_change=+0.039
+
+  full_minus_control
+     captured_upside   n=  36  +46.95 pts
+     added_loss        n=  70  -121.64 pts
+     missed_upside     n=  69  -186.80 pts
+     avoided_loss      n=  81  +101.05 pts
+     NET                      -160.43 pts
+     positions_added=+5.533  positions_removed=+8.867  positions_resized=+1.600  cash_change=-0.010  hhi_change=+0.048  conviction_change=+0.039
+
+--- EVIDENCE USE: did readers use the research or just its answer? ---
+     arm            grounding cites/pos  unique verdict-only counterarg
+     control              1.0      1.84    18.1          0.0        1.0
+     evidence           0.876      3.11    23.3          0.0        1.0
+     full               0.833      2.53    16.5        0.022        1.0
+
+--- ANCHORING: did the verdict suppress what the evidence supported? ---
+     (the verdict never contradicts the evidence, so this is suppression only)
+     arm            agree/verdict agree/evidence  exposure on silent names  held
+     control                0.095          0.075                     0.096   1.5
+     evidence                 0.1          0.082                     0.111   1.3
+     full                   0.224          0.181                     0.057   0.7
+
+--- CALIBRATION of the reader's stated confidence ---
+     control        n= 176 brier=0.258 said 0.581 actual 0.506 discrimination=-0.020856843698217723
+     evidence       n= 131 brier=0.280 said 0.619 actual 0.420 discrimination=0.1173089123823736
+     full           n= 126 brier=0.290 said 0.620 actual 0.389 discrimination=0.06463763445780303
+
+--- AMPLIFICATION: does Loom make a reader more like itself? ---
+     evidence  hhi         control 0.103 -> treatment 0.136  slope=0.12567062500865878
+     evidence  cash        control 0.163 -> treatment 0.250  slope=-0.1190903162699707
+     evidence  gross       control 0.837 -> treatment 0.750  slope=-0.11909031626997071
+     evidence  max_weight  control 0.127 -> treatment 0.146  slope=-0.11147667578265645
+     full      hhi         control 0.103 -> treatment 0.151  slope=0.5526926316779602
+     full      cash        control 0.163 -> treatment 0.153  slope=0.5197261167264426
+     full      gross       control 0.837 -> treatment 0.847  slope=0.5197261167264426
+     full      max_weight  control 0.127 -> treatment 0.189  slope=1.0060035636823024
+
+--- ROBUSTNESS across dates ---
+     2026-03-02  QQQ +22.30% (rising )  control=-8.02  evidence=-12.58  full=-27.89
+     2026-04-01  QQQ +22.09% (rising )  control=+0.85  evidence=-6.34  full=-31.63
+     2026-05-01  QQQ +3.96% (flat   )  control=+0.43  evidence=-2.22  full=-7.00
+     2026-06-01  QQQ -3.39% (falling)  control=+1.55  evidence=+5.60  full=+5.38
+     2026-06-25  QQQ +3.56% (flat   )  control=+4.52  evidence=+13.79  full=+8.86
+
+--- LIMITATIONS ---
+   - Loom's document layer begins 2025-10, so all decision dates sit in 2026 and the reader benchmark cannot see a bear market. Regime robustness for the reader is untested, not merely weakly tested.
+   - The five dates overlap: monthly starts with 63-session horizons share quarters, so the effective independent sample is closer to two than five.
+   - One seed per cell in the core matrix, so within-cell sampling noise is not separated from the treatment effect except on the earliest date.
+   - Loom has read about forty companies. The universe is 28 covered plus 12 uncovered, and that selection is a property of coverage rather than a design choice.
+   - Anchoring can only be tested as suppression. The verdict is a monotone function of the same residual the evidence direction is computed from, so across all five dates it contradicts the evidence on exactly zero companies; the testable case is the 8 to 11 per date where the verdict is silent while the evidence leans.
+   - Readers are haiku subagents, not humans. Nothing here establishes that these effects transfer to human readers.
+   - Reasoning quality is not scored in this run; the outcome and reasoning evaluators are separated by design but only the outcome half has run.
+
+wrote results_reader.json

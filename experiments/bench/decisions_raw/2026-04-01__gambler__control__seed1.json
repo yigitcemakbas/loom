@@ -1,0 +1,105 @@
+{
+  "positions": [
+    {
+      "ticker": "INTC",
+      "weight": 0.15,
+      "direction": "long",
+      "thesis": "Strongest momentum with 118% YTY gain and positive 6% recent performance indicates sustained strength. Clear winner in semiconductor space deserves concentrated position.",
+      "evidence": ["The shares are up 118% over the past year and up 6% over the past month"],
+      "counterargument": "After such large gains, mean reversion risk is significant and valuation has expanded considerably",
+      "confidence": 0.68
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Exceptional 106% YTY performance with only minor 4% recent decline provides attractive entry into best-in-class semiconductor equipment provider.",
+      "evidence": ["The shares are up 106% over the past year and down 4% over the past month"],
+      "counterargument": "High valuation after massive run-up and recent decline could accelerate into further weakness",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "88% YTY gain with minimal 1% recent decline and 24% discount to highs creates attractive risk-reward for momentum player.",
+      "evidence": ["The shares are up 88% over the past year and down 1% over the past month. It is about 24% below its high of the past year"],
+      "counterargument": "Stock has already appreciated significantly, limiting upside potential",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "AMAT",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Leading performer with 145% YTY gains; semiconductor capital equipment tailwinds support continued strength.",
+      "evidence": ["The shares are up 145% over the past year and down 5% over the past month"],
+      "counterargument": "Recent 5% decline could signal momentum exhaustion in semiconductor cycle",
+      "confidence": 0.63
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "73% YTY gain with positive 1% recent move and 29% discount to highs provides classic aggressive speculator setup of momentum with value.",
+      "evidence": ["The shares are up 73% over the past year and up 1% over the past month. It is about 29% below its high of the past year"],
+      "counterargument": "29% discount to highs indicates recent confidence loss and selling pressure",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "JNJ",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Strong 64% YTY performance near all-time highs with minimal 2% recent decline signals sustained health care sector strength.",
+      "evidence": ["The shares are up 64% over the past year and down 2% over the past month. It is trading close to its highest point of the past year"],
+      "counterargument": "Trading near highs with any negative catalyst could reverse quickly",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "XOM",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Dual momentum with 40% YTY and positive 4% recent performance indicates strong energy sector dynamics.",
+      "evidence": ["The shares are up 40% over the past year and up 4% over the past month"],
+      "counterargument": "Energy sector is cyclical and commodity-driven; external shocks possible",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "BSX",
+      "weight": 0.08,
+      "direction": "short",
+      "thesis": "Worst performer with -39% YTY and accelerating -19% recent decline plus 43% discount to highs indicates structural weakness warranting short.",
+      "evidence": ["The shares are down 39% over the past year and down 19% over the past month. It is about 43% below its high of the past year"],
+      "counterargument": "43% discount may represent genuine value and stock could bounce on stabilization",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.08,
+      "direction": "short",
+      "thesis": "Significant -37% YTY decline with -7% recent move and 43% discount to highs suggests continued weakness in software/services.",
+      "evidence": ["The shares are down 37% over the past year and down 7% over the past month. It is about 43% below its high of the past year"],
+      "counterargument": "Deep discount may indicate good contrarian value for recovery",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "CMCSA",
+      "weight": 0.05,
+      "direction": "short",
+      "thesis": "Consistent decline pattern with -14% YTY and -8% recent performance indicates structural headwinds in traditional media.",
+      "evidence": ["The shares are down 14% over the past year and down 8% over the past month"],
+      "counterargument": "Communication services may find floor and stabilize",
+      "confidence": 0.57
+    },
+    {
+      "ticker": "TMUS",
+      "weight": 0.05,
+      "direction": "short",
+      "thesis": "Significant -23% YTY decline with -5% recent move and 23% discount to highs indicates wireless sector weakness.",
+      "evidence": ["The shares are down 23% over the past year and down 5% over the past month. It is about 23% below its high of the past year"],
+      "counterargument": "Telecom stocks often provide defensive characteristics and dividend support",
+      "confidence": 0.54
+    }
+  ],
+  "cash": 0.07,
+  "reasoning": "Concentrated aggressive portfolio favoring high-momentum semiconductor and technology winners (INTC, ASML, AMAT) with 67% long exposure paired with selective shorts on worst performers (BSX, ADBE) showing clear structural decline. Minimal cash allocation reflects aggressive speculator's rejection of idle capital while maintaining modest dry powder."
+}

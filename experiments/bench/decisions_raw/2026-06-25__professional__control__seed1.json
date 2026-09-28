@@ -1,0 +1,96 @@
+{
+  "positions": [
+    {
+      "ticker": "MSFT",
+      "weight": 0.15,
+      "direction": "long",
+      "thesis": "Established technology leader experiencing cyclical pullback with significant bad news already priced in. Quality recovery likely over three-month timeframe.",
+      "evidence": ["down 28% over the past year and down 15% over the past month", "about 34% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Enterprise software demand could remain depressed if business investment spending stalls.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "META",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Social and advertising platform down 31% from highs with negative sentiment priced in. Underlying business strength and AI investments support recovery.",
+      "evidence": ["down 23% over the past year", "about 31% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Continued regulatory pressure or advertising market weakness could extend the drawdown.",
+      "confidence": 0.57
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Creative software leader down 50% representing likely oversold position. Professional tools have sticky customer base with pricing power.",
+      "evidence": ["down 50% over the past year and down 20% over the past month", "about 51% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "SaaS margin pressures or AI-driven disruption to core tools could justify lower multiples.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "JPM",
+      "weight": 0.11,
+      "direction": "long",
+      "thesis": "Premier financial institution with best-in-class franchise showing positive momentum. Strong competitive position supports continued outperformance.",
+      "evidence": ["up 20% over the past year and up 9% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Economic slowdown or credit cycle deterioration could reverse momentum and pressure loan quality.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.11,
+      "direction": "long",
+      "thesis": "Semiconductor infrastructure enabler pulled back from highs despite 44% annual return. AI capex cycle provides support for continued gains.",
+      "evidence": ["up 44% over the past year and down 10% over the past month", "about 21% below its high of the past year, so some bad news is already reflected"],
+      "counterargument": "Semiconductor cycle weakness or AI capex moderation could compress earnings and multiples.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.09,
+      "direction": "long",
+      "thesis": "Essential semiconductor equipment supplier at highs with 128% annual return. Structural chip manufacturing demand supports elevated valuation.",
+      "evidence": ["up 128% over the past year and up 13% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Geopolitical restrictions or slowing capital expenditures could pressure demand and visibility.",
+      "confidence": 0.52
+    },
+    {
+      "ticker": "LLY",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Healthcare leader up 43% with strong earnings growth trajectory. Sector provides defensive growth characteristics in uncertain macro environment.",
+      "evidence": ["up 43% over the past year and up 6% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Valuation at highs leaves limited margin of safety; regulatory action on drug pricing poses risk.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "ORCL",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Enterprise software foundation down 53% from high represents extreme value opportunity. Structural enterprise IT spending supports eventual recovery.",
+      "evidence": ["down 27% over the past year and down 21% over the past month", "about 53% below its high of the past year, so some bad news is already reflected"],
+      "counterargument": "Magnitude of decline suggests possible structural business deterioration or classic value trap.",
+      "confidence": 0.48
+    },
+    {
+      "ticker": "TSLA",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Industrial cycle exhibiting stabilization signals with stock 23% below high. Electric vehicle growth thesis remains intact through recovery period.",
+      "evidence": ["up 15% over the past year and down 13% over the past month", "about 23% below its high of the past year, so some bad news is already reflected"],
+      "counterargument": "EV cycle weakness or competitive intensity could extend the current drawdown phase.",
+      "confidence": 0.53
+    },
+    {
+      "ticker": "KO",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Consumer staple with 19% annual return and stable positive momentum provides portfolio diversification and defensive positioning.",
+      "evidence": ["up 19% over the past year and up 1% over the past month"],
+      "counterargument": "Limited upside potential in stable consumption demand environment.",
+      "confidence": 0.58
+    }
+  ],
+  "cash": 0.01,
+  "reasoning": "Built conviction portfolio emphasizing value where bad news is already priced in (MSFT, META, ADBE, ORCL) alongside quality with positive momentum (JPM, LLY, ASML). Portfolio weighted toward mean reversion in deeply sold-off names while maintaining exposure to secular beneficiaries of structural trends. Minimal cash reflects high conviction in selected positions for three-month hold period."
+}

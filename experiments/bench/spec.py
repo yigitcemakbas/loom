@@ -58,7 +58,7 @@ PERSONAS_BY_KEY = {p.key: p for p in PERSONAS}
 # varied because a list is a prior: whatever sits at the top of a prompt gets
 # read most carefully, and an effect that only survives one ordering is an
 # artefact of the ordering.
-SEEDS = (1, 2, 3)   # seeds 1-2 are the core factorial; 3 extends precision
+SEEDS = (1, 2)      # dates are preferred over seeds when budget binds
 TEMPERATURE_BY_SEED = {1: 0.2, 2: 0.7, 3: 1.0}
 
 READER_MODEL = "gemini-3.6-flash"
@@ -106,8 +106,8 @@ TIER2_WINDOWS = (
 
 # --------------------------------------------------------------- universes
 
-TIER1_COVERED = 36        # companies Loom has read at the decision date
-TIER1_UNCOVERED = 24      # companies it has not, to test where it is silent
+TIER1_COVERED = 28        # companies Loom has read at the decision date
+TIER1_UNCOVERED = 12      # companies it has not, to test where it is silent
 TIER1_MIN_FINDINGS = 3
 TIER2_SIZE = 60           # drawn across size strata
 
@@ -125,11 +125,24 @@ SESSIONS_PER_YEAR = 252
 
 # --------------------------------------------------------------- the grid
 
-READER_ARMS = ("control", "evidence", "full", "placebo", "verdict_only")
-CORE_READER_ARMS = READER_ARMS[:4]
+READER_ARMS = ("control", "evidence", "full", "verdict_only")
+CORE_READER_ARMS = READER_ARMS[:3]
 
 READER_WINDOWS = (
+    # Fixed by an availability rule before any outcome was inspected: every
+    # month-start from March 2026 that has at least 35 companies with three or
+    # more findings visible, plus the quarter boundary, and a full 63-session
+    # forward window inside the stored price history. February 2026 is excluded
+    # because only 11 companies qualified; July and August are excluded because
+    # the price tape ends on 2026-09-25 and cannot complete their horizon.
+    #
+    # The dates overlap, which is a property of the corpus rather than a choice:
+    # Loom's document layer begins in October 2025. Overlap is handled in the
+    # statistics and stated as a limitation, not hidden.
     Window(date(2026, 3, 2), 63, "2026-03-02_63d"),
+    Window(date(2026, 4, 1), 63, "2026-04-01_63d"),
+    Window(date(2026, 5, 1), 63, "2026-05-01_63d"),
+    Window(date(2026, 6, 1), 63, "2026-06-01_63d"),
     Window(date(2026, 6, 25), 63, "2026-06-25_63d"),
 )
 

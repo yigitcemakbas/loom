@@ -1,0 +1,114 @@
+{
+  "positions": [
+    {
+      "ticker": "MSFT",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Down 28% year and 34% below highs means significant bad news is already priced in. Enterprise software leader has strong long-term fundamentals and likely to recover.",
+      "evidence": ["down 28% over the past year", "down 15% over the past month", "about 34% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Continued weakness could indicate structural damage rather than temporary pullback; recovery not guaranteed.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Strong 37% annual gain demonstrates market confidence. Recent 11% monthly pullback is normal profit-taking after a big rally. iPhone ecosystem and services are durable.",
+      "evidence": ["up 37% over the past year"],
+      "counterargument": "Already rallied significantly, could see further profit-taking and consolidation.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "AMZN",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "E-commerce and cloud leadership with 7% year gain shows consistent performance. Down 14% month but the business model is sound and diversified.",
+      "evidence": ["up 7% over the past year"],
+      "counterargument": "Recent 14% monthly decline suggests weakness in consumer spending or cloud spending.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "JNJ",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Healthcare leader up 65% year with continued 6% monthly gain shows momentum. Healthcare is defensive and diversified across pharma, devices, and consumer.",
+      "evidence": ["up 65% over the past year", "up 6% over the past month"],
+      "counterargument": "Already significantly appreciated, could be vulnerable to profit-taking.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "NVDA",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "AI and semiconductor leader up 27% year. Only down 9% month shows relative strength. Critical infrastructure role in data centers supports long-term thesis.",
+      "evidence": ["up 27% over the past year", "down 9% over the past month"],
+      "counterargument": "AI sector valuations may be stretched; semiconductor cycle could turn negative.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "LLY",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Eli Lilly up 43% year with continued 6% monthly strength. Pharmaceutical leadership and diversified pipeline provides defensive healthcare exposure.",
+      "evidence": ["up 43% over the past year", "up 6% over the past month"],
+      "counterargument": "Trading near 52-week highs limits downside protection and offers limited margin of safety.",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "JPM",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "JPMorgan up 20% year with strong 9% monthly gain shows financial sector strength. Largest U.S. bank with diversified revenue and solid capital position.",
+      "evidence": ["up 20% over the past year", "up 9% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Already near highs with limited upside and increasing interest rate volatility risk.",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "BRK-B",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Berkshire Hathaway's flat performance provides stability and safety in an uncertain market. Warren Buffett's capital allocation and investor protection offer downside cushion.",
+      "evidence": ["up 0% over the past year"],
+      "counterargument": "No positive momentum; capital sitting in cash may lag market if recovery accelerates.",
+      "confidence": 0.52
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "Broadcom up 44% year with 21% decline from highs suggests meaningful bad news priced in. Semiconductor leader in demand for 5G and data center infrastructure.",
+      "evidence": ["up 44% over the past year", "down 10% over the past month", "about 21% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Semiconductor cycle may have further downside; valuations could compress further.",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "KO",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "Coca-Cola up 19% year with only 1% monthly change shows stability. Consumer staple with global reach and pricing power for defensive positioning.",
+      "evidence": ["up 19% over the past year"],
+      "counterargument": "Limited growth; mature company with modest upside potential.",
+      "confidence": 0.53
+    },
+    {
+      "ticker": "PEP",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "PepsiCo up 13% year with only 3% monthly decline demonstrates resilience. Diversified beverages and snacks with global consumer reach.",
+      "evidence": ["up 13% over the past year"],
+      "counterargument": "Defensive positioning offers limited upside in bull market.",
+      "confidence": 0.53
+    },
+    {
+      "ticker": "VZ",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "Verizon up 17% year with modest 5% monthly decline is stable. Dividend telecom with reliable cash flows and defensive characteristics.",
+      "evidence": ["up 17% over the past year"],
+      "counterargument": "Limited growth; mature regulated utility with low upside.",
+      "confidence": 0.52
+    }
+  ],
+  "cash": 0.42,
+  "reasoning": "As a nervous investor concerned about losses, I concentrated on quality large-cap companies with demonstrated market confidence and defensive characteristics. I weighted value opportunities (MSFT at 34% discount, AVGO at 21% discount) alongside stable performers (AAPL, AMZN, healthcare leaders JNJ/LLY) and holding significant 42% cash as a buffer against further uncertainty. I avoided severely beaten-down stocks (ADBE, ADSK, ORCL) and momentum extremes, trusting that the market's judgment on major established companies offers better odds than speculative plays."
+}

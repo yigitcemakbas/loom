@@ -1,0 +1,161 @@
+{
+ "cell": "2026-06-25__amateur__evidence__seed1",
+ "as_of": "2026-06-25",
+ "persona": "amateur",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "13f782381b0af87b",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "GOOGL": "positive",
+  "TSLA": "positive",
+  "NVDA": "insufficient",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "AMZN": "mixed",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-18",
+  "newest_bar": "2026-06-25",
+  "newest_fact": "2026-06-25",
+  "as_of": "2026-06-25"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"GOOGL\",\n      \"weight\": 0.25,\n      \"direction\": \"long\",\n      \"thesis\": \"Berkshire Hathaway's $10 billion direct investment is the strongest possible institutional signal for a trusting investor. Combined with strong profitability metrics and shareholder-friendly dilution management, this forms the core conviction position.\",\n      \"evidence\": [\n        \"Discloses a $10 billion direct equity investment from Berkshire Hathaway represents a massive vote of confidence from a premier institutional investor, likely driving a strong positive re-ra\",\n        \"Using capped call transactions to mitigate potential share dilution from preferred stock conversion is a shareholder-friendly action that reduces overhang\"\n      ],\n      \"counterargument\": \"Already up 102% over the past year so much bad news may not be reflected in current price, and balance sheet expansion ranks only 0.16 against peers suggesting dilution risks.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 28% from highs with significant bad news already priced in. Strong corporate order backlog and enterprise customer demand provide solid foundation for recovery without excessive valuation risk.\",\n      \"evidence\": [\n        \"This shows a massive build-up of future corporate orders that... Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand\"\n      ],\n      \"counterargument\": \"Already down 34% from yearly high and momentum ranking of only 0.25 suggests continued weakness despite the strong order backlog narrative.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional stability with price steadiness ranking of 0.97 provides portfolio protection. Strong revenue growth guidance combined with improved capital allocation flexibility offer downside protection with growth optionality.\",\n      \"evidence\": [\n        \"Management projected quarterly sales to grow between 14% and 17% year on year: Strong revenue growth guidance signals persistent buyer demand across hardware and services lineups\",\n        \"Ending the strict cash balance target provides additional balance sheet flexibility for shareholder payouts\"\n      ],\n      \"counterargument\": \"Already up 37% with earnings backed by cash ranking of only 0.10, indicating significant divergence between reported profit and actual cash generation.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"JPM\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Leading financial institution with strong profit generation (0.70 profit per dollar paid) and position at new highs. Financial sector provides diversification from technology concentration.\",\n      \"evidence\": [],\n      \"counterargument\": \"Extremely low earnings-backed-by-cash metric of 0.00 and cash per dollar paid of 0.02 signal that reported profits may not convert to actual shareholder cash returns.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"BRK-B\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Perfect price steadiness of 1.00 provides portfolio stability anchor appropriate for nervous investor. Holding Berkshire itself captures the institutional quality signal with lower volatility.\",\n      \"evidence\": [\n        \"Price steadiness 1.00\"\n      ],\n      \"counterargument\": \"Flat return over the past year with only 0.09 revenue growth suggests mature, slow-growth profile with limited near-term upside.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"JNJ\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Healthcare defensive position with near-perfect price steadiness of 0.98 and strong profitability metrics. Reliable value holding for risk-averse investor temperament.\",\n      \"evidence\": [\n        \"Price steadiness 0.98\",\n        \"Profit per dollar paid 0.77\"\n      ],\n      \"counterargument\": \"Already up 65% from year-start with weak earnings-backed-by-cash conversion at 0.09, suggesting valuation is stretched and profit quality is questionable.\",\n      \"confidence\": 0.59\n    },\n    {\n      \"ticker\": \"V\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Payment network infrastructure with exceptional price stability of 0.98 and efficient capital deployment. Secular growth from digital payments adoption supports long-term returns.\",\n      \"evidence\": [\n        \"Price steadiness 0.98\",\n        \"Return on assets 0.88\"\n      ],\n      \"counterargument\": \"Down 4% over the past year despite payment processing sector strength, suggesting the market has limited confidence in near-term performance.\",\n      \"confidence\": 0.54\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"Enterprise software provider down 27% from highs with bad news already priced in. Strong cash generation metrics suggest underlying business health despite valuation compression.\",\n      \"evidence\": [\n        \"Cash per dollar paid 0.91\",\n        \"Profit per dollar paid 0.82\"\n      ],\n      \"counterargument\": \"Down 53% from yearly peak and price steadiness of only 0.21 indicates continued weakness and sustained loss of investor confidence.\",\n      \"confidence\": 0.52\n    }\n  ],\n  \"cash\": 0.12,\n  \"reasoning\": \"Portfolio prioritizes capital preservation through established profitable companies with defensive characteristics appropriate for nervous investor. Berkshire Hathaway's $10 billion GOOGL investment serves as primary conviction thesis, providing the strongest possible institutional endorsement. Positions in MSFT and AAPL capture recovery value after significant near-term declines where bad news appears priced in. Complementary holdings in JPM, JNJ, and V provide diversification while maintaining focus on price stability and strong profit metrics. Significant 12% cash reserve acknowledges limited accounting expertise and maintains flexibility for true convictions.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "GOOGL",
+    "weight": 0.25,
+    "direction": "long",
+    "thesis": "Berkshire Hathaway's $10 billion direct investment is the strongest possible institutional signal for a trusting investor. Combined with strong profitability metrics and shareholder-friendly dilution management, this forms the core conviction position.",
+    "evidence": [
+     "Discloses a $10 billion direct equity investment from Berkshire Hathaway represents a massive vote of confidence from a premier institutional investor, likely driving a strong positive re-ra",
+     "Using capped call transactions to mitigate potential share dilution from preferred stock conversion is a shareholder-friendly action that reduces overhang"
+    ],
+    "counterargument": "Already up 102% over the past year so much bad news may not be reflected in current price, and balance sheet expansion ranks only 0.16 against peers suggesting dilution risks.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Down 28% from highs with significant bad news already priced in. Strong corporate order backlog and enterprise customer demand provide solid foundation for recovery without excessive valuation risk.",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that... Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand"
+    ],
+    "counterargument": "Already down 34% from yearly high and momentum ranking of only 0.25 suggests continued weakness despite the strong order backlog narrative.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "AAPL",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Exceptional stability with price steadiness ranking of 0.97 provides portfolio protection. Strong revenue growth guidance combined with improved capital allocation flexibility offer downside protection with growth optionality.",
+    "evidence": [
+     "Management projected quarterly sales to grow between 14% and 17% year on year: Strong revenue growth guidance signals persistent buyer demand across hardware and services lineups",
+     "Ending the strict cash balance target provides additional balance sheet flexibility for shareholder payouts"
+    ],
+    "counterargument": "Already up 37% with earnings backed by cash ranking of only 0.10, indicating significant divergence between reported profit and actual cash generation.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "JPM",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Leading financial institution with strong profit generation (0.70 profit per dollar paid) and position at new highs. Financial sector provides diversification from technology concentration.",
+    "evidence": [],
+    "counterargument": "Extremely low earnings-backed-by-cash metric of 0.00 and cash per dollar paid of 0.02 signal that reported profits may not convert to actual shareholder cash returns.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "BRK-B",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Perfect price steadiness of 1.00 provides portfolio stability anchor appropriate for nervous investor. Holding Berkshire itself captures the institutional quality signal with lower volatility.",
+    "evidence": [
+     "Price steadiness 1.00"
+    ],
+    "counterargument": "Flat return over the past year with only 0.09 revenue growth suggests mature, slow-growth profile with limited near-term upside.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "JNJ",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Healthcare defensive position with near-perfect price steadiness of 0.98 and strong profitability metrics. Reliable value holding for risk-averse investor temperament.",
+    "evidence": [
+     "Price steadiness 0.98",
+     "Profit per dollar paid 0.77"
+    ],
+    "counterargument": "Already up 65% from year-start with weak earnings-backed-by-cash conversion at 0.09, suggesting valuation is stretched and profit quality is questionable.",
+    "confidence": 0.59
+   },
+   {
+    "ticker": "V",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Payment network infrastructure with exceptional price stability of 0.98 and efficient capital deployment. Secular growth from digital payments adoption supports long-term returns.",
+    "evidence": [
+     "Price steadiness 0.98",
+     "Return on assets 0.88"
+    ],
+    "counterargument": "Down 4% over the past year despite payment processing sector strength, suggesting the market has limited confidence in near-term performance.",
+    "confidence": 0.54
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "Enterprise software provider down 27% from highs with bad news already priced in. Strong cash generation metrics suggest underlying business health despite valuation compression.",
+    "evidence": [
+     "Cash per dollar paid 0.91",
+     "Profit per dollar paid 0.82"
+    ],
+    "counterargument": "Down 53% from yearly peak and price steadiness of only 0.21 indicates continued weakness and sustained loss of investor confidence.",
+    "confidence": 0.52
+   }
+  ],
+  "cash": 0.12,
+  "reasoning": "Portfolio prioritizes capital preservation through established profitable companies with defensive characteristics appropriate for nervous investor. Berkshire Hathaway's $10 billion GOOGL investment serves as primary conviction thesis, providing the strongest possible institutional endorsement. Positions in MSFT and AAPL capture recovery value after significant near-term declines where bad news appears priced in. Complementary holdings in JPM, JNJ, and V provide diversification while maintaining focus on price stability and strong profit metrics. Significant 12% cash reserve acknowledges limited accounting expertise and maintains flexibility for true convictions.",
+  "gross_before_scaling": 0.88,
+  "scaled_back": false
+ },
+ "parsed": true
+}

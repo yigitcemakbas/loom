@@ -48,6 +48,26 @@ TYPE_WEIGHTS: dict[SignalType, float] = {
 # a fresh one of similar quality.
 _RECENCY_HALFLIFE_DAYS = 90.0
 
+# How much the assessed materiality moves the ranking.
+#
+# This was missing, and its absence was measurable. The assessment step labels
+# every finding minor, moderate or major, and 62 of the stored findings are
+# major — but the score was confidence x type x recency, so a catastrophic
+# disclosure and a boilerplate one ranked identically whenever the extraction
+# happened to be equally sure of both. Loom knew which findings mattered and
+# discarded it at the only point where it would have changed what a reader sees.
+#
+# Deliberately a modest spread rather than a large one. Materiality is the one
+# component here that is a judgement about consequence rather than a fact about
+# the document, so it adjusts the ranking without being allowed to dominate the
+# evidence-quality weighting that the type table encodes.
+MAGNITUDE_WEIGHTS = {
+    "major": 1.35,
+    "moderate": 1.0,
+    "minor": 0.75,
+}
+_DEFAULT_MAGNITUDE = 1.0
+
 
 def recency_factor(occurred_at: datetime, now: datetime | None = None) -> float:
     """Exponential decay on age, clamped to (0, 1]."""
@@ -63,8 +83,17 @@ def score(
     confidence: float,
     occurred_at: datetime,
     now: datetime | None = None,
+    magnitude: str | None = None,
 ) -> float:
-    """Return the feed ranking score for one signal."""
+    """Return the feed ranking score for one signal.
+
+    `magnitude` is the assessed materiality and is optional: a caller that does
+    not have one gets the same score it got before, so nothing that already
+    ranks is silently reordered by an absent field.
+    """
     confidence = min(max(confidence, 0.0), 1.0)
     weight = TYPE_WEIGHTS.get(signal_type, 0.5)
-    return round(confidence * weight * recency_factor(occurred_at, now), 6)
+    material = MAGNITUDE_WEIGHTS.get((magnitude or "").lower(), _DEFAULT_MAGNITUDE)
+    return round(
+        confidence * weight * material * recency_factor(occurred_at, now), 6
+    )

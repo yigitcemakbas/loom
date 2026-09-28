@@ -1,0 +1,96 @@
+{
+  "positions": [
+    {
+      "ticker": "MU",
+      "weight": 0.18,
+      "direction": "long",
+      "thesis": "Unprecedented 342% YoY momentum in semiconductor space, flat price action past month suggests consolidation before next leg. Aggressive concentration on highest-conviction secular play.",
+      "evidence": ["up 342% over the past year", "down 1% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Massive run-up creates severe valuation risk; mean reversion could be severe if sentiment shifts.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "NVDA",
+      "weight": 0.13,
+      "direction": "long",
+      "thesis": "Strong 46% YoY gains with 5% recent pullback and 23% discount from highs suggests bad news already priced in. AI supercycle secular demand intact, pullback is buying opportunity.",
+      "evidence": ["up 46% over the past year", "down 5% over the past month", "about 23% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "AI enthusiasm may peak; if capex cycle slows, multiples compress significantly.",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "AMAT",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Applied Materials up 138% YoY with strong 16% past-month momentum near all-time highs. Semiconductor equipment capex spending likely to continue as foundries build capacity.",
+      "evidence": ["up 138% over the past year", "up 16% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Valuation stretched after 138% move; momentum can reverse if capex cycle ends.",
+      "confidence": 0.66
+    },
+    {
+      "ticker": "INTC",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Intel up 92% YoY with positive momentum despite near-flat recent price. Foundry transition and AI opportunity could drive upside; recovery story intact.",
+      "evidence": ["up 92% over the past year", "down 2% over the past month"],
+      "counterargument": "Execution risk on foundry ambitions; competitive position versus TSMC and Samsung is uncertain.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.09,
+      "direction": "long",
+      "thesis": "Strong 71% YoY returns with 30% pullback from highs indicates bad news already priced in. Oversold relative to fundamentals with recovery potential over 63 trading sessions.",
+      "evidence": ["up 71% over the past year", "about 30% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Pullback could extend if government spending slows or growth disappoints further.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Semiconductor equipment monopoly with 103% YoY momentum, flat past month suggests consolidation. Geopolitical risks priced in; long-term secular demand for chip capacity is structural.",
+      "evidence": ["up 103% over the past year", "up 0% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Valuation at extremes; geopolitical risks to China revenue represent genuine downside.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "XOM",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "Energy strong up 43% YoY with 10% past-month momentum. Geopolitical tensions and supply constraints support energy prices; uptrend intact.",
+      "evidence": ["up 43% over the past year", "up 10% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Oil price volatility could reverse; economic slowdown reduces energy demand.",
+      "confidence": 0.64
+    },
+    {
+      "ticker": "KO",
+      "weight": -0.10,
+      "direction": "short",
+      "thesis": "Coca-Cola up 16% YoY and 7% past month at all-time highs with zero bad news reflected in price. Consumer staple valuation stretched; vulnerable short with limited upside.",
+      "evidence": ["up 16% over the past year", "up 7% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Dividend support and brand moat could sustain premium valuation indefinitely.",
+      "confidence": 0.44
+    },
+    {
+      "ticker": "PEP",
+      "weight": -0.08,
+      "direction": "short",
+      "thesis": "PepsiCo up 13% YoY, 9% past month at highs with no bad news priced in. Multiple expansion exhausted; vulnerability to profit-taking.",
+      "evidence": ["up 13% over the past year", "up 9% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Pricing power and brand strength justify premium valuation.",
+      "confidence": 0.45
+    },
+    {
+      "ticker": "VZ",
+      "weight": -0.02,
+      "direction": "short",
+      "thesis": "Verizon up 24% YoY and 12% past month at all-time highs. Telecom with mature growth is valuation trap; gains are pure multiple expansion unsupported by fundamentals.",
+      "evidence": ["up 24% over the past year", "up 12% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "Defensive nature and dividend floor could support current valuation.",
+      "confidence": 0.46
+    }
+  ],
+  "cash": 0.10,
+  "reasoning": "Aggressive concentration on semiconductor/AI supercycle (MU, NVDA, AMAT, INTC, ASML) which dominates 63-session outlook. Tactical shorts on consumer staples at stretched valuations with no bad news priced in. Minimal cash reserves as cost of optionality is too high in this aggressive speculative stance."
+}

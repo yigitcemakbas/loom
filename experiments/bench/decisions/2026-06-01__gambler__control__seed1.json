@@ -1,0 +1,188 @@
+{
+ "cell": "2026-06-01__gambler__control__seed1",
+ "as_of": "2026-06-01",
+ "persona": "gambler",
+ "arm": "control",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "3235b1a14b584408",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "NVDA": "insufficient",
+  "MSFT": "positive",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "AMZN": "insufficient",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-01",
+  "newest_bar": "2026-06-01",
+  "newest_fact": "2026-06-01",
+  "as_of": "2026-06-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Extreme momentum play with massive year-over-year gains and sustained monthly momentum suggests potential for continued outperformance in speculative positions.\",\n      \"evidence\": [\"up 4573% over the past year and up 48% over the past month\", \"trading close to its highest point of the past year\"],\n      \"counterargument\": \"Already up 4573% in a year, valuations may be extreme and risk of sharp reversal is high, especially given placement at year highs.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Massive semiconductor momentum with 999% annual return and 91% monthly return suggests strong sector tailwinds and continued strength.\",\n      \"evidence\": [\"up 999% over the past year and up 91% over the past month\", \"trading close to its highest point of the past year\"],\n      \"counterargument\": \"Valuation likely extremely stretched after 999% gain; highly vulnerable to any sector correction or margin compression.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"AMD\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Semiconductor leader with 361% annual return and 41% monthly momentum shows strong competitive position and market share gains.\",\n      \"evidence\": [\"up 361% over the past year and up 41% over the past month\", \"trading close to its highest point of the past year\"],\n      \"counterargument\": \"Positioned at year highs with little bad news reflected; any earnings miss or competitive threat could reverse gains quickly.\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"AMAT\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Applied Materials benefits from semiconductor cycle expansion with 194% annual return and 18% monthly momentum in critical supply position.\",\n      \"evidence\": [\"up 194% over the past year and up 18% over the past month\", \"trading close to its highest point of the past year\"],\n      \"counterargument\": \"Equipment spending cycles are cyclical and may peak after such strong gains; capital expenditure pullback could pressure valuations.\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"NVDA\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Continued 66% annual return and 13% monthly gains in AI computing segment offer sustained growth tailwinds in a secular trend.\",\n      \"evidence\": [\"up 66% over the past year and up 13% over the past month\"],\n      \"counterargument\": \"Valuation may not reflect increased competition in AI chips and potential supply chain normalization.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Remarkable 459% annual return with 10% monthly momentum reflects successful turnaround with new manufacturing and competitive positioning.\",\n      \"evidence\": [\"up 459% over the past year and up 10% over the past month\"],\n      \"counterargument\": \"Execution risk remains high; if manufacturing delays or competitive gaps widen, sharp reversal is plausible.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Up 51% annually but surging 44% in recent month signals recovery momentum and renewed investor confidence in cloud and AI strategy.\",\n      \"evidence\": [\"up 51% over the past year and up 44% over the past month\", \"about 24% below its high of the past year\"],\n      \"counterargument\": \"Still 24% below year highs suggests recent reversal but fundamental challenges in competing against hyperscalers remain unresolved.\",\n      \"confidence\": 0.59\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Semiconductor equipment monopoly with 123% annual return and 14% monthly momentum benefits from AI buildout and manufacturing expansion.\",\n      \"evidence\": [\"up 123% over the past year and up 14% over the past month\", \"trading close to its highest point of the past year\"],\n      \"counterargument\": \"Trading at year highs with limited bad news priced in; export restrictions or geopolitical tensions could rapidly reverse position.\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"TMUS\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Down 21% annually with continued weakness suggests unresolved structural issues; positioning at 26% discount to highs offers downside continuation risk.\",\n      \"evidence\": [\"down 21% over the past year and down 4% over the past month\", \"about 26% below its high of the past year\"],\n      \"counterargument\": \"Significant discount to highs suggests bad news already priced in; any strategic progress or dividend announcement could spark recovery.\",\n      \"confidence\": 0.57\n    },\n    {\n      \"ticker\": \"CMCSA\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Secular decline in cable assets with 19% annual loss and 8% monthly loss shows continued pressure; 23% discount insufficient given structural risks.\",\n      \"evidence\": [\"down 19% over the past year and down 8% over the past month\", \"about 23% below its high of the past year\"],\n      \"counterargument\": \"Already trading 23% below highs which may reflect consensus pessimism; unexpected dividend increase or M&A could rally shares.\",\n      \"confidence\": 0.57\n    }\n  ],\n  \"cash\": 0.07,\n  \"reasoning\": \"Building a concentrated portfolio that exploits momentum in high-growth semiconductor and technology stocks while taking shorts in secular decliners. This strategy accepts elevated volatility given the three-month holding period without rebalancing, prioritizing exposure to the strongest momentum leaders while betting against laggards showing structural weakness.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "SNDK",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Extreme momentum play with massive year-over-year gains and sustained monthly momentum suggests potential for continued outperformance in speculative positions.",
+    "evidence": [
+     "up 4573% over the past year and up 48% over the past month",
+     "trading close to its highest point of the past year"
+    ],
+    "counterargument": "Already up 4573% in a year, valuations may be extreme and risk of sharp reversal is high, especially given placement at year highs.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "MU",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Massive semiconductor momentum with 999% annual return and 91% monthly return suggests strong sector tailwinds and continued strength.",
+    "evidence": [
+     "up 999% over the past year and up 91% over the past month",
+     "trading close to its highest point of the past year"
+    ],
+    "counterargument": "Valuation likely extremely stretched after 999% gain; highly vulnerable to any sector correction or margin compression.",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "AMD",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Semiconductor leader with 361% annual return and 41% monthly momentum shows strong competitive position and market share gains.",
+    "evidence": [
+     "up 361% over the past year and up 41% over the past month",
+     "trading close to its highest point of the past year"
+    ],
+    "counterargument": "Positioned at year highs with little bad news reflected; any earnings miss or competitive threat could reverse gains quickly.",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "AMAT",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Applied Materials benefits from semiconductor cycle expansion with 194% annual return and 18% monthly momentum in critical supply position.",
+    "evidence": [
+     "up 194% over the past year and up 18% over the past month",
+     "trading close to its highest point of the past year"
+    ],
+    "counterargument": "Equipment spending cycles are cyclical and may peak after such strong gains; capital expenditure pullback could pressure valuations.",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "NVDA",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Continued 66% annual return and 13% monthly gains in AI computing segment offer sustained growth tailwinds in a secular trend.",
+    "evidence": [
+     "up 66% over the past year and up 13% over the past month"
+    ],
+    "counterargument": "Valuation may not reflect increased competition in AI chips and potential supply chain normalization.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "INTC",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Remarkable 459% annual return with 10% monthly momentum reflects successful turnaround with new manufacturing and competitive positioning.",
+    "evidence": [
+     "up 459% over the past year and up 10% over the past month"
+    ],
+    "counterargument": "Execution risk remains high; if manufacturing delays or competitive gaps widen, sharp reversal is plausible.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Up 51% annually but surging 44% in recent month signals recovery momentum and renewed investor confidence in cloud and AI strategy.",
+    "evidence": [
+     "up 51% over the past year and up 44% over the past month",
+     "about 24% below its high of the past year"
+    ],
+    "counterargument": "Still 24% below year highs suggests recent reversal but fundamental challenges in competing against hyperscalers remain unresolved.",
+    "confidence": 0.59
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Semiconductor equipment monopoly with 123% annual return and 14% monthly momentum benefits from AI buildout and manufacturing expansion.",
+    "evidence": [
+     "up 123% over the past year and up 14% over the past month",
+     "trading close to its highest point of the past year"
+    ],
+    "counterargument": "Trading at year highs with limited bad news priced in; export restrictions or geopolitical tensions could rapidly reverse position.",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "TMUS",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Down 21% annually with continued weakness suggests unresolved structural issues; positioning at 26% discount to highs offers downside continuation risk.",
+    "evidence": [
+     "down 21% over the past year and down 4% over the past month",
+     "about 26% below its high of the past year"
+    ],
+    "counterargument": "Significant discount to highs suggests bad news already priced in; any strategic progress or dividend announcement could spark recovery.",
+    "confidence": 0.57
+   },
+   {
+    "ticker": "CMCSA",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Secular decline in cable assets with 19% annual loss and 8% monthly loss shows continued pressure; 23% discount insufficient given structural risks.",
+    "evidence": [
+     "down 19% over the past year and down 8% over the past month",
+     "about 23% below its high of the past year"
+    ],
+    "counterargument": "Already trading 23% below highs which may reflect consensus pessimism; unexpected dividend increase or M&A could rally shares.",
+    "confidence": 0.57
+   }
+  ],
+  "cash": 0.06999999999999995,
+  "reasoning": "Building a concentrated portfolio that exploits momentum in high-growth semiconductor and technology stocks while taking shorts in secular decliners. This strategy accepts elevated volatility given the three-month holding period without rebalancing, prioritizing exposure to the strongest momentum leaders while betting against laggards showing structural weakness.",
+  "gross_before_scaling": 0.93,
+  "scaled_back": false
+ },
+ "parsed": true
+}

@@ -1,0 +1,181 @@
+{
+ "cell": "2026-04-01__professional__evidence__seed1",
+ "as_of": "2026-04-01",
+ "persona": "professional",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "86a4c0623a612070",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "negative",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-03-13",
+  "newest_bar": "2026-04-01",
+  "newest_fact": "2026-04-01",
+  "as_of": "2026-04-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Intel is undergoing a margin inflection with the best margin direction score (0.93) in the universe. After brutal cycle downturn, the valuation reset and foundry business potential represent outsized upside over 63 days.\",\n      \"evidence\": [\"Margin direction\", \"up 118% over the past year\", \"up 6% over the past month\"],\n      \"counterargument\": \"Process technology execution has been persistent weakness; competitors ahead on advanced nodes; turnarounds frequently fail\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.13,\n      \"direction\": \"long\",\n      \"thesis\": \"Palantir shows exceptional margin expansion (0.95) and outstanding revenue growth (0.94) while maintaining strong return on assets (0.91), signaling successful transition to commercial AI platform.\",\n      \"evidence\": [\"It is earning well on what it owns, and it is buying a great deal more\", \"Revenue growth\", \"Margin direction\", \"Return on assets\"],\n      \"counterargument\": \"Valuation remains elevated on revenue multiple; government revenue concentration creates customer dependency; recent pullback suggests market skepticism of growth claims\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"AVGO\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Broadcom is a critical AI infrastructure play with exceptional cash generation (0.86), strong margin expansion (0.88), and disciplined debt management (0.85) while trading 24% below recent highs.\",\n      \"evidence\": [\"Selling complete server racks rather than standalone chips brings in...total operating profit expansion from custom artificial intelligence server deployments\", \"Margin direction\", \"Cash per dollar of profit\", \"Debt direction\", \"down 24% from high\"],\n      \"counterargument\": \"Semiconductor cycle downturn could reverse AI momentum; single foundry concentration creates supply bottleneck; absolute debt level remains high from VMware acquisition\",\n      \"confidence\": 0.59\n    },\n    {\n      \"ticker\": \"AEP\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"American Electric Power has rare structural growth catalyst as AI data centers demand power, with strong margin direction (0.80) and debt management (0.80) providing stability and confidence in capex.\",\n      \"evidence\": [\"Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume\", \"up 26% over the past year\", \"Margin direction\", \"Debt direction\"],\n      \"counterargument\": \"AEP's massive growth plans to power data centers could be choked off by rising financing needs; customer concentration in Texas creates credit risk; execution risk on grid expansions\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Walmart combines defensive retail positioning with secular e-commerce and automation tailwinds, showing strong cash backing (0.88), momentum (0.88), and excellent sales leverage (0.90).\",\n      \"evidence\": [\"Sales per dollar paid\", \"Twelve-month momentum\", \"Earnings backed by cash\", \"Continuing high investment in automation and online shopping capabilities is widely seen as necessary\"],\n      \"counterargument\": \"Consumer spending could weaken in economic slowdown; capex intensity reduces near-term cash returns; mature business with structurally lower growth than peers\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"ADBE\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Adobe trades at extreme valuation discount (down 43% from high) despite best-in-class profitability (0.99 profit per dollar paid, 0.95 gross profitability, 0.93 ROA), with acquisition risks already priced in.\",\n      \"evidence\": [\"Profit per dollar paid\", \"Gross profitability\", \"Return on assets\", \"down 37% over the past year\", \"43% below its high\"],\n      \"counterargument\": \"Higher server power and infrastructure costs for AI features could squeeze software profit margins; regulatory approval risks and integration challenges from acquisition; market skepticism justified by ongoing weakness\",\n      \"confidence\": 0.57\n    },\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Apple maintains world-leading return on assets (0.97) with accretive buyback program offsetting near-term tariff headwinds; recent 3% pullback provides entry on fundamental strength.\",\n      \"evidence\": [\"Return on assets\", \"Management continues to return massive amounts of excess cash to shareholders...share buybacks reduce total shares outstanding\", \"down 3% over the past month\"],\n      \"counterargument\": \"New import taxes directly increase hardware costs and threaten profit margins; legal action against Google could eliminate billions in search licensing revenue; iPhone demand weakness in China\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"ABNB\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Airbnb combines exceptional cash discipline (0.91 cushion, 0.89 dilution control) with shareholder-friendly buybacks and AI-driven cost reduction, with tax dispute representing manageable overhang.\",\n      \"evidence\": [\"Large ongoing share buybacks signal management's confidence in cash flow generation\", \"Using artificial intelligence tools for customer service allows...control customer support expenses\", \"Cash cushion\"],\n      \"counterargument\": \"Outstanding demand for over a billion dollars in back taxes creates persistent financial overhang; vulnerability to macro travel demand weakness; regulatory risks across jurisdictions\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": -0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"ASML has run 106% in 12 months with momentum score of 0.82, yet material explicitly warns 'has run hard and is now expensive on the numbers'; mean reversion likely over 63-day window.\",\n      \"evidence\": [\"The share has run hard and is now expensive on the numbers\", \"up 106% over the past year\", \"down 4% over the past month\"],\n      \"counterargument\": \"Semiconductor equipment supply constraints could persist; continued AI capex buildout could justify premium; momentum can continue longer than expected in bull markets\",\n      \"confidence\": 0.54\n    }\n  ],\n  \"cash\": 0.28,\n  \"reasoning\": \"Portfolio is built around high-conviction quality-at-value trades: INTC and PLTR benefit from structural inflections (margin recovery and commercial AI transition), while AVGO/AEP/WMT offer AI tailwinds with strong cash generation. ADBE provides extreme value discipline. The ASML short targets an obvious valuation extreme after historic run-up. Cash buffer (28%) reflects uncertainty in 63-day view and acknowledges execution risk on several positions.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "INTC",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Intel is undergoing a margin inflection with the best margin direction score (0.93) in the universe. After brutal cycle downturn, the valuation reset and foundry business potential represent outsized upside over 63 days.",
+    "evidence": [
+     "Margin direction",
+     "up 118% over the past year",
+     "up 6% over the past month"
+    ],
+    "counterargument": "Process technology execution has been persistent weakness; competitors ahead on advanced nodes; turnarounds frequently fail",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.13,
+    "direction": "long",
+    "thesis": "Palantir shows exceptional margin expansion (0.95) and outstanding revenue growth (0.94) while maintaining strong return on assets (0.91), signaling successful transition to commercial AI platform.",
+    "evidence": [
+     "It is earning well on what it owns, and it is buying a great deal more",
+     "Revenue growth",
+     "Margin direction",
+     "Return on assets"
+    ],
+    "counterargument": "Valuation remains elevated on revenue multiple; government revenue concentration creates customer dependency; recent pullback suggests market skepticism of growth claims",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "AVGO",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Broadcom is a critical AI infrastructure play with exceptional cash generation (0.86), strong margin expansion (0.88), and disciplined debt management (0.85) while trading 24% below recent highs.",
+    "evidence": [
+     "Selling complete server racks rather than standalone chips brings in...total operating profit expansion from custom artificial intelligence server deployments",
+     "Margin direction",
+     "Cash per dollar of profit",
+     "Debt direction",
+     "down 24% from high"
+    ],
+    "counterargument": "Semiconductor cycle downturn could reverse AI momentum; single foundry concentration creates supply bottleneck; absolute debt level remains high from VMware acquisition",
+    "confidence": 0.59
+   },
+   {
+    "ticker": "AEP",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "American Electric Power has rare structural growth catalyst as AI data centers demand power, with strong margin direction (0.80) and debt management (0.80) providing stability and confidence in capex.",
+    "evidence": [
+     "Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume",
+     "up 26% over the past year",
+     "Margin direction",
+     "Debt direction"
+    ],
+    "counterargument": "AEP's massive growth plans to power data centers could be choked off by rising financing needs; customer concentration in Texas creates credit risk; execution risk on grid expansions",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Walmart combines defensive retail positioning with secular e-commerce and automation tailwinds, showing strong cash backing (0.88), momentum (0.88), and excellent sales leverage (0.90).",
+    "evidence": [
+     "Sales per dollar paid",
+     "Twelve-month momentum",
+     "Earnings backed by cash",
+     "Continuing high investment in automation and online shopping capabilities is widely seen as necessary"
+    ],
+    "counterargument": "Consumer spending could weaken in economic slowdown; capex intensity reduces near-term cash returns; mature business with structurally lower growth than peers",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "ADBE",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Adobe trades at extreme valuation discount (down 43% from high) despite best-in-class profitability (0.99 profit per dollar paid, 0.95 gross profitability, 0.93 ROA), with acquisition risks already priced in.",
+    "evidence": [
+     "Profit per dollar paid",
+     "Gross profitability",
+     "Return on assets",
+     "down 37% over the past year",
+     "43% below its high"
+    ],
+    "counterargument": "Higher server power and infrastructure costs for AI features could squeeze software profit margins; regulatory approval risks and integration challenges from acquisition; market skepticism justified by ongoing weakness",
+    "confidence": 0.57
+   },
+   {
+    "ticker": "AAPL",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Apple maintains world-leading return on assets (0.97) with accretive buyback program offsetting near-term tariff headwinds; recent 3% pullback provides entry on fundamental strength.",
+    "evidence": [
+     "Return on assets",
+     "Management continues to return massive amounts of excess cash to shareholders...share buybacks reduce total shares outstanding",
+     "down 3% over the past month"
+    ],
+    "counterargument": "New import taxes directly increase hardware costs and threaten profit margins; legal action against Google could eliminate billions in search licensing revenue; iPhone demand weakness in China",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "ABNB",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Airbnb combines exceptional cash discipline (0.91 cushion, 0.89 dilution control) with shareholder-friendly buybacks and AI-driven cost reduction, with tax dispute representing manageable overhang.",
+    "evidence": [
+     "Large ongoing share buybacks signal management's confidence in cash flow generation",
+     "Using artificial intelligence tools for customer service allows...control customer support expenses",
+     "Cash cushion"
+    ],
+    "counterargument": "Outstanding demand for over a billion dollars in back taxes creates persistent financial overhang; vulnerability to macro travel demand weakness; regulatory risks across jurisdictions",
+    "confidence": 0.58
+   }
+  ],
+  "cash": 0.19999999999999996,
+  "reasoning": "Portfolio is built around high-conviction quality-at-value trades: INTC and PLTR benefit from structural inflections (margin recovery and commercial AI transition), while AVGO/AEP/WMT offer AI tailwinds with strong cash generation. ADBE provides extreme value discipline. The ASML short targets an obvious valuation extreme after historic run-up. Cash buffer (28%) reflects uncertainty in 63-day view and acknowledges execution risk on several positions.",
+  "gross_before_scaling": 0.8,
+  "scaled_back": false
+ },
+ "parsed": true
+}

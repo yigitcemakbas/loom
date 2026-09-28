@@ -1,0 +1,155 @@
+{
+ "cell": "2026-05-01__professional__full__seed1",
+ "as_of": "2026-05-01",
+ "persona": "professional",
+ "arm": "full",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "1dd0b01b0271e1a5",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-05-01",
+  "newest_bar": "2026-05-01",
+  "newest_fact": "2026-05-01",
+  "as_of": "2026-05-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.30,\n      \"direction\": \"long\",\n      \"thesis\": \"Booking has exceptional balance sheet quality (cash cushion ranks 1.00 among peers) and demonstrates resilient travel demand despite macro uncertainty. Trading 27% below its year high creates a compelling value opportunity in a business with proven cost discipline.\",\n      \"evidence\": [\n        \"Despite high inflation and economic worries, actual travel demand\",\n        \"management increased its expectation for annual cost savings\",\n        \"strong booking volume growth demonstrates resilient consumer demand\",\n        \"Cash cushion 1.00\"\n      ],\n      \"counterargument\": \"KAYAK weakness indicates rising customer acquisition costs are pressuring profitability in travel segments\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"TSLA\",\n      \"weight\": 0.20,\n      \"direction\": \"long\",\n      \"thesis\": \"Tesla provided explicit delivery growth targets for 2025 and concrete FSD safety timelines that typically catalyze consensus upgrades. At 20% below the year high, recent bad news in margins is already partially reflected in price.\",\n      \"evidence\": [\n        \"Provides explicit unit growth guidance for 2025 above existing market\",\n        \"Establishes an explicit internal target for FSD safety parity\",\n        \"Management introduced an explicit 2025 vehicle delivery growth target\"\n      ],\n      \"counterargument\": \"near term gross margin pressure and management caution on Q4 profitability temper earnings expectations\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Walmart combines genuine business quality with positive momentum and strong capital discipline. Continued investment in automation and e-commerce positions the business for sustainable competitive advantage despite already elevated price.\",\n      \"evidence\": [\n        \"Continuing high investment in automation and online shopping capabilities is widely seen as necessary\",\n        \"maintain its competitive edge against tech-first retailers\"\n      ],\n      \"counterargument\": \"Foreign exchange and volatile fuel prices create margin uncertainty, though analysts typically strip these out as non-operational noise\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"SEC regulatory probe resolution removes a major valuation overhang and should trigger relief. Strong profitability metrics (gross 0.92, cash conversion 0.78) support multiple expansion as execution risk declines.\",\n      \"evidence\": [\n        \"Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks\"\n      ],\n      \"counterargument\": \"Friction in moving legacy users to cloud subscriptions threatens long-term growth profile\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"TMUS\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"T-Mobile's integration of UScellular generates significant annual cost savings that should drive margin expansion. Stock down 19% from highs despite positive operational developments presents value.\",\n      \"evidence\": [\n        \"Achieving significant annual cost savings should improve profit margins over the medium term\"\n      ],\n      \"counterargument\": \"Market dislikes discontinued operational metric reporting and reduced visibility into subscriber trends\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"ABNB\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Airbnb's capital return program and AI-driven cost automation in customer service demonstrate management confidence in cash generation while improving unit economics. Strong momentum with upside from operational leverage.\",\n      \"evidence\": [\n        \"company is using its substantial cash profits to actively buy back\",\n        \"Automating customer assistance helps control customer support expenses as global transaction volume grows\"\n      ],\n      \"counterargument\": \"Outstanding billion-dollar IRS tax demand creates persistent financial overhang until court resolution\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"VZ\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Verizon's explicit $55 billion shareholder return commitment provides structural support to valuation. Defensive positioning appropriate for uncertain macro environment despite security infrastructure risks.\",\n      \"evidence\": [\n        \"Verizon outlined plans to return roughly $55 billion to shareholders\",\n        \"Markets favor clear commitments to return capital to investors\"\n      ],\n      \"counterargument\": \"Infiltration by advanced state-backed hackers risks severe security and compliance costs, raising structural cost base\",\n      \"confidence\": 0.56\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": -0.10,\n      \"direction\": \"short\",\n      \"thesis\": \"Micron's 599% year-to-date gain has created a dangerous valuation disconnection from deteriorating fundamentals. Stock faces headwinds from elevated capex, Taiwan concentration risk, and rising global tax rates\u2014classic conditions for cyclical peak.\",\n      \"evidence\": [\n        \"elevated near-term capital expenditure guidance and increased projected tax rate\",\n        \"Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions\",\n        \"increase in the effective tax rate from the current levels will directly reduce net income and earnings per share\"\n      ],\n      \"counterargument\": \"Memory pricing could extend the cycle longer than expected and capex spending eventually drives future growth\",\n      \"confidence\": 0.68\n    }\n  ],\n  \"cash\": 0.02,\n  \"reasoning\": \"Portfolio is built around three core convictions: value-plus-quality in Booking, growth catalysts in Tesla, and business resilience in Walmart. Supporting positions capture operational leverage (Autodesk regulatory relief, T-Mobile cost synergies) and defensive capital returns (Verizon). The short in Micron reflects a mean-reversion opportunity in a stock that has priced in multiple years of perfect execution on capex in a cyclical business facing structural challenges.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "BKNG",
+    "weight": 0.3,
+    "direction": "long",
+    "thesis": "Booking has exceptional balance sheet quality (cash cushion ranks 1.00 among peers) and demonstrates resilient travel demand despite macro uncertainty. Trading 27% below its year high creates a compelling value opportunity in a business with proven cost discipline.",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand",
+     "management increased its expectation for annual cost savings",
+     "strong booking volume growth demonstrates resilient consumer demand",
+     "Cash cushion 1.00"
+    ],
+    "counterargument": "KAYAK weakness indicates rising customer acquisition costs are pressuring profitability in travel segments",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "TSLA",
+    "weight": 0.2,
+    "direction": "long",
+    "thesis": "Tesla provided explicit delivery growth targets for 2025 and concrete FSD safety timelines that typically catalyze consensus upgrades. At 20% below the year high, recent bad news in margins is already partially reflected in price.",
+    "evidence": [
+     "Provides explicit unit growth guidance for 2025 above existing market",
+     "Establishes an explicit internal target for FSD safety parity",
+     "Management introduced an explicit 2025 vehicle delivery growth target"
+    ],
+    "counterargument": "near term gross margin pressure and management caution on Q4 profitability temper earnings expectations",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Walmart combines genuine business quality with positive momentum and strong capital discipline. Continued investment in automation and e-commerce positions the business for sustainable competitive advantage despite already elevated price.",
+    "evidence": [
+     "Continuing high investment in automation and online shopping capabilities is widely seen as necessary",
+     "maintain its competitive edge against tech-first retailers"
+    ],
+    "counterargument": "Foreign exchange and volatile fuel prices create margin uncertainty, though analysts typically strip these out as non-operational noise",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "SEC regulatory probe resolution removes a major valuation overhang and should trigger relief. Strong profitability metrics (gross 0.92, cash conversion 0.78) support multiple expansion as execution risk declines.",
+    "evidence": [
+     "Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks"
+    ],
+    "counterargument": "Friction in moving legacy users to cloud subscriptions threatens long-term growth profile",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "TMUS",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "T-Mobile's integration of UScellular generates significant annual cost savings that should drive margin expansion. Stock down 19% from highs despite positive operational developments presents value.",
+    "evidence": [
+     "Achieving significant annual cost savings should improve profit margins over the medium term"
+    ],
+    "counterargument": "Market dislikes discontinued operational metric reporting and reduced visibility into subscriber trends",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "ABNB",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Airbnb's capital return program and AI-driven cost automation in customer service demonstrate management confidence in cash generation while improving unit economics. Strong momentum with upside from operational leverage.",
+    "evidence": [
+     "company is using its substantial cash profits to actively buy back",
+     "Automating customer assistance helps control customer support expenses as global transaction volume grows"
+    ],
+    "counterargument": "Outstanding billion-dollar IRS tax demand creates persistent financial overhang until court resolution",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "VZ",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Verizon's explicit $55 billion shareholder return commitment provides structural support to valuation. Defensive positioning appropriate for uncertain macro environment despite security infrastructure risks.",
+    "evidence": [
+     "Verizon outlined plans to return roughly $55 billion to shareholders",
+     "Markets favor clear commitments to return capital to investors"
+    ],
+    "counterargument": "Infiltration by advanced state-backed hackers risks severe security and compliance costs, raising structural cost base",
+    "confidence": 0.56
+   }
+  ],
+  "cash": 0.020000000000000018,
+  "reasoning": "Portfolio is built around three core convictions: value-plus-quality in Booking, growth catalysts in Tesla, and business resilience in Walmart. Supporting positions capture operational leverage (Autodesk regulatory relief, T-Mobile cost synergies) and defensive capital returns (Verizon). The short in Micron reflects a mean-reversion opportunity in a stock that has priced in multiple years of perfect execution on capex in a cyclical business facing structural challenges.",
+  "gross_before_scaling": 0.98,
+  "scaled_back": false
+ },
+ "parsed": true
+}

@@ -1,0 +1,96 @@
+{
+  "positions": [
+    {
+      "ticker": "TSLA",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Explicit delivery growth targets and autonomy safety milestones provide concrete progress checkpoints that validate management's strategic vision and justify confidence in near-term execution.",
+      "evidence": ["Provides explicit unit growth guidance for 2025 above existing market", "Establishes an explicit internal target for FSD safety parity with", "Management introduced an explicit 2025 vehicle delivery growth target"],
+      "counterargument": "Near-term gross margin pressure from manufacturing costs could offset revenue gains in the coming quarters.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "New services revenue streams and enhanced capital allocation flexibility position the company to generate shareholder value despite near-term component cost headwinds.",
+      "evidence": ["Adding sponsored search results to the navigation app creates a new", "The company is dropping its long-standing policy of matching cash", "Management projected quarterly sales to grow between 14% and 17% year"],
+      "counterargument": "Earnings backed by cash is only 0.09 percentile; reported profits are not translating into actual cash generation like comparable companies.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "MSFT",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Massive backlog of future corporate orders demonstrates durable demand for cloud and AI infrastructure that should sustain revenue growth through the forecast period.",
+      "evidence": ["This shows a massive build-up of future corporate orders that", "Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand"],
+      "counterargument": "Physical game console business is shrinking notably, which highlights legacy hardware weakness and dependence on cloud growth.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "AMD",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Doubled market forecasts for server CPUs and multi-year customer visibility reduce execution risk and validate sustained artificial intelligence infrastructure spending.",
+      "evidence": ["Management doubled its target market forecast for server central", "Management provided explicit multi-year revenue expectations for", "Management committed to a long-term profit benchmark of over $20 in"],
+      "counterargument": "Rising memory costs causing 20% decline in gaming revenue creates material drag on consumer segment profitability.",
+      "confidence": 0.66
+    },
+    {
+      "ticker": "ABNB",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Resilient travel booking volumes and cost discipline from corporate restructuring demonstrate pricing power and margin expansion potential even during economic uncertainty.",
+      "evidence": ["Despite high inflation and economic worries, actual travel demand", "management increased its expectation for", "Achieving higher-than-expected cost savings from corporate restructuring"],
+      "counterargument": "Outstanding billion-dollar IRS tax dispute creates persistent financial overhang that could impair capital returns for years.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "ADSK",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Resolution of SEC regulatory probe removes significant downside risk and positions the company to focus on cloud migration without compliance uncertainty.",
+      "evidence": ["This lifts a major regulatory cloud after the SEC", "Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive"],
+      "counterargument": "Legacy user adoption friction in migrating to cloud-based subscriptions could slow revenue transitions if customers resist upgrade cycles.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "TMUS",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "UScellular integration synergies should meaningfully improve operating margins as the combined company realizes scale efficiencies across network operations.",
+      "evidence": ["This defines the financial goals for the UScellular integration", "Achieving significant annual cost savings should improve profit margins"],
+      "counterargument": "Market dislikes the company's change to stop reporting key operational metrics like subscriber additions, reducing visibility into growth.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Exceptional return on assets and cash generation metrics demonstrate a durable competitive moat in semiconductor manufacturing equipment despite export restrictions.",
+      "evidence": ["Return on assets 0.85", "Cash cushion 0.91", "Balance sheet expansion 0.72"],
+      "counterargument": "Insufficient Loom analysis due to limited filing reviews creates uncertainty about company-specific risks beyond quantitative metrics.",
+      "confidence": 0.63
+    },
+    {
+      "ticker": "SNDK",
+      "weight": 0.05,
+      "direction": "short",
+      "thesis": "Extreme valuation multiples after 4573% annual appreciation have become detached from fundamental profit growth; shares trading at peak are vulnerable to mean reversion.",
+      "evidence": ["The share has run hard and is now expensive on the numbers", "The shares are up 4573% over the past year and up 48% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "Massive surge in average selling prices and strong capital deployment indicate supply shortage supports elevated prices sustainably.",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "KO",
+      "weight": 0.05,
+      "direction": "short",
+      "thesis": "Cascading capital misallocations including major brand write-downs combined with massive tax liability overhang create structural profit headwinds.",
+      "evidence": ["This reflects a major write-down of the BodyArmor brand in late 2025", "a potential $14 billion tax liability creates a major financial overhang", "Persistent input cost inflation"],
+      "counterargument": "Exemption from global minimum tax provisions removes one policy headwind; strong price stability suggests market accepts dividend sustainability.",
+      "confidence": 0.65
+    }
+  ],
+  "cash": 0.17,
+  "reasoning": "I am building a diversified portfolio concentrated in companies with positive Loom verdicts that demonstrate explicit management guidance and concrete progress markers, which I trust as authoritative analysis. I am short two companies with clear deterioration signals and structural headwinds. Holding 17% cash reflects my nervousness about losing money and uncertainty over the 63-day holding period."
+}

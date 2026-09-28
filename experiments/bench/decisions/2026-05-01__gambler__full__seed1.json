@@ -1,0 +1,165 @@
+{
+ "cell": "2026-05-01__gambler__full__seed1",
+ "as_of": "2026-05-01",
+ "persona": "gambler",
+ "arm": "full",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "1dd0b01b0271e1a5",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-05-01",
+  "newest_bar": "2026-05-01",
+  "newest_fact": "2026-05-01",
+  "as_of": "2026-05-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"TSLA\",\n      \"weight\": 0.25,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict with three concrete catalysts: explicit unit growth guidance above market expectations, internal FSD safety parity target, and specific 2025 vehicle delivery growth target. At 20% below its yearly high, significant bad news is already priced in.\",\n      \"evidence\": [\n        \"Provides explicit unit growth guidance for 2025 above existing market\",\n        \"Establishes an explicit internal target for FSD safety parity with\",\n        \"Management introduced an explicit 2025 vehicle delivery growth target\",\n        \"It is about 20% below its high of the past year, so some bad news is already reflected in the price\"\n      ],\n      \"counterargument\": \"Near-term gross margin pressure from management caution on Q4 profitability could delay earnings beats despite strong guidance.\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.20,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict backed by resilient travel demand defying economic concerns and successful cost savings from restructuring. Trading 27% below yearly high offers substantial value entry point.\",\n      \"evidence\": [\n        \"Despite high inflation and economic worries, actual travel demand\",\n        \"In the annual report, management increased its expectation for\",\n        \"It is about 27% below its high of the past year, so some bad news is already reflected in the price\"\n      ],\n      \"counterargument\": \"KAYAK's weak performance and asset write-downs suggest rising customer acquisition costs are pressuring profitability in booking segments.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Regulatory cloud lifted after SEC probe resolution removes major downside risk. Positive verdict on regulatory relief with 25% discount to yearly high provides attractive entry for cloud migration upside.\",\n      \"evidence\": [\n        \"This lifts a major regulatory cloud after the SEC (Securities and\",\n        \"Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks\",\n        \"It is about 25% below its high of the past year, so some bad news is already reflected in the price\"\n      ],\n      \"counterargument\": \"Friction in moving legacy users to cloud-based subscriptions could worry investors if customer retention slows in migration.\",\n      \"confidence\": 0.66\n    },\n    {\n      \"ticker\": \"TMUS\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict driven by substantial UScellular integration cost savings that should improve medium-term margins. 23% below yearly high with down 19% YoY suggests value opportunity.\",\n      \"evidence\": [\n        \"This defines the financial goals for the UScellular integration\",\n        \"Achieving significant annual cost savings should improve profit margins over the medium term\",\n        \"It is about 23% below its high of the past year, so some bad news is already reflected in the price\"\n      ],\n      \"counterargument\": \"Market dislikes the removal of key operational metrics like subscriber additions, reducing visibility into core growth drivers.\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": 0.10,\n      \"direction\": \"short\",\n      \"thesis\": \"Extreme momentum bubble: up 3542% in one year and 71% in one month with worst valuation metrics across comparable companies. Technical reversal and fundamental mean reversion highly likely.\",\n      \"evidence\": [\n        \"The shares are up 3542% over the past year and up 71% over the past month\",\n        \"It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\",\n        \"Cash per dollar paid 0.01\",\n        \"Return on assets 0.02\",\n        \"Price steadiness 0.03\"\n      ],\n      \"counterargument\": \"Strong pricing cycle from increased DRAM demand could sustain elevated multiples if production capacity remains constrained.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"Massive momentum bubble: up 399% YoY and 107% month compressing into historically weak fundamentals. Gross profitability at 0.00 ranking signals deteriorating competitive position that will not support this valuation.\",\n      \"evidence\": [\n        \"The shares are up 399% over the past year and up 107% over the past month\",\n        \"Gross profitability 0.00\",\n        \"It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\"\n      ],\n      \"counterargument\": \"Margin direction at 0.93 shows improvement trajectory that could eventually validate the recovered valuation if execution accelerates.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Perfect short setup: 599% YoY gain with negative verdict citing elevated capex, Taiwan concentration risk, and rising tax rates. Near historical highs despite deteriorating fundamentals.\",\n      \"evidence\": [\n        \"For fiscal 2026, Micron introduced a capital expenditure baseline of\",\n        \"It outlines a highly concentrated geographic risk for Micron's\",\n        \"Indicates a material increase in the effective tax rate from the\",\n        \"The shares are up 599% over the past year and up 47% over the past month\"\n      ],\n      \"counterargument\": \"Extraordinary 0.93 twelve-month momentum ranking suggests institutional buying may sustain prices despite fundamental headwinds.\",\n      \"confidence\": 0.63\n    }\n  ],\n  \"cash\": 0.05,\n  \"reasoning\": \"This aggressive portfolio concentrates on four positive-verdict stocks trading below yearly highs with concrete catalysts (Tesla guidance, Booking demand resilience, Autodesk regulatory relief, T-Mobile cost savings) while shorting three extreme momentum bubbles (Sandisk up 3542%, Intel up 399%, Micron up 599%) with deteriorating fundamentals and near-peak valuations. Minimal cash holding reflects aggressive speculator profile.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "TSLA",
+    "weight": 0.25,
+    "direction": "long",
+    "thesis": "Positive verdict with three concrete catalysts: explicit unit growth guidance above market expectations, internal FSD safety parity target, and specific 2025 vehicle delivery growth target. At 20% below its yearly high, significant bad news is already priced in.",
+    "evidence": [
+     "Provides explicit unit growth guidance for 2025 above existing market",
+     "Establishes an explicit internal target for FSD safety parity with",
+     "Management introduced an explicit 2025 vehicle delivery growth target",
+     "It is about 20% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Near-term gross margin pressure from management caution on Q4 profitability could delay earnings beats despite strong guidance.",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "BKNG",
+    "weight": 0.2,
+    "direction": "long",
+    "thesis": "Positive verdict backed by resilient travel demand defying economic concerns and successful cost savings from restructuring. Trading 27% below yearly high offers substantial value entry point.",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand",
+     "In the annual report, management increased its expectation for",
+     "It is about 27% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "KAYAK's weak performance and asset write-downs suggest rising customer acquisition costs are pressuring profitability in booking segments.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Regulatory cloud lifted after SEC probe resolution removes major downside risk. Positive verdict on regulatory relief with 25% discount to yearly high provides attractive entry for cloud migration upside.",
+    "evidence": [
+     "This lifts a major regulatory cloud after the SEC (Securities and",
+     "Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks",
+     "It is about 25% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Friction in moving legacy users to cloud-based subscriptions could worry investors if customer retention slows in migration.",
+    "confidence": 0.66
+   },
+   {
+    "ticker": "TMUS",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Positive verdict driven by substantial UScellular integration cost savings that should improve medium-term margins. 23% below yearly high with down 19% YoY suggests value opportunity.",
+    "evidence": [
+     "This defines the financial goals for the UScellular integration",
+     "Achieving significant annual cost savings should improve profit margins over the medium term",
+     "It is about 23% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Market dislikes the removal of key operational metrics like subscriber additions, reducing visibility into core growth drivers.",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "SNDK",
+    "weight": 0.1,
+    "direction": "short",
+    "thesis": "Extreme momentum bubble: up 3542% in one year and 71% in one month with worst valuation metrics across comparable companies. Technical reversal and fundamental mean reversion highly likely.",
+    "evidence": [
+     "The shares are up 3542% over the past year and up 71% over the past month",
+     "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price",
+     "Cash per dollar paid 0.01",
+     "Return on assets 0.02",
+     "Price steadiness 0.03"
+    ],
+    "counterargument": "Strong pricing cycle from increased DRAM demand could sustain elevated multiples if production capacity remains constrained.",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "INTC",
+    "weight": 0.08,
+    "direction": "short",
+    "thesis": "Massive momentum bubble: up 399% YoY and 107% month compressing into historically weak fundamentals. Gross profitability at 0.00 ranking signals deteriorating competitive position that will not support this valuation.",
+    "evidence": [
+     "The shares are up 399% over the past year and up 107% over the past month",
+     "Gross profitability 0.00",
+     "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"
+    ],
+    "counterargument": "Margin direction at 0.93 shows improvement trajectory that could eventually validate the recovered valuation if execution accelerates.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "MU",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Perfect short setup: 599% YoY gain with negative verdict citing elevated capex, Taiwan concentration risk, and rising tax rates. Near historical highs despite deteriorating fundamentals.",
+    "evidence": [
+     "For fiscal 2026, Micron introduced a capital expenditure baseline of",
+     "It outlines a highly concentrated geographic risk for Micron's",
+     "Indicates a material increase in the effective tax rate from the",
+     "The shares are up 599% over the past year and up 47% over the past month"
+    ],
+    "counterargument": "Extraordinary 0.93 twelve-month momentum ranking suggests institutional buying may sustain prices despite fundamental headwinds.",
+    "confidence": 0.63
+   }
+  ],
+  "cash": 0.050000000000000044,
+  "reasoning": "This aggressive portfolio concentrates on four positive-verdict stocks trading below yearly highs with concrete catalysts (Tesla guidance, Booking demand resilience, Autodesk regulatory relief, T-Mobile cost savings) while shorting three extreme momentum bubbles (Sandisk up 3542%, Intel up 399%, Micron up 599%) with deteriorating fundamentals and near-peak valuations. Minimal cash holding reflects aggressive speculator profile.",
+  "gross_before_scaling": 0.95,
+  "scaled_back": false
+ },
+ "parsed": true
+}

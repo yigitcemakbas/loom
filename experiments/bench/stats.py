@@ -18,6 +18,14 @@ def mean(xs: Sequence[float]) -> Optional[float]:
     return sum(xs) / len(xs) if xs else None
 
 
+def median(xs: Sequence[float]) -> Optional[float]:
+    if not xs:
+        return None
+    ys = sorted(xs)
+    mid = len(ys) // 2
+    return ys[mid] if len(ys) % 2 else (ys[mid - 1] + ys[mid]) / 2
+
+
 def stdev(xs: Sequence[float]) -> Optional[float]:
     if len(xs) < 2:
         return None

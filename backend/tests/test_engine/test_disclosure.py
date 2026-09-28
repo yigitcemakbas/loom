@@ -27,6 +27,7 @@ from app.engine.disclosure import (
     restated,
     routine_share,
 )
+from app.engine.brief import _LEAN
 from app.models.brief import Stance
 from app.models.signal import Signal, SignalType
 
@@ -36,7 +37,8 @@ NOW = datetime(2026, 9, 26, tzinfo=timezone.utc)
 def _sig(
     *,
     direction: str | None = "negative",
-    signal_type: SignalType = SignalType.NEW_RISK_FACTOR,
+    signal_type: SignalType | None = None,
+    sentiment: float | None = None,
     doc_subtype: str = "10-K",
     document: str | None = "doc-1",
     company: uuid.UUID | None = None,
@@ -45,12 +47,25 @@ def _sig(
     magnitude: str = "moderate",
     priority: float = 0.8,
 ) -> Signal:
+    # Direction is no longer a stored field. It is a consequence of what the
+    # document did, so this builds the documentary configuration that produces
+    # the requested direction: a risk factor appearing for negative, a shift in
+    # the company's own tone for positive, and a tone shift carrying no score for
+    # a finding that was read and could not be called either way.
+    if signal_type is None:
+        signal_type = (SignalType.NEW_RISK_FACTOR if direction == "negative"
+                       else SignalType.SENTIMENT_SHIFT)
+    if sentiment is None and signal_type in (
+        SignalType.SENTIMENT_SHIFT, SignalType.EMERGING_PATTERN
+    ):
+        sentiment = {"positive": 0.6, "negative": -0.6}.get(direction)
     return Signal(
         id=uuid.uuid4(),
         company_id=company or uuid.uuid4(),
         signal_type=signal_type,
         summary=summary,
         detail=summary,
+        sentiment_score=sentiment,
         market_direction=direction,
         market_magnitude=magnitude,
         confidence=0.9,
@@ -62,25 +77,42 @@ def _sig(
 
 
 def _corpus() -> list[Signal]:
-    """A corpus shaped like the real one: risk factors uniformly negative,
-    quotes leaning negative in filings and positive on calls."""
+    """A corpus shaped like the real one, with findings grouped into documents.
+
+    The grouping matters now. The residual is measured on *incidence* — how many
+    directional findings a company's document carries against how many documents
+    of that genre normally carry — so the corpus has to contain realistic
+    per-document counts. An earlier version of this helper gave every finding its
+    own document, which made the expected count for an annual report one risk
+    factor, and then judged any real filing as wildly unusual.
+
+    Twelve annual reports carrying ten risk factors each, and twelve earnings
+    calls leaning positive, which is the shape the stored corpus actually has.
+    Twelve rather than four so the genre's own mean, not the prior, dominates.
+    """
     corpus = []
-    for i in range(40):
-        corpus.append(_sig(document=f"corpus-risk-{i}", summary=f"Risk {i}: something could go wrong."))
-    for i in range(20):
+    for d in range(12):
+        for i in range(10):
+            corpus.append(_sig(
+                document=f"corpus-10k-{d}",
+                summary=f"Risk {d}-{i}: something could go wrong.",
+            ))
         corpus.append(_sig(
-            direction="negative" if i < 14 else "positive",
-            signal_type=SignalType.NOTABLE_QUOTE,
-            document=f"corpus-quote-{i}",
-            summary=f"Quote {i}: management commented on conditions.",
+            document=f"corpus-10k-{d}", direction="negative",
+            signal_type=SignalType.SENTIMENT_SHIFT,
+            summary=f"Tone {d}: the filing's language hardened.",
         ))
-    for i in range(20):
+    for d in range(12):
+        for i in range(3):
+            corpus.append(_sig(
+                document=f"corpus-call-{d}", direction="positive",
+                signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call",
+                summary=f"Call {d}-{i}: management sounded confident on demand.",
+            ))
         corpus.append(_sig(
-            direction="positive" if i < 14 else "negative",
-            signal_type=SignalType.NOTABLE_QUOTE,
-            doc_subtype="earnings_call",
-            document=f"corpus-call-{i}",
-            summary=f"Call {i}: management commented on demand.",
+            document=f"corpus-call-{d}", direction="negative",
+            signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call",
+            summary=f"Call {d}: one caution about costs.",
         ))
     return corpus
 
@@ -109,10 +141,10 @@ def test_the_same_finding_type_is_judged_differently_by_document_genre():
     norms = measure_norms(_corpus())
 
     from_filing = norms.expected_for(
-        _sig(signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="10-K")
+        _sig(signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="10-K")
     ).expected
     from_call = norms.expected_for(
-        _sig(signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call")
+        _sig(signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call")
     ).expected
 
     assert from_filing < 0 < from_call
@@ -129,7 +161,7 @@ def test_a_company_with_its_own_habit_is_judged_against_itself():
     corpus += [
         _sig(
             direction="negative",
-            signal_type=SignalType.NOTABLE_QUOTE,
+            signal_type=SignalType.SENTIMENT_SHIFT,
             doc_subtype="earnings_call",
             document=f"gloomy-{i}",
             company=gloomy,
@@ -140,10 +172,10 @@ def test_a_company_with_its_own_habit_is_judged_against_itself():
     norms = measure_norms(corpus)
 
     theirs = norms.expected_for(
-        _sig(signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call", company=gloomy)
+        _sig(signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call", company=gloomy)
     ).expected
     everyone = norms.expected_for(
-        _sig(signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call")
+        _sig(signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call")
     ).expected
 
     assert theirs < everyone
@@ -164,25 +196,29 @@ def test_excess_is_capped_at_one_step():
 # ---- the refusal that keeps the correction honest ----------------------
 
 
-def test_a_record_made_only_of_boilerplate_produces_no_verdict():
-    """The case the correction creates and must then catch. Reading one annual
-    report's risk section is reading the genre, not the company, so the honest
-    answer is that Loom has not learned anything yet."""
+def test_a_record_that_matches_its_genre_produces_no_direction():
+    """The case the correction creates and must then catch, restated on the
+    quantity that now carries the signal.
+
+    Reading one annual report that says what annual reports say is reading the
+    genre, not the company. Under the per-finding residual that showed up as
+    "insufficient"; under incidence it shows up as a residual near zero, which is
+    the same answer in the right currency — Loom read it and the volume of
+    disclosure was ordinary, so there is nothing to report either way.
+    """
     norms = measure_norms(_corpus())
     company = uuid.uuid4()
     findings = [
         _sig(company=company, document="theirs", summary=f"Risk {i}: a thing could go wrong.")
-        for i in range(12)
-    ] + [
-        _sig(company=company, document="theirs", direction="positive",
-             signal_type=SignalType.NOTABLE_QUOTE, summary="Quote: results were in line."),
+        for i in range(11)
     ]
 
     brief = build_brief(findings, now=NOW, norms=norms)
 
-    assert brief.stance == Stance.INSUFFICIENT
-    assert brief.confidence == 0.0
-    assert "documents of this kind always contain" in brief.headline
+    assert brief.stance in (Stance.MIXED, Stance.QUIET)
+    assert brief.stance not in (Stance.NEGATIVE, Stance.STRONG_NEGATIVE)
+    assert abs(brief.evidence["incidence_residual"]) < _LEAN
+    assert routine_share(findings, norms) > 0.8
 
 
 def test_the_same_record_without_the_correction_reads_as_serious_concerns():
@@ -199,9 +235,25 @@ def test_the_same_record_without_the_correction_reads_as_serious_concerns():
     )
 
 
-def test_publishing_more_does_not_by_itself_move_the_verdict():
-    """The user-facing statement of the whole module: a company is not marked
-    down for filing a longer risk section."""
+def test_a_risk_section_is_not_marked_down_for_its_length_only_for_being_unusual():
+    """The user-facing statement of this module, restated on the quantity that
+    now carries the signal, and narrowed honestly.
+
+    The requirement is that a company is not punished for publishing risk. That
+    still holds, but it now holds *relative to comparable filings* rather than
+    absolutely. The earlier form of this test asserted that a six-risk-factor
+    filing and a forty-risk-factor filing must score identically, which was the
+    right assertion while direction came from each finding and volume was pure
+    noise. It cannot survive the move to incidence: if volume carries no
+    information then nothing does, and the engine returns "insufficient" on 95%
+    of companies, which is what it did.
+
+    So the guarantee is the genre-relative one this module always made, moved
+    from direction to volume. A filing whose risk section is ordinary for its
+    genre is not marked down, whatever "ordinary" turns out to be. A filing
+    carrying three times its genre's disclosure reads worse, and that is
+    information rather than a penalty for being verbose.
+    """
     norms = measure_norms(_corpus())
     company = uuid.uuid4()
 
@@ -211,21 +263,23 @@ def test_publishing_more_does_not_by_itself_move_the_verdict():
             for i in range(risk_count)
         ] + [
             _sig(company=company, document="call", direction="positive",
-                 signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call",
+                 signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call",
                  summary="Call: demand held up through the quarter."),
             _sig(company=company, document="call", direction="positive",
-                 signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call",
+                 signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call",
                  summary="Call: margins improved on better pricing."),
         ]
         return build_brief(findings, now=NOW, norms=norms).evidence["direction_mean"]
 
-    short_section = record(6)
-    long_section = record(40)
+    ordinary = record(10)
+    also_ordinary = record(12)
+    unusual = record(40)
 
-    # Identical, not merely closer. A risk factor says nothing a reader did
-    # not already know an annual report would say, so it is neither a vote nor
-    # a dilution of the findings that do say something.
-    assert abs(short_section - long_section) < 0.01
+    # Two filings that both sit near the genre's own volume score alike. This is
+    # the promise: length by itself is not the charge.
+    assert abs(ordinary - also_ordinary) < 0.1
+    # Three times the genre's disclosure is a different claim about the company.
+    assert unusual < ordinary - 0.2
 
 
 # ---- the mechanisms ----------------------------------------------------
@@ -284,7 +338,7 @@ def test_restatement_reduces_evidence_without_erasing_it():
     Dropping it entirely would let a company bury a deteriorating situation by
     describing it in the same words every year."""
     norms = measure_norms(_corpus())
-    signal = _sig(direction="positive", signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call")
+    signal = _sig(direction="positive", signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call")
 
     full = effective_findings([signal], norms)
     discounted = effective_findings([signal], norms, restated_ids={str(signal.id)})
@@ -293,14 +347,21 @@ def test_restatement_reduces_evidence_without_erasing_it():
     assert abs(discounted - full * RECURRENCE_DISCOUNT) < 1e-9
 
 
-def test_routine_share_ignores_document_clustering():
-    """Two different questions. How much independent evidence exists carries
-    the clustering correction; what share of a company's disclosure was routine
-    must not, or a deeply read company reads as almost entirely boilerplate."""
-    norms = measure_norms(_corpus())
-    findings = [_sig(document="one", summary=f"Risk {i}: a thing.") for i in range(20)]
+def test_routine_share_reports_how_ordinary_the_volume_was():
+    """Two different questions, still. How much independent evidence exists
+    carries the clustering correction; what share of a company's disclosure was
+    routine does not.
 
-    assert routine_share(findings, norms) > 0.8
+    Measured from the incidence residual now, because the per-finding residuals it
+    used to average are zero by construction once direction comes from the
+    document — which would have reported every company as entirely boilerplate.
+    """
+    norms = measure_norms(_corpus())
+    ordinary = [_sig(document="one", summary=f"Risk {i}: a thing.") for i in range(11)]
+    unusual = [_sig(document="two", summary=f"Risk {i}: a thing.") for i in range(30)]
+
+    assert routine_share(ordinary, norms) > 0.8
+    assert routine_share(unusual, norms) < 0.5
 
 
 def test_no_norms_means_the_older_answer_rather_than_a_residual_against_nothing():
@@ -323,7 +384,7 @@ def test_the_headline_states_the_counts_even_when_the_verdict_points_away():
         for i in range(8)
     ] + [
         _sig(company=company, document=f"call-{i}", direction="positive",
-             signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call",
+             signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call",
              summary=f"Call {i}: demand and pricing both held up.")
         for i in range(4)
     ]
@@ -344,11 +405,11 @@ def test_the_same_words_about_a_different_figure_is_an_update_not_a_repeat():
     the next scored the same overlap as the same risk written twice. Discounting
     the second would have thrown away the most current number Loom holds."""
     earlier = _sig(
-        document="q2", days_ago=120, signal_type=SignalType.NOTABLE_QUOTE,
+        document="q2", days_ago=120, signal_type=SignalType.SENTIMENT_SHIFT,
         summary="Revenue guidance was set at approximately 11.2 billion for the quarter.",
     )
     later = _sig(
-        document="q3", days_ago=20, signal_type=SignalType.NOTABLE_QUOTE,
+        document="q3", days_ago=20, signal_type=SignalType.SENTIMENT_SHIFT,
         summary="Revenue guidance was set at approximately 13 billion for the quarter.",
     )
 
@@ -357,11 +418,11 @@ def test_the_same_words_about_a_different_figure_is_an_update_not_a_repeat():
 
 def test_the_same_words_with_no_new_figure_is_a_repeat():
     earlier = _sig(
-        document="2025-10k", days_ago=400, signal_type=SignalType.NOTABLE_QUOTE,
+        document="2025-10k", days_ago=400, signal_type=SignalType.SENTIMENT_SHIFT,
         summary="Memory chip costs are rising and will squeeze hardware profit margins.",
     )
     later = _sig(
-        document="2026-10k", days_ago=20, signal_type=SignalType.NOTABLE_QUOTE,
+        document="2026-10k", days_ago=20, signal_type=SignalType.SENTIMENT_SHIFT,
         summary="Memory chip costs keep rising and will squeeze hardware profit margins.",
     )
 
@@ -412,18 +473,24 @@ def test_the_stance_label_describes_a_residual_not_a_level():
 
 
 def test_a_positive_stance_can_hold_more_concerns_than_positives():
-    """The case the labels have to survive. This is not an edge case, it is
-    the normal shape of a well-disclosed company under the correction."""
+    """The case the labels have to survive, and the positive channel the
+    one-directional diff cannot otherwise provide.
+
+    This company's annual report carries six risk factors where reports of its
+    genre carry eleven. It has more concerns than positives in raw count and
+    still reads better than its genre, because the measurement is volume against
+    the norm rather than a tally of signs.
+    """
     norms = measure_norms(_corpus())
     company = uuid.uuid4()
     findings = [
-        _sig(company=company, document=f"filing-{i}", summary=f"Risk {i}: a thing could go wrong.")
-        for i in range(9)
+        _sig(company=company, document="filing", summary=f"Risk {i}: a thing could go wrong.")
+        for i in range(6)
     ] + [
-        _sig(company=company, document=f"call-{i}", direction="positive",
-             signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="earnings_call",
+        _sig(company=company, document="call", direction="positive",
+             signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="earnings_call",
              summary=f"Call {i}: demand and pricing both held up.")
-        for i in range(4)
+        for i in range(2)
     ]
 
     brief = build_brief(findings, now=NOW, norms=norms)
@@ -451,7 +518,7 @@ def test_a_sector_with_enough_history_is_judged_against_itself():
     # Utilities whose calls read positively, against a corpus whose calls do not.
     corpus += [
         _sig(
-            direction="positive", signal_type=SignalType.NOTABLE_QUOTE,
+            direction="positive", signal_type=SignalType.SENTIMENT_SHIFT,
             doc_subtype="10-K", document=f"util-{i}",
             company=utilities[i % len(utilities)],
             summary=f"Utility note {i}: rates were approved as filed.",
@@ -460,13 +527,13 @@ def test_a_sector_with_enough_history_is_judged_against_itself():
     ]
 
     norms = measure_norms(corpus, sectors)
-    probe = _sig(signal_type=SignalType.NOTABLE_QUOTE, doc_subtype="10-K",
+    probe = _sig(signal_type=SignalType.SENTIMENT_SHIFT, doc_subtype="10-K",
                  company=uuid.uuid4())
 
     theirs = norms.expected_for(probe, sector="Utilities").expected
     everyone = norms.expected_for(probe).expected
 
-    assert ("Utilities", "10-K", "notable_quote") in norms.by_sector
+    assert ("Utilities", "10-K", "sentiment_shift") in norms.by_sector
     assert theirs > everyone
 
 
@@ -476,7 +543,7 @@ def test_a_barely_seen_sector_gets_no_norm_of_its_own():
     the floor stops the engine claiming to describe an industry at all."""
     company = uuid.uuid4()
     corpus = _corpus() + [
-        _sig(direction="positive", signal_type=SignalType.NOTABLE_QUOTE,
+        _sig(direction="positive", signal_type=SignalType.SENTIMENT_SHIFT,
              doc_subtype="10-K", document=f"thin-{i}", company=company,
              summary=f"Thin note {i}: something happened.")
         for i in range(MIN_SECTOR_OBSERVATIONS - 1)
@@ -504,7 +571,7 @@ def test_a_company_shrinks_toward_its_own_sector_not_the_corpus():
     sectors = {str(c): "Utilities" for c in utilities}
 
     corpus = _corpus() + [
-        _sig(direction="positive", signal_type=SignalType.NOTABLE_QUOTE,
+        _sig(direction="positive", signal_type=SignalType.SENTIMENT_SHIFT,
              doc_subtype="10-K", document=f"u-{i}",
              company=utilities[i % len(utilities)],
              summary=f"Utility note {i}: rates approved.")
@@ -513,10 +580,10 @@ def test_a_company_shrinks_toward_its_own_sector_not_the_corpus():
 
     norms = measure_norms(corpus, sectors)
     theirs = norms.by_company.get(
-        (str(subject), "10-K", "notable_quote")
+        (str(subject), "10-K", "sentiment_shift")
     )
 
     assert theirs is not None
     # Pulled toward its own industry, which reads positive, rather than toward
     # the technology-dominated genre, which does not.
-    assert theirs.expected > norms.by_genre[("10-K", "notable_quote")].expected
+    assert theirs.expected > norms.by_genre[("10-K", "sentiment_shift")].expected

@@ -1,0 +1,105 @@
+{
+  "positions": [
+    {
+      "ticker": "SNDK",
+      "weight": 0.17,
+      "direction": "long",
+      "thesis": "Semiconductor supercycle continuing with explosive momentum, riding 3542% annual returns and 71% monthly gains.",
+      "evidence": ["up 3542% over the past year", "up 71% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "Valuation completely disconnected from fundamentals; sharp correction highly likely.",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "INTC",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Intel recovery story amplified by strong chip sector momentum providing sustained tailwinds for the industry.",
+      "evidence": ["up 399% over the past year", "up 107% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "Already recovered massively from trough; current momentum could stall quickly.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "MU",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Memory chip demand remains strong as semiconductor sector experiences historic upcycle with extraordinary gains.",
+      "evidence": ["up 599% over the past year", "up 47% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "Trading near highs with valuations pricing in perfect execution; limited downside protection.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "AMAT",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Applied Materials positioned to capture semiconductor equipment demand as foundries invest heavily in capacity expansion.",
+      "evidence": ["up 164% over the past year", "up 10% over the past month"],
+      "counterargument": "Equipment cycles can be lumpy; capex growth may not sustain at current pace.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "MSFT",
+      "weight": 0.09,
+      "direction": "long",
+      "thesis": "Microsoft showing recovery momentum off 23% drawdown while maintaining upside from recent monthly gains; technical setup favorable.",
+      "evidence": ["down 2% over the past year", "up 12% over the past month", "about 23% below its high of the past year"],
+      "counterargument": "Macro headwinds could reassert; large cap tech leadership may fade.",
+      "confidence": 0.63
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Broadcom capturing semiconductor infrastructure and networking trends with strong momentum across both business segments.",
+      "evidence": ["up 115% over the past year", "up 34% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "Semiconductor sector rotation could reduce investor enthusiasm; growth may decelerate.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "AMZN",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Amazon benefiting from consumer spending strength and cloud computing acceleration with powerful 27% monthly gains.",
+      "evidence": ["up 41% over the past year", "up 27% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "Consumer spending vulnerable to economic slowdown; cloud competition intensifying.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "GOOGL",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Alphabet positioned as AI leader with dominant advertising model and 30% monthly momentum; secular growth driver.",
+      "evidence": ["up 140% over the past year", "up 30% over the past month", "It is trading close to its highest point of the past year"],
+      "counterargument": "AI adoption timeline uncertain; regulatory headwinds persist; valuation extended.",
+      "confidence": 0.66
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "ASML holds indispensable position in semiconductor manufacturing, riding secular growth in chip production capacity.",
+      "evidence": ["up 116% over the past year", "up 5% over the past month"],
+      "counterargument": "Geopolitical risks to China sales and supply chain; execution risks on new technology.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "ORCL",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Oracle represents value opportunity in enterprise software with 19% monthly momentum and 47% discount to highs; recovery play.",
+      "evidence": ["up 19% over the past year", "up 19% over the past month", "about 47% below its high of the past year"],
+      "counterargument": "Market has lost confidence; discount may persist if competitive position erodes.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.04,
+      "direction": "short",
+      "thesis": "Apple trading at peak valuations near all-time highs with limited bad news reflected; vulnerable to profit-taking.",
+      "evidence": ["up 32% over the past year", "up 10% over the past month", "trading close to its highest point of the past year", "little bad news is currently reflected in the price"],
+      "counterargument": "Could continue higher on services revenue and ecosystem strength; AI capability launch could reignite upside.",
+      "confidence": 0.44
+    }
+  ],
+  "cash": 0.01,
+  "reasoning": "Aggressive momentum strategy concentrated in semiconductor and technology sectors riding historic uptrend. Overweight SNDK, INTC, and MU due to explosive returns and sustained momentum; these represent conviction bets on sector continuation. Add exposure to chip equipment (AMAT, ASML) and leaders benefiting from digital transformation (AMZN, GOOGL). Include recovery plays (MSFT, ORCL) showing both value and upside momentum. Small short in AAPL as hedge against tech sector valuations at cyclical peaks. Minimal cash reflects aggressive positioning where opportunities to deploy capital exceed safe alternatives."
+}

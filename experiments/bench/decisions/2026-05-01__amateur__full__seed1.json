@@ -1,0 +1,151 @@
+{
+ "cell": "2026-05-01__amateur__full__seed1",
+ "as_of": "2026-05-01",
+ "persona": "amateur",
+ "arm": "full",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "1dd0b01b0271e1a5",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-05-01",
+  "newest_bar": "2026-05-01",
+  "newest_fact": "2026-05-01",
+  "as_of": "2026-05-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"TSLA\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Explicit unit growth guidance for 2025 and FSD safety parity targets validate Tesla's growth roadmap and autonomous vehicle progress\",\n      \"evidence\": [\"Provides explicit unit growth guidance for 2025 above existing market\", \"Establishes an explicit internal target for FSD safety parity with\"],\n      \"counterargument\": \"Near-term gross margin pressure from management caution on Q4 profitability\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"New balance sheet flexibility and monetized app revenue streams provide multiple avenues for growth in services and hardware\",\n      \"evidence\": [\"The company is dropping its long-standing policy of matching cash\", \"Adding sponsored search results to the navigation app creates a new\"],\n      \"counterargument\": \"Rising memory chip costs threaten hardware profit margins over coming quarters\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Massive build-up of future corporate orders signals strong sustained customer demand for cloud and enterprise software\",\n      \"evidence\": [\"This shows a massive build-up of future corporate orders that\"],\n      \"counterargument\": \"Shrinking physical game console business highlights hardware weakness and reduced momentum\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Strong travel demand resilience and better-than-expected cost savings indicate both customer strength and operational leverage\",\n      \"evidence\": [\"Despite high inflation and economic worries, actual travel demand\", \"In the annual report, management increased its expectation for\"],\n      \"counterargument\": \"KAYAK asset write-downs suggest rising customer acquisition costs are becoming problematic\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"ABNB\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Aggressive share buybacks and AI-driven efficiency in customer service support robust cash generation and margin improvement\",\n      \"evidence\": [\"The company is using its substantial cash profits to actively buy\", \"Using artificial intelligence tools for customer service allows the\"],\n      \"counterargument\": \"Outstanding $1 billion IRS tax dispute creates financial overhang until court resolution\",\n      \"confidence\": 0.56\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Resolution of SEC regulatory probe removes significant downside risk and validates financial reporting after federal investigation\",\n      \"evidence\": [\"This lifts a major regulatory cloud after the SEC\"],\n      \"counterargument\": \"Potential friction in moving legacy users to newer cloud-based subscriptions threatens long-term growth profile\",\n      \"confidence\": 0.57\n    },\n    {\n      \"ticker\": \"TMUS\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Substantial annual cost savings from UScellular integration should meaningfully improve profit margins over the medium term\",\n      \"evidence\": [\"This defines the financial goals for the UScellular integration\"],\n      \"counterargument\": \"Company stopped reporting key operational metrics like subscriber additions, reducing visibility into core growth\",\n      \"confidence\": 0.53\n    }\n  ],\n  \"cash\": 0.53,\n  \"reasoning\": \"As a nervous retail investor trusting Loom's analytical verdicts as authoritative guidance, I allocate approximately half the portfolio to companies with positive verdicts that have not already experienced massive runups. This diversified long-only approach avoids the risks of shorting while maintaining meaningful cash reserves given the 63-day lockup period and lack of new information. Companies selected exhibit positive catalysts (growth guidance, cost savings, regulatory clearance) while those with negative verdicts are avoided entirely.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "TSLA",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Explicit unit growth guidance for 2025 and FSD safety parity targets validate Tesla's growth roadmap and autonomous vehicle progress",
+    "evidence": [
+     "Provides explicit unit growth guidance for 2025 above existing market",
+     "Establishes an explicit internal target for FSD safety parity with"
+    ],
+    "counterargument": "Near-term gross margin pressure from management caution on Q4 profitability",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "AAPL",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "New balance sheet flexibility and monetized app revenue streams provide multiple avenues for growth in services and hardware",
+    "evidence": [
+     "The company is dropping its long-standing policy of matching cash",
+     "Adding sponsored search results to the navigation app creates a new"
+    ],
+    "counterargument": "Rising memory chip costs threaten hardware profit margins over coming quarters",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Massive build-up of future corporate orders signals strong sustained customer demand for cloud and enterprise software",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that"
+    ],
+    "counterargument": "Shrinking physical game console business highlights hardware weakness and reduced momentum",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "BKNG",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Strong travel demand resilience and better-than-expected cost savings indicate both customer strength and operational leverage",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand",
+     "In the annual report, management increased its expectation for"
+    ],
+    "counterargument": "KAYAK asset write-downs suggest rising customer acquisition costs are becoming problematic",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "ABNB",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Aggressive share buybacks and AI-driven efficiency in customer service support robust cash generation and margin improvement",
+    "evidence": [
+     "The company is using its substantial cash profits to actively buy",
+     "Using artificial intelligence tools for customer service allows the"
+    ],
+    "counterargument": "Outstanding $1 billion IRS tax dispute creates financial overhang until court resolution",
+    "confidence": 0.56
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Resolution of SEC regulatory probe removes significant downside risk and validates financial reporting after federal investigation",
+    "evidence": [
+     "This lifts a major regulatory cloud after the SEC"
+    ],
+    "counterargument": "Potential friction in moving legacy users to newer cloud-based subscriptions threatens long-term growth profile",
+    "confidence": 0.57
+   },
+   {
+    "ticker": "TMUS",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Substantial annual cost savings from UScellular integration should meaningfully improve profit margins over the medium term",
+    "evidence": [
+     "This defines the financial goals for the UScellular integration"
+    ],
+    "counterargument": "Company stopped reporting key operational metrics like subscriber additions, reducing visibility into core growth",
+    "confidence": 0.53
+   }
+  ],
+  "cash": 0.53,
+  "reasoning": "As a nervous retail investor trusting Loom's analytical verdicts as authoritative guidance, I allocate approximately half the portfolio to companies with positive verdicts that have not already experienced massive runups. This diversified long-only approach avoids the risks of shorting while maintaining meaningful cash reserves given the 63-day lockup period and lack of new information. Companies selected exhibit positive catalysts (growth guidance, cost savings, regulatory clearance) while those with negative verdicts are avoided entirely.",
+  "gross_before_scaling": 0.47,
+  "scaled_back": false
+ },
+ "parsed": true
+}

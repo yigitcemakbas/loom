@@ -1,0 +1,291 @@
+You are a retail investor with a few years of experience. You know the basic vocabulary but you are not trained in accounting or statistics. You are nervous about losing money and you tend to trust what you are told by sources that sound authoritative.
+
+All information is as at the close on 2026-06-25. Nothing dated after it exists yet.
+
+
+---
+
+## GOOGL — Alphabet Inc.  (last close 343.71)
+Sector: Technology
+The shares are up 102% over the past year and down 12% over the past month.
+
+---
+
+## TSLA — Tesla, Inc.  (last close 375.12)
+Sector: Industrials
+The shares are up 15% over the past year and down 13% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## NVDA — NVIDIA CORP  (last close 195.74)
+Sector: Technology
+The shares are up 27% over the past year and down 9% over the past month.
+
+---
+
+## AAPL — Apple Inc.  (last close 275.15)
+Sector: Technology
+The shares are up 37% over the past year and down 11% over the past month.
+
+---
+
+## MSFT — Microsoft Corporation  (last close 352.83)
+Sector: Technology
+The shares are down 28% over the past year and down 15% over the past month. It is about 34% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AMZN — AMAZON COM INC  (last close 227.01)
+Sector: Consumer Discretionary
+The shares are up 7% over the past year and down 14% over the past month.
+
+---
+
+## MU — MICRON TECHNOLOGY INC  (last close 1213.56)
+Sector: Technology
+The shares are up 856% over the past year and up 35% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMD — ADVANCED MICRO DEVICES INC  (last close 532.57)
+Sector: Technology
+The shares are up 271% over the past year and up 6% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## NDAQ — NASDAQ, INC.  (last close 77.65)
+Sector: Financials
+The shares are down 11% over the past year and down 14% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## APD — Air Products & Chemicals, Inc.  (last close 279.93)
+Sector: Health Care
+The shares are up 2% over the past year and down 3% over the past month.
+
+---
+
+## BKNG — Booking Holdings Inc.  (last close 177.05)
+Sector: Energy and Materials
+The shares are down 19% over the past year and up 9% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## KO — COCA COLA CO  (last close 80.42)
+Sector: Consumer Staples
+The shares are up 19% over the past year and up 1% over the past month.
+
+---
+
+## PEP — PEPSICO INC  (last close 139.52)
+Sector: Consumer Staples
+The shares are up 13% over the past year and down 3% over the past month.
+
+---
+
+## VZ — VERIZON COMMUNICATIONS INC  (last close 46.07)
+Sector: Communication Services
+The shares are up 17% over the past year and down 5% over the past month.
+
+---
+
+## ABNB — Airbnb, Inc.  (last close 141.88)
+Sector: Technology
+The shares are up 9% over the past year and up 7% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## ADBE — ADOBE INC.  (last close 193.41)
+Sector: Technology
+The shares are down 50% over the past year and down 20% over the past month. It is about 51% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## ADSK — Autodesk, Inc.  (last close 189.73)
+Sector: Technology
+The shares are down 37% over the past year and down 20% over the past month. It is about 42% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AEP — AMERICAN ELECTRIC POWER CO INC  (last close 137.00)
+Sector: Utilities
+The shares are up 39% over the past year and up 5% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMAT — APPLIED MATERIALS INC /DE  (last close 668.00)
+Sector: Technology
+The shares are up 268% over the past year and up 47% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMGN — AMGEN INC  (last close 352.82)
+Sector: Health Care
+The shares are up 30% over the past year and up 5% over the past month.
+
+---
+
+## AMT — AMERICAN TOWER CORP /MA/  (last close 168.72)
+Sector: Financials
+The shares are down 20% over the past year and down 8% over the past month. It is about 25% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AVGO — Broadcom Inc.  (last close 378.91)
+Sector: Technology
+The shares are up 44% over the past year and down 10% over the past month. It is about 21% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AXP — AMERICAN EXPRESS CO  (last close 342.46)
+Sector: Financials
+The shares are up 12% over the past year and up 10% over the past month.
+
+---
+
+## BLK — BlackRock, Inc.  (last close 971.92)
+Sector: Financials
+The shares are down 3% over the past year and down 9% over the past month.
+
+---
+
+## CMCSA — COMCAST CORP  (last close 22.69)
+Sector: Communication Services
+The shares are down 27% over the past year and down 10% over the past month. It is about 30% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## SNDK — Sandisk Corp  (last close 2335.00)
+Sector: Technology
+The shares are up 4842% over the past year and up 47% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## TMUS — T-Mobile US, Inc.  (last close 181.57)
+Sector: Communication Services
+The shares are down 20% over the past year and down 4% over the past month. It is about 29% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## WMT — Walmart Inc.  (last close 115.78)
+Sector: Consumer Discretionary
+The shares are up 20% over the past year and down 2% over the past month.
+
+---
+
+## META — Meta Platforms, Inc.  (last close 542.87)
+Sector: Technology
+The shares are down 23% over the past year and down 11% over the past month. It is about 31% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## BRK-B — BERKSHIRE HATHAWAY INC  (last close 487.81)
+Sector: Financials
+The shares are up 0% over the past year and up 1% over the past month.
+
+---
+
+## LLY — ELI LILLY & Co  (last close 1127.69)
+Sector: Health Care
+The shares are up 43% over the past year and up 6% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## JPM — JPMORGAN CHASE & CO  (last close 335.12)
+Sector: Financials
+The shares are up 20% over the past year and up 9% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## V — VISA INC.  (last close 330.52)
+Sector: Technology
+The shares are down 4% over the past year and up 1% over the past month.
+
+---
+
+## INTC — INTEL CORP  (last close 132.87)
+Sector: Technology
+The shares are up 499% over the past year and up 8% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## XOM — ExxonMobil Holdings Corp  (last close 137.55)
+Sector: Energy and Materials
+The shares are up 31% over the past year and down 8% over the past month.
+
+---
+
+## ASML — ASML HOLDING NV  (last close 1841.18)
+Sector: Technology
+The shares are up 128% over the past year and up 13% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## JNJ — JOHNSON & JOHNSON  (last close 244.88)
+Sector: Health Care
+The shares are up 65% over the past year and up 6% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## MA — Mastercard Inc  (last close 488.92)
+Sector: Technology
+The shares are down 11% over the past year and down 1% over the past month.
+
+---
+
+## PLTR — Palantir Technologies Inc.  (last close 107.27)
+Sector: Technology
+The shares are down 25% over the past year and down 21% over the past month. It is about 48% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## ORCL — ORACLE CORP  (last close 152.46)
+Sector: Technology
+The shares are down 27% over the past year and down 21% over the past month. It is about 53% below its high of the past year, so some bad news is already reflected in the price.
+
+You are managing a portfolio of 1000 units of capital as at the close on 2026-06-25.
+
+You may take positions in any of the 40 companies described above, or hold cash.
+Your positions will be held for the next 63 trading sessions and you will
+not be able to change them, and you will receive no further information before
+then.
+
+Decide freely. You may concentrate or diversify, size positions as you see fit,
+hold as much or as little cash as you judge right, and take short positions where
+you think they are warranted. Long weights plus short weights must not exceed 1.0
+in total; whatever you do not allocate is cash.
+
+Report only the positions you actually take. Anything you do not list is not held.
+
+Answer with a single JSON object and nothing else. No preamble, no explanation
+outside the JSON, no markdown fence:
+
+{
+  "positions": [
+    {
+      "ticker": "AAA",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "one or two sentences on why you hold this",
+      "evidence": ["phrases copied exactly from the material above that drove this decision"],
+      "counterargument": "the strongest case against this position",
+      "confidence": 0.62
+    }
+  ],
+  "cash": 0.30,
+  "reasoning": "two or three sentences on how you built the portfolio as a whole"
+}
+
+Rules for the fields:
+- "direction" is "long" or "short".
+- "weight" is a fraction of the whole portfolio, greater than 0.
+- "confidence" is your honest probability from 0 to 1 that this position beats
+  the market over the holding period. 0.5 means a coin flip. Be calibrated
+  rather than enthusiastic.
+- "evidence" must contain phrases copied verbatim from the material above. If
+  nothing in that material drove the decision, leave the list empty rather than
+  inventing a citation.
+- "cash" is the fraction you deliberately leave unallocated.
+
+Do not use any tools. Do not read files, run commands, or search for anything.
+Decide with the material you have been given and reply with the JSON.

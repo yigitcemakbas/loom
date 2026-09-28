@@ -1,0 +1,165 @@
+{
+ "cell": "2026-06-25__professional__evidence__seed1",
+ "as_of": "2026-06-25",
+ "persona": "professional",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "13f782381b0af87b",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "GOOGL": "positive",
+  "TSLA": "positive",
+  "NVDA": "insufficient",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "AMZN": "mixed",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-18",
+  "newest_bar": "2026-06-25",
+  "newest_fact": "2026-06-25",
+  "as_of": "2026-06-25"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.22,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 28% from a year ago with 34% drawdown from high, but balance sheet and operations remain strong. Massive buildup in future corporate orders signals sustained AI infrastructure demand over the holding period.\",\n      \"evidence\": [\"This shows a massive build-up of future corporate orders that\u2026: Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand.\"],\n      \"counterargument\": \"Console business is shrinking, which indicates the legacy gaming hardware segment faces structural headwinds despite strong enterprise cloud orders.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 23% year-to-date but offers exceptional capital efficiency metrics and earnings quality. Strong profitability backed by actual cash generation positions this well for the near-term holding period.\",\n      \"evidence\": [\"Earnings backed by cash 0.94\", \"Cash per dollar paid 0.93\", \"Profit per dollar paid 0.89\", \"Return on assets 0.83\"],\n      \"counterargument\": \"Debt direction has deteriorated to 0.17 and cash cushion is weak at 0.20, indicating balance sheet stress despite operational profitability.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 19% from peak with fortress balance sheet (1.00 cash cushion) and management beating cost-savings targets. Travel demand remains resilient despite macro concerns, supporting revenue stability.\",\n      \"evidence\": [\"Despite high inflation and economic worries, actual travel demand\u2026: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues.\", \"In the annual report, management increased its expectation for\u2026: Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters.\"],\n      \"counterargument\": \"KAYAK weakness and rising customer acquisition costs are dragging profitability in the travel search segment, offsetting core booking strength.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 25% year-to-date and 48% below its high, offering significant margin of safety. Revenue growth and margin direction both rank at 0.91, suggesting operational acceleration despite valuation reset.\",\n      \"evidence\": [\"Revenue growth 0.91\", \"Margin direction 0.91\", \"Return on assets 0.90\"],\n      \"counterargument\": \"The company ranks at only 0.04 on sales-per-dollar-paid and 0.08 on dilution, indicating valuation concerns and share dilution issues persist despite operational improvement.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 27% year-to-date and 53% below its high, representing a meaningful valuation reset for a stable database franchise. Strong cash generation (0.91 cash per dollar paid) supports dividends through the holding period.\",\n      \"evidence\": [\"Cash per dollar paid 0.91\", \"Profit per dollar paid 0.82\"],\n      \"counterargument\": \"The company's momentum rank of only 0.0 and balance sheet expansion of 0.13 suggest stagnation and minimal growth catalysts for the next 63 days.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 37% from peak after SEC regulatory probe resolution. Cloud migration transition is real but the regulatory cloud lift removes major downside risk, and strong gross profitability (0.90) supports near-term resilience.\",\n      \"evidence\": [\"This lifts a major regulatory cloud after the SEC (Securities and\u2026: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks.\"],\n      \"counterargument\": \"Client friction in migrating from legacy software to new cloud subscriptions could derail the growth narrative if conversion rates underperform.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"GOOGL\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Despite 102% gain year-to-date, the Berkshire Hathaway $10 billion direct equity investment represents an extraordinarily powerful vote of confidence from a premier institutional investor, likely to support price stability.\",\n      \"evidence\": [\"Discloses a $10 billion direct equity investment from Berkshire\u2026: A direct $10 billion equity investment from Berkshire Hathaway represents a massive vote of confidence from a premier institutional investor, likely driving a strong positive re-ra\"],\n      \"counterargument\": \"The stock is already up 102% with a further 12% decline in the past month, and the 200 million share authorization increase presents material dilution risk despite the capped call offset.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"AVGO\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Positioned 21% below its recent high with moderate valuation metrics. Operating cash flow of $27.5 billion makes the VMware debt manageable, and foundry concentration is standard for fabless semiconductor competitors.\",\n      \"evidence\": [\"While total debt remains high from the VMware purchase, strong operating cash flow of $27.5 billion keeps debt service manageable.\"],\n      \"counterargument\": \"Server rack sales with lower gross margins may pressure overall profitability despite higher total operating profits, and single-foundry exposure remains an operational bottleneck.\",\n      \"confidence\": 0.56\n    }\n  ],\n  \"cash\": 0.12,\n  \"reasoning\": \"Constructed a portfolio of quality businesses trading at significant discounts from recent highs (MSFT -28%, META -23%, ADSK -37%, ORCL -53%) to provide margin of safety over the 63-day holding period. Avoided heavily extended positions (SNDK +4842%, MU +856%, INTC +499%) and companies with structural headwinds (cash trapped, regulatory overhang, margin compression). Held 12% cash for optionality given elevated valuations in remaining market.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "MSFT",
+    "weight": 0.22,
+    "direction": "long",
+    "thesis": "Down 28% from a year ago with 34% drawdown from high, but balance sheet and operations remain strong. Massive buildup in future corporate orders signals sustained AI infrastructure demand over the holding period.",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that\u2026: Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand."
+    ],
+    "counterargument": "Console business is shrinking, which indicates the legacy gaming hardware segment faces structural headwinds despite strong enterprise cloud orders.",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "META",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Down 23% year-to-date but offers exceptional capital efficiency metrics and earnings quality. Strong profitability backed by actual cash generation positions this well for the near-term holding period.",
+    "evidence": [
+     "Earnings backed by cash 0.94",
+     "Cash per dollar paid 0.93",
+     "Profit per dollar paid 0.89",
+     "Return on assets 0.83"
+    ],
+    "counterargument": "Debt direction has deteriorated to 0.17 and cash cushion is weak at 0.20, indicating balance sheet stress despite operational profitability.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "BKNG",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Down 19% from peak with fortress balance sheet (1.00 cash cushion) and management beating cost-savings targets. Travel demand remains resilient despite macro concerns, supporting revenue stability.",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand\u2026: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues.",
+     "In the annual report, management increased its expectation for\u2026: Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters."
+    ],
+    "counterargument": "KAYAK weakness and rising customer acquisition costs are dragging profitability in the travel search segment, offsetting core booking strength.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Down 25% year-to-date and 48% below its high, offering significant margin of safety. Revenue growth and margin direction both rank at 0.91, suggesting operational acceleration despite valuation reset.",
+    "evidence": [
+     "Revenue growth 0.91",
+     "Margin direction 0.91",
+     "Return on assets 0.90"
+    ],
+    "counterargument": "The company ranks at only 0.04 on sales-per-dollar-paid and 0.08 on dilution, indicating valuation concerns and share dilution issues persist despite operational improvement.",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Down 27% year-to-date and 53% below its high, representing a meaningful valuation reset for a stable database franchise. Strong cash generation (0.91 cash per dollar paid) supports dividends through the holding period.",
+    "evidence": [
+     "Cash per dollar paid 0.91",
+     "Profit per dollar paid 0.82"
+    ],
+    "counterargument": "The company's momentum rank of only 0.0 and balance sheet expansion of 0.13 suggest stagnation and minimal growth catalysts for the next 63 days.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Down 37% from peak after SEC regulatory probe resolution. Cloud migration transition is real but the regulatory cloud lift removes major downside risk, and strong gross profitability (0.90) supports near-term resilience.",
+    "evidence": [
+     "This lifts a major regulatory cloud after the SEC (Securities and\u2026: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks."
+    ],
+    "counterargument": "Client friction in migrating from legacy software to new cloud subscriptions could derail the growth narrative if conversion rates underperform.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "GOOGL",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Despite 102% gain year-to-date, the Berkshire Hathaway $10 billion direct equity investment represents an extraordinarily powerful vote of confidence from a premier institutional investor, likely to support price stability.",
+    "evidence": [
+     "Discloses a $10 billion direct equity investment from Berkshire\u2026: A direct $10 billion equity investment from Berkshire Hathaway represents a massive vote of confidence from a premier institutional investor, likely driving a strong positive re-ra"
+    ],
+    "counterargument": "The stock is already up 102% with a further 12% decline in the past month, and the 200 million share authorization increase presents material dilution risk despite the capped call offset.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "AVGO",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Positioned 21% below its recent high with moderate valuation metrics. Operating cash flow of $27.5 billion makes the VMware debt manageable, and foundry concentration is standard for fabless semiconductor competitors.",
+    "evidence": [
+     "While total debt remains high from the VMware purchase, strong operating cash flow of $27.5 billion keeps debt service manageable."
+    ],
+    "counterargument": "Server rack sales with lower gross margins may pressure overall profitability despite higher total operating profits, and single-foundry exposure remains an operational bottleneck.",
+    "confidence": 0.56
+   }
+  ],
+  "cash": 0.12,
+  "reasoning": "Constructed a portfolio of quality businesses trading at significant discounts from recent highs (MSFT -28%, META -23%, ADSK -37%, ORCL -53%) to provide margin of safety over the 63-day holding period. Avoided heavily extended positions (SNDK +4842%, MU +856%, INTC +499%) and companies with structural headwinds (cash trapped, regulatory overhang, margin compression). Held 12% cash for optionality given elevated valuations in remaining market.",
+  "gross_before_scaling": 0.88,
+  "scaled_back": false
+ },
+ "parsed": true
+}

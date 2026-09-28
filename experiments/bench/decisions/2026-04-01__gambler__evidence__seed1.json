@@ -1,0 +1,148 @@
+{
+ "cell": "2026-04-01__gambler__evidence__seed1",
+ "as_of": "2026-04-01",
+ "persona": "gambler",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "86a4c0623a612070",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "negative",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-03-13",
+  "newest_bar": "2026-04-01",
+  "newest_fact": "2026-04-01",
+  "as_of": "2026-04-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": 0.18,\n      \"direction\": \"long\",\n      \"thesis\": \"Massive 118% momentum recovery with deeply undervalued valuation on recovery. Aggressive speculator bets on turnaround after years of underperformance.\",\n      \"evidence\": [\"The shares are up 118% over the past year and up 6% over the past month\", \"Assets per dollar paid           0.94\", \"Margin direction                 0.93\"],\n      \"counterargument\": \"Gross profitability of 0.02 indicates core manufacturing business remains deeply challenged and uncompetitive\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"NVIDIA\",\n      \"weight\": 0.11,\n      \"direction\": \"long\",\n      \"thesis\": \"Unmatched profitability metrics and ROA justify position despite China regulatory risks being priced into 60% annual gain. Peak margins signal AI dominance.\",\n      \"evidence\": [\"Earnings backed by cash          0.00\", \"Gross profitability              1.00\", \"Return on assets                1.00\"],\n      \"counterargument\": \"Complete foreclosure from the Chinese market structurally damages long-term competitive position while funding Chinese competitors\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Recent 11% monthly selloff is opportunity to buy strong cash-generating platform. Down only 1% annually despite pullback shows underlying strength.\",\n      \"evidence\": [\"The shares are down 1% over the past year and down 11% over the past month\", \"Earnings backed by cash          0.93\", \"It is about 26% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Balance sheet expansion 0.19 and Margin direction 0.24 suggest AI spending is slowing profit growth rates significantly\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Revenue growth leader (0.94 vs peers) with improving margins still 29% below highs. Aggressive bet on resumption after recent consolidation.\",\n      \"evidence\": [\"Revenue growth                   0.94\", \"Margin direction                 0.95\", \"It is about 29% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"It is earning well on what it owns, and it is buying a great deal more raises question whether business expansion justifies valuation\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"AMAT\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Extraordinary 145% annual momentum with strong profitability metrics justifies concentration despite China regulatory headwinds. Bet on recovery continuation.\",\n      \"evidence\": [\"The shares are up 145% over the past year and down 5% over the past month\", \"Return on assets                 0.88\", \"Dilution of your stake           0.87\"],\n      \"counterargument\": \"Ongoing investigations and subpoenas regarding China shipments create persistent legal uncertainties and threaten business in a vital region\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"LLY\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Fastest revenue growth in universe at 1.00 ranking with 0.96 return on assets justifies conviction despite cash generation concerns.\",\n      \"evidence\": [\"Revenue growth                   1.00\", \"Return on assets                 0.96\", \"The shares are up 19% over the past year and down 6% over the past month\"],\n      \"counterargument\": \"Earnings backed by cash          0.00 and Cash per dollar of profit        0.03 reveal minimal cash conversion despite explosive revenue growth\",\n      \"confidence\": 0.52\n    },\n    {\n      \"ticker\": \"KO\",\n      \"weight\": -0.14,\n      \"direction\": \"short\",\n      \"thesis\": \"Multiple structural value destroyers: $14B tax liability overhang, massive brand write-downs, zero cash earnings, and trapped capital in Russia. Short clear value destruction.\",\n      \"evidence\": [\"A potential $14 billion tax liability creates a major financial overhang and could significantly impair the company's long-term capital allocation capacity\", \"Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns, creating drag on profitability\", \"Earnings backed by cash          0.00\"],\n      \"counterargument\": \"This rule change substantially mitigates the risk of a high global minimum tax provisions removes potential headwind for international earnings\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"CMCSA\",\n      \"weight\": -0.09,\n      \"direction\": \"short\",\n      \"thesis\": \"Structural decline in core profit engine (broadband) as company sacrifices pricing to defend subscribers. Down 14% annually signals market repricing of deterioration.\",\n      \"evidence\": [\"A persistent decline in broadband subscribers strikes at the core profit engine of the company's connectivity division, which is highly scrutinized by investors\", \"Sacrificing broadband pricing power to defend subscriber counts shows how intense the competitive environment has become, which could put pressure on profit margins\", \"The shares are down 14% over the past year and down 8% over the past month\"],\n      \"counterargument\": \"The sale of the Hulu stake brings in substantial cash and creates a significant liquidity and flexibility to pay down debt or repurchase shares\",\n      \"confidence\": 0.67\n    },\n    {\n      \"ticker\": \"TMUS\",\n      \"weight\": -0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"Down 23% annually with market punishing loss of operational transparency and UScellular integration risks ahead. Reduced disclosure hides problems.\",\n      \"evidence\": [\"The shares are down 23% over the past year and down 5% over the past month\", \"The market typically dislikes when companies stop reporting key operational metrics like total subscriber additions, as it reduces visibility into core growth\", \"It is about 23% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Achieving significant annual cost savings should improve profit margins over the medium term, although the upfront cost to achieve them is substantial\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"PEP\",\n      \"weight\": -0.06,\n      \"direction\": \"short\",\n      \"thesis\": \"Deteriorating fundamentals: shrinking volumes, brand write-downs, 20% cash trapped in Russia, and restructuring drains. Down 7% monthly as market reprices decline.\",\n      \"evidence\": [\"The company is experiencing falling sales volumes alongside a massive brand write-down highlight operating difficulties that squeeze profit margins\", \"PepsiCo holds one-fifth of its total cash in Russia, where strict capital controls significantly reduces financial flexibility and capital returns\", \"The shares are up 7% over the past year and down 7% over the past month\"],\n      \"counterargument\": \"On February 3, 2026, the company announced it raised its yearly dividends returning more cash to shareholders typically supports the stock price\",\n      \"confidence\": 0.59\n    }\n  ],\n  \"cash\": 0.02,\n  \"reasoning\": \"Concentrated aggressive bets on high-momentum recoveries (INTC +118%, AMAT +145%) and quality compounders (META, PLTR, NVIDIA) experiencing tactical pullbacks. Shorts on companies with structural declines and major value destroyers (CMCSA losing broadband subscribers, KO facing $14B tax overhang, PEP shrinking volumes). Minimal cash respects aggressive speculator mandate that cash is wasted opportunity\u2014allocating 98% to maximize conviction bets over holding period.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "INTC",
+    "weight": 0.18,
+    "direction": "long",
+    "thesis": "Massive 118% momentum recovery with deeply undervalued valuation on recovery. Aggressive speculator bets on turnaround after years of underperformance.",
+    "evidence": [
+     "The shares are up 118% over the past year and up 6% over the past month",
+     "Assets per dollar paid           0.94",
+     "Margin direction                 0.93"
+    ],
+    "counterargument": "Gross profitability of 0.02 indicates core manufacturing business remains deeply challenged and uncompetitive",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "NVIDIA",
+    "weight": 0.11,
+    "direction": "long",
+    "thesis": "Unmatched profitability metrics and ROA justify position despite China regulatory risks being priced into 60% annual gain. Peak margins signal AI dominance.",
+    "evidence": [
+     "Earnings backed by cash          0.00",
+     "Gross profitability              1.00",
+     "Return on assets                1.00"
+    ],
+    "counterargument": "Complete foreclosure from the Chinese market structurally damages long-term competitive position while funding Chinese competitors",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "META",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Recent 11% monthly selloff is opportunity to buy strong cash-generating platform. Down only 1% annually despite pullback shows underlying strength.",
+    "evidence": [
+     "The shares are down 1% over the past year and down 11% over the past month",
+     "Earnings backed by cash          0.93",
+     "It is about 26% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Balance sheet expansion 0.19 and Margin direction 0.24 suggest AI spending is slowing profit growth rates significantly",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Revenue growth leader (0.94 vs peers) with improving margins still 29% below highs. Aggressive bet on resumption after recent consolidation.",
+    "evidence": [
+     "Revenue growth                   0.94",
+     "Margin direction                 0.95",
+     "It is about 29% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "It is earning well on what it owns, and it is buying a great deal more raises question whether business expansion justifies valuation",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "AMAT",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Extraordinary 145% annual momentum with strong profitability metrics justifies concentration despite China regulatory headwinds. Bet on recovery continuation.",
+    "evidence": [
+     "The shares are up 145% over the past year and down 5% over the past month",
+     "Return on assets                 0.88",
+     "Dilution of your stake           0.87"
+    ],
+    "counterargument": "Ongoing investigations and subpoenas regarding China shipments create persistent legal uncertainties and threaten business in a vital region",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "LLY",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Fastest revenue growth in universe at 1.00 ranking with 0.96 return on assets justifies conviction despite cash generation concerns.",
+    "evidence": [
+     "Revenue growth                   1.00",
+     "Return on assets                 0.96",
+     "The shares are up 19% over the past year and down 6% over the past month"
+    ],
+    "counterargument": "Earnings backed by cash          0.00 and Cash per dollar of profit        0.03 reveal minimal cash conversion despite explosive revenue growth",
+    "confidence": 0.52
+   }
+  ],
+  "cash": 0.39,
+  "reasoning": "Concentrated aggressive bets on high-momentum recoveries (INTC +118%, AMAT +145%) and quality compounders (META, PLTR, NVIDIA) experiencing tactical pullbacks. Shorts on companies with structural declines and major value destroyers (CMCSA losing broadband subscribers, KO facing $14B tax overhang, PEP shrinking volumes). Minimal cash respects aggressive speculator mandate that cash is wasted opportunity\u2014allocating 98% to maximize conviction bets over holding period.",
+  "gross_before_scaling": 0.61,
+  "scaled_back": false
+ },
+ "parsed": true
+}

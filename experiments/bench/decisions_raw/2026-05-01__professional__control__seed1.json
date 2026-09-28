@@ -1,0 +1,87 @@
+{
+  "positions": [
+    {
+      "ticker": "ORCL",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Massive 47% pullback from highs with +19% monthly recovery signals institutional washout completion. Oracle's cloud infrastructure is essential; the recovery momentum suggests market is repricing the opportunity.",
+      "evidence": ["It is about 47% below its high of the past year", "up 19% over the past year", "up 19% over the past month"],
+      "counterargument": "The 47% drawdown may reflect genuine competitive threats from cloud-native vendors or margin compression that persists.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "MSFT",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Down only 2% YTD despite cloud/AI leadership suggests market has undervalued the stock; +12% monthly recovery and 23% off highs indicates bad news already reflected.",
+      "evidence": ["down 2% over the past year", "up 12% over the past month", "about 23% below its high of the past year"],
+      "counterargument": "Weak YTD returns despite cloud narrative could mean valuation is already stretched at current levels relative to fundamentals.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "META",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Only +7% YTD underperformance relative to mega-cap peers despite AI investments and chip development. 23% pullback and +5% monthly recovery suggest market discounting risks too heavily.",
+      "evidence": ["up 7% over the past year", "up 5% over the past month", "about 23% below its high of the past year"],
+      "counterargument": "Regulatory scrutiny and difficulty monetizing metaverse investments could justify the underperformance and continue.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "TSLA",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Balanced risk/reward with +39% YTD and 20% off highs; market has repriced after correction without reaching euphoria. EV adoption thesis remains intact as evidenced by the recent recovery.",
+      "evidence": ["up 39% over the past year", "up 3% over the past month", "about 20% below its high of the past year"],
+      "counterargument": "Intensifying competition in EV space and margin compression risks could weigh on returns despite historical momentum.",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "33% washout is overdone for quality software franchise with enterprise stickiness. Early recovery signals (+4% monthly) suggest capitulation complete; AI/enterprise adoption trends remain strong.",
+      "evidence": ["down 33% over the past year", "up 4% over the past month", "about 40% below its high of the past year"],
+      "counterargument": "The 40% drawdown could reflect structural challenges to subscription model or competitive disruption from generative AI.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "BKNG",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Travel recovery thesis intact; 16% YTD decline and 27% off highs represent major opportunity as post-pandemic normalization persists. Market is pricing excessive caution.",
+      "evidence": ["down 16% over the past year", "up 1% over the past month", "about 27% below its high of the past year"],
+      "counterargument": "Macro slowdown or recession could severely impact travel spending, especially if consumer savings are depleted.",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "24% YTD gain with 30% pullback and recent weakness (-2% monthly) suggests underperformance reset. Government contracts and AI positioning remain durable edges.",
+      "evidence": ["up 24% over the past year", "down 2% over the past month", "about 30% below its high of the past year"],
+      "counterargument": "Reliance on government spending and expensive acquisition strategy make it vulnerable to political shifts or further valuation compression.",
+      "confidence": 0.50
+    },
+    {
+      "ticker": "V",
+      "weight": 0.02,
+      "direction": "long",
+      "thesis": "Down 3% YTD but +10% monthly recovery shows momentum building. Core payments thesis intact; modest weight provides diversification to tech portfolio concentration.",
+      "evidence": ["down 3% over the past year", "up 10% over the past month"],
+      "counterargument": "Digital payments growth expectations are widely anticipated; competitive dynamics could pressure margins.",
+      "confidence": 0.52
+    },
+    {
+      "ticker": "SNDK",
+      "weight": 0.10,
+      "direction": "short",
+      "thesis": "Unsustainable 3542% YTD return with +71% monthly gain at all-time highs is textbook bubble. No reasonable fundamental supports 35x appreciation in twelve months; risk of violent mean reversion.",
+      "evidence": ["up 3542% over the past year", "up 71% over the past month", "trading close to its highest point of the past year"],
+      "counterargument": "If genuine structural market shift exists that benefits SNDK, gains could extend, though probability is minimal.",
+      "confidence": 0.68
+    }
+  ],
+  "cash": 0.24,
+  "reasoning": "Built concentrated position in high-conviction value names experiencing 20-47% pullbacks where bad news appears fully reflected in prices. Avoided egregious bubbles like SNDK (3542% YTD) while taking tactical short to exploit obvious mean reversion. Maintained 24% cash given 63-day lockup and binary outcome nature of the experiment; capital discipline is as important as stock selection."
+}

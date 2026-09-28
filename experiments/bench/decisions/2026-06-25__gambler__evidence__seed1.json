@@ -1,0 +1,177 @@
+{
+ "cell": "2026-06-25__gambler__evidence__seed1",
+ "as_of": "2026-06-25",
+ "persona": "gambler",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "13f782381b0af87b",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "GOOGL": "positive",
+  "TSLA": "positive",
+  "NVDA": "insufficient",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "AMZN": "mixed",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-18",
+  "newest_bar": "2026-06-25",
+  "newest_fact": "2026-06-25",
+  "as_of": "2026-06-25"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"ADBE\",\n      \"weight\": 0.15,\n      \"direction\": \"long\",\n      \"thesis\": \"Severe correction of a quality software company with exceptional cash generation and profit metrics presents a major recovery opportunity as bad news is fully priced in.\",\n      \"evidence\": [\"down 50% over the past year\", \"Profit per dollar paid 0.99\", \"Cash per dollar paid 0.98\", \"down 20% over the past month\", \"about 51% below its high of the past year\"],\n      \"counterargument\": \"Higher server power and infrastructure costs of smart features could squeeze software profit margins if users do not pay extra for them.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Growth leader with exceptional margin expansion and ROA has been oversold; strong revenue growth and margin direction metrics suggest significant recovery potential.\",\n      \"evidence\": [\"down 25% over the past year\", \"down 21% over the past month\", \"about 48% below its high of the past year\", \"Margin direction 0.91\", \"Return on assets 0.90\", \"Revenue growth 0.91\"],\n      \"counterargument\": \"Sales per dollar paid at only 0.04 suggests expensive valuation that company must grow into.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Quality digital platform with exceptional cash backing for earnings and strong profitability has corrected significantly; fundamentals remain robust.\",\n      \"evidence\": [\"down 23% over the past year\", \"down 11% over the past month\", \"about 31% below its high of the past year\", \"Earnings backed by cash 0.94\", \"Cash per dollar paid 0.93\", \"Profit per dollar paid 0.89\"],\n      \"counterargument\": \"Debt direction at only 0.17 is weak relative to growth companies, creating potential capital structure concerns.\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Fundamental quality company showing massive build-up of future corporate orders has been oversold despite strong underlying demand signals.\",\n      \"evidence\": [\"down 28% over the past year\", \"down 15% over the past month\", \"about 34% below its high of the past year\", \"Massive build-up of future corporate orders that indicates healthy, sustained customer demand\", \"Profit per dollar paid 0.81\", \"Return on assets 0.80\"],\n      \"counterargument\": \"It shows that the physical game console business is shrinking, exposing hardware weakness in an important historical segment.\",\n      \"confidence\": 0.69\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Quality enterprise software company with strong cash generation metrics has been oversold following market correction; fundamentals remain solid.\",\n      \"evidence\": [\"down 27% over the past year\", \"down 21% over the past month\", \"about 53% below its high of the past year\", \"Cash per dollar paid 0.91\", \"Profit per dollar paid 0.82\"],\n      \"counterargument\": \"Margin direction at only 0.31 suggests profitability under pressure despite positive revenue metrics.\",\n      \"confidence\": 0.67\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Resolved regulatory overhang with strong fundamentals creates rebound opportunity; SEC clearing removes material downside risk.\",\n      \"evidence\": [\"down 37% over the past year\", \"down 20% over the past month\", \"about 42% below its high of the past year\", \"Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks\", \"Gross profitability 0.90\"],\n      \"counterargument\": \"If clients stop buying older design software without upgrading to newer cloud-based subscriptions, long-term growth profile may be impaired.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.04,\n      \"direction\": \"long\",\n      \"thesis\": \"Strong balance sheet and proven travel demand resilience provide foundation for recovery after decline; best-in-class cash position supports execution.\",\n      \"evidence\": [\"down 19% over the past year\", \"Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues\", \"Cash cushion 1.00\", \"up 9% over the past month\"],\n      \"counterargument\": \"Weak performance and asset write-downs at KAYAK indicate that rising customer acquisition costs are dragging on profitability.\",\n      \"confidence\": 0.64\n    },\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": -0.12,\n      \"direction\": \"short\",\n      \"thesis\": \"Extreme valuation after monster run with explicit material warning of expensive pricing; cash per dollar metrics suggest fundamental vulnerability despite strong recent performance.\",\n      \"evidence\": [\"up 4842% over the past year\", \"up 47% over the past month\", \"The share has run hard and is now expensive on the numbers\", \"Cash per dollar paid 0.00\", \"Price steadiness 0.02\"],\n      \"counterargument\": \"Prepaying the entire $2.0 billion term loan within a year of the acquisition demonstrates robust cash generation and balance sheet strength.\",\n      \"confidence\": 0.71\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": -0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"Geopolitical supply concentration and rising capex burden leave stock vulnerable after extraordinary appreciation; little bad news reflected in current price.\",\n      \"evidence\": [\"up 856% over the past year\", \"little bad news is currently reflected in the price\", \"Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions\", \"high capital expenditure baseline\", \"Indicated a material increase in the effective tax rate\"],\n      \"counterargument\": \"Strong momentum at 0.96 and earnings backed by cash at 0.81 suggest underlying business quality remains intact.\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"AMAT\",\n      \"weight\": -0.07,\n      \"direction\": \"short\",\n      \"thesis\": \"Federal investigations, tax write-downs, and raw material supply constraints converge as headwinds after massive appreciation; limited downside risk pricing.\",\n      \"evidence\": [\"up 268% over the past year\", \"up 47% over the past month\", \"Ongoing investigations and subpoenas regarding China shipments create persistent legal uncertainties\", \"An unexpected write-down of tax assets and a higher tax rate directly reduce the company's net profits\", \"Supply constraints on raw materials threaten production output\", \"little bad news is currently reflected in the price\"],\n      \"counterargument\": \"Return on assets at 0.86 and strong momentum at 0.80 demonstrate underlying business remains strong despite near-term headwinds.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"INTC\",\n      \"weight\": -0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Momentum-driven gains lack fundamental support; weak profitability metrics inconsistent with extreme valuation after massive run.\",\n      \"evidence\": [\"up 499% over the past year\", \"up 8% over the past month\", \"Gross profitability 0.00\", \"Return on assets 0.09\", \"Price steadiness 0.07\"],\n      \"counterargument\": \"Margin direction exceptionally strong at 0.89 suggests significant improvement trajectory and potential recovery in profitability.\",\n      \"confidence\": 0.66\n    }\n  ],\n  \"cash\": 0.03,\n  \"reasoning\": \"Portfolio concentrates on deeply oversold quality stocks with strong cash metrics and beaten-down valuations while shorting momentum-driven stocks at extreme prices with material warning signals or fundamental headwinds. Aggressive positioning reflects speculator profile with minimal cash reserve, betting on mean reversion in corrected quality names over the 63-session holding period while tactically shorting bubble-risk stocks with explicit negative catalysts.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "ADBE",
+    "weight": 0.15,
+    "direction": "long",
+    "thesis": "Severe correction of a quality software company with exceptional cash generation and profit metrics presents a major recovery opportunity as bad news is fully priced in.",
+    "evidence": [
+     "down 50% over the past year",
+     "Profit per dollar paid 0.99",
+     "Cash per dollar paid 0.98",
+     "down 20% over the past month",
+     "about 51% below its high of the past year"
+    ],
+    "counterargument": "Higher server power and infrastructure costs of smart features could squeeze software profit margins if users do not pay extra for them.",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Growth leader with exceptional margin expansion and ROA has been oversold; strong revenue growth and margin direction metrics suggest significant recovery potential.",
+    "evidence": [
+     "down 25% over the past year",
+     "down 21% over the past month",
+     "about 48% below its high of the past year",
+     "Margin direction 0.91",
+     "Return on assets 0.90",
+     "Revenue growth 0.91"
+    ],
+    "counterargument": "Sales per dollar paid at only 0.04 suggests expensive valuation that company must grow into.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "META",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Quality digital platform with exceptional cash backing for earnings and strong profitability has corrected significantly; fundamentals remain robust.",
+    "evidence": [
+     "down 23% over the past year",
+     "down 11% over the past month",
+     "about 31% below its high of the past year",
+     "Earnings backed by cash 0.94",
+     "Cash per dollar paid 0.93",
+     "Profit per dollar paid 0.89"
+    ],
+    "counterargument": "Debt direction at only 0.17 is weak relative to growth companies, creating potential capital structure concerns.",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Fundamental quality company showing massive build-up of future corporate orders has been oversold despite strong underlying demand signals.",
+    "evidence": [
+     "down 28% over the past year",
+     "down 15% over the past month",
+     "about 34% below its high of the past year",
+     "Massive build-up of future corporate orders that indicates healthy, sustained customer demand",
+     "Profit per dollar paid 0.81",
+     "Return on assets 0.80"
+    ],
+    "counterargument": "It shows that the physical game console business is shrinking, exposing hardware weakness in an important historical segment.",
+    "confidence": 0.69
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Quality enterprise software company with strong cash generation metrics has been oversold following market correction; fundamentals remain solid.",
+    "evidence": [
+     "down 27% over the past year",
+     "down 21% over the past month",
+     "about 53% below its high of the past year",
+     "Cash per dollar paid 0.91",
+     "Profit per dollar paid 0.82"
+    ],
+    "counterargument": "Margin direction at only 0.31 suggests profitability under pressure despite positive revenue metrics.",
+    "confidence": 0.67
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Resolved regulatory overhang with strong fundamentals creates rebound opportunity; SEC clearing removes material downside risk.",
+    "evidence": [
+     "down 37% over the past year",
+     "down 20% over the past month",
+     "about 42% below its high of the past year",
+     "Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks",
+     "Gross profitability 0.90"
+    ],
+    "counterargument": "If clients stop buying older design software without upgrading to newer cloud-based subscriptions, long-term growth profile may be impaired.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "BKNG",
+    "weight": 0.04,
+    "direction": "long",
+    "thesis": "Strong balance sheet and proven travel demand resilience provide foundation for recovery after decline; best-in-class cash position supports execution.",
+    "evidence": [
+     "down 19% over the past year",
+     "Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues",
+     "Cash cushion 1.00",
+     "up 9% over the past month"
+    ],
+    "counterargument": "Weak performance and asset write-downs at KAYAK indicate that rising customer acquisition costs are dragging on profitability.",
+    "confidence": 0.64
+   }
+  ],
+  "cash": 0.35,
+  "reasoning": "Portfolio concentrates on deeply oversold quality stocks with strong cash metrics and beaten-down valuations while shorting momentum-driven stocks at extreme prices with material warning signals or fundamental headwinds. Aggressive positioning reflects speculator profile with minimal cash reserve, betting on mean reversion in corrected quality names over the 63-session holding period while tactically shorting bubble-risk stocks with explicit negative catalysts.",
+  "gross_before_scaling": 0.65,
+  "scaled_back": false
+ },
+ "parsed": true
+}

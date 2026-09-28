@@ -1,0 +1,78 @@
+{
+  "positions": [
+    {
+      "ticker": "BKNG",
+      "weight": 0.14,
+      "direction": "long",
+      "thesis": "Strongest positive verdict with perfect cash generation metrics (1.0 cash per dollar paid and cash cushion). Strong booking volumes demonstrate resilient consumer demand despite economic headwinds.",
+      "evidence": ["Reads better than companies of this kind usually do, across annual report", "Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues", "Cash per dollar paid 1.00", "Cash cushion 1.00"],
+      "counterargument": "Weak performance and asset write-downs at KAYAK indicate that rising customer acquisition costs are dragging on profitability",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "ABNB",
+      "weight": 0.11,
+      "direction": "long",
+      "thesis": "Positive verdict with large-scale share buybacks signaling management confidence in cash generation. AI-powered customer service automation controls costs as platform scales.",
+      "evidence": ["Reads better than companies of this kind usually do, across annual report", "The company is using its substantial cash profits to actively buy back shares", "Large ongoing share buybacks signal management's confidence in cash flow generation and support per-share financial results", "Using artificial intelligence tools for customer service allows the company to control customer support expenses"],
+      "counterargument": "This highlights a major unresolved tax dispute with the IRS...An outstanding demand for over a billion dollars in back taxes creates a persistent financial overhang until resolved in court",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "VZ",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Positive verdict with explicit $55 billion capital return commitment. Provides stable, lower-volatility option suitable for cautious investor seeking income and capital discipline.",
+      "evidence": ["Reads better than companies of this kind usually do, across annual report", "Verizon outlined plans to return roughly $55 billion to shareholders", "Markets favor clear commitments to return capital to investors and defined spending controls"],
+      "counterargument": "Infiltration by advanced state-backed hackers risks severe security breaches highlighting vulnerability in critical network infrastructure and raises ongoing compliance and defense costs",
+      "confidence": 0.57
+    },
+    {
+      "ticker": "ADSK",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Positive verdict as SEC regulatory probe resolution removes major downside risk. Strong profitability (0.92) suggests sustainable pricing power and market position.",
+      "evidence": ["Reads better than companies of this kind usually do, across annual report", "This lifts a major regulatory cloud after the SEC (Securities and Exchange Commission) resolved its investigation into the company's financial reporting practices", "Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks", "Gross profitability 0.92"],
+      "counterargument": "If clients stop buying older design software without upgrading to newer cloud-based subscriptions...Any sign of friction in moving legacy users to newer cloud-based subscriptions can worry investors about the long-term growth profile",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "BSX",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Positive verdict with $14.5 billion acquisition expanding into fast-growing medical device markets. Strong physician adoption of Farapulse validates organic growth trajectory.",
+      "evidence": ["Reads better than companies of this kind usually do, across annual report", "This massive $14.5 billion acquisition significantly expands the company in fast-growing medical device markets", "Strong physician adoption of a primary new technology reinforces investor confidence in organic sales momentum", "Revenue growth 0.89"],
+      "counterargument": "Abandoning this heart valve program halts an anticipated revenue stream, eliminating a prospective product line limits market reach in structural heart care and triggers restructuring charges",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "WMT",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Mixed verdict but exceptional operational metrics (0.90 sales per paid, 0.88 momentum, 0.88 earnings backed by cash). Sustained investment in automation maintains competitive position against digital retailers.",
+      "evidence": ["Walmart expects capital expenditures (money spent on long-term assets) to remain elevated at approximately $16 billion per year", "Continuing high investment in automation and online shopping capabilities is widely seen as necessary for the company to maintain its competitive edge against tech-first retailers", "Sales per dollar paid 0.90", "Twelve-month momentum 0.88", "Earnings backed by cash 0.88"],
+      "counterargument": "Foreign currency exchange rate headwinds and volatile fuel prices could pressure margins",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "AEP",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Mixed verdict with clear structural growth catalyst from AI data center demand. Strong margin direction (0.80) and debt management (0.80) provide financial stability.",
+      "evidence": ["Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations", "Margin direction 0.80", "Debt direction 0.80", "The shares are up 26% over the past year"],
+      "counterargument": "Rising financing needs amid uncertain capital market appetite could raise borrowing costs or delay lucrative grid expansions. This extreme customer concentration exposes AEP's Texas subsidiary to credit risk",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "TMUS",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Positive verdict with clear UScellular integration cost savings expected to improve margins. Conservative position size reflects significant year-to-date decline and market skepticism.",
+      "evidence": ["Reads better than companies of this kind usually do, across annual report", "This defines the financial goals for the UScellular integration", "Achieving significant annual cost savings should improve profit margins over the medium term"],
+      "counterargument": "This marks a major change in how the company reports its performance...The market typically dislikes when companies stop reporting key operational metrics like total subscriber additions, as it reduces visibility into core growth",
+      "confidence": 0.52
+    }
+  ],
+  "cash": 0.35,
+  "reasoning": "Portfolio focuses exclusively on Loom's positive and selective mixed verdicts, reflecting cautious investor profile that trusts authoritative analysis. Largest positions in BKNG and ABNB for superior cash generation metrics. Diversified across consumer, technology, utilities, and communications sectors with 35% cash buffer for risk management. Avoided all negative verdict stocks as they show structural challenges incompatible with loss-averse investor profile."
+}

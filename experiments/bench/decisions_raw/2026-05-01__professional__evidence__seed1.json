@@ -1,0 +1,160 @@
+{
+  "positions": [
+    {
+      "ticker": "META",
+      "weight": 0.15,
+      "direction": "long",
+      "thesis": "Quality franchise trading at reasonable valuation. Strong cash conversion metrics (0.93 earnings backed by cash) with sustainable fundamentals offer compelling risk-reward given only 7% YoY appreciation and 23% discount to highs.",
+      "evidence": [
+        "Earnings backed by cash: 0.93",
+        "Profit per dollar paid: 0.84",
+        "Return on assets: 0.84",
+        "The shares are up 7% over the past year and up 5% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price."
+      ],
+      "counterargument": "Rapid capital spending expansion and balance sheet growth (0.17 expansion rank) could compress returns if AI infrastructure deployment yields lower-than-expected returns.",
+      "confidence": 0.72
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Superior growth profile combined with exceptional profitability metrics and meaningful pullback from highs. Margin direction and revenue growth both rank 0.93+, with pullback creating entry point.",
+      "evidence": [
+        "Margin direction: 0.95",
+        "Revenue growth: 0.93",
+        "Return on assets: 0.91",
+        "It is about 30% below its high of the past year, so some bad news is already reflected in the price."
+      ],
+      "counterargument": "Rapid business expansion alongside peak valuation run suggests execution risk. Early 24% YoY return combined with pullback may not yet price in slower growth.",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Exceptional capital efficiency metrics (0.99 profit/dollar paid, 0.97 cash/dollar paid) now available at 33% discount following regulatory and M&A uncertainty. AI infrastructure costs are temporary headwind.",
+      "evidence": [
+        "Profit per dollar paid: 0.99",
+        "Cash per dollar paid: 0.97",
+        "Gross profitability: 0.95",
+        "It is about 40% below its high of the past year, so some bad news is already reflected in the price.",
+        "Higher computer power and inferencing costs for smart features could squeeze software profit margins if users do not pay extra for them."
+      ],
+      "counterargument": "Acquisition regulatory risks remain active and integration challenges from competitive acquisitions historically proved costly. Software margin compression from AI costs may be persistent.",
+      "confidence": 0.68
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Critical semiconductor equipment supplier with elite asset efficiency (0.82) and return on assets (0.85). Momentum justified by fundamental quality, with stable cash cushion supporting valuation.",
+      "evidence": [
+        "Cash cushion: 0.91",
+        "Return on assets: 0.85",
+        "Asset efficiency: 0.82",
+        "Twelve-month momentum: 0.82"
+      ],
+      "counterargument": "Extreme valuation at 116% YoY appreciation creates significant downside risk if semiconductor cycle slows. High dependency on geopolitical stable access to Asia.",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "ORCL",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Cash-generative enterprise software platform trading significantly below highs with stable fundamentals. Strong cash per dollar metrics (0.65 cash/profit, 0.61 cash/paid) indicate sustainable returns.",
+      "evidence": [
+        "Cash per dollar of profit: 0.65",
+        "Cash per dollar paid: 0.61",
+        "Profit per dollar paid: 0.59",
+        "It is about 47% below its high of the past year, so some bad news is already reflected in the price."
+      ],
+      "counterargument": "Weak balance sheet expansion (0.11) and low momentum (0.38) suggest structural growth challenges. Price steadiness of 0.12 indicates volatility risk.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "AMAT",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Secular semiconductor equipment beneficiary with strong return on assets (0.88) and momentum. China legal risks are manageable against 164% YoY appreciation providing entry after recent strength.",
+      "evidence": [
+        "Return on assets: 0.88",
+        "Dilution of your stake: 0.87",
+        "Twelve-month momentum: 0.86",
+        "The shares are up 164% over the past year and up 10% over the past month."
+      ],
+      "counterargument": "Active federal investigations and China export restrictions create persistent legal and geopolitical headwinds. Tax rate increase from OBBBA creates near-term earnings headwind.",
+      "confidence": 0.68
+    },
+    {
+      "ticker": "ADSK",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Regulatory cloud now lifted with SEC probe resolution, removing major tail risk. Strong cash metrics and asset efficiency (0.90 asset efficiency) support the stock with pullback from highs.",
+      "evidence": [
+        "This lifts a major regulatory cloud after the SEC (Securities and Exchange Commission) probe into financial reporting practices is a major positive, removing significant downside risks.",
+        "Gross profitability: 0.92",
+        "Cash per dollar of profit: 0.78",
+        "It is about 25% below its high of the past year, so some bad news is already reflected in the price."
+      ],
+      "counterargument": "Legacy software migration friction suggests growth inflection risk. Low momentum (0.23) may indicate unresolved market concerns about subscription transition.",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "BKNG",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Travel demand resilience and superior cost discipline create attractive risk-reward at 27% discount to highs. Exceptional cash cushion (1.00 rank) and debt position provide downside protection.",
+      "evidence": [
+        "Despite high inflation and economic worries, actual travel demand continues to grow and should support near-term revenues.",
+        "Cash cushion: 1.00",
+        "Debt direction: 0.00",
+        "It is about 27% below its high of the past year, so some bad news is already reflected in the price."
+      ],
+      "counterargument": "KAYAK write-downs indicate competitive pressure in customer acquisition costs. Extremely low momentum (0.03) and margin direction headwinds suggest structural margin pressures.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "VZ",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Clear capital return commitment ($55B to shareholders) with manageable security risks provides cash flow support. Limited upside but defensive positioning justified.",
+      "evidence": [
+        "Verizon outlined plans to return roughly $55 billion to shareholders, which markets favor with clear commitments to return capital to investors.",
+        "Twelve-month momentum: 0.71",
+        "Price steadiness: 0.71"
+      ],
+      "counterargument": "Nation-state breach confirmation raises ongoing compliance and defense costs. Negative month (-1%) despite positive YoY suggests momentum failure.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "SNDK",
+      "weight": -0.08,
+      "direction": "short",
+      "thesis": "Extreme momentum bubble with fundamentally indefensible valuation. Up 3542% in twelve months with worst-in-class return on assets (0.02) and profit metrics (0.04 per dollar paid). Clear opportunity to fade euphoria.",
+      "evidence": [
+        "The shares are up 3542% over the past year and up 71% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.",
+        "Return on assets: 0.02",
+        "Profit per dollar paid: 0.04",
+        "Price steadiness: 0.03"
+      ],
+      "counterargument": "Strong cyclical pricing surge and prepayment of $2B debt demonstrates cash generation despite valuation extremes. Continued chip shortage or demand could extend rally.",
+      "confidence": 0.75
+    },
+    {
+      "ticker": "INTC",
+      "weight": -0.05,
+      "direction": "short",
+      "thesis": "Catastrophic fundamental deterioration with 0.00 gross profitability masks momentum-driven 399% YoY appreciation. Disqualifying profitability metrics warrant aggressive short against euphoria.",
+      "evidence": [
+        "Gross profitability: 0.00",
+        "The shares are up 399% over the past year and up 107% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.",
+        "Price steadiness: 0.09",
+        "Revenue growth: 0.10"
+      ],
+      "counterargument": "Margin direction improvement (0.93) and Government investment support could enable turnaround. Asset base (0.84 assets/dollar paid) provides franchise value.",
+      "confidence": 0.70
+    }
+  ],
+  "cash": 0.29,
+  "reasoning": "Positioned for quality at drawdowns (META, ADBE, PLTR, ORCL) where bad news is priced in and fundamentals justify entry. Conviction shorts against momentum bubbles with indefensible valuations (SNDK at 3542% up, INTC at 0.00 gross profitability) capture asymmetric opportunities. Capital weighted toward high conviction long positions with 0.70+ confidence while maintaining defensive cash allocation against 63-session lock-up and information void."
+}

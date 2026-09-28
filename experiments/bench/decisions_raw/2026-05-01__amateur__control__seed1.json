@@ -1,0 +1,123 @@
+{
+  "positions": [
+    {
+      "ticker": "ORCL",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Oracle is recovering strongly from a deep discount with excellent recent momentum. The 47% discount from highs indicates substantial bad news is priced in, while the 19% monthly gain signals the recovery is real.",
+      "evidence": ["It is about 47% below its high of the past year, so some bad news is already reflected in the price", "The shares are up 19% over the past year and up 19% over the past month"],
+      "counterargument": "The stock could have fallen for fundamental reasons that continue to deteriorate, and recent momentum may not reflect improving business conditions.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "MSFT",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Microsoft shows excellent recovery momentum despite flat annual performance. The recent 12% monthly gain after being 23% off highs suggests confidence in the business.",
+      "evidence": ["The shares are down 2% over the past year and up 12% over the past month", "It is about 23% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "The YTD decline despite recent strength could mean the fundamental issues haven't been resolved and this is just a temporary bounce.",
+      "confidence": 0.67
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Adobe has suffered significant losses but is bouncing back. The 40% discount and recent recovery signal genuine turnaround potential.",
+      "evidence": ["The shares are down 33% over the past year and up 4% over the past month", "It is about 40% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "A 33% annual decline suggests serious business problems that a small monthly bounce may not resolve.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "META",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Meta is stabilizing after weakness, trading well below its highs with modest strength returning. This defensive tech position offers downside protection.",
+      "evidence": ["The shares are up 7% over the past year and up 5% over the past month", "It is about 23% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Single-digit annual returns and only 5% monthly gains suggest business momentum remains weak despite recovery.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "AMZN",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Amazon combines strong annual growth with exceptional recent momentum, indicating robust business health and consumer demand.",
+      "evidence": ["The shares are up 41% over the past year and up 27% over the past month"],
+      "counterargument": "Trading near all-time highs means little bad news is reflected in the price, creating downside risk if business slows.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Apple offers quality tech exposure with strong growth momentum. As a leading company, it provides confidence for a nervous investor.",
+      "evidence": ["The shares are up 32% over the past year and up 10% over the past month"],
+      "counterargument": "Trading close to highs leaves limited margin of safety and vulnerability to disappointing earnings.",
+      "confidence": 0.64
+    },
+    {
+      "ticker": "JPM",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "JPMorgan shows strong financial sector performance with consistent monthly gains. Financial leaders offer stability.",
+      "evidence": ["The shares are up 29% over the past year and up 6% over the past month"],
+      "counterargument": "Financial sector could face headwinds from interest rate changes or economic slowdown.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "NVDA",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "NVIDIA captures the AI trend with 78% annual gains. Recent monthly strength confirms continuing investor enthusiasm.",
+      "evidence": ["The shares are up 78% over the past year and up 13% over the past month"],
+      "counterargument": "Massive gains mean valuation is stretched and susceptible to any disappointment in AI hype.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "GOOGL",
+      "weight": 0.02,
+      "direction": "long",
+      "thesis": "Alphabet shows exceptional growth with 30% monthly momentum, representing a quality growth position despite valuation concerns.",
+      "evidence": ["The shares are up 140% over the past year and up 30% over the past month"],
+      "counterargument": "The massive 140% gain and trading near highs means very little bad news is priced in, creating significant downside risk.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "AXP",
+      "weight": 0.02,
+      "direction": "long",
+      "thesis": "American Express shows steady financial strength with consistent double-digit growth and monthly gains.",
+      "evidence": ["The shares are up 20% over the past year and up 6% over the past month"],
+      "counterargument": "Financial sector valuations may be stretched if interest rates fall.",
+      "confidence": 0.57
+    },
+    {
+      "ticker": "BRK-B",
+      "weight": 0.02,
+      "direction": "long",
+      "thesis": "Berkshire Hathaway offers defensive positioning and stability for a nervous investor despite slight underperformance.",
+      "evidence": ["The shares are down 11% over the past year and down 1% over the past month"],
+      "counterargument": "Underperformance suggests the market sees better opportunities, and this position may continue to lag.",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "WMT",
+      "weight": 0.02,
+      "direction": "long",
+      "thesis": "Walmart combines consumer strength with consistent growth. Strong recent momentum supports position.",
+      "evidence": ["The shares are up 36% over the past year and up 6% over the past month"],
+      "counterargument": "Trading near highs creates vulnerability if consumer spending slows.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "KO",
+      "weight": 0.01,
+      "direction": "long",
+      "thesis": "Coca-Cola provides defensive consumer staples exposure with modest consistent gains.",
+      "evidence": ["The shares are up 13% over the past year and up 3% over the past month"],
+      "counterargument": "Slow growth rate offers limited upside potential.",
+      "confidence": 0.50
+    }
+  ],
+  "cash": 0.53,
+  "reasoning": "As a nervous retail investor with limited experience, I built this portfolio around two core principles: buying stocks that have already had bad news reflected in their prices (discounts from highs) combined with demonstrating recovery momentum, while keeping over half in cash for safety and flexibility. I emphasized financial and technology leaders with authoritative track records, avoided extreme outliers with suspicious gains, and excluded stocks showing recent monthly weakness despite annual strength, as these signal potential problems."
+}

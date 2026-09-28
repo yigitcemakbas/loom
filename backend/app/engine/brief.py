@@ -28,6 +28,9 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from app.models.brief import Stance
+from app.engine.direction import can_be_directional
+from app.engine.direction import label as direction_label
+from app.engine.disclosure import incidence_excess
 from app.engine.disclosure import (
     informative_count,
     RECURRENCE_DISCOUNT,
@@ -52,7 +55,7 @@ from app.models.signal import Signal, SignalType
 
 # Bumped when the synthesis rules change, so stored briefs can be regenerated
 # deliberately rather than drifting silently.
-ENGINE_VERSION = "2026-09-28.1"
+ENGINE_VERSION = "2026-09-28.2"
 
 WINDOW_DAYS = 90
 
@@ -192,6 +195,25 @@ _SUBSTANTIVE_TYPES = {
     SignalType.INSIDER_ACTIVITY,
     SignalType.SHORT_INTEREST_SPIKE,
     SignalType.NOTABLE_QUOTE,
+    # Added when direction became documentary, and the reason is structural
+    # rather than a preference. Every other direction a substantive finding can
+    # carry is negative: a risk factor appearing, a risk diff, an insider sale,
+    # a short-interest spike. Quotes and guidance changes carry none. Excluding
+    # the one bidirectional observation Loom actually records would leave the
+    # stance with no positive channel whatsoever, which is not caution, it is a
+    # sign error — and it is the same structural negative bias that had reader
+    # agents shorting into two +22% quarters.
+    #
+    # A shift in the tone of the company's own disclosure is a property of the
+    # text, comparable between filings, and not a claim about price. It belongs
+    # in the same class as "the risk section grew". It stays the lowest-weighted
+    # evidence type in priority.py, which is where its being a language
+    # judgement is accounted for.
+    #
+    # The proper fix is a resolved-risk-factor signal, which needs the diff to
+    # run both ways and a migration to add the type. Until that exists this is
+    # what keeps the stance from being negative by construction.
+    SignalType.SENTIMENT_SHIFT,
 }
 
 _STOPWORDS = {
@@ -363,7 +385,8 @@ def _weighted_direction(
     stale_count = 0
     uninformative = 0
     for s in signals:
-        direction = s.market_direction
+        # What the document did, not what a market might do about it.
+        direction = direction_label(s)
         if direction not in ("positive", "negative", "neutral"):
             continue
         counts[direction] += 1
@@ -416,20 +439,53 @@ def _weighted_direction(
         weighted += weight * contribution
         total += weight
 
-    # No rescaling, deliberately. With uninformative findings excluded rather
-    # than diluting, the residual mean already runs -1 to +1 on the same scale
-    # as the plain direction mean it replaces, so the stance thresholds below
-    # apply unchanged. They stay universal on purpose: the quantity being
-    # tested is already relative to this company and to the genre of the
-    # document each finding came from, and a per-company threshold on top of a
-    # per-company measurement would be dynamism applied twice.
+    # No rescaling, deliberately. The quantity below already runs -1 to +1, so
+    # the stance thresholds apply unchanged. They stay universal on purpose: the
+    # measurement is already relative to this company's sector and to the genre
+    # of each document, and a per-company threshold on top of a per-company
+    # measurement would be dynamism applied twice.
     mean = weighted / total if total else 0.0
+
+    # The stance comes from incidence, not from the per-finding mean above.
+    #
+    # The per-finding mean is kept and reported because it is what the counts
+    # describe, but it can no longer carry a verdict: direction is now a property
+    # of the finding's type, so the per-finding residual against a genre whose
+    # expectation equals that direction is identically zero. Measured on the
+    # corpus, mean absolute excess for a new risk factor was 0.0018.
+    #
+    # What varies is volume. A filing that added fourteen new risk factors where
+    # its sector adds four is saying something; one that added four is not. That
+    # is the quantity the stance is now computed from, and it is bidirectional
+    # without a resolved-risk signal, because fewer concerns than the genre
+    # expects reads better.
+    incidence_residual = None
+    incidence_workings: dict | None = None
+    if norms is not None and getattr(norms, "incidence", None) is not None:
+        sector = None
+        for s in signals:
+            company = getattr(s, "company_id", None)
+            if company is not None:
+                sector = norms.sector_of.get(str(company))
+                break
+        incidence_residual, incidence_workings = incidence_excess(
+            signals, norms.incidence, sector=sector
+        )
+        if incidence_residual is not None:
+            mean = incidence_residual
     workings = {
         "restated": restated_count,
         "stale": stale_count,
         "uninformative": uninformative,
         "expected_mean": round(expected_total / total, 3) if total else None,
         "raw_excess": round(mean, 3) if norms is not None else None,
+        # The incidence workings, so a stance can be audited against the filings
+        # it was computed from: observed against expected directional counts, per
+        # document. This is the whole basis of the verdict and a reader is
+        # entitled to see the arithmetic.
+        "incidence_residual": (round(incidence_residual, 4)
+                               if incidence_residual is not None else None),
+        "incidence": incidence_workings if incidence_residual is not None else None,
     }
     return mean, total, counts, workings
 
@@ -450,7 +506,7 @@ def _pick_counterpoint(
     if stance_direction not in ("positive", "negative"):
         return None
     opposite = "negative" if stance_direction == "positive" else "positive"
-    against = [s for s in signals if s.market_direction == opposite]
+    against = [s for s in signals if direction_label(s) == opposite]
     if not against:
         return None
 
@@ -497,7 +553,7 @@ def _pick_drivers(
     """
     aligned = signals
     if stance_direction in ("positive", "negative"):
-        matching = [s for s in signals if s.market_direction == stance_direction]
+        matching = [s for s in signals if direction_label(s) == stance_direction]
         # Fall back to everything if the stance came from weighting rather than
         # a clear majority, so a brief never ends up with no drivers at all.
         aligned = matching or signals
@@ -572,7 +628,7 @@ def _build_drivers(chosen: list[Signal], population: list[Signal]) -> list[Drive
                 detail=_detail_for(signal, title),
                 # "unassessed" rather than "neutral": the reader must be able to
                 # tell a judged-as-balanced finding from an unjudged one.
-                direction=signal.market_direction or "unassessed",
+                direction=direction_label(signal),
                 magnitude=signal.market_magnitude or "moderate",
                 sources=sorted(sources),
                 signal_ids=[str(signal.id), *[str(s.id) for s in supporting]],
@@ -748,8 +804,8 @@ def _headline(
             # The distinction matters: this company has material, it just has
             # not been read yet, and telling the reader that is the honest move.
             return (
-                f"{_plural(total, 'finding')} collected, but {unassessed} have not been "
-                f"assessed for market impact yet, so no view is offered."
+                f"{_plural(total, 'finding')} collected, but {unassessed} of the ones "
+                f"that could carry a direction do not state one, so no view is offered."
             )
         if adjusted and total:
             # A third case, and the one the genre correction created. Loom did
@@ -873,8 +929,8 @@ def _what_changed(signals: list[Signal], since: datetime | None) -> str | None:
     if not fresh:
         return None
 
-    negative = sum(1 for s in fresh if s.market_direction == "negative")
-    positive = sum(1 for s in fresh if s.market_direction == "positive")
+    negative = sum(1 for s in fresh if direction_label(s) == "negative")
+    positive = sum(1 for s in fresh if direction_label(s) == "positive")
     lead = max(fresh, key=lambda s: s.priority or 0.0)
     lead_title, _ = _title_of(lead)
 
@@ -1010,7 +1066,12 @@ def build_brief(
     directional = counts["positive"] + counts["negative"]
     assessed = directional + counts["neutral"]
     directional_share = directional / len(substantive) if substantive else 0.0
-    assessed_share = assessed / len(substantive) if substantive else 0.0
+    # Measured over the findings that *could* carry a direction, not over all of
+    # them. A quote has no direction by nature, and counting it as an unjudged
+    # finding would refuse a verdict on any company whose record contains
+    # quotes — which is a third of the corpus.
+    capable = [s_ for s_ in substantive if can_be_directional(s_)]
+    assessed_share = (assessed / len(capable)) if capable else 0.0
     stance = _stance_for(
         mean, directional_share, assessed_share,
         assessed_count=assessed, source_count=len(source_types_of(substantive)),
@@ -1097,6 +1158,11 @@ def build_brief(
             # the digest both want.
             "routine_share": round(routine, 3) if routine is not None else None,
             "expected_mean": workings["expected_mean"],
+            # The quantity the stance is actually computed from, and the
+            # per-document arithmetic behind it, so a verdict can be checked
+            # against the filings rather than taken on faith.
+            "incidence_residual": workings.get("incidence_residual"),
+            "incidence": workings.get("incidence"),
             "excess_mean": workings["raw_excess"],
             "restated_findings": workings["restated"],
             # How many findings said nothing Loom did not already expect from a

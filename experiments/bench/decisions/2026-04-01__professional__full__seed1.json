@@ -1,0 +1,159 @@
+{
+ "cell": "2026-04-01__professional__full__seed1",
+ "as_of": "2026-04-01",
+ "persona": "professional",
+ "arm": "full",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "c62922e14050470e",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "negative",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-03-13",
+  "newest_bar": "2026-04-01",
+  "newest_fact": "2026-04-01",
+  "as_of": "2026-04-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"AEP\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"AI data center growth is a multi-year structural tailwind for utility power infrastructure. Company well-positioned to benefit from massive capex cycle supporting AI compute clusters with strong operational execution evident in metrics.\",\n      \"evidence\": [\"It establishes that AEP's future growth and capital spending plans\u2026: Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations\"],\n      \"counterargument\": \"Massive growth plans could be choked off by rising financing costs in uncertain capital markets. High customer concentration in Texas retail electricity increases credit risk.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.12,\n      \"direction\": \"long\",\n      \"thesis\": \"Travel demand showing resilience despite economic uncertainty. Company improved cost structure through restructuring with higher cost savings driving margin expansion potential.\",\n      \"evidence\": [\"Despite high inflation and economic worries, actual travel demand...: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues\", \"Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters\"],\n      \"counterargument\": \"KAYAK weakness indicates rising customer acquisition costs could drag on overall profitability despite strong booking trends. Negative momentum ranking (0.00) suggests investor skepticism.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"ABNB\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"AI automation reducing customer support costs while maintaining service quality. Strong cash generation supports ongoing share buybacks. Market efficiency improving despite tax disputes.\",\n      \"evidence\": [\"Using artificial intelligence tools for customer service allows the...: Automating customer assistance helps control customer support expenses as global transaction volume grows\", \"The company is using its substantial cash profits to actively buy...: Large ongoing share buybacks signal management's confidence in cash flow generation and support per-share financial results\"],\n      \"counterargument\": \"$1B+ IRS tax dispute creates persistent financial overhang requiring court resolution. Regulatory and tax risks remain material to long-term capital allocation.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"VZ\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Strong management commitment to return $55B to shareholders with defined spending discipline. Stable telecom business offers attractive capital return profile and prices in known security risks.\",\n      \"evidence\": [\"Verizon outlined plans to return roughly $55 billion to shareholders\u2026: Markets favor clear commitments to return capital to investors and defined spending controls, even with near-term top-line transition\"],\n      \"counterargument\": \"Nation-state hacker infiltration highlights ongoing infrastructure vulnerability and defense cost increases. Telecom sector faces secular headwinds from wireless substitution.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"BSX\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"$14.5B acquisition in fast-growing medical device market expands addressable market. Farapulse strong physician adoption provides organic growth foundation supporting integration upside. Recent drawdown creates entry point.\",\n      \"evidence\": [\"This massive $14.5 billion acquisition significantly expands the...: Large strategic acquisitions in fast-growing medical device markets can drive long-term revenue growth, despite high integration requirements\", \"The commercial success of Farapulse serves as the key growth engine...: Strong physician adoption of a primary new technology reinforces investor confidence in organic sales momentum\"],\n      \"counterargument\": \"Severe 39% one-year decline and 19% monthly decline suggest market pricing major execution or integration risks. Recent price weakness indicates limited upside is priced in.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Clearance of SEC regulatory probe removes major overhang and reputational risk. Recovery opportunity as market prices out regulatory uncertainty. Design software platform remains valuable despite adoption friction.\",\n      \"evidence\": [\"This lifts a major regulatory cloud after the SEC (Securities and...: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks\"],\n      \"counterargument\": \"Legacy software adoption friction as customers migrate to cloud subscriptions. Only 2 meaningful findings suggests thin analysis, limiting conviction in recovery thesis.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Continued capex investment in automation and omnichannel maintains competitive advantage despite FX headwinds. Strong execution shown by 42% YoY gain despite external pressures. Stable cash generation supports dividends.\",\n      \"evidence\": [\"Walmart expects capital expenditures (money spent on long-term...: Continuing high investment in automation and online shopping capabilities is widely seen as necessary for the company to maintain its competitive edge against tech-first retailers\"],\n      \"counterargument\": \"Mixed verdict reflects ongoing operational complexity. FX headwinds may persist; markets typically treat FX impacts as non-operational noise.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Strong cash generation metrics (0.67 per dollar paid, 0.65 per dollar profit) indicate efficient business model. Trading 56% below high suggests market pricing permanent headwinds. Sufficient cash for growth and shareholder returns.\",\n      \"evidence\": [],\n      \"counterargument\": \"Insufficient data on specific catalysts for recovery. Weak growth history (0.10 revenue growth) suggests structural challenges competing with cloud-native entrants.\",\n      \"confidence\": 0.52\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": -0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"316% year-over-year gain on negative fundamental backdrop is unsustainable valuation disconnect. Taiwan DRAM concentration creates geopolitical and environmental supply chain vulnerability. Rising effective tax rate directly compresses profitability.\",\n      \"evidence\": [\"Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions\", \"Indicates a material increase in the effective tax rate from the...: An anticipated increase in the global effective tax rate starting in the upcoming fiscal year will directly reduce net income and earnings per share\"],\n      \"counterargument\": \"Elevated capex guidance suggests management confidence in continued AI-driven demand. Strong momentum (0.95) indicates institutional investor conviction remains intact despite headwinds.\",\n      \"confidence\": 0.38\n    },\n    {\n      \"ticker\": \"TSLA\",\n      \"weight\": -0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Capital expenditure commitment exceeding $20B while automotive revenues decline creates structural cash flow deterioration. Massive capex expansion without corresponding profitability growth represents poor capital allocation.\",\n      \"evidence\": [\"Tesla explicitly guided 2026 capital expenditures to exceed $20\u2026: Significantly expanding capital expenditure commitments during a period of contracting operational profits dampens near-term free cash flow expectations\", \"Confirms a full-year top-line revenue contraction driven by lower\u2026: An annual revenue decline in a growth-valued enterprise negatively impacts valuation assumptions\"],\n      \"counterargument\": \"Robotaxi commercial launch could unlock major long-term software revenue catalyst, justifying near-term capex investment. Market may be pricing in this transformation.\",\n      \"confidence\": 0.42\n    },\n    {\n      \"ticker\": \"NVDA\",\n      \"weight\": -0.06,\n      \"direction\": \"short\",\n      \"thesis\": \"Complete foreclosure from Chinese market represents structural and permanent loss of major geographic revenue. Compliance with US law is actively funding development of domestic Chinese competitors. Creates permanent earnings headwind after 60% appreciation.\",\n      \"evidence\": [\"Complete foreclosure from the Chinese market structurally damages...: Creates a permanent disadvantage in a major geographic region while funding and scaling domestic Chinese competitors\"],\n      \"counterargument\": \"Leading position in AI accelerators and strong gross profitability (1.00 ranking) remain. US market growth may offset China loss; company can charge premium for US chips.\",\n      \"confidence\": 0.40\n    }\n  ],\n  \"cash\": 0.43,\n  \"reasoning\": \"Portfolio concentrates on companies with tangible positive catalysts: AI data center tailwinds (AEP), travel recovery momentum (BKNG, ABNB), capital return discipline (VZ), and cash generation (ORCL). Hedged with shorts targeting companies whose negative fundamentals have been outpaced by valuation run-ups (MU +316%, NVDA +60%, TSLA +42%). Large 43% cash allocation reflects conservative stance appropriate for 63-day hold period with no new information.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "AEP",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "AI data center growth is a multi-year structural tailwind for utility power infrastructure. Company well-positioned to benefit from massive capex cycle supporting AI compute clusters with strong operational execution evident in metrics.",
+    "evidence": [
+     "It establishes that AEP's future growth and capital spending plans\u2026: Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations"
+    ],
+    "counterargument": "Massive growth plans could be choked off by rising financing costs in uncertain capital markets. High customer concentration in Texas retail electricity increases credit risk.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "BKNG",
+    "weight": 0.12,
+    "direction": "long",
+    "thesis": "Travel demand showing resilience despite economic uncertainty. Company improved cost structure through restructuring with higher cost savings driving margin expansion potential.",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand...: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues",
+     "Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters"
+    ],
+    "counterargument": "KAYAK weakness indicates rising customer acquisition costs could drag on overall profitability despite strong booking trends. Negative momentum ranking (0.00) suggests investor skepticism.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "ABNB",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "AI automation reducing customer support costs while maintaining service quality. Strong cash generation supports ongoing share buybacks. Market efficiency improving despite tax disputes.",
+    "evidence": [
+     "Using artificial intelligence tools for customer service allows the...: Automating customer assistance helps control customer support expenses as global transaction volume grows",
+     "The company is using its substantial cash profits to actively buy...: Large ongoing share buybacks signal management's confidence in cash flow generation and support per-share financial results"
+    ],
+    "counterargument": "$1B+ IRS tax dispute creates persistent financial overhang requiring court resolution. Regulatory and tax risks remain material to long-term capital allocation.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "VZ",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Strong management commitment to return $55B to shareholders with defined spending discipline. Stable telecom business offers attractive capital return profile and prices in known security risks.",
+    "evidence": [
+     "Verizon outlined plans to return roughly $55 billion to shareholders\u2026: Markets favor clear commitments to return capital to investors and defined spending controls, even with near-term top-line transition"
+    ],
+    "counterargument": "Nation-state hacker infiltration highlights ongoing infrastructure vulnerability and defense cost increases. Telecom sector faces secular headwinds from wireless substitution.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "BSX",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "$14.5B acquisition in fast-growing medical device market expands addressable market. Farapulse strong physician adoption provides organic growth foundation supporting integration upside. Recent drawdown creates entry point.",
+    "evidence": [
+     "This massive $14.5 billion acquisition significantly expands the...: Large strategic acquisitions in fast-growing medical device markets can drive long-term revenue growth, despite high integration requirements",
+     "The commercial success of Farapulse serves as the key growth engine...: Strong physician adoption of a primary new technology reinforces investor confidence in organic sales momentum"
+    ],
+    "counterargument": "Severe 39% one-year decline and 19% monthly decline suggest market pricing major execution or integration risks. Recent price weakness indicates limited upside is priced in.",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Clearance of SEC regulatory probe removes major overhang and reputational risk. Recovery opportunity as market prices out regulatory uncertainty. Design software platform remains valuable despite adoption friction.",
+    "evidence": [
+     "This lifts a major regulatory cloud after the SEC (Securities and...: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks"
+    ],
+    "counterargument": "Legacy software adoption friction as customers migrate to cloud subscriptions. Only 2 meaningful findings suggests thin analysis, limiting conviction in recovery thesis.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Continued capex investment in automation and omnichannel maintains competitive advantage despite FX headwinds. Strong execution shown by 42% YoY gain despite external pressures. Stable cash generation supports dividends.",
+    "evidence": [
+     "Walmart expects capital expenditures (money spent on long-term...: Continuing high investment in automation and online shopping capabilities is widely seen as necessary for the company to maintain its competitive edge against tech-first retailers"
+    ],
+    "counterargument": "Mixed verdict reflects ongoing operational complexity. FX headwinds may persist; markets typically treat FX impacts as non-operational noise.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Strong cash generation metrics (0.67 per dollar paid, 0.65 per dollar profit) indicate efficient business model. Trading 56% below high suggests market pricing permanent headwinds. Sufficient cash for growth and shareholder returns.",
+    "evidence": [],
+    "counterargument": "Insufficient data on specific catalysts for recovery. Weak growth history (0.10 revenue growth) suggests structural challenges competing with cloud-native entrants.",
+    "confidence": 0.52
+   }
+  ],
+  "cash": 0.24,
+  "reasoning": "Portfolio concentrates on companies with tangible positive catalysts: AI data center tailwinds (AEP), travel recovery momentum (BKNG, ABNB), capital return discipline (VZ), and cash generation (ORCL). Hedged with shorts targeting companies whose negative fundamentals have been outpaced by valuation run-ups (MU +316%, NVDA +60%, TSLA +42%). Large 43% cash allocation reflects conservative stance appropriate for 63-day hold period with no new information.",
+  "gross_before_scaling": 0.76,
+  "scaled_back": false
+ },
+ "parsed": true
+}

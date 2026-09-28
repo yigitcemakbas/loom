@@ -1,0 +1,215 @@
+{
+ "cell": "2026-03-02__professional__evidence__seed1",
+ "as_of": "2026-03-02",
+ "persona": "professional",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "ce83b78381573674",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "mixed",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "MSFT": "positive",
+  "NEE": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "WMT": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-02-25",
+  "newest_bar": "2026-03-02",
+  "newest_fact": "2026-03-02",
+  "as_of": "2026-03-02"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Resilient travel demand with improving cost structure drives margin expansion. Strong business model oversold after 16% decline.\",\n      \"evidence\": [\n        \"Despite high inflation and economic worries, actual travel demand\",\n        \"increased its expectation for higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters\",\n        \"Strong booking volume growth demonstrates resilient consumer demand\"\n      ],\n      \"counterargument\": \"KAYAK weak performance and rising customer acquisition costs suggest competitive pressures in travel search\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Guidance upgrade confirms expensive AI infrastructure is productive and pre-sold, reducing write-off risk and supporting sustained profitability gains.\",\n      \"evidence\": [\n        \"it reassures investors that expensive computer chips are successfully powering other highly profitable software products like Microsoft 365 Copilot rather than sitting idle\",\n        \"Knowing that high-cost equipment is pre-sold reduces the risk of future multi-billion-dollar write-offs if AI demand slows down\",\n        \"Microsoft raised its full-year fiscal 2026 outlook, stating that it offsets investor worries about near-term profit margin declines\"\n      ],\n      \"counterargument\": \"Gross profit margins remain under pressure from infrastructure spending; competitive risks in AI market persist\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Quality defensive business with strong cash conversion and momentum; balance sheet supports dividends and buybacks.\",\n      \"evidence\": [\n        \"Sales per dollar paid 0.90\",\n        \"Earnings backed by cash 0.83\",\n        \"Twelve-month momentum 0.84\"\n      ],\n      \"counterargument\": \"Modest profit per dollar paid (0.22) and ROA (0.29) below technology comparables\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"ABNB\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Strong cash generation and margin resilience; management confidence shown through buybacks. Tax dispute overhang manageable relative to business quality.\",\n      \"evidence\": [\n        \"The company is using its substantial cash profits to actively buy back shares\",\n        \"Using artificial intelligence tools for customer service allows the company to help control customer support expenses as global transaction volume grows\",\n        \"Cash cushion 0.92\"\n      ],\n      \"counterargument\": \"This highlights a major unresolved tax dispute with the IRS over a billion dollars in back taxes creates a persistent financial overhang until resolved in court\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional organic growth profile with expanding margins; recent pullback creates entry point despite valuation questions.\",\n      \"evidence\": [\n        \"Margin direction 0.94\",\n        \"Revenue growth 0.93\",\n        \"Return on assets 0.91\"\n      ],\n      \"counterargument\": \"Sources note company is earning well while buying great deal more, raising valuation questions amid rapid expansion\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"ADBE\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Oversold but quality metrics intact; profit per dollar paid and ROA leadership suggest business fundamentals remain intact despite valuation concerns.\",\n      \"evidence\": [\n        \"Profit per dollar paid 0.99\",\n        \"Gross profitability 0.95\",\n        \"Return on assets 0.93\"\n      ],\n      \"counterargument\": \"Higher AI infrastructure and server power costs could squeeze software profit margins if customers do not pay extra for smart features\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"AEP\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Secular growth opportunity positioning utility for high-margin AI data center power demand. Established capital plans de-risk execution.\",\n      \"evidence\": [\n        \"Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations\",\n        \"It establishes that AEP's future growth and capital spending plans are supported by explicit customer commitments\"\n      ],\n      \"counterargument\": \"Rising financing needs amid uncertain capital market appetite could raise borrowing costs. Extreme customer concentration in Texas subsidiary increases credit risk.\",\n      \"confidence\": 0.64\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Massive valuation run unsustainable; company now trades at extreme multiple despite strong business quality. Mean reversion likely.\",\n      \"evidence\": [\n        \"The share has run hard and is now expensive on the numbers\",\n        \"It now also costs more, relative to what the company actually earns and owns, than almost every comparable company\",\n        \"The shares are up 103% over the past year\"\n      ],\n      \"counterargument\": \"Strong underlying business with cash cushion 0.88 and asset efficiency 0.77 could support valuation longer than expected\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"KO\",\n      \"weight\": 0.04,\n      \"direction\": \"short\",\n      \"thesis\": \"Cash quality worst in peer set with zero backing for reported profits; massive tax liability overhang; capital allocation destroying value.\",\n      \"evidence\": [\n        \"Earnings backed by cash 0.00\",\n        \"Cash per dollar of profit 0.00\",\n        \"Cash per dollar paid 0.00\",\n        \"A potential $14 billion tax liability creates a major financial overhang and could significantly impair the company's long-term capital allocation capacity\",\n        \"Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns, creating drag on profitability\"\n      ],\n      \"counterargument\": \"US minimum tax exemption removes a potential headwind. Dividend increase signals management confidence despite headwinds.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"APD\",\n      \"weight\": 0.03,\n      \"direction\": \"short\",\n      \"thesis\": \"Capital destruction evident from write-downs and margin collapse. Building mega-facilities without locked-in demand is reckless capital allocation.\",\n      \"evidence\": [\n        \"Margin direction 0.00\",\n        \"Twelve-month momentum 0.02\",\n        \"The company incurred massive write-downs after cancelling or deprioritising projects\",\n        \"Building mega-facilities without pre-arranged customer buying commitments significantly increases long-term financial uncertainty if adoption slows\"\n      ],\n      \"counterargument\": \"Management now expects earnings growth with lower capital spending, suggesting discipline restoration\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"GOOGL\",\n      \"weight\": 0.03,\n      \"direction\": \"short\",\n      \"thesis\": \"Expensive valuation after 81% run; massive capex acceleration without proven return path creates near-term headwinds.\",\n      \"evidence\": [\n        \"The shares are up 81% over the past year\",\n        \"A significant increase in capital expenditures above an already massive baseline will likely pressure near-term free cash flow and margins\",\n        \"Highlights critical physical resource bottlenecks that could cap the growth pace of critical AI infrastructure\"\n      ],\n      \"counterargument\": \"Very strong return on assets (0.94) and still earning well on deployed capital (profit per dollar paid 0.79)\",\n      \"confidence\": 0.55\n    }\n  ],\n  \"cash\": 0.20,\n  \"reasoning\": \"Portfolio balances conviction longs in quality companies pulled back from highs (Booking, Airbnb, Adobe) with emerging secular themes (AI utilities, AI infrastructure verification) against expensive mega-cap valuations and capital-destructive names. Shorts focus on worst cash quality (Coca Cola), value destruction (Air Products), and extreme valuation (ASML). Maintains 20% cash for optionality given 63-day lockup.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "BKNG",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Resilient travel demand with improving cost structure drives margin expansion. Strong business model oversold after 16% decline.",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand",
+     "increased its expectation for higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters",
+     "Strong booking volume growth demonstrates resilient consumer demand"
+    ],
+    "counterargument": "KAYAK weak performance and rising customer acquisition costs suggest competitive pressures in travel search",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Guidance upgrade confirms expensive AI infrastructure is productive and pre-sold, reducing write-off risk and supporting sustained profitability gains.",
+    "evidence": [
+     "it reassures investors that expensive computer chips are successfully powering other highly profitable software products like Microsoft 365 Copilot rather than sitting idle",
+     "Knowing that high-cost equipment is pre-sold reduces the risk of future multi-billion-dollar write-offs if AI demand slows down",
+     "Microsoft raised its full-year fiscal 2026 outlook, stating that it offsets investor worries about near-term profit margin declines"
+    ],
+    "counterargument": "Gross profit margins remain under pressure from infrastructure spending; competitive risks in AI market persist",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Quality defensive business with strong cash conversion and momentum; balance sheet supports dividends and buybacks.",
+    "evidence": [
+     "Sales per dollar paid 0.90",
+     "Earnings backed by cash 0.83",
+     "Twelve-month momentum 0.84"
+    ],
+    "counterargument": "Modest profit per dollar paid (0.22) and ROA (0.29) below technology comparables",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "ABNB",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Strong cash generation and margin resilience; management confidence shown through buybacks. Tax dispute overhang manageable relative to business quality.",
+    "evidence": [
+     "The company is using its substantial cash profits to actively buy back shares",
+     "Using artificial intelligence tools for customer service allows the company to help control customer support expenses as global transaction volume grows",
+     "Cash cushion 0.92"
+    ],
+    "counterargument": "This highlights a major unresolved tax dispute with the IRS over a billion dollars in back taxes creates a persistent financial overhang until resolved in court",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Exceptional organic growth profile with expanding margins; recent pullback creates entry point despite valuation questions.",
+    "evidence": [
+     "Margin direction 0.94",
+     "Revenue growth 0.93",
+     "Return on assets 0.91"
+    ],
+    "counterargument": "Sources note company is earning well while buying great deal more, raising valuation questions amid rapid expansion",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "ADBE",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Oversold but quality metrics intact; profit per dollar paid and ROA leadership suggest business fundamentals remain intact despite valuation concerns.",
+    "evidence": [
+     "Profit per dollar paid 0.99",
+     "Gross profitability 0.95",
+     "Return on assets 0.93"
+    ],
+    "counterargument": "Higher AI infrastructure and server power costs could squeeze software profit margins if customers do not pay extra for smart features",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "AEP",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Secular growth opportunity positioning utility for high-margin AI data center power demand. Established capital plans de-risk execution.",
+    "evidence": [
+     "Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations",
+     "It establishes that AEP's future growth and capital spending plans are supported by explicit customer commitments"
+    ],
+    "counterargument": "Rising financing needs amid uncertain capital market appetite could raise borrowing costs. Extreme customer concentration in Texas subsidiary increases credit risk.",
+    "confidence": 0.64
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Massive valuation run unsustainable; company now trades at extreme multiple despite strong business quality. Mean reversion likely.",
+    "evidence": [
+     "The share has run hard and is now expensive on the numbers",
+     "It now also costs more, relative to what the company actually earns and owns, than almost every comparable company",
+     "The shares are up 103% over the past year"
+    ],
+    "counterargument": "Strong underlying business with cash cushion 0.88 and asset efficiency 0.77 could support valuation longer than expected",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "KO",
+    "weight": 0.04,
+    "direction": "short",
+    "thesis": "Cash quality worst in peer set with zero backing for reported profits; massive tax liability overhang; capital allocation destroying value.",
+    "evidence": [
+     "Earnings backed by cash 0.00",
+     "Cash per dollar of profit 0.00",
+     "Cash per dollar paid 0.00",
+     "A potential $14 billion tax liability creates a major financial overhang and could significantly impair the company's long-term capital allocation capacity",
+     "Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns, creating drag on profitability"
+    ],
+    "counterargument": "US minimum tax exemption removes a potential headwind. Dividend increase signals management confidence despite headwinds.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "APD",
+    "weight": 0.03,
+    "direction": "short",
+    "thesis": "Capital destruction evident from write-downs and margin collapse. Building mega-facilities without locked-in demand is reckless capital allocation.",
+    "evidence": [
+     "Margin direction 0.00",
+     "Twelve-month momentum 0.02",
+     "The company incurred massive write-downs after cancelling or deprioritising projects",
+     "Building mega-facilities without pre-arranged customer buying commitments significantly increases long-term financial uncertainty if adoption slows"
+    ],
+    "counterargument": "Management now expects earnings growth with lower capital spending, suggesting discipline restoration",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "GOOGL",
+    "weight": 0.03,
+    "direction": "short",
+    "thesis": "Expensive valuation after 81% run; massive capex acceleration without proven return path creates near-term headwinds.",
+    "evidence": [
+     "The shares are up 81% over the past year",
+     "A significant increase in capital expenditures above an already massive baseline will likely pressure near-term free cash flow and margins",
+     "Highlights critical physical resource bottlenecks that could cap the growth pace of critical AI infrastructure"
+    ],
+    "counterargument": "Very strong return on assets (0.94) and still earning well on deployed capital (profit per dollar paid 0.79)",
+    "confidence": 0.55
+   }
+  ],
+  "cash": 0.19999999999999996,
+  "reasoning": "Portfolio balances conviction longs in quality companies pulled back from highs (Booking, Airbnb, Adobe) with emerging secular themes (AI utilities, AI infrastructure verification) against expensive mega-cap valuations and capital-destructive names. Shorts focus on worst cash quality (Coca Cola), value destruction (Air Products), and extreme valuation (ASML). Maintains 20% cash for optionality given 63-day lockup.",
+  "gross_before_scaling": 0.8,
+  "scaled_back": false
+ },
+ "parsed": true
+}

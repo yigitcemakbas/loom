@@ -1,0 +1,331 @@
+You are an aggressive speculator. You are hunting for large gains over the next quarter and you accept the possibility of large losses. You concentrate, you use shorts, and you consider holding cash to be a wasted opportunity.
+
+All information is as at the close on 2026-03-02. Nothing dated after it exists yet.
+
+
+---
+
+## TSLA — Tesla, Inc.  (last close 403.32)
+Sector: Industrials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report and regulatory filing. This is a thin read: only 9 findings told Loom anything, from 1 document. 12 concerns against 1 positive, of which about 66% is the disclosure documents of this kind always contain.
+The shares are up 38% over the past year and down 6% over the past month.
+
+---
+
+## MU — MICRON TECHNOLOGY INC  (last close 412.67)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across regulatory filing. This is a thin read: only 4 findings told Loom anything, from 1 document. 13 concerns against 0 positives, of which about 87% is the disclosure documents of this kind always contain. Based on filings from about 5 months ago, the most recent Loom has read for this company.
+The shares are up 342% over the past year and down 1% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## NDAQ — NASDAQ, INC.  (last close 88.09)
+Sector: Financials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across regulatory filing. This is a thin read: only 3 findings told Loom anything, from 1 document. 8 concerns against 0 positives, of which about 91% is the disclosure documents of this kind always contain.
+The shares are up 8% over the past year and down 9% over the past month.
+
+---
+
+## AAPL — Apple Inc.  (last close 264.72)
+Sector: Technology
+LOOM VERDICT: mixed — Reads about as companies of this kind usually do, across annual report and regulatory filing. This is a thin read: only 3 findings told Loom anything, from 1 document. 10 concerns against 1 positive, of which about 79% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+The shares are up 10% over the past year and up 2% over the past month.
+
+---
+
+## GOOGL — Alphabet Inc.  (last close 306.52)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across regulatory filing. This is a thin read: only 4 findings told Loom anything, from 1 document. 10 concerns against 0 positives, of which about 84% is the disclosure documents of this kind always contain.
+The shares are up 81% over the past year and down 9% over the past month.
+
+---
+
+## APD — Air Products & Chemicals, Inc.  (last close 276.43)
+Sector: Health Care
+LOOM VERDICT: mixed — Reads about as companies of this kind usually do, across annual report. This is a thin read: only 4 findings told Loom anything, from 1 document. 8 concerns against 1 positive, of which about 81% is the disclosure documents of this kind always contain. Based on filings from about 3 months ago, the most recent Loom has read for this company.
+The shares are down 10% over the past year and up 1% over the past month.
+
+---
+
+## BKNG — Booking Holdings Inc.  (last close 167.19)
+Sector: Energy and Materials
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 2 positives, of which about 70% is the disclosure documents of this kind always contain.
+The shares are down 16% over the past year and down 16% over the past month. It is about 28% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## KO — COCA COLA CO  (last close 80.22)
+Sector: Consumer Staples
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 1 positive, of which about 73% is the disclosure documents of this kind always contain.
+The shares are up 16% over the past year and up 7% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## NVDA — NVIDIA CORP  (last close 182.48)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 8 concerns against 0 positives, of which about 87% is the disclosure documents of this kind always contain.
+The shares are up 46% over the past year and down 5% over the past month.
+
+---
+
+## PEP — PEPSICO INC  (last close 167.28)
+Sector: Consumer Staples
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 4 findings told Loom anything, from 1 document. 8 concerns against 1 positive, of which about 78% is the disclosure documents of this kind always contain.
+The shares are up 13% over the past year and up 9% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## VZ — VERIZON COMMUNICATIONS INC  (last close 49.98)
+Sector: Communication Services
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 1 positive, of which about 79% is the disclosure documents of this kind always contain.
+The shares are up 24% over the past year and up 12% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## ABNB — Airbnb, Inc.  (last close 133.26)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 2 positives, of which about 66% is the disclosure documents of this kind always contain.
+The shares are down 4% over the past year and up 3% over the past month.
+
+---
+
+## ADBE — ADOBE INC.  (last close 260.88)
+Sector: Technology
+LOOM VERDICT: insufficient — 8 findings read here, but about 93% of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view.
+The shares are down 41% over the past year and down 11% over the past month. It is about 42% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AEP — AMERICAN ELECTRIC POWER CO INC  (last close 133.29)
+Sector: Utilities
+LOOM VERDICT: mixed — Reads about as companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 1 positive, of which about 73% is the disclosure documents of this kind always contain.
+The shares are up 30% over the past year and up 12% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMAT — APPLIED MATERIALS INC /DE  (last close 372.18)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 0 positives, of which about 85% is the disclosure documents of this kind always contain.
+The shares are up 138% over the past year and up 16% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMGN — AMGEN INC  (last close 385.70)
+Sector: Health Care
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 4 findings told Loom anything, from 1 document. 7 concerns against 0 positives, of which about 72% is the disclosure documents of this kind always contain.
+The shares are up 29% over the past year and up 14% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMT — AMERICAN TOWER CORP /MA/  (last close 190.20)
+Sector: Financials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 0 positives, of which about 82% is the disclosure documents of this kind always contain.
+The shares are down 4% over the past year and up 6% over the past month.
+
+---
+
+## AMZN — AMAZON COM INC  (last close 208.39)
+Sector: Consumer Discretionary
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report and regulatory filing. This is a thin read: only 4 findings told Loom anything, from 1 document. 8 concerns against 0 positives, of which about 74% is the disclosure documents of this kind always contain.
+The shares are down 2% over the past year and down 13% over the past month.
+
+---
+
+## AVGO — Broadcom Inc.  (last close 318.82)
+Sector: Technology
+LOOM VERDICT: insufficient — 8 findings read here, but about 89% of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view.
+The shares are up 61% over the past year and down 4% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AXP — AMERICAN EXPRESS CO  (last close 307.43)
+Sector: Financials
+LOOM VERDICT: insufficient — 8 findings read here, but about 92% of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view.
+The shares are up 3% over the past year and down 13% over the past month.
+
+---
+
+## BLK — BlackRock, Inc.  (last close 1068.31)
+Sector: Financials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 2 findings told Loom anything, from 1 document. 6 concerns against 0 positives, of which about 85% is the disclosure documents of this kind always contain.
+The shares are up 12% over the past year and down 5% over the past month.
+
+---
+
+## CMCSA — COMCAST CORP  (last close 30.82)
+Sector: Communication Services
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 1 positive, of which about 69% is the disclosure documents of this kind always contain.
+The shares are down 5% over the past year and up 4% over the past month.
+
+---
+
+## TMUS — T-Mobile US, Inc.  (last close 216.11)
+Sector: Communication Services
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 2 findings told Loom anything, from 1 document. 4 concerns against 1 positive, of which about 67% is the disclosure documents of this kind always contain.
+The shares are down 18% over the past year and up 10% over the past month.
+
+---
+
+## BAC — BANK OF AMERICA CORP /DE/  (last close 49.81)
+Sector: Financials
+LOOM VERDICT: mixed — Reads about as companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 1 positive, of which about 69% is the disclosure documents of this kind always contain.
+The shares are up 11% over the past year and down 6% over the past month.
+
+---
+
+## BMY — BRISTOL MYERS SQUIBB CO  (last close 62.34)
+Sector: Health Care
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 0 positives, of which about 84% is the disclosure documents of this kind always contain.
+The shares are up 10% over the past year and up 13% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## BSX — BOSTON SCIENTIFIC CORP  (last close 76.22)
+Sector: Health Care
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 5 concerns against 2 positives, of which about 62% is the disclosure documents of this kind always contain.
+The shares are down 27% over the past year and down 19% over the past month. It is about 30% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## MSFT — Microsoft Corporation  (last close 398.55)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across earnings call. This is a thin read: only 3 findings told Loom anything, from 1 document. 3 concerns against 3 positives, of which about 56% is the disclosure documents of this kind always contain.
+The shares are up 1% over the past year and down 7% over the past month. It is about 26% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## NEE — NEXTERA ENERGY INC  (last close 92.71)
+Sector: Utilities
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 5 concerns against 2 positives, of which about 60% is the disclosure documents of this kind always contain.
+The shares are up 36% over the past year and up 6% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## META — Meta Platforms, Inc.  (last close 653.56)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are down 2% over the past year and down 9% over the past month.
+
+---
+
+## BRK-B — BERKSHIRE HATHAWAY INC  (last close 480.17)
+Sector: Financials
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are down 7% over the past year and down 0% over the past month.
+
+---
+
+## LLY — ELI LILLY & Co  (last close 1017.97)
+Sector: Health Care
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 11% over the past year and down 2% over the past month.
+
+---
+
+## JPM — JPMORGAN CHASE & CO  (last close 297.56)
+Sector: Financials
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 15% over the past year and down 3% over the past month.
+
+---
+
+## WMT — Walmart Inc.  (last close 127.10)
+Sector: Consumer Discretionary
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 30% over the past year and up 7% over the past month.
+
+---
+
+## V — VISA INC.  (last close 320.51)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are down 11% over the past year and down 0% over the past month.
+
+---
+
+## INTC — INTEL CORP  (last close 45.50)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 92% over the past year and down 2% over the past month.
+
+---
+
+## XOM — ExxonMobil Holdings Corp  (last close 154.22)
+Sector: Energy and Materials
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 43% over the past year and up 10% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## ASML — ASML HOLDING NV  (last close 1423.54)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 103% over the past year and up 0% over the past month.
+
+---
+
+## JNJ — JOHNSON & JOHNSON  (last close 248.56)
+Sector: Health Care
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 55% over the past year and up 10% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## MA — Mastercard Inc  (last close 521.00)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are down 9% over the past year and down 3% over the past month.
+
+---
+
+## PLTR — Palantir Technologies Inc.  (last close 145.17)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+The shares are up 71% over the past year and down 1% over the past month. It is about 30% below its high of the past year, so some bad news is already reflected in the price.
+
+You are managing a portfolio of 1000 units of capital as at the close on 2026-03-02.
+
+You may take positions in any of the 40 companies described above, or hold cash.
+Your positions will be held for the next 63 trading sessions and you will
+not be able to change them, and you will receive no further information before
+then.
+
+Decide freely. You may concentrate or diversify, size positions as you see fit,
+hold as much or as little cash as you judge right, and take short positions where
+you think they are warranted. Long weights plus short weights must not exceed 1.0
+in total; whatever you do not allocate is cash.
+
+Report only the positions you actually take. Anything you do not list is not held.
+
+Answer with a single JSON object and nothing else. No preamble, no explanation
+outside the JSON, no markdown fence:
+
+{
+  "positions": [
+    {
+      "ticker": "AAA",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "one or two sentences on why you hold this",
+      "evidence": ["phrases copied exactly from the material above that drove this decision"],
+      "counterargument": "the strongest case against this position",
+      "confidence": 0.62
+    }
+  ],
+  "cash": 0.30,
+  "reasoning": "two or three sentences on how you built the portfolio as a whole"
+}
+
+Rules for the fields:
+- "direction" is "long" or "short".
+- "weight" is a fraction of the whole portfolio, greater than 0.
+- "confidence" is your honest probability from 0 to 1 that this position beats
+  the market over the holding period. 0.5 means a coin flip. Be calibrated
+  rather than enthusiastic.
+- "evidence" must contain phrases copied verbatim from the material above. If
+  nothing in that material drove the decision, leave the list empty rather than
+  inventing a citation.
+- "cash" is the fraction you deliberately leave unallocated.
+
+Do not use any tools. Do not read files, run commands, or search for anything.
+Decide with the material you have been given and reply with the JSON.

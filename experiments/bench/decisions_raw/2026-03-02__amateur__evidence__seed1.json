@@ -1,0 +1,133 @@
+{
+  "positions": [
+    {
+      "ticker": "MSFT",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Raised full-year fiscal 2026 outlook with pre-sold AI infrastructure reducing idle capacity risk, validating near-term capital spending.",
+      "evidence": [
+        "Microsoft raised its full-year fiscal 2026 outlook",
+        "It directly addresses investor fears that Microsoft is overbuilding",
+        "Knowing that high-cost equipment is pre-sold reduces the risk of future multi-billion-dollar write-offs"
+      ],
+      "counterargument": "AI infrastructure costs continue to squeeze profit margins despite positive guidance, and sustainability of massive capex is unproven.",
+      "confidence": 0.67
+    },
+    {
+      "ticker": "WMT",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Consistent strong operational metrics with excellent sales generation and cash backing, showing resilient business model with recent upward momentum.",
+      "evidence": [
+        "Sales per dollar paid 0.90",
+        "Earnings backed by cash 0.83",
+        "Twelve-month momentum 0.84",
+        "up 30% over the past year and up 7% over the past month"
+      ],
+      "counterargument": "Consumer discretionary sector faces ongoing economic headwinds, inflation pressures, and competition from e-commerce.",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "JNJ",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Healthcare quality with exceptional price steadiness and strong recent momentum, indicating investor confidence despite valuation levels.",
+      "evidence": [
+        "Price steadiness 0.98",
+        "Return on assets 0.82",
+        "up 55% over the past year and up 10% over the past month"
+      ],
+      "counterargument": "Trading near multi-year highs leaves little room for error; healthcare regulatory and pricing risks remain.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "V",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Profitable and stable payment processor with exceptional price steadiness and strong asset returns, trusted financial infrastructure play.",
+      "evidence": [
+        "Price steadiness 0.97",
+        "Return on assets 0.89"
+      ],
+      "counterargument": "Down 11% over the past year; facing fee compression risks from retail settlement and competitive pressure on interchange rates.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "INTC",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Turnaround story with strong margin direction and twelve-month momentum showing operational improvement and manufacturing recovery.",
+      "evidence": [
+        "Twelve-month momentum 0.92",
+        "Margin direction 0.92",
+        "up 92% over the past year"
+      ],
+      "counterargument": "Gross profitability remains very weak (0.02); competitive position versus NVDA and TSMC remains uncertain with execution risk.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "NEE",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Clear growth catalyst from AI datacenter demand with nuclear restart upside providing valuable baseload power to strategic customers.",
+      "evidence": [
+        "Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume",
+        "Restarting a retired nuclear plant would provide valuable baseload"
+      ],
+      "counterargument": "Rising financing needs amid uncertain capital market appetite could raise borrowing costs and delay lucrative grid expansions.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Quality technology company with strong buyback program offsetting tariff headwinds, demonstrating capital discipline and cash generation.",
+      "evidence": [
+        "Management continues to return massive amounts of excess cash to shareholders",
+        "Return on assets 0.97",
+        "Substantial share buybacks reduce the total number of shares outstanding"
+      ],
+      "counterargument": "New import taxes directly increase hardware costs and threaten profit margins; legal action by Google could eliminate billions in services revenue.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Creative software leader down 41% from highs with strong fundamental profit metrics and recovery potential from depressed valuation.",
+      "evidence": [
+        "Profit per dollar paid 0.99",
+        "Gross profitability 0.95",
+        "down 41% over the past year"
+      ],
+      "counterargument": "Regulatory approval risks on major acquisitions; integration complexity and high server infrastructure costs could squeeze margins.",
+      "confidence": 0.57
+    },
+    {
+      "ticker": "BRK-B",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Exceptional price stability and quality diversified asset manager under trusted leadership, providing downside protection.",
+      "evidence": [
+        "Price steadiness 0.93",
+        "Debt direction 0.83"
+      ],
+      "counterargument": "Limited revenue growth (0.09) and weak earnings backing by cash (0.13) suggest limited upside in a rising rate environment.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "ABNB",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "Large ongoing share buybacks signal management confidence in cash flow generation, with AI tools helping control costs as volumes grow.",
+      "evidence": [
+        "Large ongoing share buybacks signal management's confidence in cash flow generation",
+        "Using artificial intelligence tools for customer service allows the"
+      ],
+      "counterargument": "Outstanding demand for $1B+ in back taxes creates persistent financial overhang; travel sector remains economically cyclical.",
+      "confidence": 0.55
+    }
+  ],
+  "cash": 0.43,
+  "reasoning": "As a cautious retail investor focused on capital preservation, I built a core portfolio around established quality companies with strong price stability, cash generation, and recent positive guidance (MSFT, WMT, JNJ, V, BRK-B). I avoided companies facing major regulatory, tax, or competitive headwinds. I held 43% cash to provide downside cushion and flexibility given the 63-session lockup period with no new information arriving, reflecting my preference for trusting established sources over speculative opportunities."
+}

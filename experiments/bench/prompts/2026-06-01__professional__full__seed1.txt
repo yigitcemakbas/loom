@@ -1,0 +1,814 @@
+You are a buy-side equity analyst with fifteen years of experience. You size positions against conviction and you are comfortable being wrong on a quarter if the process is sound. You short when the evidence warrants it. You do not hold cash for its own sake, but you will not deploy capital into a name you cannot justify.
+
+All information is as at the close on 2026-06-01. Nothing dated after it exists yet.
+
+
+---
+
+## TSLA — Tesla, Inc.  (last close 415.88)
+Sector: Industrials
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across earnings call. This is a thin read: only 3 findings told Loom anything, from 1 document. 3 concerns against 3 positives, of which about 75% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [positive] Provides explicit unit growth guidance for 2025 above existing market…: Stronger-than-expected delivery growth targets typically catalyze positive forward consensus revisions.
+  [positive] Establishes an explicit internal target for FSD safety parity with…: Concrete timelines for full autonomy safety benchmarks validate progress in Tesla's high-margin FSD software roadmap.
+  [positive] Management introduced an explicit 2025 vehicle delivery growth target…: Providing a specific high-growth volume forecast for 2025 significantly boosts market sentiment despite higher AI capital spend.
+POINTING THE OTHER WAY:
+  near term gross margin pressure: Management caution on Q4 profitability tempers near-term earnings performance expectations.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Cash per dollar of profit        0.97
+  Profit per dollar paid           0.03
+  Sales per dollar paid            0.03
+  Earnings backed by cash          0.95
+  Cash per dollar paid             0.06
+  Price steadiness                 0.07
+  Asset efficiency                 0.09
+  Assets per dollar paid           0.10
+PRICE CONTEXT: The shares are up 20% over the past year and up 6% over the past month.
+
+---
+
+## AAPL — Apple Inc.  (last close 306.31)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across earnings call. This is a thin read: only 3 findings told Loom anything, from 1 document. 2 concerns against 3 positives, of which about 71% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [positive] The company is dropping its long-standing policy of matching cash…: Ending the strict cash balance target provides additional balance sheet flexibility for shareholder payouts.
+  [positive] Adding sponsored search results to the navigation app creates a new…: Monetizing app interactions provides incremental high-margin revenue growth within services.
+  [positive] Management projected quarterly sales to grow between 14% and 17% year…: Strong revenue growth guidance signals persistent buyer demand across hardware and services lineups.
+POINTING THE OTHER WAY:
+  Rising memory chip costs: Escalating component costs threaten hardware profit margins over the next several quarters.
+WHERE LOOM'S SOURCES DISAGREE:
+  Management sounds confident, the cash does not agree.
+    The company's own language about recent results is upbeat. At the same time, less of the profit it reported actually turned up as cash than at almost any comparable company. Reported profit involves judgement calls about when a sale counts 
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 0.97
+  Return on assets                 0.97
+  Earnings backed by cash          0.09
+  Assets per dollar paid           0.10
+  Gross profitability              0.89
+  Cash per dollar of profit        0.11
+  Debt direction                   0.89
+  Profit per dollar paid           0.65
+PRICE CONTEXT: The shares are up 53% over the past year and up 9% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## NVDA — NVIDIA CORP  (last close 224.36)
+Sector: Technology
+LOOM VERDICT: insufficient — 9 findings collected, but 9 have not been assessed for market impact yet, so no view is offered.
+WHAT LOOM FOUND:
+  [unassessed] geopolitical exclusion: The company is unable to serve the massive Chinese AI data center market due to incompatible geopolitical regulatory boundaries.
+  [unassessed] regulatory non-compliance penalties: NVIDIA's compliance with US laws has put it at risk of severe financial and operational retaliation from Chinese antitrust regulators.
+  [unassessed] infrastructure bottlenecks: NVIDIA's revenue growth is limited by physical constraints, such as power grid capacity and availability of datacenter facilities.
+WHERE LOOM'S SOURCES DISAGREE:
+  It is earning well on what it owns, and it is buying a great deal more.
+    Two facts that are each good news and together are a question. The company makes an unusually large profit relative to the size of the business, and the business has just grown much larger, faster than almost any comparable company. The cat
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Earnings backed by cash          0.00
+  Gross profitability              1.00
+  Return on assets                 1.00
+  Balance sheet expansion          0.03
+  Cash per dollar of profit        0.05
+  Debt direction                   0.88
+  Cash cushion                     0.13
+  Assets per dollar paid           0.20
+PRICE CONTEXT: The shares are up 66% over the past year and up 13% over the past month.
+
+---
+
+## MSFT — Microsoft Corporation  (last close 460.52)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across quarterly report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 1 positive, of which about 65% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [positive] This shows a massive build-up of future corporate orders that…: Investors typically view massive jumps in committed future orders as a sign of strong, sustained customer demand.
+POINTING THE OTHER WAY:
+  It shows that the physical game console business is shrinking…: A drop in console sales is expected for older gaming systems, but the size of the decline highlights hardware weakness.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 0.94
+  Cash cushion                     0.08
+  Return on assets                 0.81
+  Profit per dollar paid           0.76
+  Twelve-month momentum            0.26
+  Debt direction                   0.70
+  Assets per dollar paid           0.69
+  Cash per dollar paid             0.67
+PRICE CONTEXT: The shares are up 1% over the past year and up 11% over the past month.
+
+---
+
+## MU — MICRON TECHNOLOGY INC  (last close 1035.50)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across regulatory filing. This is a thin read: only 4 findings told Loom anything, from 1 document. 13 concerns against 0 positives, of which about 82% is the disclosure documents of this kind always contain. Based on filings from about 8 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] For fiscal 2026, Micron introduced a capital expenditure baseline of…: The dual headwind of elevated near-term capital expenditure guidance and an increased projected tax rate will likely depress profitability and cash flow projections for the upcomin
+  [negative] It outlines a highly concentrated geographic risk for Micron's…: Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions.
+  [negative] Indicates a material increase in the effective tax rate from the…: An anticipated increase in the global effective tax rate starting in the upcoming fiscal year will directly reduce net income and earnings per share.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Twelve-month momentum            0.94
+  Price steadiness                 0.11
+  Sales per dollar paid            0.14
+  Debt direction                   0.82
+  Gross profitability              0.19
+  Earnings backed by cash          0.81
+  Balance sheet expansion          0.21
+  Cash per dollar paid             0.24
+PRICE CONTEXT: The shares are up 999% over the past year and up 91% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMD — ADVANCED MICRO DEVICES INC  (last close 510.13)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across earnings call. This is a thin read: only 4 findings told Loom anything, from 1 document. 1 concern against 4 positives, of which about 64% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [positive] Management doubled its target market forecast for server central…: Doubling the long-term addressable market size signals a structural acceleration in core hardware demand.
+  [positive] Management provided explicit multi-year revenue expectations for…: Multi-year revenue visibility with major hyper-scale customers reassures investors about the sustainability of high AI hardware spending.
+  [positive] Management committed to a long-term profit benchmark of over $20 in…: Setting an ambitious long-term earnings milestone anchors analyst valuation models significantly higher.
+POINTING THE OTHER WAY:
+  Rising memory costs slowing consumer gaming sales: A decline of over 20% in second-half gaming revenue creates a material drag on consumer segment profits.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Twelve-month momentum            0.89
+  Cash per dollar paid             0.13
+  Price steadiness                 0.14
+  Revenue growth                   0.84
+  Asset efficiency                 0.84
+  Sales per dollar paid            0.20
+  Cash cushion                     0.25
+  Gross profitability              0.27
+PRICE CONTEXT: The shares are up 361% over the past year and up 41% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## NDAQ — NASDAQ, INC.  (last close 92.81)
+Sector: Financials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across regulatory filing. This is a thin read: only 3 findings told Loom anything, from 1 document. 8 concerns against 0 positives, of which about 86% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] A court decision vacating the SEC's CAT funding model leaves nearly…: A court decision blocking the funding mechanism puts substantial technology receivables at risk of non-recovery, introducing near-term balance sheet risk.
+  [negative] Following the denial of Nasdaq's appeal in October 2025, the company…: The denial of the appeal forces a structural shift in the exchange's core pricing and rebate model, which is highly likely to compress future transaction margins.
+  [negative] New risk vs prior year — digital assets and prediction markets…: Increased regulatory scrutiny of digital assets and prediction markets could delay or block new product launches and future growth initiatives.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Balance sheet expansion          0.98
+  Debt direction                   0.98
+  Margin direction                 0.95
+  Asset efficiency                 0.85
+  Return on assets                 0.83
+  Assets per dollar paid           0.17
+  Profit per dollar paid           0.28
+  Revenue growth                   0.67
+PRICE CONTEXT: The shares are up 12% over the past year and up 2% over the past month.
+
+---
+
+## GOOGL — Alphabet Inc.  (last close 376.37)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across regulatory filing. This is a thin read: only 4 findings told Loom anything, from 1 document. 10 concerns against 0 positives, of which about 77% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] Management explicitly stated that capital expenditures in 2026 will…: A significant increase in capital expenditures above an already massive baseline will likely pressure near-term free cash flow and margins.
+  [negative] Highlights critical physical resource bottlenecks that could cap the…: Warning of physical bottlenecks like power, water, and land availability signals long-term capacity constraints that could limit the growth pace of critical AI infrastructure.
+  [negative] Indicates a massive capital spending acceleration beyond 2025's $91.4…: Confirming a substantial acceleration in capital spending for technical infrastructure indicates elevated near-term cash outflows.
+WHERE LOOM'S SOURCES DISAGREE:
+  It is earning well on what it owns, and it is buying a great deal more.
+    Two facts that are each good news and together are a question. The company makes an unusually large profit relative to the size of the business, and the business has just grown much larger, faster than almost any comparable company. The cat
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Return on assets                 0.94
+  Price steadiness                 0.90
+  Balance sheet expansion          0.14
+  Cash cushion                     0.15
+  Debt direction                   0.17
+  Twelve-month momentum            0.75
+  Dilution of your stake           0.73
+  Profit per dollar paid           0.72
+PRICE CONTEXT: The shares are up 120% over the past year and down 2% over the past month.
+
+---
+
+## AMZN — AMAZON COM INC  (last close 261.26)
+Sector: Consumer Discretionary
+LOOM VERDICT: insufficient — 1 finding read here, but nearly all of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view.
+WHAT LOOM FOUND:
+  [negative] 5 insiders sold on the open market within 14 days: 22 discretionary transactions totalling 60,649 shares (about $16,016,917). Routine vesting and option-exercise activity is excluded, so these are decisions to trade rather than sch
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Balance sheet expansion          0.04
+  Asset efficiency                 0.05
+  Earnings backed by cash          0.92
+  Dilution of your stake           0.10
+  Revenue growth                   0.89
+  Twelve-month momentum            0.88
+  Cash per dollar paid             0.71
+  Cash cushion                     0.70
+PRICE CONTEXT: The shares are up 27% over the past year and down 3% over the past month.
+
+---
+
+## APD — Air Products & Chemicals, Inc.  (last close 278.89)
+Sector: Health Care
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 4 findings told Loom anything, from 1 document. 8 concerns against 1 positive, of which about 79% is the disclosure documents of this kind always contain. Based on filings from about 6 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] The company incurred massive write-downs after cancelling or…: Substantial asset write-downs and contract termination costs highlight previous capital misallocation and reduced long-term revenue potential from clean energy.
+  [negative] Building mega-facilities without pre-arranged customer buying…: Constructing multi-billion dollar production plants without locked-in buyers significantly increases long-term financial uncertainty if adoption slows.
+  [negative] Regulatory rule changes directly invalidated project economic…: Demonstrates that government policy shifts regarding tax credits can abruptly eliminate the financial viability of clean energy investments.
+POINTING THE OTHER WAY:
+  For fiscal year 2026, the company expects earnings growth driven by…: Lowering annual capital spending while targeting earnings growth demonstrates financial discipline following costly project write-downs.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Return on assets                 0.07
+  Profit per dollar paid           0.07
+  Cash cushion                     0.20
+  Assets per dollar paid           0.71
+  Price steadiness                 0.69
+  Twelve-month momentum            0.38
+  Debt direction                   0.61
+  Balance sheet expansion          0.43
+PRICE CONTEXT: The shares are up 3% over the past year and down 7% over the past month.
+
+---
+
+## BKNG — Booking Holdings Inc.  (last close 169.25)
+Sector: Energy and Materials
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 2 positives, of which about 71% is the disclosure documents of this kind always contain. Based on filings from about 3 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [positive] Despite high inflation and economic worries, actual travel demand…: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues.
+  [positive] In the annual report, management increased its expectation for…: Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters.
+POINTING THE OTHER WAY:
+  KAYAK, a travel search engine that aggregates and compares prices…: Weak performance and asset write-downs at KAYAK indicate that rising customer acquisition costs are dragging on profitability.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Debt direction                   0.00
+  Cash cushion                     1.00
+  Twelve-month momentum            0.03
+  Dilution of your stake           0.94
+  Balance sheet expansion          0.85
+  Cash per dollar paid             0.40
+  Price steadiness                 0.49
+PRICE CONTEXT: The shares are down 23% over the past year and down 0% over the past month. It is about 27% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## KO — COCA COLA CO  (last close 78.64)
+Sector: Consumer Staples
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 1 positive, of which about 72% is the disclosure documents of this kind always contain. Based on filings from about 3 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] This reflects a major write-down of the BodyArmor brand in late 2025…: Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns, creating drag on profitability.
+  [negative] On top of the $6.0 billion deposit already paid, this massive…: A potential $14 billion tax liability creates a major financial overhang and could significantly impair the company's long-term capital allocation capacity.
+  [negative] Persistent input cost inflation: Extended cost pressures squeeze profit margins if the company cannot fully offset them with further price increases or productivity initiatives.
+POINTING THE OTHER WAY:
+  This rule change substantially mitigates the risk of a high global…: Exempting United States-headquartered firms from the complex global minimum tax provisions removes a potential headwind for international earnings.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Earnings backed by cash          0.00
+  Cash per dollar of profit        0.00
+  Cash per dollar paid             0.00
+  Sales per dollar paid            0.00
+  Price steadiness                 1.00
+  Balance sheet expansion          0.86
+  Dilution of your stake           0.14
+  Revenue growth                   0.14
+PRICE CONTEXT: The shares are up 12% over the past year and up 0% over the past month.
+
+---
+
+## PEP — PEPSICO INC  (last close 141.52)
+Sector: Consumer Staples
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 4 findings told Loom anything, from 1 document. 8 concerns against 1 positive, of which about 79% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] The company is experiencing falling sales volumes alongside a massive…: Shrinking volumes combined with massive brand write-downs highlight operating difficulties that squeeze profit margins.
+  [negative] PepsiCo holds one-fifth of its total cash in Russia, where strict…: Trapping 20% of the company's cash in a restricted market significantly reduces financial flexibility and capital returns.
+  [negative] PepsiCo expects to spend vast amounts of cash on severance and plant…: The substantial cash outlays required for restructuring will reduce the company's cash reserves in the coming quarters.
+POINTING THE OTHER WAY:
+  On February 3, 2026, the company announced it raised its yearly…: Returning more cash to shareholders typically supports the stock price, even during periods of weak growth.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 0.92
+  Gross profitability              0.86
+  Asset efficiency                 0.14
+  Earnings backed by cash          0.71
+  Cash per dollar of profit        0.71
+  Cash per dollar paid             0.71
+  Sales per dollar paid            0.71
+  Balance sheet expansion          0.29
+PRICE CONTEXT: The shares are up 12% over the past year and down 10% over the past month.
+
+---
+
+## VZ — VERIZON COMMUNICATIONS INC  (last close 47.73)
+Sector: Communication Services
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 1 positive, of which about 81% is the disclosure documents of this kind always contain. Based on filings from about 3 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [positive] Verizon outlined plans to return roughly $55 billion to shareholders…: Markets favor clear commitments to return capital to investors and defined spending controls, even with near-term top-line transition.
+POINTING THE OTHER WAY:
+  Infiltration by advanced state-backed hackers risks severe security…: Confirmation of advanced nation-state breaches highlights vulnerability in critical network infrastructure and raises ongoing compliance and defense costs.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 0.88
+  Twelve-month momentum            0.62
+PRICE CONTEXT: The shares are up 16% over the past year and down 1% over the past month.
+
+---
+
+## ABNB — Airbnb, Inc.  (last close 137.87)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 2 positives, of which about 66% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [positive] The company is using its substantial cash profits to actively buy…: Large ongoing share buybacks signal management's confidence in cash flow generation and support per-share financial results.
+  [positive] Using artificial intelligence tools for customer service allows the…: Automating customer assistance helps control customer support expenses as global transaction volume grows.
+POINTING THE OTHER WAY:
+  This highlights a major unresolved tax dispute with the IRS (the U.S…: An outstanding demand for over a billion dollars in back taxes creates a persistent financial overhang until resolved in court.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Cash cushion                     0.93
+  Price steadiness                 0.88
+  Dilution of your stake           0.88
+  Cash per dollar paid             0.85
+  Margin direction                 0.18
+  Profit per dollar paid           0.78
+  Earnings backed by cash          0.76
+  Debt direction                   0.25
+PRICE CONTEXT: The shares are up 7% over the past year and down 3% over the past month.
+
+---
+
+## ADBE — ADOBE INC.  (last close 274.03)
+Sector: Technology
+LOOM VERDICT: insufficient — 8 findings read here, but about 92% of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view. Based on filings from about 5 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [neutral] This marks a major new acquisition attempt after the failed Figma…: The transaction expands Adobe's marketing tools but highlights regulatory approval risks and integration challenges.
+  [neutral] This is a reminder of the massive financial costs Adobe suffered from…: This historical expense highlights the regulatory hurdles Adobe faces when trying to purchase large competitors.
+  [negative] It highlights how the high server power and infrastructure costs of…: Higher computer power and inferencing costs for smart features could squeeze software profit margins if users do not pay extra for them.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Cash per dollar paid             0.98
+  Profit per dollar paid           0.96
+  Dilution of your stake           0.95
+  Gross profitability              0.95
+  Return on assets                 0.93
+  Twelve-month momentum            0.08
+  Asset efficiency                 0.88
+  Balance sheet expansion          0.87
+PRICE CONTEXT: The shares are down 34% over the past year and up 9% over the past month. It is about 34% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## ADSK — Autodesk, Inc.  (last close 248.16)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 2 findings told Loom anything, from 1 document. 6 concerns against 1 positive, of which about 77% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [positive] This lifts a major regulatory cloud after the SEC (Securities and…: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks.
+POINTING THE OTHER WAY:
+  If clients stop buying older design software without upgrading to…: Any sign of friction in moving legacy users to newer cloud-based subscriptions can worry investors about the long-term growth profile.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Gross profitability              0.92
+  Cash cushion                     0.84
+  Price steadiness                 0.80
+  Twelve-month momentum            0.21
+  Earnings backed by cash          0.79
+  Cash per dollar paid             0.79
+  Cash per dollar of profit        0.78
+  Margin direction                 0.32
+PRICE CONTEXT: The shares are down 16% over the past year and up 2% over the past month. It is about 24% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## AEP — AMERICAN ELECTRIC POWER CO INC  (last close 123.79)
+Sector: Utilities
+LOOM VERDICT: mixed — Reads about as companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 1 positive, of which about 72% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [positive] It establishes that AEP's future growth and capital spending plans…: Strong demand from artificial intelligence data centers is viewed as a major growth engine for utility volume, boosting future profit expectations.
+  [negative] AEP's massive growth plans to power data centers could be choked off…: Rising financing needs amid uncertain capital market appetite could raise borrowing costs or delay lucrative grid expansions.
+  [negative] This extreme customer concentration exposes AEP's Texas subsidiary to…: High customer concentration increases credit risk, though this setup is somewhat structural within the Texas retail electricity market.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Twelve-month momentum            0.83
+  Cash cushion                     0.19
+  Margin direction                 0.80
+  Debt direction                   0.80
+  Price steadiness                 0.78
+  Asset efficiency                 0.31
+  Dilution of your stake           0.33
+  Assets per dollar paid           0.65
+PRICE CONTEXT: The shares are up 23% over the past year and down 9% over the past month.
+
+---
+
+## AMAT — APPLIED MATERIALS INC /DE  (last close 458.17)
+Sector: Technology
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 0 positives, of which about 83% is the disclosure documents of this kind always contain. Based on filings from about 6 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] These federal investigations create significant legal risks and could…: Ongoing investigations and subpoenas regarding China shipments create persistent legal uncertainties and threaten business in a vital region.
+  [negative] The OBBBA (One Big Beautiful Bill Act, a newly passed U.S. tax law)…: An unexpected write-down of tax assets and a higher tax rate directly reduce the company's net profits.
+  [negative] Restrictions on critical minerals threaten the manufacturing of…: Supply constraints on raw materials create long-term headwind risks for production output and can squeeze profit margins.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Return on assets                 0.88
+  Cash per dollar of profit        0.17
+  Twelve-month momentum            0.79
+  Earnings backed by cash          0.26
+  Debt direction                   0.74
+  Gross profitability              0.68
+  Cash cushion                     0.65
+  Balance sheet expansion          0.39
+PRICE CONTEXT: The shares are up 194% over the past year and up 18% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AMGN — AMGEN INC  (last close 329.13)
+Sector: Health Care
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 4 findings told Loom anything, from 1 document. 7 concerns against 0 positives, of which about 68% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] For 2026, Amgen expects product volume growth from certain brands to…: The outlook for declining net prices and accelerating revenue erosion on mature blockbuster drugs offsets the positive volume growth trends.
+  [negative] This delays the resolution of a massive multi-billion dollar tax…: Prolonged uncertainty regarding a massive potential tax liability acts as an overhang on the company's valuation until final resolution.
+  [negative] Otezla is a major profit contributor, and being selected for price…: Direct government intervention to reduce the pricing of key commercial drugs structurally impairs long-term revenue and profit potential.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Asset efficiency                 0.88
+  Assets per dollar paid           0.14
+  Cash cushion                     0.80
+  Margin direction                 0.75
+  Profit per dollar paid           0.75
+  Cash per dollar paid             0.70
+  Dilution of your stake           0.32
+  Revenue growth                   0.67
+PRICE CONTEXT: The shares are up 18% over the past year and up 1% over the past month.
+
+---
+
+## AMT — AMERICAN TOWER CORP /MA/  (last close 187.53)
+Sector: Financials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 7 concerns against 0 positives, of which about 82% is the disclosure documents of this kind always contain. Based on filings from about 3 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] A major international client representing significant tenant revenue…: Contract disputes with large customers threaten expected cash flows and require the company to set aside financial reserves.
+  [negative] A major U.S. customer has defaulted on its Strategic Collocation…: Default by a key tenant directly impacts high-margin property leasing revenue in the near to medium term.
+  [negative] Getting sufficient power from local utility providers is a critical…: Power constraints could delay or limit the growth of the data center segment over the coming years.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Assets per dollar paid           0.00
+  Sales per dollar paid            0.03
+  Margin direction                 0.05
+  Twelve-month momentum            0.08
+  Revenue growth                   0.87
+  Balance sheet expansion          0.85
+  Dilution of your stake           0.28
+  Asset efficiency                 0.67
+PRICE CONTEXT: The shares are down 9% over the past year and up 3% over the past month.
+
+---
+
+## AVGO — Broadcom Inc.  (last close 459.97)
+Sector: Technology
+LOOM VERDICT: insufficient — 8 findings read here, but about 88% of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view. Based on filings from about 6 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [neutral] Heavy chip foundry concentration: This single-foundry exposure is standard across advanced fabless semiconductor companies but represents a persistent operational bottleneck.
+  [neutral] High outstanding debt: While total debt remains high from the VMware purchase, strong operating cash flow of $27.5 billion keeps debt service manageable.
+  [neutral] Selling complete server racks rather than standalone chips brings in…: Investors typically welcome total operating profit expansion from custom artificial intelligence server deployments, though lower gross profit margins can cause valuation debates.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Sales per dollar paid            0.12
+  Margin direction                 0.88
+  Cash per dollar of profit        0.85
+  Dilution of your stake           0.15
+  Debt direction                   0.81
+  Cash per dollar paid             0.20
+  Earnings backed by cash          0.80
+  Profit per dollar paid           0.21
+PRICE CONTEXT: The shares are up 92% over the past year and up 9% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## AXP — AMERICAN EXPRESS CO  (last close 313.54)
+Sector: Financials
+LOOM VERDICT: insufficient — 8 findings read here, but about 91% of them are the disclosures documents of this kind always contain, so there is not yet enough that is specific to this company to form a view. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] A major industry settlement could lead to retailers charging…: A competitor settlement that lowers fee caps and increases surcharging options could trigger widespread fee compression and discourage the use of premium payment networks.
+  [neutral] This highlights that a large portion of the business is concentrated…: Geographic concentration in major states is typical for large US financial institutions and is generally already expected by the market.
+  [neutral] By changing how it measures interest yields from non-GAAP (adjusted…: Changes in accounting metrics are typically viewed as administrative unless they appear to be masking an underlying drop in profitability.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Assets per dollar paid           0.13
+  Earnings backed by cash          0.79
+  Dilution of your stake           0.74
+  Asset efficiency                 0.26
+  Cash per dollar of profit        0.71
+  Cash per dollar paid             0.71
+  Revenue growth                   0.33
+  Return on assets                 0.64
+PRICE CONTEXT: The shares are up 8% over the past year and down 2% over the past month.
+
+---
+
+## BLK — BlackRock, Inc.  (last close 1020.73)
+Sector: Financials
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 2 findings told Loom anything, from 1 document. 6 concerns against 0 positives, of which about 85% is the disclosure documents of this kind always contain. Based on filings from about 3 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] The firm faces massive potential financial obligations if borrowers…: This massive theoretical liability represents a remote, systemic tail-risk that investors typically look past under normal market conditions.
+  [negative] Divisive political fights over environmental and social guidelines…: While political blowback remains a headwind for asset gathering in certain regions, the diversified global business model helps buffer the overall financial impact.
+  [negative] Securities lending default guarantees: It highlights a catastrophic default scenario that is highly unlikely but would be financially severe if triggered.
+WHERE LOOM'S SOURCES DISAGREE:
+  Management sounds confident, the cash does not agree.
+    The company's own language about recent results is upbeat. At the same time, less of the profit it reported actually turned up as cash than at almost any comparable company. Reported profit involves judgement calls about when a sale counts 
+  Revenue is growing fast, the profit behind it is not cash.
+    Sales are growing faster than at almost every comparable company. But a large share of the profit behind those sales has not arrived as cash. A company deciding when a sale counts as made has the most room to be optimistic precisely when it
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Dilution of your stake           0.09
+  Earnings backed by cash          0.17
+  Revenue growth                   0.83
+  Debt direction                   0.81
+  Cash per dollar of profit        0.19
+  Margin direction                 0.20
+  Balance sheet expansion          0.20
+  Asset efficiency                 0.28
+PRICE CONTEXT: The shares are up 6% over the past year and down 4% over the past month.
+
+---
+
+## CMCSA — COMCAST CORP  (last close 25.05)
+Sector: Communication Services
+LOOM VERDICT: negative — Reads worse than companies of this kind usually do, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 6 concerns against 1 positive, of which about 69% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [negative] Comcast is sacrificing broadband pricing power by giving away free…: Sacrificing broadband pricing power to defend subscriber counts shows how intense the competitive environment has become, which could put pressure on profit margins.
+  [negative] High-speed internet has long been the primary growth engine and cash…: A persistent decline in broadband subscribers strikes at the core profit engine of the company's connectivity division, which is highly scrutinized by investors.
+  [negative] Broadband network competition: The continuous loss of high-margin broadband subscribers to mobile carriers and fiber networks presents a long-term threat to the company's primary cash-generating engine.
+POINTING THE OTHER WAY:
+  The sale of the Hulu stake brings in substantial cash and creates a…: This massive cash windfall provides significant liquidity and flexibility to pay down debt or repurchase shares.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Twelve-month momentum            0.25
+  Price steadiness                 0.25
+PRICE CONTEXT: The shares are down 19% over the past year and down 8% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## SNDK — Sandisk Corp  (last close 1761.43)
+Sector: Technology
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across regulatory filing. This is a thin read: only 3 findings told Loom anything, from 1 document. 4 concerns against 3 positives, of which about 60% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [positive] Prepaying the entire $2.0 billion term loan within a year of the…: Prepaying a massive term loan early and eliminating bank debt signals highly robust cash generation and immediately improves the corporate balance sheet.
+  [positive] The company's strong performance is highly dependent on cyclical…: A massive surge in average selling prices drives strong near-term revenue and cash flow growth, even though flat volumes highlight underlying cyclicality.
+  [positive] The Company has increased its capital investments for fiscal year…: Increased capital investments aligned with favorable pricing trends and higher demand indicate strong medium-term revenue and cash flow growth.
+POINTING THE OTHER WAY:
+  Flash Ventures lease guarantees: The disclosure of potential sudden capital calls under lease guarantees introduces an off-balance-sheet financial risk.
+WHERE LOOM'S SOURCES DISAGREE:
+  The share has run hard and is now expensive on the numbers.
+    The share has risen more over the past year than almost every comparable company. It now also costs more, relative to what the company actually earns and owns, than almost every comparable company. Those two facts have historically pointed 
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Cash per dollar paid             0.00
+  Twelve-month momentum            1.00
+  Return on assets                 0.01
+  Price steadiness                 0.03
+  Profit per dollar paid           0.05
+  Debt direction                   0.91
+  Sales per dollar paid            0.11
+  Gross profitability              0.13
+PRICE CONTEXT: The shares are up 4573% over the past year and up 48% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## TMUS — T-Mobile US, Inc.  (last close 186.74)
+Sector: Communication Services
+LOOM VERDICT: positive — Reads better than companies of this kind usually do, across annual report. This is a thin read: only 2 findings told Loom anything, from 1 document. 4 concerns against 1 positive, of which about 67% is the disclosure documents of this kind always contain. Based on filings from about 4 months ago, the most recent Loom has read for this company.
+WHAT LOOM FOUND:
+  [positive] This defines the financial goals for the UScellular integration…: Achieving significant annual cost savings should improve profit margins over the medium term, although the upfront cost to achieve them is substantial.
+POINTING THE OTHER WAY:
+  This marks a major change in how the company reports its performance…: The market typically dislikes when companies stop reporting key operational metrics like total subscriber additions, as it reduces visibility into core growth.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Twelve-month momentum            0.12
+  Price steadiness                 0.62
+PRICE CONTEXT: The shares are down 21% over the past year and down 4% over the past month. It is about 26% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## WMT — Walmart Inc.  (last close 114.60)
+Sector: Consumer Discretionary
+LOOM VERDICT: mixed — Reads about as companies of this kind usually do, led by foreign currency exchange rate headwinds, across annual report. This is a thin read: only 3 findings told Loom anything, from 1 document. 4 concerns against 1 positive, of which about 69% is the disclosure documents of this kind always contain.
+WHAT LOOM FOUND:
+  [neutral] Foreign currency exchange rate headwinds: Foreign exchange impacts are typically viewed by markets as non-operational, external noise.
+  [neutral] Volatile fuel prices affecting Sam's Club: Analysts regularly strip out volatile fuel metrics to assess core retail health, making the direct market impact minor.
+  [positive] Walmart expects capital expenditures (money spent on long-term…: Continuing high investment in automation and online shopping capabilities is widely seen as necessary for the company to maintain its competitive edge against tech-first retailers.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Earnings backed by cash          0.88
+  Sales per dollar paid            0.86
+  Asset efficiency                 0.16
+  Twelve-month momentum            0.80
+  Cash per dollar of profit        0.79
+  Profit per dollar paid           0.26
+  Price steadiness                 0.72
+  Dilution of your stake           0.29
+PRICE CONTEXT: The shares are up 17% over the past year and down 13% over the past month.
+
+---
+
+## META — Meta Platforms, Inc.  (last close 600.47)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Earnings backed by cash          0.94
+  Cash per dollar paid             0.93
+  Profit per dollar paid           0.86
+  Return on assets                 0.84
+  Cash cushion                     0.19
+  Debt direction                   0.19
+  Balance sheet expansion          0.20
+  Assets per dollar paid           0.77
+PRICE CONTEXT: The shares are down 7% over the past year and down 1% over the past month. It is about 24% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## BRK-B — BERKSHIRE HATHAWAY INC  (last close 470.29)
+Sector: Financials
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 1.00
+  Revenue growth                   0.09
+  Asset efficiency                 0.09
+  Twelve-month momentum            0.11
+  Earnings backed by cash          0.13
+  Cash per dollar of profit        0.15
+  Debt direction                   0.83
+  Return on assets                 0.81
+PRICE CONTEXT: The shares are down 7% over the past year and down 1% over the past month.
+
+---
+
+## LLY — ELI LILLY & Co  (last close 1082.20)
+Sector: Health Care
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+WHERE LOOM'S SOURCES DISAGREE:
+  Revenue is growing fast, the profit behind it is not cash.
+    Sales are growing faster than at almost every comparable company. But a large share of the profit behind those sales has not arrived as cash. A company deciding when a sale counts as made has the most room to be optimistic precisely when it
+  It is earning well on what it owns, and it is buying a great deal more.
+    Two facts that are each good news and together are a question. The company makes an unusually large profit relative to the size of the business, and the business has just grown much larger, faster than almost any comparable company. The cat
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Earnings backed by cash          0.00
+  Revenue growth                   1.00
+  Cash per dollar of profit        0.03
+  Return on assets                 0.96
+  Sales per dollar paid            0.05
+  Assets per dollar paid           0.05
+  Balance sheet expansion          0.09
+  Cash per dollar paid             0.14
+PRICE CONTEXT: The shares are up 48% over the past year and up 13% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## JPM — JPMORGAN CHASE & CO  (last close 296.58)
+Sector: Financials
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Earnings backed by cash          0.00
+  Cash per dollar paid             0.02
+  Cash per dollar of profit        0.04
+  Revenue growth                   0.13
+  Dilution of your stake           0.80
+  Profit per dollar paid           0.74
+  Price steadiness                 0.73
+  Asset efficiency                 0.30
+PRICE CONTEXT: The shares are up 15% over the past year and down 5% over the past month.
+
+---
+
+## V — VISA INC.  (last close 322.77)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 0.98
+  Return on assets                 0.89
+  Cash per dollar of profit        0.20
+  Balance sheet expansion          0.78
+  Debt direction                   0.23
+  Twelve-month momentum            0.25
+  Earnings backed by cash          0.30
+  Cash cushion                     0.52
+PRICE CONTEXT: The shares are down 11% over the past year and down 1% over the past month.
+
+---
+
+## INTC — INTEL CORP  (last close 109.33)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Gross profitability              0.00
+  Dilution of your stake           0.03
+  Price steadiness                 0.07
+  Twelve-month momentum            0.92
+  Revenue growth                   0.09
+  Margin direction                 0.91
+  Return on assets                 0.09
+  Profit per dollar paid           0.09
+PRICE CONTEXT: The shares are up 459% over the past year and up 10% over the past month.
+
+---
+
+## XOM — ExxonMobil Holdings Corp  (last close 149.38)
+Sector: Energy and Materials
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+PRICE CONTEXT: The shares are up 51% over the past year and down 2% over the past month.
+
+---
+
+## ASML — ASML HOLDING NV  (last close 1628.57)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Cash cushion                     0.91
+  Assets per dollar paid           0.14
+  Return on assets                 0.85
+  Asset efficiency                 0.79
+  Balance sheet expansion          0.72
+  Sales per dollar paid            0.30
+  Twelve-month momentum            0.70
+  Margin direction                 0.62
+PRICE CONTEXT: The shares are up 123% over the past year and up 14% over the past month. It is trading close to its highest point of the past year, so little bad news is currently reflected in the price.
+
+---
+
+## JNJ — JOHNSON & JOHNSON  (last close 223.51)
+Sector: Health Care
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 1.00
+  Cash per dollar of profit        0.07
+  Earnings backed by cash          0.09
+  Profit per dollar paid           0.84
+  Twelve-month momentum            0.83
+  Return on assets                 0.82
+  Cash cushion                     0.75
+  Asset efficiency                 0.29
+PRICE CONTEXT: The shares are up 48% over the past year and down 1% over the past month.
+
+---
+
+## MA — Mastercard Inc  (last close 495.25)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Price steadiness                 0.99
+  Dilution of your stake           0.82
+  Twelve-month momentum            0.22
+  Cash cushion                     0.63
+  Debt direction                   0.42
+  Balance sheet expansion          0.55
+PRICE CONTEXT: The shares are down 15% over the past year and down 0% over the past month.
+
+---
+
+## PLTR — Palantir Technologies Inc.  (last close 160.65)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+WHERE LOOM'S SOURCES DISAGREE:
+  It is earning well on what it owns, and it is buying a great deal more.
+    Two facts that are each good news and together are a question. The company makes an unusually large profit relative to the size of the business, and the business has just grown much larger, faster than almost any comparable company. The cat
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Sales per dollar paid            0.02
+  Cash per dollar paid             0.06
+  Revenue growth                   0.93
+  Margin direction                 0.93
+  Dilution of your stake           0.08
+  Assets per dollar paid           0.08
+  Return on assets                 0.91
+  Balance sheet expansion          0.12
+PRICE CONTEXT: The shares are up 22% over the past year and up 12% over the past month. It is about 22% below its high of the past year, so some bad news is already reflected in the price.
+
+---
+
+## ORCL — ORACLE CORP  (last close 248.15)
+Sector: Technology
+LOOM VERDICT: insufficient — Not enough has been analysed yet to form a view.
+RANKED AGAINST COMPARABLE COMPANIES (0 worst, 1 best):
+  Balance sheet expansion          0.11
+  Price steadiness                 0.18
+  Cash cushion                     0.66
+  Assets per dollar paid           0.36
+  Cash per dollar of profit        0.62
+  Twelve-month momentum            0.41
+  Sales per dollar paid            0.44
+  Profit per dollar paid           0.53
+PRICE CONTEXT: The shares are up 51% over the past year and up 44% over the past month. It is about 24% below its high of the past year, so some bad news is already reflected in the price.
+
+You are managing a portfolio of 1000 units of capital as at the close on 2026-06-01.
+
+You may take positions in any of the 40 companies described above, or hold cash.
+Your positions will be held for the next 63 trading sessions and you will
+not be able to change them, and you will receive no further information before
+then.
+
+Decide freely. You may concentrate or diversify, size positions as you see fit,
+hold as much or as little cash as you judge right, and take short positions where
+you think they are warranted. Long weights plus short weights must not exceed 1.0
+in total; whatever you do not allocate is cash.
+
+Report only the positions you actually take. Anything you do not list is not held.
+
+Answer with a single JSON object and nothing else. No preamble, no explanation
+outside the JSON, no markdown fence:
+
+{
+  "positions": [
+    {
+      "ticker": "AAA",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "one or two sentences on why you hold this",
+      "evidence": ["phrases copied exactly from the material above that drove this decision"],
+      "counterargument": "the strongest case against this position",
+      "confidence": 0.62
+    }
+  ],
+  "cash": 0.30,
+  "reasoning": "two or three sentences on how you built the portfolio as a whole"
+}
+
+Rules for the fields:
+- "direction" is "long" or "short".
+- "weight" is a fraction of the whole portfolio, greater than 0.
+- "confidence" is your honest probability from 0 to 1 that this position beats
+  the market over the holding period. 0.5 means a coin flip. Be calibrated
+  rather than enthusiastic.
+- "evidence" must contain phrases copied verbatim from the material above. If
+  nothing in that material drove the decision, leave the list empty rather than
+  inventing a citation.
+- "cash" is the fraction you deliberately leave unallocated.
+
+Do not use any tools. Do not read files, run commands, or search for anything.
+Decide with the material you have been given and reply with the JSON.

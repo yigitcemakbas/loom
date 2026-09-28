@@ -1,0 +1,181 @@
+{
+ "cell": "2026-05-01__gambler__evidence__seed1",
+ "as_of": "2026-05-01",
+ "persona": "gambler",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "7b2c8597dc19c18c",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "MSFT": "positive",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-05-01",
+  "newest_bar": "2026-05-01",
+  "newest_fact": "2026-05-01",
+  "as_of": "2026-05-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"ADBE\",\n      \"weight\": 0.13,\n      \"direction\": \"long\",\n      \"thesis\": \"Heavily discounted software company with exceptional profitability metrics. Regulatory overhang from failed Figma deal is priced in; cash generation fundamentals remain strong.\",\n      \"evidence\": [\"Profit per dollar paid 0.99\", \"Cash per dollar paid 0.97\", \"Down 33% over the past year and up 4% over the past month. It is about 40% below its high of the past year\"],\n      \"counterargument\": \"AI infrastructure costs could squeeze software margins if customers resist paying extra for AI-powered features, and regulatory obstacles may resurface in future acquisitions.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.11,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional growth and profitability scores at 30% discount to yearly high. AI/data analytics play with strong revenue growth and margin expansion capturing near-term sentiment.\",\n      \"evidence\": [\"Margin direction 0.95\", \"Revenue growth 0.93\", \"Return on assets 0.91\", \"Gross profitability 0.86\", \"Up 24% over the past year and down 2% over the past month. It is about 30% below its high of the past year\"],\n      \"counterargument\": \"High growth valuations are vulnerable to earnings disappointment, and the company's recent 2% decline suggests profit-taking may accelerate.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.11,\n      \"direction\": \"long\",\n      \"thesis\": \"Extreme 47% discount to yearly high with strong cash position and early momentum recovery. Enterprise cloud infrastructure benefits from AI capex surge.\",\n      \"evidence\": [\"Cash cushion 0.65\", \"Cash per dollar of profit 0.65\", \"Up 19% over the past year and up 19% over the past month. It is about 47% below its high of the past year\"],\n      \"counterargument\": \"Weak balance sheet expansion (0.11) and price steadiness (0.12) suggest structural headwinds in cloud adoption or customer concentration risks.\",\n      \"confidence\": 0.66\n    },\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Perfect cash cushion ranking (1.00) with proven travel demand resilience. Down 16% presents entry point for conservative aggressive portfolio.\",\n      \"evidence\": [\"Cash cushion 1.00\", \"Dilution of your stake 0.94\", \"Despite high inflation and economic worries, actual travel demand\", \"Down 16% over the past year and up 1% over the past month. It is about 27% below its high of the past year\"],\n      \"counterargument\": \"KAYAK asset write-downs and rising customer acquisition costs show travel segment margin pressure that could offset volume strength.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.09,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional cash generation (0.93 earnings backed by cash) at 23% discount to highs. Heavy AI infrastructure investment justifies balance sheet expansion despite profitability concerns.\",\n      \"evidence\": [\"Earnings backed by cash 0.93\", \"Cash per dollar paid 0.89\", \"Return on assets 0.84\", \"Profit per dollar paid 0.84\", \"Up 7% over the past year and up 5% over the past month. It is about 23% below its high of the past year\"],\n      \"counterargument\": \"Large balance sheet expansion (0.17) with uncertain returns on massive capex could erode shareholder value if AI monetization stalls.\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Regulatory risk fully resolved with SEC probe conclusion. 25% discount reflects investor relief as cloud subscription migration narrative resumes.\",\n      \"evidence\": [\"Gross profitability 0.92\", \"This lifts a major regulatory cloud after the SEC\", \"Down 11% over the past year and up 3% over the past month. It is about 25% below its high of the past year\"],\n      \"counterargument\": \"Friction in legacy user migration to cloud subscriptions could accelerate if customers resist subscription model or seek alternatives.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"23% discount with massive backlog of corporate AI orders driving forward revenue. Strong profit metrics despite gaming console weakness.\",\n      \"evidence\": [\"This shows a massive build-up of future corporate orders that\", \"Profit per dollar paid 0.79\", \"Down 2% over the past year and up 12% over the past month. It is about 23% below its high of the past year\"],\n      \"counterargument\": \"Gaming console decline is structural, and enterprise capex cycle could slow if customers complete cloud infrastructure investments.\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Quality semiconductor equipment supplier with strong cash position and momentum. Benefits from global AI infrastructure buildout with limited downside.\",\n      \"evidence\": [\"Cash cushion 0.91\", \"Return on assets 0.85\", \"Twelve-month momentum 0.82\", \"Asset efficiency 0.82\", \"Up 116% over the past year and up 5% over the past month\"],\n      \"counterargument\": \"Extreme run-up (116% YoY) creates valuation risk if chip cycle peaks or geopolitical tensions restrict exports to Asia.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": -0.12,\n      \"direction\": \"short\",\n      \"thesis\": \"Extreme valuation disconnection with worst fundamentals relative to price momentum. LOOM explicitly flags this as expensive despite profitability metrics.\",\n      \"evidence\": [\"The share has run hard and is now expensive on the numbers\", \"Up 3542% over the past year and up 71% over the past month\", \"Twelve-month momentum 1.00\", \"Cash per dollar paid 0.01\", \"Return on assets 0.02\", \"Price steadiness 0.03\"],\n      \"counterargument\": \"Strong pricing power from memory chip shortage and massive capex may continue driving share prices despite current valuation excess.\",\n      \"confidence\": 0.71\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": -0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"Spectacular run-up (599% YoY) with deteriorating fundamentals: high capex guidance, geopolitical Taiwan concentration, rising tax rates compound near-term headwinds.\",\n      \"evidence\": [\"Up 599% over the past year and up 47% over the past month\", \"For fiscal 2026, Micron introduced a capital expenditure baseline\", \"Concentration of a majority of DRAM production in Taiwan exposes the company\", \"Indicates a material increase in the effective tax rate\", \"Price steadiness 0.18\", \"Gross profitability 0.19\"],\n      \"counterargument\": \"Continued memory chip supply shortage and AI data center build-out could support higher prices despite deteriorating metrics.\",\n      \"confidence\": 0.67\n    },\n    {\n      \"ticker\": \"NVDA\",\n      \"weight\": -0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Structural China market foreclosure is permanent negative despite exceptional gross profitability. Earnings quality is poor (0.00 backed by cash) at extreme valuation.\",\n      \"evidence\": [\"Complete foreclosure from the Chinese market structurally damages\", \"Up 78% over the past year and up 13% over the past month\", \"Earnings backed by cash 0.00\", \"Cash per dollar of profit 0.05\", \"Cash cushion 0.08\"],\n      \"counterargument\": \"US AI infrastructure monopoly and continued US geopolitical support could sustain pricing power as competitors remain restricted.\",\n      \"confidence\": 0.59\n    }\n  ],\n  \"cash\": 0.10,\n  \"reasoning\": \"Constructed a concentrated long-biased aggressive portfolio favoring discounted quality names (ADBE, PLTR, ORCL) at 30-47% discounts with modest tactical shorts on obvious bubbles (SNDK 3542% run, MU 599% run, NVDA China structural loss). Allocated 65% to long positions with best risk/reward across AI infrastructure (META, MSFT, ASML), software (ADBE, ADSK), and travel (BKNG), offset by 25% shorts on unsustainable valuations. Held 10% cash as dry powder given 63-day holding horizon and existing portfolio concentration.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "ADBE",
+    "weight": 0.13,
+    "direction": "long",
+    "thesis": "Heavily discounted software company with exceptional profitability metrics. Regulatory overhang from failed Figma deal is priced in; cash generation fundamentals remain strong.",
+    "evidence": [
+     "Profit per dollar paid 0.99",
+     "Cash per dollar paid 0.97",
+     "Down 33% over the past year and up 4% over the past month. It is about 40% below its high of the past year"
+    ],
+    "counterargument": "AI infrastructure costs could squeeze software margins if customers resist paying extra for AI-powered features, and regulatory obstacles may resurface in future acquisitions.",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.11,
+    "direction": "long",
+    "thesis": "Exceptional growth and profitability scores at 30% discount to yearly high. AI/data analytics play with strong revenue growth and margin expansion capturing near-term sentiment.",
+    "evidence": [
+     "Margin direction 0.95",
+     "Revenue growth 0.93",
+     "Return on assets 0.91",
+     "Gross profitability 0.86",
+     "Up 24% over the past year and down 2% over the past month. It is about 30% below its high of the past year"
+    ],
+    "counterargument": "High growth valuations are vulnerable to earnings disappointment, and the company's recent 2% decline suggests profit-taking may accelerate.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.11,
+    "direction": "long",
+    "thesis": "Extreme 47% discount to yearly high with strong cash position and early momentum recovery. Enterprise cloud infrastructure benefits from AI capex surge.",
+    "evidence": [
+     "Cash cushion 0.65",
+     "Cash per dollar of profit 0.65",
+     "Up 19% over the past year and up 19% over the past month. It is about 47% below its high of the past year"
+    ],
+    "counterargument": "Weak balance sheet expansion (0.11) and price steadiness (0.12) suggest structural headwinds in cloud adoption or customer concentration risks.",
+    "confidence": 0.66
+   },
+   {
+    "ticker": "BKNG",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Perfect cash cushion ranking (1.00) with proven travel demand resilience. Down 16% presents entry point for conservative aggressive portfolio.",
+    "evidence": [
+     "Cash cushion 1.00",
+     "Dilution of your stake 0.94",
+     "Despite high inflation and economic worries, actual travel demand",
+     "Down 16% over the past year and up 1% over the past month. It is about 27% below its high of the past year"
+    ],
+    "counterargument": "KAYAK asset write-downs and rising customer acquisition costs show travel segment margin pressure that could offset volume strength.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "META",
+    "weight": 0.09,
+    "direction": "long",
+    "thesis": "Exceptional cash generation (0.93 earnings backed by cash) at 23% discount to highs. Heavy AI infrastructure investment justifies balance sheet expansion despite profitability concerns.",
+    "evidence": [
+     "Earnings backed by cash 0.93",
+     "Cash per dollar paid 0.89",
+     "Return on assets 0.84",
+     "Profit per dollar paid 0.84",
+     "Up 7% over the past year and up 5% over the past month. It is about 23% below its high of the past year"
+    ],
+    "counterargument": "Large balance sheet expansion (0.17) with uncertain returns on massive capex could erode shareholder value if AI monetization stalls.",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Regulatory risk fully resolved with SEC probe conclusion. 25% discount reflects investor relief as cloud subscription migration narrative resumes.",
+    "evidence": [
+     "Gross profitability 0.92",
+     "This lifts a major regulatory cloud after the SEC",
+     "Down 11% over the past year and up 3% over the past month. It is about 25% below its high of the past year"
+    ],
+    "counterargument": "Friction in legacy user migration to cloud subscriptions could accelerate if customers resist subscription model or seek alternatives.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "23% discount with massive backlog of corporate AI orders driving forward revenue. Strong profit metrics despite gaming console weakness.",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that",
+     "Profit per dollar paid 0.79",
+     "Down 2% over the past year and up 12% over the past month. It is about 23% below its high of the past year"
+    ],
+    "counterargument": "Gaming console decline is structural, and enterprise capex cycle could slow if customers complete cloud infrastructure investments.",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Quality semiconductor equipment supplier with strong cash position and momentum. Benefits from global AI infrastructure buildout with limited downside.",
+    "evidence": [
+     "Cash cushion 0.91",
+     "Return on assets 0.85",
+     "Twelve-month momentum 0.82",
+     "Asset efficiency 0.82",
+     "Up 116% over the past year and up 5% over the past month"
+    ],
+    "counterargument": "Extreme run-up (116% YoY) creates valuation risk if chip cycle peaks or geopolitical tensions restrict exports to Asia.",
+    "confidence": 0.6
+   }
+  ],
+  "cash": 0.25,
+  "reasoning": "Constructed a concentrated long-biased aggressive portfolio favoring discounted quality names (ADBE, PLTR, ORCL) at 30-47% discounts with modest tactical shorts on obvious bubbles (SNDK 3542% run, MU 599% run, NVDA China structural loss). Allocated 65% to long positions with best risk/reward across AI infrastructure (META, MSFT, ASML), software (ADBE, ADSK), and travel (BKNG), offset by 25% shorts on unsustainable valuations. Held 10% cash as dry powder given 63-day holding horizon and existing portfolio concentration.",
+  "gross_before_scaling": 0.75,
+  "scaled_back": false
+ },
+ "parsed": true
+}

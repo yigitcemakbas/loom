@@ -1,0 +1,159 @@
+{
+  "positions": [
+    {
+      "ticker": "SNDK",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Extraordinary momentum with 4842% YoY return signals massive demand for memory chips in AI era. Up 47% this month alone, reflecting market's rush to capture memory supply constraints.",
+      "evidence": ["up 4842% over the past year and up 47% over the past month"],
+      "counterargument": "Trading at extreme valuation near 52-week highs with limited margin of safety; any supply normalization could reverse gains severely.",
+      "confidence": 0.68
+    },
+    {
+      "ticker": "MU",
+      "weight": 0.11,
+      "direction": "long",
+      "thesis": "Micron's 856% YoY gain and 35% monthly gain reflects its position at the center of AI data center buildout. DRAM and NAND supply constraints favor large players like MU.",
+      "evidence": ["up 856% over the past year and up 35% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Extreme valuation leaves no room for disappointment; cyclical memory market could face oversupply within 12-18 months.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "AMAT",
+      "weight": 0.09,
+      "direction": "long",
+      "thesis": "Applied Materials shows 268% YoY and 47% monthly gains as foundational chip equipment maker. TSMC, Samsung, and Intel all investing heavily in capacity for advanced nodes.",
+      "evidence": ["up 268% over the past year and up 47% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Peak capex cycle risk; if fab utilization slows, equipment spending could collapse, dragging AMAT down 40-50% from current levels.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "MSFT",
+      "weight": 0.09,
+      "direction": "long",
+      "thesis": "Microsoft's 28% YoY and 15% monthly decline to 34% below highs creates deep value opportunity. Core cloud and AI platform business intact; market overreacted to recent quarter.",
+      "evidence": ["down 28% over the past year and down 15% over the past month", "about 34% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Decline may signal structural cloud margin compression or slower Azure growth, justifying lower valuation multiples.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "INTC",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Intel's 499% YoY gain and near-peak trading reflects revival narrative around domestic fab buildout and new process nodes. Geopolitical tailwinds support capex.",
+      "evidence": ["up 499% over the past year and up 8% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Execution risk on new process nodes; if 7nm struggles against TSMC, valuation could revert to historical lows.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Palantir down 25% YoY and 21% monthly to 48% below highs, but AI/data analytics demand tailwind intact. Government and enterprise spending on data platforms remains strong.",
+      "evidence": ["down 25% over the past year and down 21% over the past month", "about 48% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Profitability questions remain; company may continue burning cash despite revenue growth, warranting further deterioration.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "ASML's 128% YoY and 13% monthly gains reflect its monopoly position in EUV lithography. Every advanced chip fab globally needs ASML tools; demand locked in for years.",
+      "evidence": ["up 128% over the past year and up 13% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Peak equipment cycle combined with potential trade restrictions on China sales could reduce growth rates from euphoric levels.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "ORCL",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Oracle down 27% YoY and 21% monthly to 53% below highs. Cloud infrastructure and database remain critical; selloff appears overdone given Ellison's track record.",
+      "evidence": ["down 27% over the past year and down 21% over the past month", "about 53% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Cloud margins may compress as AWS and Azure compete aggressively; on-premises revenue secular decline may accelerate.",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Adobe down 50% YoY and 20% monthly to 51% below highs offers extreme value. Creative Cloud subscription remains essential; AI-integrated tools may drive reacceleration.",
+      "evidence": ["down 50% over the past year and down 20% over the past month", "about 51% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "SaaS margins compressed by AI integration costs; generative AI competition from cheaper alternatives could cannibalize revenue.",
+      "confidence": 0.52
+    },
+    {
+      "ticker": "AMD",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Advanced Micro Devices up 271% YoY with 6% monthly gain, reflecting CPU and GPU dominance in AI servers. Competition with Nvidia real but market share gains offset concerns.",
+      "evidence": ["up 271% over the past year and up 6% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Nvidia's ecosystem dominance in AI/ML may prove insurmountable; AMD's MI300 GPUs may fail to capture anticipated market share.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "ADSK",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Autodesk down 37% YoY and 20% monthly to 42% below highs. Cloud-based design tools are critical infrastructure for construction, manufacturing, and architecture sectors.",
+      "evidence": ["down 37% over the past year and down 20% over the past month", "about 42% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Subscription model faces competition; capital expenditure pullbacks in construction and manufacturing may reduce seat growth.",
+      "confidence": 0.53
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Broadcom up 44% YoY but down 10% monthly and 21% below highs shows some correction already priced in. Semiconductor and infrastructure components remain essential.",
+      "evidence": ["up 44% over the past year and down 10% over the past month", "about 21% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Data center buildout deceleration could reduce demand for broadband and switching chips faster than market anticipates.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "LLY",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Eli Lilly up 43% YoY and 6% monthly, near highs but momentum intact. Obesity drug approvals (Mounjaro, Zepbound) represent multi-year revenue driver.",
+      "evidence": ["up 43% over the past year and up 6% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Peak obesity drug hype reflected in valuation; generic competition and manufacturing constraints could limit upside.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "JNJ",
+      "weight": 0.03,
+      "direction": "long",
+      "thesis": "Johnson & Johnson up 65% YoY and 6% monthly shows healthcare sector strength. Defensive quality and drug pipeline remain intact despite valuation expansion.",
+      "evidence": ["up 65% over the past year and up 6% over the past month", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Defensive healthcare plays underperform during growth rallies; position sizing should reflect lower volatility and returns.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "META",
+      "weight": 0.04,
+      "direction": "short",
+      "thesis": "Meta down 23% YoY and 11% monthly, 31% below highs. Advertising market headwinds persist; AI competition in search threatens core revenue model.",
+      "evidence": ["down 23% over the past year and down 11% over the past month", "about 31% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Massive capex spend on AI infrastructure may eventually drive better monetization; user engagement remains strong despite headwinds.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "CMCSA",
+      "weight": 0.03,
+      "direction": "short",
+      "thesis": "Comcast down 27% YoY and 10% monthly, 30% below highs. Cable industry secular decline accelerates as broadband + video streaming disintermediates traditional business.",
+      "evidence": ["down 27% over the past year and down 10% over the past month", "about 30% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Stabilizing subscriber declines and premium broadband pricing may support cash flow; buybacks could provide floor.",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "BLK",
+      "weight": 0.02,
+      "direction": "short",
+      "thesis": "BlackRock down 3% YoY but down 9% monthly shows negative recent momentum. Asset management faces structural margin pressure from passive fund growth and fee compression.",
+      "evidence": ["down 3% over the past year and down 9% over the past month"],
+      "counterargument": "Scale and index fund dominance may actually improve margins; fee pressure is priced in and may stabilize.",
+      "confidence": 0.54
+    }
+  ],
+  "cash": 0.03,
+  "reasoning": "Portfolio is constructed around aggressive momentum plays (SNDK, MU, AMAT, INTC, ASML) capturing the AI hardware buildout cycle, combined with deep-value recoveries (MSFT, PLTR, ORCL, ADBE) where bad news is substantially priced in. Shorts target cyclical exposure (CMCSA cable decline, META ad weakness, BLK asset management compression). Minimal cash reflects speculative philosophy: holding cash in a strong tech cycle is opportunity cost."
+}

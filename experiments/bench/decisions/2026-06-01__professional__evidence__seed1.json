@@ -1,0 +1,223 @@
+{
+ "cell": "2026-06-01__professional__evidence__seed1",
+ "as_of": "2026-06-01",
+ "persona": "professional",
+ "arm": "evidence",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "0da8fe2484117a05",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "NVDA": "insufficient",
+  "MSFT": "positive",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "AMZN": "insufficient",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-01",
+  "newest_bar": "2026-06-01",
+  "newest_fact": "2026-06-01",
+  "as_of": "2026-06-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"META\",\n      \"weight\": 0.11,\n      \"direction\": \"long\",\n      \"thesis\": \"Strong cash generation with 0.94 earnings-backed-by-cash and 0.93 cash-per-dollar-paid metrics signal quality that is undervalued 24% below 52-week highs. Down 7% YoY despite strong operating metrics creates attractive entry.\",\n      \"evidence\": [\"Earnings backed by cash 0.94\", \"Cash per dollar paid 0.93\", \"Profit per dollar paid 0.86\", \"Return on assets 0.84\", \"It is about 24% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Massive capital spending acceleration for AI infrastructure could pressure margins if monetization lags execution.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Massive build-up of future corporate orders provides concrete multi-quarter visibility into revenue growth. Three-month horizon perfectly captures this positive catalyst before broader macro reassessment.\",\n      \"evidence\": [\"This shows a massive build-up of future corporate orders that\", \"Price steadiness 0.94\", \"Profit per dollar paid 0.76\", \"Return on assets 0.81\"],\n      \"counterargument\": \"Console business is shrinking materially, and Azure growth may already be pricing in AI strength.\",\n      \"confidence\": 0.66\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"Exceptional revenue growth (0.93) and margin direction (0.93) momentum on ROA of 0.91 justifies premium, yet trading 22% below high. Superior growth profile at reasonable valuation for three-month window.\",\n      \"evidence\": [\"Revenue growth 0.93\", \"Margin direction 0.93\", \"Return on assets 0.91\", \"It is about 22% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Massive balance sheet expansion (0.12) suggests dilution risks may weigh on per-share returns.\",\n      \"confidence\": 0.64\n    },\n    {\n      \"ticker\": \"JNJ\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Perfect price steadiness (1.00) with solid ROA (0.82) and momentum (0.83) provides defensive quality for uncertain macro. Healthcare defensiveness works well in three-month holding period.\",\n      \"evidence\": [\"Price steadiness 1.00\", \"Return on assets 0.82\", \"Twelve-month momentum 0.83\", \"Cash cushion 0.75\"],\n      \"counterargument\": \"Mature healthcare facing pricing pressure and limited growth acceleration despite solid execution.\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"ABNB\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Substantial share buybacks signal management confidence in sustainable cash flow generation. AI automation of customer service directly improves unit economics as platform scales, supporting margin expansion.\",\n      \"evidence\": [\"The company is using its substantial cash profits to actively buy back shares\", \"Using artificial intelligence tools for customer service allows the\", \"Cash cushion 0.93\", \"Earnings backed by cash 0.76\"],\n      \"counterargument\": \"Outstanding $1B+ IRS tax dispute creates financial overhang and potential surprise capital call.\",\n      \"confidence\": 0.63\n    },\n    {\n      \"ticker\": \"ADBE\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Down 34% YoY yet maintains excellent core metrics (0.95 gross profitability, 0.96 profit per dollar paid, 0.93 ROA). Regulatory cloud lifted post-failed Figma creates multiple expansion opportunity near 52-week lows.\",\n      \"evidence\": [\"Return on assets 0.93\", \"Gross profitability 0.95\", \"Profit per dollar paid 0.96\", \"It is about 34% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Higher AI inference costs for generative features could compress software margins if customers resist price increases.\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.06,\n      \"direction\": \"long\",\n      \"thesis\": \"Solid cash generation (0.62 cash-per-dollar-profit) and reasonable valuation metrics despite 51% YoY rally. Strong recent momentum (44% YOM) but trading 24% below high suggests further upside if AI datacenter demand sustains.\",\n      \"evidence\": [\"Cash per dollar of profit 0.62\", \"Profit per dollar paid 0.53\", \"Sales per dollar paid 0.44\", \"It is about 24% below its high of the past year\"],\n      \"counterargument\": \"Oracle faces intensifying competition in cloud infrastructure from MSFT/GOOG and has limited revenue visibility.\",\n      \"confidence\": 0.60\n    },\n    {\n      \"ticker\": \"SNDK\",\n      \"weight\": 0.15,\n      \"direction\": \"short\",\n      \"thesis\": \"Up 4573% YoY and trading near 52-week highs with valuation now extreme relative to actual earnings. The material explicitly warns share has become expensive; multiple compression is inevitable over three months as euphoria fades.\",\n      \"evidence\": [\"The share has run hard and is now expensive on the numbers\", \"The shares are up 4573% over the past year and up 48% over the past month. It is trading close to its highest point of the past year\"],\n      \"counterargument\": \"Cycle peak pricing power could sustain through near term if memory ASP inflation persists longer than anticipated.\",\n      \"confidence\": 0.72\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": 0.12,\n      \"direction\": \"short\",\n      \"thesis\": \"Up 999% YoY while facing triple simultaneous headwinds: massive capex guidance, Taiwan concentration geopolitical risk, and tax rate increase. Three negatives in fundamental outlook guarantee downside rerating from current euphoria.\",\n      \"evidence\": [\"For fiscal 2026, Micron introduced a capital expenditure baseline of\", \"Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical\", \"Indicates a material increase in the effective tax rate from the\", \"The shares are up 999% over the past year. It is trading close to its highest point of the past year\"],\n      \"counterargument\": \"Cycle strength could persist longer if AI capex cycle extends and supply remains constrained.\",\n      \"confidence\": 0.70\n    },\n    {\n      \"ticker\": \"KO\",\n      \"weight\": 0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"Fundamental breakdown: earnings backed by cash is 0.00 alongside cash-per-dollar-profit of 0.00, signaling reported profits are not converting to cash. Massive $14B tax liability overhang plus brand write-downs create perfect short setup.\",\n      \"evidence\": [\"Earnings backed by cash 0.00\", \"Cash per dollar of profit 0.00\", \"A potential $14 billion tax liability creates a major financial overhang\", \"Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns\"],\n      \"counterargument\": \"Global minimum tax exemption for US-headquartered firms removes one headwind; pricing power could offset volume declines.\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"PEP\",\n      \"weight\": 0.05,\n      \"direction\": \"short\",\n      \"thesis\": \"Deteriorating fundamentals with shrinking sales volumes alongside massive brand write-downs, plus 20% of cash trapped in Russia reduces capital flexibility. Negative momentum likely continues as restructuring costs mount.\",\n      \"evidence\": [\"The company is experiencing falling sales volumes alongside a massive\", \"PepsiCo holds one-fifth of its total cash in Russia\", \"Shrinking volumes combined with massive brand write-downs highlight operating difficulties\", \"The shares are up 12% over the past year and down 10% over the past month\"],\n      \"counterargument\": \"Increased shareholder returns announced in February 2026 could support stock price despite operating headwinds.\",\n      \"confidence\": 0.65\n    }\n  ],\n  \"cash\": 0.06,\n  \"reasoning\": \"Portfolio prioritizes quality compounders with positive three-month catalysts (META, MSFT order build, PLTR growth, ABNB buybacks) at pullback valuations. Aggressive short sizing (0.40 total) targets euphoric valuations in SNDK/MU (up 4500%+ with deteriorating fundamentals) and deteriorating cash generation in KO/PEP. Maintains 6% cash for tail-risk protection given concentration risk in mega-cap tech longs. Process prioritizes conviction over diversification: fund capital where evidence is strongest rather than seeking false balance across 40 names.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "META",
+    "weight": 0.11,
+    "direction": "long",
+    "thesis": "Strong cash generation with 0.94 earnings-backed-by-cash and 0.93 cash-per-dollar-paid metrics signal quality that is undervalued 24% below 52-week highs. Down 7% YoY despite strong operating metrics creates attractive entry.",
+    "evidence": [
+     "Earnings backed by cash 0.94",
+     "Cash per dollar paid 0.93",
+     "Profit per dollar paid 0.86",
+     "Return on assets 0.84",
+     "It is about 24% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Massive capital spending acceleration for AI infrastructure could pressure margins if monetization lags execution.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Massive build-up of future corporate orders provides concrete multi-quarter visibility into revenue growth. Three-month horizon perfectly captures this positive catalyst before broader macro reassessment.",
+    "evidence": [
+     "This shows a massive build-up of future corporate orders that",
+     "Price steadiness 0.94",
+     "Profit per dollar paid 0.76",
+     "Return on assets 0.81"
+    ],
+    "counterargument": "Console business is shrinking materially, and Azure growth may already be pricing in AI strength.",
+    "confidence": 0.66
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "Exceptional revenue growth (0.93) and margin direction (0.93) momentum on ROA of 0.91 justifies premium, yet trading 22% below high. Superior growth profile at reasonable valuation for three-month window.",
+    "evidence": [
+     "Revenue growth 0.93",
+     "Margin direction 0.93",
+     "Return on assets 0.91",
+     "It is about 22% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Massive balance sheet expansion (0.12) suggests dilution risks may weigh on per-share returns.",
+    "confidence": 0.64
+   },
+   {
+    "ticker": "JNJ",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Perfect price steadiness (1.00) with solid ROA (0.82) and momentum (0.83) provides defensive quality for uncertain macro. Healthcare defensiveness works well in three-month holding period.",
+    "evidence": [
+     "Price steadiness 1.00",
+     "Return on assets 0.82",
+     "Twelve-month momentum 0.83",
+     "Cash cushion 0.75"
+    ],
+    "counterargument": "Mature healthcare facing pricing pressure and limited growth acceleration despite solid execution.",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "ABNB",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Substantial share buybacks signal management confidence in sustainable cash flow generation. AI automation of customer service directly improves unit economics as platform scales, supporting margin expansion.",
+    "evidence": [
+     "The company is using its substantial cash profits to actively buy back shares",
+     "Using artificial intelligence tools for customer service allows the",
+     "Cash cushion 0.93",
+     "Earnings backed by cash 0.76"
+    ],
+    "counterargument": "Outstanding $1B+ IRS tax dispute creates financial overhang and potential surprise capital call.",
+    "confidence": 0.63
+   },
+   {
+    "ticker": "ADBE",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Down 34% YoY yet maintains excellent core metrics (0.95 gross profitability, 0.96 profit per dollar paid, 0.93 ROA). Regulatory cloud lifted post-failed Figma creates multiple expansion opportunity near 52-week lows.",
+    "evidence": [
+     "Return on assets 0.93",
+     "Gross profitability 0.95",
+     "Profit per dollar paid 0.96",
+     "It is about 34% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Higher AI inference costs for generative features could compress software margins if customers resist price increases.",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.06,
+    "direction": "long",
+    "thesis": "Solid cash generation (0.62 cash-per-dollar-profit) and reasonable valuation metrics despite 51% YoY rally. Strong recent momentum (44% YOM) but trading 24% below high suggests further upside if AI datacenter demand sustains.",
+    "evidence": [
+     "Cash per dollar of profit 0.62",
+     "Profit per dollar paid 0.53",
+     "Sales per dollar paid 0.44",
+     "It is about 24% below its high of the past year"
+    ],
+    "counterargument": "Oracle faces intensifying competition in cloud infrastructure from MSFT/GOOG and has limited revenue visibility.",
+    "confidence": 0.6
+   },
+   {
+    "ticker": "SNDK",
+    "weight": 0.15,
+    "direction": "short",
+    "thesis": "Up 4573% YoY and trading near 52-week highs with valuation now extreme relative to actual earnings. The material explicitly warns share has become expensive; multiple compression is inevitable over three months as euphoria fades.",
+    "evidence": [
+     "The share has run hard and is now expensive on the numbers",
+     "The shares are up 4573% over the past year and up 48% over the past month. It is trading close to its highest point of the past year"
+    ],
+    "counterargument": "Cycle peak pricing power could sustain through near term if memory ASP inflation persists longer than anticipated.",
+    "confidence": 0.72
+   },
+   {
+    "ticker": "MU",
+    "weight": 0.12,
+    "direction": "short",
+    "thesis": "Up 999% YoY while facing triple simultaneous headwinds: massive capex guidance, Taiwan concentration geopolitical risk, and tax rate increase. Three negatives in fundamental outlook guarantee downside rerating from current euphoria.",
+    "evidence": [
+     "For fiscal 2026, Micron introduced a capital expenditure baseline of",
+     "Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical",
+     "Indicates a material increase in the effective tax rate from the",
+     "The shares are up 999% over the past year. It is trading close to its highest point of the past year"
+    ],
+    "counterargument": "Cycle strength could persist longer if AI capex cycle extends and supply remains constrained.",
+    "confidence": 0.7
+   },
+   {
+    "ticker": "KO",
+    "weight": 0.08,
+    "direction": "short",
+    "thesis": "Fundamental breakdown: earnings backed by cash is 0.00 alongside cash-per-dollar-profit of 0.00, signaling reported profits are not converting to cash. Massive $14B tax liability overhang plus brand write-downs create perfect short setup.",
+    "evidence": [
+     "Earnings backed by cash 0.00",
+     "Cash per dollar of profit 0.00",
+     "A potential $14 billion tax liability creates a major financial overhang",
+     "Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns"
+    ],
+    "counterargument": "Global minimum tax exemption for US-headquartered firms removes one headwind; pricing power could offset volume declines.",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "PEP",
+    "weight": 0.05,
+    "direction": "short",
+    "thesis": "Deteriorating fundamentals with shrinking sales volumes alongside massive brand write-downs, plus 20% of cash trapped in Russia reduces capital flexibility. Negative momentum likely continues as restructuring costs mount.",
+    "evidence": [
+     "The company is experiencing falling sales volumes alongside a massive",
+     "PepsiCo holds one-fifth of its total cash in Russia",
+     "Shrinking volumes combined with massive brand write-downs highlight operating difficulties",
+     "The shares are up 12% over the past year and down 10% over the past month"
+    ],
+    "counterargument": "Increased shareholder returns announced in February 2026 could support stock price despite operating headwinds.",
+    "confidence": 0.65
+   }
+  ],
+  "cash": 0.050000000000000044,
+  "reasoning": "Portfolio prioritizes quality compounders with positive three-month catalysts (META, MSFT order build, PLTR growth, ABNB buybacks) at pullback valuations. Aggressive short sizing (0.40 total) targets euphoric valuations in SNDK/MU (up 4500%+ with deteriorating fundamentals) and deteriorating cash generation in KO/PEP. Maintains 6% cash for tail-risk protection given concentration risk in mega-cap tech longs. Process prioritizes conviction over diversification: fund capital where evidence is strongest rather than seeking false balance across 40 names.",
+  "gross_before_scaling": 0.95,
+  "scaled_back": false
+ },
+ "parsed": true
+}

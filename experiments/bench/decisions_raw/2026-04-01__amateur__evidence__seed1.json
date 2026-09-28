@@ -1,0 +1,96 @@
+{
+  "positions": [
+    {
+      "ticker": "ADBE",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Severely beaten down 37% from highs with strong underlying profitability metrics (0.99 profit per dollar paid, 0.95 gross profitability, 0.93 ROA). The AI infrastructure cost concerns are real but already reflected in the depressed valuation.",
+      "evidence": ["Higher computer power and inferencing costs for smart features could squeeze software profit margins if users do not pay extra for them."],
+      "counterargument": "Rising AI infrastructure costs could further compress margins if customers resist higher prices, and acquisition integration risks remain",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "META",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Down from highs with strong cash backing of earnings (0.93). The sources disagree about capital spending but the business generates real cash flow, and much bad news appears priced into the 26% drawdown from peak.",
+      "evidence": ["Earnings backed by cash: 0.93"],
+      "counterargument": "Balance sheet expansion at only 0.19 indicates heavy capital spending will depress cash flow, and margin direction is weak at 0.24",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Strong return on assets (0.97) and asset efficiency (0.87) provide defensive positioning. Despite tariff and antitrust headwinds, substantial ongoing buybacks support per-share results and the company has proven pricing power.",
+      "evidence": ["Broad import tariffs raise component expenses and finished device costs, which forces lower profit margins or higher customer prices.", "Substantial share buybacks reduce the total number of shares outstanding and help support per-share profit figures."],
+      "counterargument": "New import taxes, Google legal action for search default payments, and antitrust threats to search revenue directly reduce operating income",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "BSX",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Severely beaten down 39% from highs. Strong revenue growth (0.89) and asset efficiency (0.82) indicate the business is functional despite product setbacks. Bad news appears fully reflected in the price.",
+      "evidence": ["Large strategic acquisitions in fast-growing medical device markets can drive long-term revenue growth, despite high integration requirements.", "Strong physician adoption of a primary new technology reinforces investor confidence in organic sales momentum."],
+      "counterargument": "Abandoning the heart valve program eliminates a prospective revenue stream and limits market reach in structural heart care",
+      "confidence": 0.52
+    },
+    {
+      "ticker": "ABNB",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Strong cash cushion (0.91) and ongoing buyback program (0.89 dilution score) signal management confidence. AI-driven cost control supports margin expansion as volumes grow. IRS tax dispute is a known quantity.",
+      "evidence": ["Large ongoing share buybacks signal management's confidence in cash flow generation and support per-share financial results.", "Automating customer assistance helps control customer support expenses as global transaction volume grows."],
+      "counterargument": "Outstanding IRS demand for over a billion dollars in back taxes creates persistent financial overhang until resolved in court",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "ADSK",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "The removal of SEC regulatory cloud is a genuine positive that reduces downside risks. Price is 27% below highs suggesting much bad news is priced in. Subscription model transition is ongoing but improving.",
+      "evidence": ["Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks."],
+      "counterargument": "Friction in moving legacy users to newer cloud-based subscriptions could slow revenue transitions if adoption stalls",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Margin direction (0.95) and revenue growth (0.94) are among the strongest in the portfolio. Sources note strong profitability relative to business size. Down 29% from highs provides some valuation cushion.",
+      "evidence": ["It is earning well on what it owns, and it is buying a great deal more."],
+      "counterargument": "Sources also note that despite good earnings, the company is expensive on current valuation numbers, raising valuation risk",
+      "confidence": 0.53
+    },
+    {
+      "ticker": "MA",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Exceptional price steadiness (0.96) and reasonable valuation metrics provide stability. Down 10% from peak. The business model is structurally sound despite competitive pressures.",
+      "evidence": [],
+      "counterargument": "A competitor settlement could trigger widespread fee compression and discourage premium payment network use",
+      "confidence": 0.54
+    },
+    {
+      "ticker": "BKNG",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Travel demand remains resilient despite economic concerns, with management beating cost-saving targets. Price down 28% from highs reflects bad news. Cash management is strong (1.00 cash per dollar paid).",
+      "evidence": ["Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues.", "Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters."],
+      "counterargument": "KAYAK weakness and rising customer acquisition costs indicate margin drag in a key business segment",
+      "confidence": 0.53
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Neutral news environment with strong operating fundamentals. Up 88% but down from peak, suggesting most momentum is behind it. Transition to complete server systems is healthy for operating profit expansion.",
+      "evidence": ["Investors typically welcome total operating profit expansion from custom artificial intelligence server deployments, though lower gross profit margins can cause valuation debates."],
+      "counterargument": "Single foundry concentration represents a persistent operational bottleneck, and high outstanding debt from VMware acquisition limits flexibility",
+      "confidence": 0.52
+    }
+  ],
+  "cash": 0.36,
+  "reasoning": "Portfolio focuses on companies where significant bad news is already reflected in prices (down 25-40% from highs) while maintaining reasonable business fundamentals. Favors established businesses with strong profitability metrics and cash generation over speculative positions. Holding 36% cash provides portfolio stability appropriate for a nervous, amateur investor while still taking meaningful positions in dislocated valuations where risks are known and visible."
+}

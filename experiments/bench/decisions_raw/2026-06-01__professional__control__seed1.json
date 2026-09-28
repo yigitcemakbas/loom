@@ -1,0 +1,123 @@
+{
+  "positions": [
+    {
+      "ticker": "MSFT",
+      "weight": 0.15,
+      "direction": "long",
+      "thesis": "Microsoft has lagged peer performance with only 1% YTD gains despite strong recent momentum (+11% 1mo), indicating market revaluation of its AI and cloud leadership position.",
+      "evidence": ["The shares are up 1% over the past year and up 11% over the past month"],
+      "counterargument": "The recent momentum may already price in most of the AI opportunity, and the stock could be vulnerable to disappointment if AI monetization slows",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "NVDA",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "NVIDIA remains the dominant AI infrastructure play with sustained momentum (+66% YTD, +13% 1mo), justified by its commanding position in AI chip supply.",
+      "evidence": ["The shares are up 66% over the past year and up 13% over the past month"],
+      "counterargument": "Trading near yearly highs with little bad news reflected, valuation risk is significant if AI deployment slows",
+      "confidence": 0.70
+    },
+    {
+      "ticker": "ORCL",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Oracle shows accelerating momentum (+44% 1mo) even though 24% below yearly highs, suggesting strong recovery in cloud and AI adoption with reasonable valuation.",
+      "evidence": ["The shares are up 51% over the past year and up 44% over the past month", "It is about 24% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Execution risk on cloud transition and competition from Azure and AWS could limit gains",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "LLY",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Eli Lilly is the best-positioned company in the GLP-1 pharmaceutical revolution, benefiting from secular growth in obesity and diabetes treatment.",
+      "evidence": ["The shares are up 48% over the past year and up 13% over the past month"],
+      "counterargument": "Trading near yearly highs with little bad news reflected, valuation could compress if GLP-1 market growth disappoints",
+      "confidence": 0.68
+    },
+    {
+      "ticker": "INTC",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Intel's remarkable turnaround (+459% YTD) reflects genuine progress on foundry strategy and process node recovery, positioning it as a structural AI beneficiary.",
+      "evidence": ["The shares are up 459% over the past year and up 10% over the past month"],
+      "counterargument": "Large historical underperformance suggests execution risk on foundry roadmap and competitive threats from TSMC",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "ASML",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "ASML's chip equipment monopoly benefits directly from global semiconductor capacity expansion driven by AI and geopolitical diversification.",
+      "evidence": ["The shares are up 123% over the past year and up 14% over the past month"],
+      "counterargument": "Trading near yearly highs limits margin of safety if semiconductor capex cycles soften",
+      "confidence": 0.68
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "Apple's sustained gains (+53% YTD, +9% 1mo) reflect confidence in ecosystem strength and upcoming AI-enhanced products.",
+      "evidence": ["The shares are up 53% over the past year and up 9% over the past month", "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Mature product cycles and valuations offer limited upside if services growth disappoints",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "AMD",
+      "weight": 0.05,
+      "direction": "long",
+      "thesis": "AMD's strong momentum (+361% YTD, +41% 1mo) demonstrates market confidence in its AI chip execution and data center growth.",
+      "evidence": ["The shares are up 361% over the past year and up 41% over the past month"],
+      "counterargument": "Concentrated exposure to AI/data center cycles and execution risk against NVIDIA's dominance",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "Broadcom benefits from semiconductor equipment and infrastructure positioning, with +92% YTD returns reflecting justified AI infrastructure demand.",
+      "evidence": ["The shares are up 92% over the past year and up 9% over the past month"],
+      "counterargument": "Near yearly highs with limited bad news priced in, valuation compression risk if infrastructure spending slows",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "XOM",
+      "weight": 0.04,
+      "direction": "long",
+      "thesis": "ExxonMobil provides energy diversification and stable cash generation with +51% YTD gains, de-risking the portfolio from tech concentration.",
+      "evidence": ["The shares are up 51% over the past year and down 2% over the past month"],
+      "counterargument": "Energy sector performance is macro-dependent on oil prices, limiting upside if demand slows",
+      "confidence": 0.52
+    },
+    {
+      "ticker": "JNJ",
+      "weight": 0.02,
+      "direction": "long",
+      "thesis": "Johnson & Johnson offers healthcare exposure with strong dividend support and diversified pharmaceutical pipeline.",
+      "evidence": ["The shares are up 48% over the past year and down 1% over the past month"],
+      "counterargument": "Mature company with limited upside if drug pipeline disappoints",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "MU",
+      "weight": 0.10,
+      "direction": "short",
+      "thesis": "Micron's extraordinary +999% one-year return has pushed valuations to bubble territory with little downside priced in, making this a classic mean reversion short.",
+      "evidence": ["The shares are up 999% over the past year and up 91% over the past month", "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "AI server demand for high-bandwidth memory is genuine and may justify sustained elevated pricing levels",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "TMUS",
+      "weight": 0.06,
+      "direction": "short",
+      "thesis": "T-Mobile's persistent weakness (-21% YTD, -4% 1mo) despite recent industry strength suggests structural margin pressure and competitive challenges in wireless.",
+      "evidence": ["The shares are down 21% over the past year and down 4% over the past month", "It is about 26% below its high of the past year, so some bad news is already reflected in the price"],
+      "counterargument": "Recent stability could signal bottom if wireless market dynamics improve and TMUS cost structure becomes competitive",
+      "confidence": 0.55
+    }
+  ],
+  "cash": 0.03,
+  "reasoning": "The portfolio is heavily weighted toward AI and semiconductor beneficiaries (NVDA, INTC, ASML, AMD) with core positions in lagging but re-valuing tech leaders (MSFT, ORCL). Pharmaceutical growth is captured through LLY exposure. Two large short positions (MU, TMUS) represent high-conviction mean reversion and sector weakness plays. The positioning reflects confidence in AI infrastructure trends while maintaining shorts on extreme valuations."
+}

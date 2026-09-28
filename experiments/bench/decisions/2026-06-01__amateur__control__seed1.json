@@ -1,0 +1,261 @@
+{
+ "cell": "2026-06-01__amateur__control__seed1",
+ "as_of": "2026-06-01",
+ "persona": "amateur",
+ "arm": "control",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "3235b1a14b584408",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "positive",
+  "AAPL": "positive",
+  "NVDA": "insufficient",
+  "MSFT": "positive",
+  "MU": "negative",
+  "AMD": "positive",
+  "NDAQ": "negative",
+  "GOOGL": "negative",
+  "AMZN": "insufficient",
+  "APD": "negative",
+  "BKNG": "positive",
+  "KO": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "SNDK": "positive",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-06-01",
+  "newest_bar": "2026-06-01",
+  "newest_fact": "2026-06-01",
+  "as_of": "2026-06-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"AAPL\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Apple is a trusted technology leader with strong recent momentum. The company's proven track record and substantial recent gains make it a core holding.\",\n      \"evidence\": [\"The shares are up 53% over the past year and up 9% over the past month\"],\n      \"counterargument\": \"Trading close to its highest point of the past year, vulnerable to profit-taking and sector-wide pullbacks.\",\n      \"confidence\": 0.58\n    },\n    {\n      \"ticker\": \"MSFT\",\n      \"weight\": 0.10,\n      \"direction\": \"long\",\n      \"thesis\": \"Microsoft provides a stable, recognizable tech anchor with recent upward momentum. The 11% monthly gain suggests market confidence returning to this established player.\",\n      \"evidence\": [\"The shares are up 1% over the past year and up 11% over the past month\"],\n      \"counterargument\": \"Lagging annual performance compared to peers suggests this stock has underperformed despite recent strength.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"NVDA\",\n      \"weight\": 0.08,\n      \"direction\": \"long\",\n      \"thesis\": \"NVIDIA leads the AI semiconductor boom with exceptional growth trajectory. Strong gains demonstrate sustained investor confidence in artificial intelligence opportunities.\",\n      \"evidence\": [\"The shares are up 66% over the past year and up 13% over the past month\"],\n      \"counterargument\": \"Trading close to its highest point of the past year creates downside risk if sentiment shifts on AI valuations.\",\n      \"confidence\": 0.56\n    },\n    {\n      \"ticker\": \"JNJ\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Johnson & Johnson provides healthcare sector exposure with strong gains and defensive characteristics. A trusted blue-chip pharmaceutical company.\",\n      \"evidence\": [\"The shares are up 48% over the past year and down 1% over the past month\"],\n      \"counterargument\": \"Recent flat performance suggests momentum may be slowing despite strong annual returns.\",\n      \"confidence\": 0.54\n    },\n    {\n      \"ticker\": \"LLY\",\n      \"weight\": 0.07,\n      \"direction\": \"long\",\n      \"thesis\": \"Eli Lilly represents a premium pharmaceutical position with sustained growth. Strong recent momentum combined with continued upside suggests healthy fundamentals.\",\n      \"evidence\": [\"The shares are up 48% over the past year and up 13% over the past month\", \"It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\"],\n      \"counterargument\": \"Trading at yearly highs leaves limited margin for disappointment or negative news.\",\n      \"confidence\": 0.55\n    },\n    {\n      \"ticker\": \"ORCL\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"Oracle demonstrates strong enterprise software momentum with exceptional recent gains. Cloud and database dominance provide long-term competitive advantages.\",\n      \"evidence\": [\"The shares are up 51% over the past year and up 44% over the past month\"],\n      \"counterargument\": \"The 44% monthly gain may reflect unsustainable momentum that could reverse.\",\n      \"confidence\": 0.53\n    },\n    {\n      \"ticker\": \"ASML\",\n      \"weight\": 0.05,\n      \"direction\": \"long\",\n      \"thesis\": \"ASML is the critical semiconductor equipment supplier powering the chip revolution. Exceptional growth reflects secular trends in semiconductor manufacturing.\",\n      \"evidence\": [\"The shares are up 123% over the past year and up 14% over the past month\", \"It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\"],\n      \"counterargument\": \"Equipment suppliers are cyclical; trading at highs creates significant downside risk if capex spending slows.\",\n      \"confidence\": 0.54\n    },\n    {\n      \"ticker\": \"AMAT\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"Applied Materials benefits from semiconductor industry capital spending cycles. Exceptional returns demonstrate the strength of equipment demand.\",\n      \"evidence\": [\"The shares are up 194% over the past year and up 18% over the past month\"],\n      \"counterargument\": \"Extreme gains of 194% suggest valuations may be stretched; vulnerable to capex cycle downturns.\",\n      \"confidence\": 0.52\n    },\n    {\n      \"ticker\": \"AVGO\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"Broadcom provides semiconductor content with consistent double-digit growth. Strong position in networking and infrastructure drives steady returns.\",\n      \"evidence\": [\"The shares are up 92% over the past year and up 9% over the past month\", \"It is trading close to its highest point of the past year, so little bad news is currently reflected in the price\"],\n      \"counterargument\": \"Semiconductor sector is cyclical; trading at highs with capital intensity creates economic sensitivity.\",\n      \"confidence\": 0.53\n    },\n    {\n      \"ticker\": \"KO\",\n      \"weight\": 0.04,\n      \"direction\": \"long\",\n      \"thesis\": \"Coca-Cola provides defensive consumer staples exposure. Stable returns and flat recent movement offer portfolio stability.\",\n      \"evidence\": [\"The shares are up 12% over the past year and up 0% over the past month\"],\n      \"counterargument\": \"No recent momentum and limited growth catalysts in mature beverage market.\",\n      \"confidence\": 0.52\n    },\n    {\n      \"ticker\": \"PEP\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"PepsiCo offers consumer staples diversification with steady international and snacking exposure.\",\n      \"evidence\": [\"The shares are up 12% over the past year and down 10% over the past month\"],\n      \"counterargument\": \"Recent sharp 10% monthly decline signals weakness in what should be a defensive holding.\",\n      \"confidence\": 0.49\n    },\n    {\n      \"ticker\": \"VZ\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"Verizon provides telecommunications exposure with defensive characteristics and steady dividend-like returns.\",\n      \"evidence\": [\"The shares are up 16% over the past year and down 1% over the past month\"],\n      \"counterargument\": \"Telecom sector faces structural decline from technology disruption with limited growth prospects.\",\n      \"confidence\": 0.51\n    },\n    {\n      \"ticker\": \"AMGN\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"Amgen provides healthcare diversification as a leading biopharmaceutical company with steady returns.\",\n      \"evidence\": [\"The shares are up 18% over the past year and up 1% over the past month\"],\n      \"counterargument\": \"Mature healthcare company with limited growth and exposure to regulatory pharmaceutical pricing pressure.\",\n      \"confidence\": 0.52\n    },\n    {\n      \"ticker\": \"WMT\",\n      \"weight\": 0.04,\n      \"direction\": \"long\",\n      \"thesis\": \"Walmart provides defensive retail exposure with solid annual returns offsetting recent weakness.\",\n      \"evidence\": [\"The shares are up 17% over the past year and down 13% over the past month\"],\n      \"counterargument\": \"Recent sharp 13% monthly decline is concerning for a defensive position; signals potential consumer weakness.\",\n      \"confidence\": 0.50\n    },\n    {\n      \"ticker\": \"XOM\",\n      \"weight\": 0.03,\n      \"direction\": \"long\",\n      \"thesis\": \"ExxonMobil provides energy sector diversification away from technology concentration with solid returns.\",\n      \"evidence\": [\"The shares are up 51% over the past year and down 2% over the past month\"],\n      \"counterargument\": \"Energy sector faces long-term structural headwinds from global transition away from fossil fuels.\",\n      \"confidence\": 0.51\n    },\n    {\n      \"ticker\": \"TSLA\",\n      \"weight\": 0.02,\n      \"direction\": \"long\",\n      \"thesis\": \"Tesla is a recognizable growth company in electric vehicles and energy with steady appreciation.\",\n      \"evidence\": [\"The shares are up 20% over the past year and up 6% over the past month\"],\n      \"counterargument\": \"Growth expectations are stretched; execution risks in production and competition increasing from established manufacturers.\",\n      \"confidence\": 0.50\n    },\n    {\n      \"ticker\": \"PLTR\",\n      \"weight\": 0.02,\n      \"direction\": \"long\",\n      \"thesis\": \"Palantir shows recovery potential with strong recent momentum despite being 22% below yearly highs.\",\n      \"evidence\": [\"The shares are up 22% over the past year and up 12% over the past month\", \"It is about 22% below its high of the past year, so some bad news is already reflected in the price\"],\n      \"counterargument\": \"Recovery narratives often disappoint; speculative positioning creates binary risk.\",\n      \"confidence\": 0.50\n    }\n  ],\n  \"cash\": 0.18,\n  \"reasoning\": \"Built a portfolio favoring trusted, recognizable large-cap technology and healthcare companies showing strong recent momentum while maintaining 18% cash for safety. Avoided extreme performers like SNDK and MU, and struggling stocks like CMCSA and TMUS. Included defensive consumer staples, telecom, and energy positions to reduce concentration risk in technology. Position sizing reflects nervous investor preference for diversification over concentration.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "AAPL",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Apple is a trusted technology leader with strong recent momentum. The company's proven track record and substantial recent gains make it a core holding.",
+    "evidence": [
+     "The shares are up 53% over the past year and up 9% over the past month"
+    ],
+    "counterargument": "Trading close to its highest point of the past year, vulnerable to profit-taking and sector-wide pullbacks.",
+    "confidence": 0.58
+   },
+   {
+    "ticker": "MSFT",
+    "weight": 0.1,
+    "direction": "long",
+    "thesis": "Microsoft provides a stable, recognizable tech anchor with recent upward momentum. The 11% monthly gain suggests market confidence returning to this established player.",
+    "evidence": [
+     "The shares are up 1% over the past year and up 11% over the past month"
+    ],
+    "counterargument": "Lagging annual performance compared to peers suggests this stock has underperformed despite recent strength.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "NVDA",
+    "weight": 0.08,
+    "direction": "long",
+    "thesis": "NVIDIA leads the AI semiconductor boom with exceptional growth trajectory. Strong gains demonstrate sustained investor confidence in artificial intelligence opportunities.",
+    "evidence": [
+     "The shares are up 66% over the past year and up 13% over the past month"
+    ],
+    "counterargument": "Trading close to its highest point of the past year creates downside risk if sentiment shifts on AI valuations.",
+    "confidence": 0.56
+   },
+   {
+    "ticker": "JNJ",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Johnson & Johnson provides healthcare sector exposure with strong gains and defensive characteristics. A trusted blue-chip pharmaceutical company.",
+    "evidence": [
+     "The shares are up 48% over the past year and down 1% over the past month"
+    ],
+    "counterargument": "Recent flat performance suggests momentum may be slowing despite strong annual returns.",
+    "confidence": 0.54
+   },
+   {
+    "ticker": "LLY",
+    "weight": 0.07,
+    "direction": "long",
+    "thesis": "Eli Lilly represents a premium pharmaceutical position with sustained growth. Strong recent momentum combined with continued upside suggests healthy fundamentals.",
+    "evidence": [
+     "The shares are up 48% over the past year and up 13% over the past month",
+     "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"
+    ],
+    "counterargument": "Trading at yearly highs leaves limited margin for disappointment or negative news.",
+    "confidence": 0.55
+   },
+   {
+    "ticker": "ORCL",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "Oracle demonstrates strong enterprise software momentum with exceptional recent gains. Cloud and database dominance provide long-term competitive advantages.",
+    "evidence": [
+     "The shares are up 51% over the past year and up 44% over the past month"
+    ],
+    "counterargument": "The 44% monthly gain may reflect unsustainable momentum that could reverse.",
+    "confidence": 0.53
+   },
+   {
+    "ticker": "ASML",
+    "weight": 0.05,
+    "direction": "long",
+    "thesis": "ASML is the critical semiconductor equipment supplier powering the chip revolution. Exceptional growth reflects secular trends in semiconductor manufacturing.",
+    "evidence": [
+     "The shares are up 123% over the past year and up 14% over the past month",
+     "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"
+    ],
+    "counterargument": "Equipment suppliers are cyclical; trading at highs creates significant downside risk if capex spending slows.",
+    "confidence": 0.54
+   },
+   {
+    "ticker": "AMAT",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "Applied Materials benefits from semiconductor industry capital spending cycles. Exceptional returns demonstrate the strength of equipment demand.",
+    "evidence": [
+     "The shares are up 194% over the past year and up 18% over the past month"
+    ],
+    "counterargument": "Extreme gains of 194% suggest valuations may be stretched; vulnerable to capex cycle downturns.",
+    "confidence": 0.52
+   },
+   {
+    "ticker": "AVGO",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "Broadcom provides semiconductor content with consistent double-digit growth. Strong position in networking and infrastructure drives steady returns.",
+    "evidence": [
+     "The shares are up 92% over the past year and up 9% over the past month",
+     "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"
+    ],
+    "counterargument": "Semiconductor sector is cyclical; trading at highs with capital intensity creates economic sensitivity.",
+    "confidence": 0.53
+   },
+   {
+    "ticker": "KO",
+    "weight": 0.04,
+    "direction": "long",
+    "thesis": "Coca-Cola provides defensive consumer staples exposure. Stable returns and flat recent movement offer portfolio stability.",
+    "evidence": [
+     "The shares are up 12% over the past year and up 0% over the past month"
+    ],
+    "counterargument": "No recent momentum and limited growth catalysts in mature beverage market.",
+    "confidence": 0.52
+   },
+   {
+    "ticker": "PEP",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "PepsiCo offers consumer staples diversification with steady international and snacking exposure.",
+    "evidence": [
+     "The shares are up 12% over the past year and down 10% over the past month"
+    ],
+    "counterargument": "Recent sharp 10% monthly decline signals weakness in what should be a defensive holding.",
+    "confidence": 0.49
+   },
+   {
+    "ticker": "VZ",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "Verizon provides telecommunications exposure with defensive characteristics and steady dividend-like returns.",
+    "evidence": [
+     "The shares are up 16% over the past year and down 1% over the past month"
+    ],
+    "counterargument": "Telecom sector faces structural decline from technology disruption with limited growth prospects.",
+    "confidence": 0.51
+   },
+   {
+    "ticker": "AMGN",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "Amgen provides healthcare diversification as a leading biopharmaceutical company with steady returns.",
+    "evidence": [
+     "The shares are up 18% over the past year and up 1% over the past month"
+    ],
+    "counterargument": "Mature healthcare company with limited growth and exposure to regulatory pharmaceutical pricing pressure.",
+    "confidence": 0.52
+   },
+   {
+    "ticker": "WMT",
+    "weight": 0.04,
+    "direction": "long",
+    "thesis": "Walmart provides defensive retail exposure with solid annual returns offsetting recent weakness.",
+    "evidence": [
+     "The shares are up 17% over the past year and down 13% over the past month"
+    ],
+    "counterargument": "Recent sharp 13% monthly decline is concerning for a defensive position; signals potential consumer weakness.",
+    "confidence": 0.5
+   },
+   {
+    "ticker": "XOM",
+    "weight": 0.03,
+    "direction": "long",
+    "thesis": "ExxonMobil provides energy sector diversification away from technology concentration with solid returns.",
+    "evidence": [
+     "The shares are up 51% over the past year and down 2% over the past month"
+    ],
+    "counterargument": "Energy sector faces long-term structural headwinds from global transition away from fossil fuels.",
+    "confidence": 0.51
+   },
+   {
+    "ticker": "TSLA",
+    "weight": 0.02,
+    "direction": "long",
+    "thesis": "Tesla is a recognizable growth company in electric vehicles and energy with steady appreciation.",
+    "evidence": [
+     "The shares are up 20% over the past year and up 6% over the past month"
+    ],
+    "counterargument": "Growth expectations are stretched; execution risks in production and competition increasing from established manufacturers.",
+    "confidence": 0.5
+   },
+   {
+    "ticker": "PLTR",
+    "weight": 0.02,
+    "direction": "long",
+    "thesis": "Palantir shows recovery potential with strong recent momentum despite being 22% below yearly highs.",
+    "evidence": [
+     "The shares are up 22% over the past year and up 12% over the past month",
+     "It is about 22% below its high of the past year, so some bad news is already reflected in the price"
+    ],
+    "counterargument": "Recovery narratives often disappoint; speculative positioning creates binary risk.",
+    "confidence": 0.5
+   }
+  ],
+  "cash": 0.17999999999999994,
+  "reasoning": "Built a portfolio favoring trusted, recognizable large-cap technology and healthcare companies showing strong recent momentum while maintaining 18% cash for safety. Avoided extreme performers like SNDK and MU, and struggling stocks like CMCSA and TMUS. Included defensive consumer staples, telecom, and energy positions to reduce concentration risk in technology. Position sizing reflects nervous investor preference for diversification over concentration.",
+  "gross_before_scaling": 0.82,
+  "scaled_back": false
+ },
+ "parsed": true
+}

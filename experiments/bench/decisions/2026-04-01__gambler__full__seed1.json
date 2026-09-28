@@ -1,0 +1,147 @@
+{
+ "cell": "2026-04-01__gambler__full__seed1",
+ "as_of": "2026-04-01",
+ "persona": "gambler",
+ "arm": "full",
+ "seed": 1,
+ "sessions": 63,
+ "model": "haiku",
+ "prompt_version": "readerbench-2026-09-28.1",
+ "packet_fingerprint": "c62922e14050470e",
+ "packet_names": 40,
+ "packet_verdicts": {
+  "TSLA": "negative",
+  "MU": "negative",
+  "NDAQ": "negative",
+  "AAPL": "negative",
+  "GOOGL": "negative",
+  "APD": "mixed",
+  "BKNG": "positive",
+  "KO": "negative",
+  "NVDA": "negative",
+  "PEP": "negative",
+  "VZ": "positive",
+  "ABNB": "positive",
+  "ADBE": "insufficient",
+  "ADSK": "positive",
+  "AEP": "mixed",
+  "AMAT": "negative",
+  "AMGN": "negative",
+  "AMT": "negative",
+  "AMZN": "negative",
+  "AVGO": "insufficient",
+  "AXP": "insufficient",
+  "BLK": "negative",
+  "CMCSA": "negative",
+  "TMUS": "positive",
+  "WMT": "mixed",
+  "BAC": "mixed",
+  "BMY": "negative",
+  "BSX": "positive",
+  "META": "insufficient",
+  "BRK-B": "insufficient",
+  "LLY": "insufficient",
+  "JPM": "insufficient",
+  "V": "insufficient",
+  "INTC": "insufficient",
+  "XOM": "insufficient",
+  "ASML": "insufficient",
+  "JNJ": "insufficient",
+  "MA": "insufficient",
+  "PLTR": "insufficient",
+  "ORCL": "insufficient"
+ },
+ "provenance": {
+  "newest_signal": "2026-03-13",
+  "newest_bar": "2026-04-01",
+  "newest_fact": "2026-04-01",
+  "as_of": "2026-04-01"
+ },
+ "raw_reply": "{\n  \"positions\": [\n    {\n      \"ticker\": \"BKNG\",\n      \"weight\": 0.25,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict with strong underlying demand dynamics and cost discipline execution. Trading 28% below year high despite positive fundamentals suggests market has overshot on short-term macro concerns.\",\n      \"evidence\": [\n        \"Despite high inflation and economic worries, actual travel demand...: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues.\",\n        \"Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters.\",\n        \"The shares are down 10% over the past year and up 0% over the past month. It is about 28% below its high of the past year, so some bad news is already reflected in the price.\"\n      ],\n      \"counterargument\": \"KAYAK weak performance and rising customer acquisition costs show margin pressure in existing assets\",\n      \"confidence\": 0.68\n    },\n    {\n      \"ticker\": \"ADSK\",\n      \"weight\": 0.18,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict with major regulatory risk lifted. Down 27% from year high despite positive inflection point suggests oversold conditions and recovery opportunity in cloud migration narrative.\",\n      \"evidence\": [\n        \"This lifts a major regulatory cloud after the SEC (Securities and\u2026: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks.\",\n        \"The shares are down 10% over the past year and down 4% over the past month. It is about 27% below its high of the past year, so some bad news is already reflected in the price.\"\n      ],\n      \"counterargument\": \"Friction in moving legacy users to cloud subscriptions could slow growth trajectory\",\n      \"confidence\": 0.66\n    },\n    {\n      \"ticker\": \"BSX\",\n      \"weight\": 0.17,\n      \"direction\": \"long\",\n      \"thesis\": \"Positive verdict despite 43% pullback from highs indicates capitulation. Major acquisition in growing medical device market with strong new product adoption (Farapulse) should drive recovery.\",\n      \"evidence\": [\n        \"This massive $14.5 billion acquisition significantly expands the\u2026: Large strategic acquisitions in fast-growing medical device markets can drive long-term revenue growth, despite high integration requirements.\",\n        \"The commercial success of Farapulse serves as the key growth engine\u2026: Strong physician adoption of a primary new technology reinforces investor confidence in organic sales momentum.\",\n        \"The shares are down 39% over the past year and down 19% over the past month. It is about 43% below its high of the past year, so some bad news is already reflected in the price.\"\n      ],\n      \"counterargument\": \"Abandoning heart valve program eliminates prospective revenue stream and triggers restructuring charges\",\n      \"confidence\": 0.62\n    },\n    {\n      \"ticker\": \"MU\",\n      \"weight\": 0.20,\n      \"direction\": \"short\",\n      \"thesis\": \"Extreme 316% run with negative verdict on capex and tax rate headwinds. Down 11% in recent month signals momentum reversal. Semiconductor cycle euphoria divorced from worsening near-term fundamentals.\",\n      \"evidence\": [\n        \"For fiscal 2026, Micron introduced a capital expenditure baseline of\u2026: The dual headwind of elevated near-term capital expenditure guidance and an increased projected tax rate will likely depress profitability and cash flow projections for the upcomin\",\n        \"Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions.\",\n        \"The shares are up 316% over the past year and down 11% over the past month. It is about 20% below its high of the past year, so some bad news is already reflected in the price.\"\n      ],\n      \"counterargument\": \"AI datacenter demand provides structural tailwind that could support higher multiples despite near-term capex headwinds\",\n      \"confidence\": 0.65\n    },\n    {\n      \"ticker\": \"GOOGL\",\n      \"weight\": 0.12,\n      \"direction\": \"short\",\n      \"thesis\": \"90% run-up with negative verdict on accelerating capex above massive baseline. Margin compression from infrastructure spending not yet reflected in recent weakness. Momentum inflection negative.\",\n      \"evidence\": [\n        \"Management explicitly stated that capital expenditures in 2026 will\u2026: A significant increase in capital expenditures above an already massive baseline will likely pressure near-term free cash flow and margins.\",\n        \"Confirms a substantial acceleration in capital spending for technical infrastructure indicates elevated near-term cash outflows.\",\n        \"The shares are up 90% over the past year and down 3% over the past month.\"\n      ],\n      \"counterargument\": \"AI infrastructure investments could unlock new revenue streams and maintain long-term growth premium\",\n      \"confidence\": 0.61\n    },\n    {\n      \"ticker\": \"TSLA\",\n      \"weight\": 0.08,\n      \"direction\": \"short\",\n      \"thesis\": \"42% run but already down 22% from highs with negative verdict on massive capex during declining profitability. Capital spending acceleration contradicts revenue contraction and margin pressure.\",\n      \"evidence\": [\n        \"Tesla explicitly guided 2026 capital expenditures to exceed $20\u2026: Significantly expanding capital expenditure commitments during a period of contracting operational profits dampens near-term free cash flow expectations.\",\n        \"Confirms a full-year top-line revenue contraction driven by lower\u2026: An annual revenue decline in a growth-valued enterprise negatively impacts valuation assumptions.\",\n        \"The shares are up 42% over the past year and down 5% over the past month. It is about 22% below its high of the past year, so some bad news is already reflected in the price.\"\n      ],\n      \"counterargument\": \"Robotaxi commercial launch represents major long-term software revenue catalyst that could justify capex\",\n      \"confidence\": 0.59\n    }\n  ],\n  \"cash\": 0.0,\n  \"reasoning\": \"Aggressive concentration on both long and short sides. Longs target beaten-down quality with positive verdicts (BKNG, ADSK, BSX) where 27-43% pullbacks suggest capitulation and recovery opportunity. Shorts target extreme overextension (MU 316%, GOOGL 90%, TSLA 42%) where negative fundamentals on capex and declining profitability diverge from price. Zero cash allocation reflects aggressive speculator thesis that idle cash is wasted opportunity.\"\n}\n",
+ "decision": {
+  "positions": [
+   {
+    "ticker": "BKNG",
+    "weight": 0.25,
+    "direction": "long",
+    "thesis": "Positive verdict with strong underlying demand dynamics and cost discipline execution. Trading 28% below year high despite positive fundamentals suggests market has overshot on short-term macro concerns.",
+    "evidence": [
+     "Despite high inflation and economic worries, actual travel demand...: Strong booking volume growth demonstrates resilient consumer demand, which should support near-term revenues.",
+     "Achieving higher-than-expected cost savings from corporate restructuring is a positive signal that supports higher profit margins in future quarters.",
+     "The shares are down 10% over the past year and up 0% over the past month. It is about 28% below its high of the past year, so some bad news is already reflected in the price."
+    ],
+    "counterargument": "KAYAK weak performance and rising customer acquisition costs show margin pressure in existing assets",
+    "confidence": 0.68
+   },
+   {
+    "ticker": "ADSK",
+    "weight": 0.18,
+    "direction": "long",
+    "thesis": "Positive verdict with major regulatory risk lifted. Down 27% from year high despite positive inflection point suggests oversold conditions and recovery opportunity in cloud migration narrative.",
+    "evidence": [
+     "This lifts a major regulatory cloud after the SEC (Securities and\u2026: Investors typically view the resolution of federal regulatory probes into financial reporting practices as a major positive, removing significant downside risks.",
+     "The shares are down 10% over the past year and down 4% over the past month. It is about 27% below its high of the past year, so some bad news is already reflected in the price."
+    ],
+    "counterargument": "Friction in moving legacy users to cloud subscriptions could slow growth trajectory",
+    "confidence": 0.66
+   },
+   {
+    "ticker": "BSX",
+    "weight": 0.17,
+    "direction": "long",
+    "thesis": "Positive verdict despite 43% pullback from highs indicates capitulation. Major acquisition in growing medical device market with strong new product adoption (Farapulse) should drive recovery.",
+    "evidence": [
+     "This massive $14.5 billion acquisition significantly expands the\u2026: Large strategic acquisitions in fast-growing medical device markets can drive long-term revenue growth, despite high integration requirements.",
+     "The commercial success of Farapulse serves as the key growth engine\u2026: Strong physician adoption of a primary new technology reinforces investor confidence in organic sales momentum.",
+     "The shares are down 39% over the past year and down 19% over the past month. It is about 43% below its high of the past year, so some bad news is already reflected in the price."
+    ],
+    "counterargument": "Abandoning heart valve program eliminates prospective revenue stream and triggers restructuring charges",
+    "confidence": 0.62
+   },
+   {
+    "ticker": "MU",
+    "weight": 0.2,
+    "direction": "short",
+    "thesis": "Extreme 316% run with negative verdict on capex and tax rate headwinds. Down 11% in recent month signals momentum reversal. Semiconductor cycle euphoria divorced from worsening near-term fundamentals.",
+    "evidence": [
+     "For fiscal 2026, Micron introduced a capital expenditure baseline of\u2026: The dual headwind of elevated near-term capital expenditure guidance and an increased projected tax rate will likely depress profitability and cash flow projections for the upcomin",
+     "Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions.",
+     "The shares are up 316% over the past year and down 11% over the past month. It is about 20% below its high of the past year, so some bad news is already reflected in the price."
+    ],
+    "counterargument": "AI datacenter demand provides structural tailwind that could support higher multiples despite near-term capex headwinds",
+    "confidence": 0.65
+   },
+   {
+    "ticker": "GOOGL",
+    "weight": 0.12,
+    "direction": "short",
+    "thesis": "90% run-up with negative verdict on accelerating capex above massive baseline. Margin compression from infrastructure spending not yet reflected in recent weakness. Momentum inflection negative.",
+    "evidence": [
+     "Management explicitly stated that capital expenditures in 2026 will\u2026: A significant increase in capital expenditures above an already massive baseline will likely pressure near-term free cash flow and margins.",
+     "Confirms a substantial acceleration in capital spending for technical infrastructure indicates elevated near-term cash outflows.",
+     "The shares are up 90% over the past year and down 3% over the past month."
+    ],
+    "counterargument": "AI infrastructure investments could unlock new revenue streams and maintain long-term growth premium",
+    "confidence": 0.61
+   },
+   {
+    "ticker": "TSLA",
+    "weight": 0.08,
+    "direction": "short",
+    "thesis": "42% run but already down 22% from highs with negative verdict on massive capex during declining profitability. Capital spending acceleration contradicts revenue contraction and margin pressure.",
+    "evidence": [
+     "Tesla explicitly guided 2026 capital expenditures to exceed $20\u2026: Significantly expanding capital expenditure commitments during a period of contracting operational profits dampens near-term free cash flow expectations.",
+     "Confirms a full-year top-line revenue contraction driven by lower\u2026: An annual revenue decline in a growth-valued enterprise negatively impacts valuation assumptions.",
+     "The shares are up 42% over the past year and down 5% over the past month. It is about 22% below its high of the past year, so some bad news is already reflected in the price."
+    ],
+    "counterargument": "Robotaxi commercial launch represents major long-term software revenue catalyst that could justify capex",
+    "confidence": 0.59
+   }
+  ],
+  "cash": 0.0,
+  "reasoning": "Aggressive concentration on both long and short sides. Longs target beaten-down quality with positive verdicts (BKNG, ADSK, BSX) where 27-43% pullbacks suggest capitulation and recovery opportunity. Shorts target extreme overextension (MU 316%, GOOGL 90%, TSLA 42%) where negative fundamentals on capex and declining profitability diverge from price. Zero cash allocation reflects aggressive speculator thesis that idle cash is wasted opportunity.",
+  "gross_before_scaling": 1.0,
+  "scaled_back": false
+ },
+ "parsed": true
+}

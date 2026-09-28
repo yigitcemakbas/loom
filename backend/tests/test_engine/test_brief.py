@@ -28,17 +28,31 @@ def _sig(
     days_ago: int = 1,
     summary: str = "Component costs: rising memory prices squeeze hardware margins.",
     doc_subtype: str = "10-Q",
-    signal_type: SignalType = SignalType.NEW_RISK_FACTOR,
+    signal_type: SignalType | None = None,
+    sentiment: float | None = None,
     confidence: float = 0.9,
     evidence_rate: float | None = None,
     evidence_sample_size: int | None = None,
 ) -> Signal:
+    # Direction is no longer a stored field. It is a consequence of what the
+    # document did, so this builds the documentary configuration that produces
+    # the requested direction: a risk factor appearing for negative, a shift in
+    # the company's own tone for positive, and a tone shift carrying no score for
+    # a finding that was read and could not be called either way.
+    if signal_type is None:
+        signal_type = (SignalType.NEW_RISK_FACTOR if direction == "negative"
+                       else SignalType.SENTIMENT_SHIFT)
+    if sentiment is None and signal_type in (
+        SignalType.SENTIMENT_SHIFT, SignalType.EMERGING_PATTERN
+    ):
+        sentiment = {"positive": 0.6, "negative": -0.6}.get(direction)
     return Signal(
         id=uuid.uuid4(),
         company_id=uuid.uuid4(),
         signal_type=signal_type,
         summary=summary,
         detail=summary,
+        sentiment_score=sentiment,
         market_direction=direction,
         market_magnitude=magnitude,
         confidence=confidence,
@@ -64,20 +78,25 @@ def test_unassessed_findings_never_read_as_a_calm_company():
     """Signals analysed before market-impact assessment existed carry no
     direction. Treating those as 'neutral' reported companies with twenty open
     findings as having nothing notable, which is worse than showing nothing."""
-    signals = _many(10, direction=None)
+    signals = _many(10, direction=None, signal_type=SignalType.SENTIMENT_SHIFT,
+                    sentiment=None)
 
     brief = build_brief(signals, now=NOW)
 
     assert brief.stance == Stance.INSUFFICIENT
     assert brief.stance != Stance.QUIET
-    assert "not been assessed" in brief.headline
+    assert "do not state one" in brief.headline
     assert brief.evidence["unassessed"] == 10
 
 
 def test_no_view_means_no_confidence():
     """A stance of 'no view offered' printed beside '83% confident' reads as a
     contradiction and undermines every other number on the page."""
-    brief = build_brief(_many(10, direction=None), now=NOW)
+    brief = build_brief(
+        _many(10, direction=None, signal_type=SignalType.SENTIMENT_SHIFT,
+              sentiment=None),
+        now=NOW,
+    )
 
     assert brief.confidence == 0.0
 
@@ -126,15 +145,24 @@ def test_balanced_evidence_reads_as_mixed():
     assert "both ways" in brief.headline
 
 
-def test_assessed_but_neutral_findings_read_as_quiet():
-    """Genuinely judged-neutral is a real answer, and distinct from unjudged."""
-    signals = _many(6, direction="neutral") + [
-        _sig(direction="neutral", doc_subtype="earnings_call", summary="Call: routine update.")
+def test_a_record_of_non_directional_findings_reads_as_quiet():
+    """Replaces an earlier test that asserted "judged neutral" was distinct from
+    "unjudged". Direction now comes from what the document did, and a document
+    either states one or it does not — there is no third observable state, so a
+    stored `market_direction` of "neutral" no longer means anything.
+
+    The property worth keeping is the one underneath it: a record made of
+    findings that carry no direction at all — quotes, mostly — is a quiet
+    company rather than a verdict in either direction."""
+    signals = [
+        _sig(signal_type=SignalType.NOTABLE_QUOTE,
+             summary=f"Quote {i}: management restated its long-term framing.")
+        for i in range(7)
     ]
     brief = build_brief(signals, now=NOW)
 
-    assert brief.stance == Stance.QUIET
-    assert "routine" in brief.headline
+    assert brief.stance in (Stance.QUIET, Stance.INSUFFICIENT)
+    assert brief.stance not in (Stance.NEGATIVE, Stance.POSITIVE)
 
 
 def test_major_findings_outweigh_minor_ones():

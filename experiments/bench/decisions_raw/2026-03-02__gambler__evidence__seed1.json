@@ -1,0 +1,114 @@
+{
+  "positions": [
+    {
+      "ticker": "INTC",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Strong 92% YTD momentum with improving margins and profitability trends suggest continued recovery in semiconductor cycle.",
+      "evidence": ["up 92% over the past year", "Margin direction 0.92", "Twelve-month momentum 0.92"],
+      "counterargument": "Gross profitability remains severely depressed at 0.02, indicating core business profitability has not recovered despite stock gains.",
+      "confidence": 0.65
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Best-in-class margin expansion and revenue growth with valuation reset after 30% pullback from highs represents opportunity in secular software trend.",
+      "evidence": ["Margin direction 0.94", "Revenue growth 0.93", "down 30% below its high of the past year", "Return on assets 0.91"],
+      "counterargument": "Sales per dollar paid 0.00 suggests valuation has limited margin of safety even at discounted levels.",
+      "confidence": 0.63
+    },
+    {
+      "ticker": "AMAT",
+      "weight": 0.11,
+      "direction": "long",
+      "thesis": "138% YTD surge with 16% last month momentum as semiconductor equipment demand stays robust despite geopolitical headwinds.",
+      "evidence": ["up 138% over the past year and up 16% over the past month", "Twelve-month momentum 0.84", "Return on assets 0.88"],
+      "counterargument": "Ongoing federal investigations and China shipment subpoenas create persistent legal uncertainties and threaten vital business region.",
+      "confidence": 0.61
+    },
+    {
+      "ticker": "LLY",
+      "weight": 0.10,
+      "direction": "long",
+      "thesis": "Only company with revenue growth ranking of 1.00 with exceptional ROA of 0.96 indicates secular demand tailwinds in healthcare innovation.",
+      "evidence": ["Revenue growth 1.00", "Return on assets 0.96", "up 11% over the past year"],
+      "counterargument": "Earnings backed by cash 0.00 indicates reported profits are not converting to actual cash generation.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "AVGO",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "Margin expansion and debt deleveraging with AI server customization upside positions company well for infrastructure spending cycle.",
+      "evidence": ["Margin direction 0.87", "Debt direction 0.90", "up 61% over the past year and down 4% over the past month"],
+      "counterargument": "Heavy chip foundry concentration represents operational bottleneck that could constrain future growth.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "TMUS",
+      "weight": 0.08,
+      "direction": "long",
+      "thesis": "UScellular integration cost synergies with inflection to up 10% recent momentum after down 18% YTD suggests market underappreciated turnaround.",
+      "evidence": ["Achieving significant annual cost savings should improve profit margins", "down 18% over the past year and up 10% over the past month"],
+      "counterargument": "the market typically dislikes when companies stop reporting key operational metrics like total subscriber additions.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "ADBE",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Elite profitability metrics with 41% valuation reset offers asymmetric risk-reward on software margin quality.",
+      "evidence": ["Profit per dollar paid 0.99", "Gross profitability 0.95", "down 41% over the past year", "Return on assets 0.93"],
+      "counterargument": "Higher computer power and inferencing costs for smart features could squeeze software profit margins if users do not pay extra.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "MSFT",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Raised full-year guidance with pre-sold AI infrastructure de-risks capital spending cycle, combining quality with downside protection.",
+      "evidence": ["It reassures investors that expensive computer chips are successfully powering other highly profitable software products", "Microsoft raised its full-year fiscal 2026 outlook", "Price steadiness 0.95"],
+      "counterargument": "AI infrastructure costs squeezing profit margins remains core concern with visibility limited.",
+      "confidence": 0.64
+    },
+    {
+      "ticker": "ASML",
+      "weight": -0.05,
+      "direction": "short",
+      "thesis": "Valuation multiple stretched after 103% run with explicit acknowledgment that shares have become expensive on relative metrics.",
+      "evidence": ["up 103% over the past year and up 0% over the past month", "The share has run hard and is now expensive on the numbers"],
+      "counterargument": "Essential semiconductor equipment provider with monopoly-like positioning in EUV lithography justifies premium valuation.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "MU",
+      "weight": -0.05,
+      "direction": "short",
+      "thesis": "Extraordinary 342% YTD surge at market peak with concentrated Taiwan geopolitical risk and peak cycle valuation.",
+      "evidence": ["up 342% over the past year and down 1% over the past month", "Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions", "It is trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Twelve-month momentum 0.97 and margin direction 0.96 indicate current fundamentals support recent appreciation.",
+      "confidence": 0.60
+    },
+    {
+      "ticker": "BKNG",
+      "weight": -0.03,
+      "direction": "short",
+      "thesis": "Significant momentum breakdown with 16% last month decline and structural headwinds from KAYAK underperformance on rising acquisition costs.",
+      "evidence": ["down 16% over the past year and down 16% over the past month", "Weak performance and asset write-downs at KAYAK indicate that rising customer acquisition costs are dragging on profitability"],
+      "counterargument": "Despite high inflation and economic worries, actual travel demand remained strong with booking volume growth.",
+      "confidence": 0.58
+    },
+    {
+      "ticker": "KO",
+      "weight": -0.02,
+      "direction": "short",
+      "thesis": "Material unpriced downside risk from $14B tax liability overhang and BodyArmor brand write-down deterioration.",
+      "evidence": ["potential $14 billion tax liability creates a major financial overhang", "Large write-downs on key brand acquisitions suggest that past capital deployment is not generating the expected returns", "trading close to its highest point of the past year, so little bad news is currently reflected in the price"],
+      "counterargument": "Exempting United States-headquartered firms from complex global minimum tax provisions removes a potential headwind.",
+      "confidence": 0.56
+    }
+  ],
+  "cash": 0.10,
+  "reasoning": "Built high-conviction portfolio around momentum leaders (INTC, PLTR, AMAT, LLY) where technical strength combined with fundamental improving trajectories. Concentrated in semiconductor and software mega-trends where capital rotation is accelerating (MSFT, AVGO). Shorted peak-valued mega-cap runaway (MU at 342% YTD) and expensive essential tool maker (ASML) where momentum extremes and valuation disconnects offer downside. Maintained only 10% defensive cash given aggressive speculator mandate and 63-day time horizon allowing opportunistic rebalancing."
+}

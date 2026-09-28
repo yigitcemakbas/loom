@@ -1,0 +1,122 @@
+{
+  "positions": [
+    {
+      "ticker": "MSFT",
+      "weight": 0.22,
+      "direction": "long",
+      "thesis": "Quality technology company trading at significant discount (down 28% YoY) with strong fundamentals. Positive verdict and excellent price steadiness (0.94) and profit conversion (0.81 per dollar paid) indicate market has overcorrected. Large order backlog provides near-term visibility.",
+      "evidence": [
+        "Reads better than companies of this kind usually do",
+        "This shows a massive build-up of future corporate orders that",
+        "Price steadiness 0.94",
+        "Profit per dollar paid 0.81",
+        "down 28% over the past year and down 15% over the past month. It is about 34% below its high of the past year, so some bad news is already reflected in the price"
+      ],
+      "counterargument": "Down 28% YoY suggests more fundamental problems than temporary market pessimism; strong order growth may not translate to margin improvement given console business weakness.",
+      "confidence": 0.67
+    },
+    {
+      "ticker": "GOOGL",
+      "weight": 0.16,
+      "direction": "long",
+      "thesis": "Berkshire Hathaway's $10 billion direct equity investment is a massive vote of confidence from the world's premier institutional investor. Company demonstrates strong operational execution with superior ROA and shareholder-friendly capital allocation.",
+      "evidence": [
+        "Discloses a $10 billion direct equity investment from Berkshire Hathaway represents a massive vote of confidence from a premier institutional investor",
+        "Using capped call transactions to mitigate potential share dilution from preferred stock conversion is a shareholder-friendly action",
+        "Return on assets 0.93",
+        "It is earning well on what it owns, and it is buying a great deal more"
+      ],
+      "counterargument": "Up 102% over past year means momentum may reverse; equity dilution from 200M Class C share authorization poses ongoing headwind; regulatory risk from major tech scrutiny.",
+      "confidence": 0.72
+    },
+    {
+      "ticker": "BKNG",
+      "weight": 0.12,
+      "direction": "long",
+      "thesis": "Fortress balance sheet (cash cushion ranking 1.00 best-in-class) paired with proven earnings growth and strong cost discipline positions company to benefit from travel demand recovery. Trading 23% below highs despite positive operational progress.",
+      "evidence": [
+        "Reads better than companies of this kind usually do",
+        "Strong booking volume growth demonstrates resilient consumer demand",
+        "Achieving higher-than-expected cost savings from corporate restructuring",
+        "Cash cushion 1.00",
+        "down 19% over the past year and up 9% over the past month. It is about 23% below its high of the past year, so some bad news is already reflected in the price"
+      ],
+      "counterargument": "KAYAK weakness suggests customer acquisition cost pressures; travel demand may face cyclical headwinds if economy softens; up 9% month suggests momentum may be peaking.",
+      "confidence": 0.62
+    },
+    {
+      "ticker": "AMD",
+      "weight": 0.07,
+      "direction": "long",
+      "thesis": "Positive verdict with strong AI data center tailwinds. Management doubled long-term addressable market and provided multi-year revenue visibility. Despite up 271% YoY, company maintains strong operational metrics and clear demand momentum.",
+      "evidence": [
+        "Management doubled its target market forecast for server central processing units",
+        "Management provided explicit multi-year revenue expectations for AI hardware",
+        "Quarterly revenue outlook surpassed expectations",
+        "Twelve-month momentum 0.91"
+      ],
+      "counterargument": "Already at highs (only 6% below peak) so momentum may be fully priced; gaming segment headwinds (20% decline) offset server growth; valuation may not provide margin of safety for 63-day hold.",
+      "confidence": 0.59
+    },
+    {
+      "ticker": "AAPL",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Exceptional operational quality (ROA 0.97, price steadiness 0.97) with multiple growth drivers. New monetization (sponsored search) and strong revenue guidance demonstrate resilience. Holdings warrant despite earnings quality concerns.",
+      "evidence": [
+        "Reads better than companies of this kind usually do",
+        "Adding sponsored search results to the navigation app creates a new",
+        "Strong revenue growth guidance signals persistent buyer demand",
+        "Price steadiness 0.97",
+        "Return on assets 0.97"
+      ],
+      "counterargument": "Earnings backed by cash only 0.10 is deeply concerning - suggests reported profits not converting to actual cash generation; rising memory costs pressuring margins; down 11% month suggests pullback beginning.",
+      "confidence": 0.56
+    },
+    {
+      "ticker": "AMZN",
+      "weight": 0.06,
+      "direction": "long",
+      "thesis": "Mixed verdict reflects balanced risk-reward. Positive structural elements (absence of financial covenants, $17.5B credit facility) combined with strong revenue momentum provide liquidity and operational flexibility. Insider selling is concern but not disqualifying.",
+      "evidence": [
+        "The absence of financial covenants gives the company maximum operational flexibility",
+        "Securing a massive $17.5 billion delayed draw term loan facility substantially strengthens the company's short-to-medium-term liquidity backstop",
+        "Revenue growth 0.89"
+      ],
+      "counterargument": "5 insiders sold $16M worth within 14 days showing confidence deficit; down 14% month; balance sheet expansion at 0.04 is very weak; earnings backed by cash 0.92 is positive but offset by other concerns.",
+      "confidence": 0.55
+    },
+    {
+      "ticker": "SNDK",
+      "weight": 0.11,
+      "direction": "short",
+      "thesis": "Extreme speculative excess. Up 4842% in one year with profit per dollar paid ranking 0.05 (terrible). Material explicitly confirms current valuation detached from fundamentals. This is classic bubble peak requiring short exposure for portfolio balance.",
+      "evidence": [
+        "The share has run hard and is now expensive on the numbers",
+        "The share has risen more over the past year than almost every comparable company. It now also costs more, relative to what the company actually earns and owns, than almost every comparable company",
+        "Profit per dollar paid 0.05",
+        "Cash per dollar paid 0.00",
+        "The shares are up 4842% over the past year and up 47% over the past month"
+      ],
+      "counterargument": "Strong recent pricing environment for memory and operational improvements (debt prepayment, capital investments) could support share price; LOOM verdict technically positive; supply dynamics may persist longer than expected.",
+      "confidence": 0.76
+    },
+    {
+      "ticker": "MU",
+      "weight": 0.09,
+      "direction": "short",
+      "thesis": "Clear negative verdict with 13 concerns and zero positives provides exceptional conviction for short. Up 856% YoY at highest point with geopolitical/supply risks fully ignored by market. Multiple structural headwinds (Taiwan concentration, rising CapEx/taxes) warrant short position.",
+      "evidence": [
+        "Reads worse than companies of this kind usually do",
+        "Concentration of a majority of DRAM production in Taiwan exposes the company to significant geopolitical and environmental supply chain disruptions",
+        "elevated near-term capital expenditure guidance and an increased projected tax rate will likely depress profitability and cash flow",
+        "Indicates a material increase in the effective tax rate",
+        "13 concerns against 0 positives"
+      ],
+      "counterargument": "Elevated pricing environment (up 35% month) could reflect genuine demand acceleration; continued AI infrastructure spending may sustain high CapEx justifiably; leadership proven in navigating past cycles.",
+      "confidence": 0.71
+    }
+  ],
+  "cash": 0.31,
+  "reasoning": "Portfolio concentrates in proven value: MSFT (beaten-down quality), GOOGL (Berkshire validation), BKNG (fortress balance sheet). Sized shorts in speculative peaks: SNDK and MU trading at highs with terrible fundamentals despite positive interim momentum. Maintains 31% cash given 63-day lockup and no future information flow, allowing dry powder and reducing forced positions in ambiguous names with 'insufficient' verdicts. Position sizing reflects confidence calibration: highest conviction in mean reversion plays and directional shorts, lower allocations to rally-fatigued names despite quality."
+}

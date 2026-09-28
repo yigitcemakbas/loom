@@ -207,13 +207,20 @@ def type_of(signal) -> str:
 
 
 def sign_of(signal) -> Optional[float]:
-    """+1, -1, 0, or None when the finding was never assessed.
+    """+1, -1, or None when the document stated no direction.
+
+    Delegates to engine/direction.py, which derives the sign from what the
+    filing did. It used to read `market_direction`, a model's expectation of how
+    the market would react — which made every stance a price forecast. See that
+    module for the measurements that forced the change.
 
     None rather than 0.0, for the reason the whole codebase keeps repeating:
     an unassessed finding is not a balanced one, and a caller that wants to
     treat it as neutral must do so knowingly.
     """
-    return _SIGN.get(getattr(signal, "market_direction", None))
+    from app.engine.direction import documentary_sign
+
+    return documentary_sign(signal)
 
 
 def document_key(signal) -> str:
@@ -278,6 +285,13 @@ class DisclosureNorms:
     # claim available, and any other value would be an opinion smuggled in as
     # a default.
     root: float = 0.0
+
+    # How much directional disclosure a document of each genre normally carries.
+    # Measured over the whole corpus and carried here rather than passed
+    # separately, because every caller that has the norms needs it and a
+    # company's own findings cannot be used to measure the norm it is judged
+    # against — doing that makes the residual zero by construction.
+    incidence: Optional["IncidenceNorms"] = None
 
     def expected_for(self, signal, sector: Optional[str] = None) -> Norm:
         """What a finding like this one normally carries.
@@ -355,6 +369,9 @@ def measure_norms(
     rather than of the documents.
     """
     sectors = {str(k): v for k, v in (sectors or {}).items() if v}
+    # Materialised because the incidence pass reads the same findings again and
+    # the parameter is an Iterable, which a generator would exhaust.
+    signals = list(signals)
 
     per_type: dict[str, list[float]] = defaultdict(list)
     per_genre: dict[tuple[str, str], list[float]] = defaultdict(list)
@@ -377,6 +394,7 @@ def measure_norms(
                 per_sector[(sector, genre, signal_type)].append(sign)
 
     norms = DisclosureNorms(sector_of=dict(sectors))
+    norms.incidence = measure_incidence(signals, sectors)
 
     for signal_type, values in per_type.items():
         norms.by_type[signal_type] = Norm(
@@ -585,10 +603,10 @@ def informative_count(signals: list, norms: "DisclosureNorms") -> int:
     """
     n = 0
     for signal in signals:
-        excess = norms.excess_for(signal)
-        if excess is None or sign_of(signal) == 0.0:
-            continue
-        if abs(excess) < UNINFORMATIVE_FLOOR:
+        # A finding is evidence when the document stated a direction for it. The
+        # per-finding excess floor that used to gate this is gone; see the note
+        # in `effective_findings` for why it became vacuous.
+        if sign_of(signal) is None:
             continue
         n += 1
     return n
@@ -610,15 +628,24 @@ def routine_share(signals: list, norms: "DisclosureNorms") -> Optional[float]:
     description of the disclosure, and it would have told a reader that Apple's
     filings are almost entirely boilerplate when they are not.
     """
-    residuals = [
-        abs(excess)
-        for signal in signals
-        if sign_of(signal) not in (None, 0.0)
-        and (excess := norms.excess_for(signal)) is not None
-    ]
-    if not residuals:
+    # Measured from the incidence residual rather than from per-finding
+    # residuals, which are now zero by construction and would have reported every
+    # company as 100% boilerplate. The question is unchanged — how much of what
+    # this company disclosed is what its documents always contain — and the
+    # honest answer is how close its volume of disclosure sat to its genre's.
+    sector = None
+    for signal in signals:
+        company = getattr(signal, "company_id", None)
+        if company is not None:
+            sector = getattr(norms, "sector_of", {}).get(str(company))
+            break
+    incidence = getattr(norms, "incidence", None)
+    if incidence is None:
         return None
-    return max(0.0, 1.0 - sum(residuals) / len(residuals))
+    residual, _workings = incidence_excess(signals, incidence, sector=sector)
+    if residual is None:
+        return None
+    return max(0.0, min(1.0, 1.0 - abs(residual)))
 
 
 __all__ = [
@@ -633,6 +660,10 @@ __all__ = [
     "document_key",
     "effective_findings",
     "informative_count",
+    "Incidence",
+    "IncidenceNorms",
+    "measure_incidence",
+    "incidence_excess",
     "genre_of",
     "measure_norms",
     "parity_weights",
@@ -641,3 +672,216 @@ __all__ = [
     "sign_of",
     "type_of",
 ]
+
+
+# --------------------------------------------------------------- incidence
+#
+# The residual moved here, and the reason is worth recording because it was only
+# visible after direction became documentary.
+#
+# The original design measured the residual per finding: how far this finding's
+# direction departs from what findings of its genre normally carry. That works
+# when direction is a judgement that varies inside a type, which is what
+# `market_direction` was. It collapses the moment direction becomes a property of
+# the type: a new risk factor is always negative, so the norm for new risk
+# factors is exactly negative, and the gap is identically zero. Measured on the
+# stored corpus after the change, the mean absolute excess for a new risk factor
+# was 0.0018 and not one of 195 cleared the informativeness floor.
+#
+# So the quantity that carries the signal is not which way a finding points. It
+# is *how much of that kind of disclosure this company produced, against how much
+# companies like it produce*. A 10-K that added fourteen new risk factors where
+# its sector normally adds four is saying something. One that added four is not.
+#
+# That is documentary, it is checkable against two filings, it varies, and it is
+# bidirectional without needing a resolved-risk-factor signal: fewer concerns
+# than the genre expects reads better, which is the positive channel the
+# one-directional diff cannot otherwise provide.
+
+# Findings per document beyond which a count is treated as fully surprising.
+# Keeps a single unusual filing from saturating the scale on its own.
+INCIDENCE_FULL_SCALE = 1.0
+
+# A genre needs this many documents before its own mean is trusted over its
+# parent's, on the same principle as MIN_SECTOR_OBSERVATIONS.
+MIN_DOCUMENTS_FOR_GENRE = 4
+
+# Deliberately lighter than NORM_PRIOR_WEIGHT, which is 8.
+#
+# That constant was tuned for shrinking a *direction mean* toward zero, where the
+# prior is weak and heavy shrinkage is the right caution. A per-document *count*
+# is a different quantity: it is far more stable within a genre and wildly
+# different between genres, so shrinking an annual report's expected eleven risk
+# factors toward a corpus mean that includes earnings calls carrying one does not
+# express caution, it imports the wrong genre's answer. At weight 8 a perfectly
+# ordinary annual report scored as half a standard deviation negative.
+#
+# MIN_DOCUMENTS_FOR_GENRE already refuses a genre with too little data, so the
+# prior here only has to smooth, not to guard.
+INCIDENCE_PRIOR_WEIGHT = 2.0
+
+
+@dataclass(frozen=True)
+class Incidence:
+    """How many directional findings a document of this genre normally carries."""
+
+    positive: float
+    negative: float
+    documents: int
+
+    @property
+    def total(self) -> float:
+        return self.positive + self.negative
+
+
+@dataclass
+class IncidenceNorms:
+    """Expected directional finding counts per document, by genre and sector."""
+
+    by_genre: dict[str, Incidence] = field(default_factory=dict)
+    by_sector: dict[tuple[str, str], Incidence] = field(default_factory=dict)
+    sector_of: dict[str, str] = field(default_factory=dict)
+    root: Incidence = Incidence(0.0, 0.0, 0)
+
+    def expected_for(self, genre: str, sector: Optional[str] = None) -> Incidence:
+        """The most specific measured expectation for a document of this genre."""
+        if sector:
+            found = self.by_sector.get((sector, genre))
+            if found is not None and found.documents >= MIN_DOCUMENTS_FOR_GENRE:
+                return found
+        found = self.by_genre.get(genre)
+        if found is not None and found.documents >= MIN_DOCUMENTS_FOR_GENRE:
+            return found
+        return self.root
+
+
+def _document_counts(signals: Iterable) -> dict[str, dict]:
+    """Per document: its genre, its company, and its directional finding counts."""
+    docs: dict[str, dict] = {}
+    for signal in signals:
+        key = document_key(signal)
+        entry = docs.setdefault(key, {
+            "genre": genre_of(signal),
+            "company": str(getattr(signal, "company_id", "") or ""),
+            "positive": 0, "negative": 0,
+        })
+        sign = sign_of(signal)
+        if sign is None or sign == 0.0:
+            continue
+        entry["positive" if sign > 0 else "negative"] += 1
+    return docs
+
+
+def measure_incidence(
+    signals: Iterable, sectors: Optional[dict] = None
+) -> IncidenceNorms:
+    """Measure how many directional findings a document normally carries.
+
+    Pure, like `measure_norms`, and shrunk the same way: a sector's own mean is
+    used where it rests on enough documents and inherits the genre's otherwise.
+    """
+    sectors = {str(k): v for k, v in (sectors or {}).items() if v}
+    docs = _document_counts(signals)
+
+    per_genre: dict[str, list[tuple[int, int]]] = defaultdict(list)
+    per_sector: dict[tuple[str, str], list[tuple[int, int]]] = defaultdict(list)
+    for entry in docs.values():
+        pair = (entry["positive"], entry["negative"])
+        per_genre[entry["genre"]].append(pair)
+        sector = sectors.get(entry["company"])
+        if sector:
+            per_sector[(sector, entry["genre"])].append(pair)
+
+    norms = IncidenceNorms(sector_of=dict(sectors))
+    all_pairs = [pair for pairs in per_genre.values() for pair in pairs]
+    if all_pairs:
+        norms.root = Incidence(
+            positive=sum(p for p, _ in all_pairs) / len(all_pairs),
+            negative=sum(n for _, n in all_pairs) / len(all_pairs),
+            documents=len(all_pairs),
+        )
+
+    for genre, pairs in per_genre.items():
+        norms.by_genre[genre] = Incidence(
+            positive=shrunk_mean([p for p, _ in pairs], norms.root.positive,
+                                 INCIDENCE_PRIOR_WEIGHT),
+            negative=shrunk_mean([n for _, n in pairs], norms.root.negative,
+                                 INCIDENCE_PRIOR_WEIGHT),
+            documents=len(pairs),
+        )
+
+    for (sector, genre), pairs in per_sector.items():
+        parent = norms.by_genre.get(genre) or norms.root
+        norms.by_sector[(sector, genre)] = Incidence(
+            positive=shrunk_mean([p for p, _ in pairs], parent.positive,
+                                 INCIDENCE_PRIOR_WEIGHT),
+            negative=shrunk_mean([n for _, n in pairs], parent.negative,
+                                 INCIDENCE_PRIOR_WEIGHT),
+            documents=len(pairs),
+        )
+    return norms
+
+
+def incidence_excess(
+    signals: list, norms: IncidenceNorms, *, sector: Optional[str] = None
+) -> tuple[Optional[float], dict]:
+    """How unusual this company's volume of directional disclosure is.
+
+    Returns a value in [-1, 1] and the workings behind it. Negative means the
+    company disclosed more concern, or less reassurance, than documents of its
+    kind normally carry. None means no document had a measurable genre.
+
+    Aggregated per document and then averaged, so a company that filed three
+    times is not counted as one long filing, and a single unusual document
+    cannot carry a verdict on its own.
+    """
+    docs = _document_counts(signals)
+    if not docs:
+        return None, {"documents": 0}
+
+    per_document = []
+    workings = []
+    for key, entry in docs.items():
+        expected = norms.expected_for(entry["genre"], sector)
+        if expected.documents < MIN_DOCUMENTS_FOR_GENRE:
+            continue
+        # A document that produced no directional finding at all is excluded,
+        # and this guard is load-bearing rather than tidy.
+        #
+        # Without it, absence reads as good news: a filing carrying six quotes
+        # and no risk factors was scored against a genre expecting five risk
+        # factors and came out strongly positive. That is only a real signal if
+        # the risk diff actually ran, and for a company with one stored filing it
+        # cannot — there is no prior to compare against, so NEW_RISK_FACTOR is
+        # unavailable by construction. Thirty-six of the forty-six companies Loom
+        # has read are in exactly that position, so this would have manufactured
+        # a positive verdict for most of the corpus out of missing data.
+        #
+        # Loom cannot distinguish "this filing disclosed little" from "this
+        # filing was never compared", so it declines to read either as evidence.
+        if entry["positive"] == 0 and entry["negative"] == 0:
+            continue
+        surprise_negative = entry["negative"] - expected.negative
+        surprise_positive = entry["positive"] - expected.positive
+        scale = max(expected.total, INCIDENCE_FULL_SCALE)
+        value = max(-1.0, min(1.0, (surprise_positive - surprise_negative) / scale))
+        per_document.append(value)
+        workings.append({
+            "document": key, "genre": entry["genre"],
+            "observed_positive": entry["positive"],
+            "observed_negative": entry["negative"],
+            "expected_positive": round(expected.positive, 3),
+            "expected_negative": round(expected.negative, 3),
+            "residual": round(value, 4),
+        })
+
+    if not per_document:
+        return None, {"documents": len(docs), "measurable": 0}
+
+    mean = sum(per_document) / len(per_document)
+    return mean, {
+        "documents": len(docs),
+        "measurable": len(per_document),
+        "per_document": workings,
+        "mean_residual": round(mean, 4),
+    }
