@@ -63,9 +63,17 @@ const VERDICTS: Record<Stance, PlainVerdict> = {
     meaning: "Loom has read the filings and found nothing pointing either way.",
     tone: "quiet",
   },
+  // Narrower than it was, and deliberately. This used to be the answer for
+  // almost every company: the sufficiency test compared a weighted sum against
+  // a threshold written for a plain count, so Loom withheld a view on 38 of 40
+  // companies it had actually read, including ones with a dozen informative
+  // findings. Thin evidence now produces a stated lean captioned as thin, and
+  // this label is reserved for the case it names: fewer than two findings said
+  // anything at all.
   insufficient: {
-    label: "Not enough read yet",
-    meaning: "Loom has not analysed enough about this company to have a view.",
+    label: "Nothing to go on yet",
+    meaning:
+      "Fewer than two of the findings Loom read said anything specific to this company, so there is no direction to report. This is not a neutral view; it is the absence of one.",
     tone: "quiet",
   },
 };

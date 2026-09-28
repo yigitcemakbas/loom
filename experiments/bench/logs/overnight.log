@@ -1,0 +1,30 @@
+[01:05:30] price backfill finished
+[01:05:30] stage 0b: fundamentals backfill (16 years, idempotent)
+[03:33:16] stage 0b done: Wrote 622717 new facts across 1006 companies in 8865s (0 failed).
+[03:33:16] stage 1: integrity gates
+[03:33:22] stage 2: point-in-time score cache
+[03:38:55] stage 2 done: 9 dates cached
+[03:38:55] stage 3: mechanical benchmark
+[03:38:55] stage 3 done
+[03:38:55] stage 4: reader crawl (stops when the daily quota is gone)
+[03:38:58] stage 4 done
+[03:38:58] stage 5: report
+[03:38:58] ALL STAGES COMPLETE
+[13:41:36] price backfill finished
+[13:41:36] stage 0b skipped (fundamentals already backfilled)
+[13:41:36] stage 1: integrity gates
+[13:43:48] stage 2: point-in-time score cache
+[13:52:42] price backfill finished
+[13:52:42] stage 0b skipped (fundamentals already backfilled)
+[13:52:42] stage 1: integrity gates
+[14:03:38] price backfill finished
+[14:03:38] stage 0b skipped (fundamentals already backfilled)
+[14:03:38] stage 1: integrity gates
+[14:08:02] stage 2: point-in-time score cache
+[14:09:44] stage 2 done: 105 dates cached
+[14:09:44] stage 3: mechanical benchmark
+[14:10:03] stage 3 done
+[14:10:03] stage 4: reader crawl (stops when the daily quota is gone)
+[14:14:45] stage 4 done
+[14:14:45] stage 5: report
+[14:14:50] ALL STAGES COMPLETE

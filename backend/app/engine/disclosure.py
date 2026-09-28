@@ -544,13 +544,54 @@ def effective_findings(
             continue
         if abs(excess) < UNINFORMATIVE_FLOOR:
             continue
-        weight = abs(excess)
+        # One unit per finding that cleared the floor, adjusted only for
+        # independence. Not `abs(excess)`.
+        #
+        # Weighting by the magnitude here charged every finding twice for the
+        # same sin: the floor above has already removed the findings that said
+        # nothing, and multiplying the survivors by their own residual then
+        # discounted them again for not saying *enough*. Compounded with the
+        # clustering correction it put the median company at 0.8 against a
+        # threshold of 2, so thirty-eight of forty companies could not reach any
+        # verdict and the engine returned "insufficient" 97% of the time. That
+        # is not calibrated abstention, it is a constant.
+        #
+        # It also contradicted the paragraph above: magnitude is deliberately
+        # excluded from this measure, because this one asks whether a finding is
+        # evidence at all and magnitude answers how much it matters.
+        weight = 1.0
         if parity is not None:
             weight *= parity.get(str(getattr(signal, "id", id(signal))), 1.0)
         if restated_ids and str(getattr(signal, "id", id(signal))) in restated_ids:
             weight *= RECURRENCE_DISCOUNT
         total += weight
     return total
+
+
+def informative_count(signals: list, norms: "DisclosureNorms") -> int:
+    """How many findings told Loom something, counted plainly.
+
+    The companion to `effective_findings` and deliberately not the same number.
+    This one decides whether a verdict may be offered at all, and the rule it
+    encodes is the original one: a single finding cannot carry a verdict, so two
+    independent things must have said something. It is a raw count because that
+    is the unit the rule was written in.
+
+    `effective_findings` answers the other question, how much evidence there is
+    once clustering and repetition are accounted for, and that continuous number
+    decides how strongly the verdict may be phrased rather than whether it
+    exists. Conflating the two is what made the gate 3 to 7 times stricter than
+    it was ever meant to be.
+    """
+    n = 0
+    for signal in signals:
+        excess = norms.excess_for(signal)
+        if excess is None or sign_of(signal) == 0.0:
+            continue
+        if abs(excess) < UNINFORMATIVE_FLOOR:
+            continue
+        n += 1
+    return n
 
 
 def routine_share(signals: list, norms: "DisclosureNorms") -> Optional[float]:
@@ -591,6 +632,7 @@ __all__ = [
     "Norm",
     "document_key",
     "effective_findings",
+    "informative_count",
     "genre_of",
     "measure_norms",
     "parity_weights",

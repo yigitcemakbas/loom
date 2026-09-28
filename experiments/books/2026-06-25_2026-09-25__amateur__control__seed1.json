@@ -1,0 +1,177 @@
+[
+  {
+    "ticker": "GOOGL",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.3,
+    "rationale": "Just dropped 12% in a month, too risky for my first investment"
+  },
+  {
+    "ticker": "TSLA",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "Down 13% in a month, something seems wrong, I don't understand why"
+  },
+  {
+    "ticker": "NVDA",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "Tech company, up 27% but I don't know what they actually make"
+  },
+  {
+    "ticker": "AAPL",
+    "action": "buy",
+    "weight": 0.08,
+    "conviction": 0.8,
+    "rationale": "I use Apple every day, everyone has iPhones, must be a great company"
+  },
+  {
+    "ticker": "MSFT",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.1,
+    "rationale": "Down 28% in a whole year, something is seriously wrong with it"
+  },
+  {
+    "ticker": "AMZN",
+    "action": "buy",
+    "weight": 0.05,
+    "conviction": 0.7,
+    "rationale": "I order from Amazon all the time, super convenient and reliable"
+  },
+  {
+    "ticker": "MU",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "Up 856% in one year? That seems impossible and way too risky"
+  },
+  {
+    "ticker": "AMD",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "Up 271% is too much gain too fast, probably will crash hard"
+  },
+  {
+    "ticker": "NDAQ",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.1,
+    "rationale": "I don't even know what NASDAQ is besides the stock exchange"
+  },
+  {
+    "ticker": "KO",
+    "action": "buy",
+    "weight": 0.12,
+    "conviction": 0.9,
+    "rationale": "Coca Cola! Everyone in the world drinks it, can't go wrong"
+  },
+  {
+    "ticker": "VZ",
+    "action": "buy",
+    "weight": 0.06,
+    "conviction": 0.7,
+    "rationale": "Verizon is my phone company, they're big and stable and reliable"
+  },
+  {
+    "ticker": "PEP",
+    "action": "buy",
+    "weight": 0.08,
+    "conviction": 0.8,
+    "rationale": "PepsiCo makes Pepsi, Frito-Lay, Gatorade - everyone knows these brands"
+  },
+  {
+    "ticker": "BKNG",
+    "action": "buy",
+    "weight": 0.03,
+    "conviction": 0.5,
+    "rationale": "Booking.com is where I look for hotels when I travel, seems popular"
+  },
+  {
+    "ticker": "APD",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.1,
+    "rationale": "Air Products and Chemicals? I have no idea what they make"
+  },
+  {
+    "ticker": "AVGO",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "Broadcom sounds like tech but I don't understand what they do"
+  },
+  {
+    "ticker": "WMT",
+    "action": "buy",
+    "weight": 0.12,
+    "conviction": 0.9,
+    "rationale": "Walmart! I shop there all the time, huge, cheap, and everywhere"
+  },
+  {
+    "ticker": "AMAT",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.1,
+    "rationale": "Up 268% in a year and up 47% just this month? Way too crazy"
+  },
+  {
+    "ticker": "SNDK",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.0,
+    "rationale": "Up 4842% in one year? That makes no sense, definitely avoiding this"
+  },
+  {
+    "ticker": "AMGN",
+    "action": "buy",
+    "weight": 0.07,
+    "conviction": 0.6,
+    "rationale": "Amgen is a big health care company, up 30%, seems solid and stable"
+  },
+  {
+    "ticker": "AXP",
+    "action": "buy",
+    "weight": 0.06,
+    "conviction": 0.6,
+    "rationale": "American Express is a big company, up and growing, seems trustworthy"
+  },
+  {
+    "ticker": "TMUS",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "T-Mobile down 20% in a year, that's a bad sign for me"
+  },
+  {
+    "ticker": "BLK",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.2,
+    "rationale": "BlackRock is an investment company, too complicated for me"
+  },
+  {
+    "ticker": "ADBE",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.1,
+    "rationale": "Adobe down 50% in a year! Something went very wrong, staying away"
+  },
+  {
+    "ticker": "ABNB",
+    "action": "buy",
+    "weight": 0.04,
+    "conviction": 0.5,
+    "rationale": "Airbnb is cool, I've rented Airbnb places before, seems popular"
+  },
+  {
+    "ticker": "CMCSA",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.1,
+    "rationale": "Comcast is down 27%, down 10% this month, negative signs everywhere"
+  }
+]

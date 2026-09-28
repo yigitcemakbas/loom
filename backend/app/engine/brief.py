@@ -29,6 +29,7 @@ from datetime import datetime, timedelta, timezone
 
 from app.models.brief import Stance
 from app.engine.disclosure import (
+    informative_count,
     RECURRENCE_DISCOUNT,
     UNINFORMATIVE_FLOOR,
     DisclosureNorms,
@@ -51,7 +52,7 @@ from app.models.signal import Signal, SignalType
 
 # Bumped when the synthesis rules change, so stored briefs can be regenerated
 # deliberately rather than drifting silently.
-ENGINE_VERSION = "2026-09-26.1"
+ENGINE_VERSION = "2026-09-28.1"
 
 WINDOW_DAYS = 90
 
@@ -157,8 +158,15 @@ _MIN_ASSESSED_SHARE = 0.4
 # insider cluster from one source is not "serious concerns"; it is one finding.
 # A confident verdict has to rest on several findings agreeing across more than
 # one kind of source, otherwise the stance is softened a step.
-_MIN_FOR_ANY_VERDICT = 2
-_MIN_FINDINGS_FOR_STRONG = 3
+# How many findings must have told Loom something before it will lean at all.
+# A count, not a weighted sum: the rule is "one finding cannot carry a verdict",
+# and it is measured in findings because that is the unit it was written in.
+_MIN_INFORMATIVE_FINDINGS = 2
+# The continuous strength, after clustering and repetition, above which a strong
+# verdict may stand unsoftened. Thin evidence now softens a verdict rather than
+# erasing it, which is the difference between "Loom has little to go on here and
+# leans negative" and a blank.
+_MIN_STRENGTH_FOR_STRONG = 3.0
 _MIN_SOURCES_FOR_STRONG = 2
 
 # Two findings above this token overlap are the same story told twice. Without
@@ -577,12 +585,27 @@ def _build_drivers(chosen: list[Signal], population: list[Signal]) -> list[Drive
     return drivers
 
 
-def _confidence(signals: list[Signal], source_types: set[str], counts: dict[str, int]) -> float:
+def _confidence(
+    signals: list[Signal],
+    source_types: set[str],
+    counts: dict[str, int],
+    *,
+    strength: float | None = None,
+) -> float:
     """How much to trust the stance.
 
     Driven mainly by whether *independent kinds of source* agree. Ten findings
     extracted from one filing are one opinion about one document; the same
     conclusion reached from a filing, a call, and news coverage is three.
+
+    The volume term is the informative strength, not the number of findings.
+    Counting findings here reintroduced the artifact the genre correction exists
+    to remove: a company that published twenty routine risk factors scored full
+    marks for volume, and once thin verdicts began to be shown rather than
+    withheld, that produced the visible contradiction of a brief captioned "this
+    is a thin read" beside a confidence of 0.71 — higher than a company with half
+    again as much real evidence. Confidence and stated thinness now move
+    together because they are computed from the same quantity.
     """
     if not signals:
         return 0.0
@@ -592,7 +615,10 @@ def _confidence(signals: list[Signal], source_types: set[str], counts: dict[str,
     agreement = (
         max(counts["positive"], counts["negative"]) / directional if directional else 0.0
     )
-    volume = min(len(signals) / 8.0, 1.0)
+    volume = (
+        min(strength / _MIN_STRENGTH_FOR_STRONG, 1.0) if strength is not None
+        else min(len(signals) / 8.0, 1.0)
+    )
     mean_confidence = sum(s.confidence or 0.0 for s in signals) / len(signals)
 
     score = 0.40 * breadth + 0.25 * agreement + 0.15 * volume + 0.20 * mean_confidence
@@ -626,6 +652,7 @@ def _stance_for(
     assessed_count: int = 0,
     source_count: int = 0,
     informative: float | None = None,
+    count_informative: int | None = None,
 ) -> Stance:
     """The stance, with every refusal checked before any verdict.
 
@@ -645,9 +672,21 @@ def _stance_for(
     if directional_share < _MIN_DIRECTIONAL_SHARE:
         return Stance.QUIET
 
-    # A single finding cannot carry a verdict, however lopsided it looks.
-    count = assessed_count if informative is None else informative
-    if count < _MIN_FOR_ANY_VERDICT:
+    # A single finding cannot carry a verdict, however lopsided it looks. This
+    # is the only remaining route to INSUFFICIENT from having read something,
+    # and it is a count of findings that said something rather than a weighted
+    # sum of how much they said.
+    #
+    # Abstention is meant to be what is left when there is nothing to report,
+    # not the engine's preferred answer. The previous form of this test compared
+    # a clustering-corrected, magnitude-weighted sum against a threshold written
+    # for a plain count, which refused a verdict on 38 of 40 companies including
+    # ones with a dozen informative findings across several filings. Thinness
+    # now travels with the verdict instead of replacing it.
+    if count_informative is not None:
+        if count_informative < _MIN_INFORMATIVE_FINDINGS:
+            return Stance.INSUFFICIENT
+    elif (assessed_count if informative is None else informative) < _MIN_INFORMATIVE_FINDINGS:
         return Stance.INSUFFICIENT
 
     if mean <= -_STRONG:
@@ -661,7 +700,9 @@ def _stance_for(
     else:
         raw = Stance.MIXED
 
-    thin = count < _MIN_FINDINGS_FOR_STRONG or source_count < _MIN_SOURCES_FOR_STRONG
+    # Strength, not sufficiency, decides how firmly the lean may be stated.
+    strength = assessed_count if informative is None else informative
+    thin = strength < _MIN_STRENGTH_FOR_STRONG or source_count < _MIN_SOURCES_FOR_STRONG
     return _soften(raw) if thin else raw
 
 
@@ -679,6 +720,9 @@ def _headline(
     total: int = 0,
     adjusted: bool = False,
     routine: float | None = None,
+    informative_n: int | None = None,
+    strength: float | None = None,
+    documents_read: int = 0,
 ) -> str:
     """One plain sentence. Built from structure, not borrowed from the model.
 
@@ -728,7 +772,11 @@ def _headline(
         return "Recent disclosures are routine, with nothing that changes the picture."
 
     if adjusted:
-        return _adjusted_headline(stance, drivers, counts, source_types, routine)
+        return _adjusted_headline(
+            stance, drivers, counts, source_types, routine,
+            informative_n=informative_n, strength=strength,
+            documents_read=documents_read,
+        )
 
     named = [SOURCE_LABELS.get(s, s) for s in sorted(source_types)]
     if len(named) > 2:
@@ -761,6 +809,10 @@ def _adjusted_headline(
     counts: dict[str, int],
     source_types: set[str],
     routine: float | None,
+    *,
+    informative_n: int | None = None,
+    strength: float | None = None,
+    documents_read: int = 0,
 ) -> str:
     """The sentence for a stance measured against its genre rather than zero."""
     named = [SOURCE_LABELS.get(s, s) for s in sorted(source_types)]
@@ -781,6 +833,20 @@ def _adjusted_headline(
     }.get(stance, "")
 
     sentence = f"{frame}{led_by} across {where}."
+
+    # Said out loud rather than left to the confidence number. Loom used to
+    # withhold the lean entirely when the evidence was thin, which erased the
+    # direction it had computed and made every thin case look like every other.
+    # Stating the lean and its thinness in the same sentence is strictly more
+    # information than a blank, and keeps the reader from mistaking a two-finding
+    # read for a settled one.
+    if strength is not None and strength < _MIN_STRENGTH_FOR_STRONG:
+        detail = ""
+        if informative_n:
+            detail = f" only {_plural(informative_n, 'finding')} told Loom anything"
+            if documents_read:
+                detail += f", from {_plural(documents_read, 'document')}"
+        sentence += f" This is a thin read:{detail or ' the evidence is limited'}."
 
     # The raw counts, always, and unrounded. A reader must be able to see the
     # tally the verdict was reached over, especially when the verdict points
@@ -925,6 +991,15 @@ def build_brief(
         )
         if norms is not None else None
     )
+    # Two numbers because they answer two questions. The count decides whether
+    # Loom may lean at all; the strength decides how firmly, and is what the
+    # reader is shown so that a thin verdict is legible as thin rather than
+    # indistinguishable from a confident one.
+    informative_n = informative_count(substantive, norms) if norms is not None else None
+    documents_read = len({
+        str(getattr(s_, "source_document_id", None)) for s_ in substantive
+        if getattr(s_, "source_document_id", None) is not None
+    })
     # Two different questions, deliberately measured differently. `informative`
     # decides whether there is enough independent evidence to say anything and
     # therefore carries the clustering correction; `routine` is what the reader
@@ -939,7 +1014,7 @@ def build_brief(
     stance = _stance_for(
         mean, directional_share, assessed_share,
         assessed_count=assessed, source_count=len(source_types_of(substantive)),
-        informative=informative,
+        informative=informative, count_informative=informative_n,
     )
 
     source_types = source_types_of(substantive)
@@ -956,13 +1031,15 @@ def build_brief(
     # "no view is offered" reads as a contradiction and undermines both.
     confidence = (
         0.0 if stance == Stance.INSUFFICIENT
-        else _confidence(substantive, source_types, counts)
+        else _confidence(substantive, source_types, counts, strength=informative)
     )
 
     headline = _headline(
         stance, drivers, counts, source_types,
         unassessed=len(substantive) - assessed, total=len(substantive),
         adjusted=norms is not None, routine=routine,
+        informative_n=informative_n, strength=informative,
+        documents_read=documents_read,
     )
     if fell_back and newest_age is not None:
         # Stated rather than implied. A reader deciding today is entitled to
@@ -1006,6 +1083,16 @@ def build_brief(
             # `counts` is the measure of how much of a company's disclosure is
             # the boilerplate its genre requires.
             "informative_findings": round(informative, 2) if informative is not None else None,
+            # How many findings said something, and how much independent
+            # evidence that amounts to once clustering and repetition are
+            # accounted for. Both are shown, because a lean resting on two
+            # findings from one filing and a lean resting on eight across four
+            # filings are not the same claim and must not render alike.
+            "informative_count": informative_n,
+            "evidence_strength": round(informative, 2) if informative is not None else None,
+            "strength_for_strong": _MIN_STRENGTH_FOR_STRONG,
+            "minimum_informative": _MIN_INFORMATIVE_FINDINGS,
+            "documents_read": documents_read,
             # The same quantity as a share, which is the form the interface and
             # the digest both want.
             "routine_share": round(routine, 3) if routine is not None else None,

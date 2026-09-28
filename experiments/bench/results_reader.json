@@ -1,0 +1,66 @@
+{
+ "books": 1,
+ "per_book": [
+  {
+   "return": 0.21844803606422847,
+   "excess": -0.004523160808004967,
+   "volatility": 0.13987984458807676,
+   "max_drawdown": -0.03238428152258521,
+   "downside_deviation": 0.0041858744661072665,
+   "sharpe": 5.727310041033548,
+   "sortino": 12.056447649536885,
+   "hhi": 0.0576171875,
+   "max_weight": 0.05,
+   "sector_hhi": 0.47607421875000017,
+   "n_names": 18,
+   "gross": 0.64,
+   "cash": 0.36,
+   "hit_rate": 0.4444444444444444,
+   "cell": "t1__2026-03-02_63d__amateur__control__seed1__gemini-3-7-flash",
+   "arm": "control",
+   "persona": "amateur",
+   "seed": 1,
+   "decide": "2026-03-02",
+   "sessions": 63,
+   "model": "gemini-3.7-flash",
+   "selection_only_excess": 0.1540272176252755,
+   "latency": 56.0,
+   "input_tokens": 4093,
+   "output_tokens": 5424,
+   "n_offered": 60
+  }
+ ],
+ "arms": {},
+ "calibration": {
+  "control": {
+   "n": 18,
+   "brier": 0.2524,
+   "ece": 0.09,
+   "discrimination": 0.24555855375502425,
+   "curve": [
+    {
+     "bin": 2,
+     "n": 18,
+     "mean_conviction": 0.534,
+     "actual_win_rate": 0.444
+    }
+   ]
+  }
+ },
+ "grounding": {
+  "control": {
+   "books": 1,
+   "grounding_rate": 1.0,
+   "citation_rate": 1.0,
+   "citations": 62
+  }
+ },
+ "consistency_mean_abs_gap": null,
+ "efficiency": {
+  "control": {
+   "latency": 56.0,
+   "input_tokens": 4093.0,
+   "output_tokens": 5424.0
+  }
+ }
+}

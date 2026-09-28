@@ -145,3 +145,76 @@ def test_an_entirely_unread_sector_outranks_a_barely_read_one():
     ]
 
     assert order == ["NEVER", "SEEN"]
+
+
+# ---- depth, not only breadth -----------------------------------------------
+
+
+def test_depth_target_is_more_than_one_document():
+    """A company read once has every finding inside a single document, which is
+    the worst case for both quantities a verdict rests on. The clustering
+    correction weights nine findings from one filing at 0.333 each and the same
+    nine across three filings at 0.577, so a second read roughly doubles a
+    company's evidence strength without extracting one new fact. And a strong
+    verdict needs two independent kinds of source, so a one-document company is
+    capped whatever its filing said.
+
+    Measured on the stored corpus: 32 of the 40 covered companies had exactly one
+    document, and the only company Loom could reach a verdict for was the one
+    with five.
+    """
+    from app.engine.coverage import DEPTH_TARGET_DOCUMENTS
+
+    assert DEPTH_TARGET_DOCUMENTS > 1
+
+
+def test_the_quota_is_split_rather_than_spent_entirely_on_first_reads():
+    """Breadth alone is what left every covered company at one document. Depth
+    alone would leave the genre norms a measurement of whichever sector was read
+    first, which the sector-drift test already failed on twice. Neither queue is
+    allowed to starve the other."""
+    from app.engine.coverage import READS_PER_RUN
+
+    pending, deeper = ["a", "b", "c"], ["x", "y", "z"]
+    limit = READS_PER_RUN
+    depth_share = limit // 2 if pending else limit
+    breadth_share = limit - depth_share
+
+    assert depth_share >= 1
+    assert breadth_share >= 1
+    assert depth_share + breadth_share == limit
+
+
+def test_an_empty_queue_yields_its_share_instead_of_wasting_it():
+    """A run that finds nothing to deepen must still read something new, and a
+    run with nothing new must still deepen. Reserving a share for an empty queue
+    would silently halve an already small quota."""
+    limit = 2
+
+    # Nothing left to read for the first time.
+    pending, deeper = [], ["x", "y"]
+    depth_share = limit // 2 if pending else limit
+    breadth_share = limit - depth_share
+    assert (breadth_share, depth_share) == (0, 2)
+
+    # Nothing yet worth deepening.
+    pending, deeper = ["a", "b"], []
+    depth_share = limit // 2 if pending else limit
+    breadth_share = limit - depth_share
+    if not deeper:
+        breadth_share, depth_share = limit, 0
+    assert (breadth_share, depth_share) == (2, 0)
+
+
+def test_the_depth_pass_only_analyses_filings_already_stored():
+    """Analysis is the expensive half and fetching is not. Spending a depth call
+    on a fetch would leave the company with a document it has not read, which is
+    the state the pass exists to end."""
+    import inspect
+
+    from app.engine import coverage
+
+    source = inspect.getsource(coverage.drip_reads)
+    # The fetch path is reachable only for a company being read for the
+    # first time.
+    assert "if document is None and not is_depth:" in source

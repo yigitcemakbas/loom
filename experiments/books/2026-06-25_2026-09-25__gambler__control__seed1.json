@@ -1,0 +1,177 @@
+[
+  {
+    "ticker": "GOOGL",
+    "action": "buy",
+    "weight": 0.08,
+    "conviction": 0.80,
+    "rationale": "Up 102% YTD, pullback is buying opportunity in mega-cap AI play"
+  },
+  {
+    "ticker": "TSLA",
+    "action": "buy",
+    "weight": 0.01,
+    "conviction": 0.50,
+    "rationale": "Mixed signals with 13% monthly decline but Elon narrative still alive"
+  },
+  {
+    "ticker": "NVDA",
+    "action": "buy",
+    "weight": 0.01,
+    "conviction": 0.50,
+    "rationale": "Semiconductor leader at 27% YTD but recent momentum is stalling"
+  },
+  {
+    "ticker": "AAPL",
+    "action": "buy",
+    "weight": 0.08,
+    "conviction": 0.80,
+    "rationale": "37% YTD, pullback creates buying dip in mega-cap growth narrative"
+  },
+  {
+    "ticker": "MSFT",
+    "action": "short",
+    "weight": 0.04,
+    "conviction": 0.70,
+    "rationale": "Down 28% YTD and 15% recent - momentum is broken, capitulation signal"
+  },
+  {
+    "ticker": "AMZN",
+    "action": "buy",
+    "weight": 0.01,
+    "conviction": 0.40,
+    "rationale": "Up 7% YTD but down 14% monthly shows momentum failure and weakness"
+  },
+  {
+    "ticker": "MU",
+    "action": "buy",
+    "weight": 0.10,
+    "conviction": 0.95,
+    "rationale": "Up 856% YTD - INSANE momentum in memory chip boom, near highs"
+  },
+  {
+    "ticker": "AMD",
+    "action": "buy",
+    "weight": 0.08,
+    "conviction": 0.90,
+    "rationale": "271% YTD with positive recent momentum - AI chip story unstoppable"
+  },
+  {
+    "ticker": "NDAQ",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 11% YTD and 14% monthly - financial sector weakness persists"
+  },
+  {
+    "ticker": "KO",
+    "action": "buy",
+    "weight": 0.04,
+    "conviction": 0.60,
+    "rationale": "Up 19% YTD with flat recent - solid dividend play, boring but working"
+  },
+  {
+    "ticker": "VZ",
+    "action": "buy",
+    "weight": 0.01,
+    "conviction": 0.40,
+    "rationale": "Up 17% YTD but momentum stalling at down 5% recent - too defensive"
+  },
+  {
+    "ticker": "PEP",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Up 13% YTD but down 3% recently - boring staple, momentum dead"
+  },
+  {
+    "ticker": "BKNG",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Down 19% YTD with only 9% bounce - mixed signals, no conviction"
+  },
+  {
+    "ticker": "APD",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.30,
+    "rationale": "Up just 2% YTD and down 3% monthly - totally flat, zero momentum"
+  },
+  {
+    "ticker": "AVGO",
+    "action": "buy",
+    "weight": 0.08,
+    "conviction": 0.85,
+    "rationale": "Up 44% YTD but sold off 21% from highs - oversold dip in semiconductor"
+  },
+  {
+    "ticker": "WMT",
+    "action": "buy",
+    "weight": 0.05,
+    "conviction": 0.70,
+    "rationale": "Up 20% YTD, slight pullback, consumer discretionary momentum intact"
+  },
+  {
+    "ticker": "AMAT",
+    "action": "buy",
+    "weight": 0.10,
+    "conviction": 0.90,
+    "rationale": "Up 268% YTD plus 47% recent - semiconductor equipment boom narrative"
+  },
+  {
+    "ticker": "SNDK",
+    "action": "buy",
+    "weight": 0.11,
+    "conviction": 0.95,
+    "rationale": "Up 4842% YTD with 47% recent momentum - unstoppable narrative alive"
+  },
+  {
+    "ticker": "AMGN",
+    "action": "buy",
+    "weight": 0.06,
+    "conviction": 0.75,
+    "rationale": "Up 30% YTD with positive 5% monthly momentum, healthcare story intact"
+  },
+  {
+    "ticker": "AXP",
+    "action": "buy",
+    "weight": 0.06,
+    "conviction": 0.75,
+    "rationale": "Up 12% YTD with 10% recent momentum - financial sector building upward"
+  },
+  {
+    "ticker": "TMUS",
+    "action": "short",
+    "weight": 0.01,
+    "conviction": 0.60,
+    "rationale": "Down 20% YTD and 4% recent - telecom weakness, structural decline story"
+  },
+  {
+    "ticker": "BLK",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 3% YTD and 9% recent - BlackRock is utterly boring, zero excitement"
+  },
+  {
+    "ticker": "ADBE",
+    "action": "short",
+    "weight": 0.02,
+    "conviction": 0.70,
+    "rationale": "Down 50% YTD and down 20% recent - catastrophic selloff shows no bottom"
+  },
+  {
+    "ticker": "ABNB",
+    "action": "buy",
+    "weight": 0.04,
+    "conviction": 0.70,
+    "rationale": "Up 9% YTD with 7% recent - travel recovery narrative picking up momentum"
+  },
+  {
+    "ticker": "CMCSA",
+    "action": "short",
+    "weight": 0.01,
+    "conviction": 0.60,
+    "rationale": "Down 27% YTD and 10% recent - Comcast structural decline, momentum negative"
+  }
+]

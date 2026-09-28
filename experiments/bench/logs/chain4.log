@@ -1,0 +1,17 @@
+[14:03:38] price backfill finished
+[14:03:38] stage 0b skipped (fundamentals already backfilled)
+[14:03:38] stage 1: integrity gates
+PASS text audit rejected a future-dated packet
+PASS provenance audit rejected a future finding
+INFO verdict entropy 0.122 bits over 60 names: {'positive': 1, 'insufficient': 59}
+WARN verdict is near-constant; `full` measures a uniform signal, not Loom discriminating between companies
+INFO packet divergence vs its comparator: degraded=0.150, evidence=0.724, full=0.162, no_contradiction=0.042, no_factor=0.344, no_price=0.190, placebo=0.378, quant_loom=0.581, verdict_only=0.446
+INFO provenance newest signal=2026-06-18 bar=2026-06-25 fact=2026-06-25 decision=2026-06-25
+[14:08:02] stage 2: point-in-time score cache
+[14:09:44] stage 2 done: 105 dates cached
+[14:09:44] stage 3: mechanical benchmark
+[14:10:03] stage 3 done
+[14:10:03] stage 4: reader crawl (stops when the daily quota is gone)
+[14:14:45] stage 4 done
+[14:14:45] stage 5: report
+[14:14:50] ALL STAGES COMPLETE

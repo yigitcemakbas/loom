@@ -1,0 +1,177 @@
+[
+  {
+    "ticker": "GOOGL",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Up 102% YTD but down 12% last month. Berkshire backing is nice but no excitement. Missing the chip momentum trades."
+  },
+  {
+    "ticker": "TSLA",
+    "action": "buy",
+    "weight": 0.01,
+    "conviction": 0.50,
+    "rationale": "Down 13% last month hurts but recovery narrative on autonomy and 2025 guidance intact. Tiny hedge position on turnaround thesis."
+  },
+  {
+    "ticker": "NVDA",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.45,
+    "rationale": "Insiders selling, geopolitical China risk, earnings at 0.01 (worst) don't convert to cash. Down 9% last month signals momentum fading."
+  },
+  {
+    "ticker": "AAPL",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Up 37% YTD but down 11% last month. Tim Cook transition is orderly but provides no new momentum narrative for 3-month sprint."
+  },
+  {
+    "ticker": "MSFT",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 28% YTD and down 15% last month. Console weakness, momentum at 0.34 (middle of pack). Game over for this position."
+  },
+  {
+    "ticker": "AMZN",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Only 7% YTD gain, down 14% last month with insiders selling. AI narrative not enough to overcome negative recent momentum."
+  },
+  {
+    "ticker": "MU",
+    "action": "buy",
+    "weight": 0.30,
+    "conviction": 0.75,
+    "rationale": "856% YTD gain, up 35% last month. Momentum ranking 0.98 (best). Taiwan concentration risk real but momentum is undeniable in 3-month window."
+  },
+  {
+    "ticker": "AMD",
+    "action": "buy",
+    "weight": 0.10,
+    "conviction": 0.65,
+    "rationale": "271% YTD, momentum 0.92. Management doubled server TAM forecast. Less explosive than MU but riding strong data-center AI narrative."
+  },
+  {
+    "ticker": "NDAQ",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 11% YTD, down 14% last month. Court decision vacating SEC CAT funding is permanent structural headwind. Revenue model broken."
+  },
+  {
+    "ticker": "KO",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Quality metrics literally all 0.0 (worst in universe). $14B tax liability overhang. BodyArmor write-down. Boring and broken fundamentals."
+  },
+  {
+    "ticker": "VZ",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Nation-state hacker breach, heavy debt, margin concerns. Up 17% but can't get excited about telecom capital return promises vs chip momentum."
+  },
+  {
+    "ticker": "PEP",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Falling sales volumes, brand write-downs, 20% cash trapped in Russia. Up 13% YTD but narrative is deteriorating, no momentum excitement."
+  },
+  {
+    "ticker": "BKNG",
+    "action": "buy",
+    "weight": 0.04,
+    "conviction": 0.55,
+    "rationale": "Down 19% YTD but up 9% last month. Strong travel booking growth despite inflation, cost-save upside beating. Small bet on momentum turning."
+  },
+  {
+    "ticker": "APD",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Up just 2% YTD, down 3% last month. Massive write-downs on clean-energy capex. Building plants without locked-in buyers is reckless capital allocation."
+  },
+  {
+    "ticker": "AVGO",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.45,
+    "rationale": "Up 44% YTD but down 10% last month. High debt burden, foundry concentration risk, tax headwind. Momentum slowing vs bigger semiconductor runs."
+  },
+  {
+    "ticker": "WMT",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.40,
+    "rationale": "Up 20% YTD but only down 2% last month means momentum lived in prior year. No excitement now. Too boring for 3-month momentum trader."
+  },
+  {
+    "ticker": "AMAT",
+    "action": "buy",
+    "weight": 0.15,
+    "conviction": 0.70,
+    "rationale": "Up 268% YTD, up 47% last month. Equipment supplier to chip-capex cycle. China legal risks exist but semiconductor demand story is iron-clad."
+  },
+  {
+    "ticker": "SNDK",
+    "action": "buy",
+    "weight": 0.40,
+    "conviction": 0.85,
+    "rationale": "Insane 4842% YTD gain, up 47% last month. Prepaid massive debt, riding cyclical NAND strength. Momentum 1.00 (best). Will hold quarter despite valuation."
+  },
+  {
+    "ticker": "AMGN",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.45,
+    "rationale": "Up 30% YTD, up 5% last month. Boring healthcare steady-eddie. Price decline ahead on mature drug revenue erosion and tax uncertainty overhang."
+  },
+  {
+    "ticker": "AXP",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.45,
+    "rationale": "Up 12% YTD, up 10% last month. Competitor settlement could compress fees. Small-cap momentum not exciting enough vs semiconductor hardware plays."
+  },
+  {
+    "ticker": "TMUS",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 20% YTD, momentum 0.09 (worst in universe). UScellular integration is multi-year slog, not 3-month trade. Won't catch falling knife."
+  },
+  {
+    "ticker": "BLK",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 3% YTD, down 9% last month. Earnings don't convert to cash (0.12 worst). Revenue growing but profit is not real. Too much cash-conversion doubt."
+  },
+  {
+    "ticker": "ADBE",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.45,
+    "rationale": "Down 50%, momentum 0.10 (worst). Yes metrics are great (0.97 ROA) but that is a value trap. I wait for reversal signals, not fade the momentum."
+  },
+  {
+    "ticker": "ABNB",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.45,
+    "rationale": "Up 9% YTD, up 7% last month. Decent momentum and cash generation but $1B+ IRS tax dispute overhang clouds near-term upside."
+  },
+  {
+    "ticker": "CMCSA",
+    "action": "pass",
+    "weight": 0.0,
+    "conviction": 0.35,
+    "rationale": "Down 27% YTD, down 10% last month. Hulu sale is one-time. Margin direction 0.09 (worst). Sacrificing broadband pricing power. Momentum broken."
+  }
+]

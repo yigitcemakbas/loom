@@ -58,6 +58,21 @@ READS_PER_RUN = 2
 # the risk factors and the full-year picture that a verdict actually rests on.
 ONE_SHOT_FORMS = ("10-K", "10-Q")
 
+# How many filings a company should eventually have been read, before quota
+# goes to breadth instead.
+#
+# Depth was worth more than the drip assumed. A company read once has all its
+# findings inside a single document, and the clustering correction weights each
+# of them by one over the square root of that document's finding count: nine
+# findings from one filing are worth 0.333 each, and the same nine spread over
+# three filings are worth 0.577. So a second read roughly doubles a company's
+# evidence strength without extracting a single new fact, and a company with one
+# document can never reach a strong verdict at all because that needs two
+# independent kinds of source. Measured on the corpus, the median covered
+# company had exactly one document and the only company Loom had a verdict for
+# was the one with five.
+DEPTH_TARGET_DOCUMENTS = 3
+
 # A prior older than this is rebuilt even if one exists, so coverage does not
 # quietly become a set of standing views describing last year's company.
 STALE_PRIOR_DAYS = 120
@@ -218,6 +233,50 @@ def drip_priors(
     return result
 
 
+def companies_needing_depth(db: Session) -> list[Company]:
+    """Companies Loom has read once and should read again, shallowest first.
+
+    The counterpart to `companies_needing_a_read`, which only ever looks for
+    companies with nothing at all. Breadth alone left every covered company at a
+    single document, which is the worst case for both of the quantities a verdict
+    rests on: the clustering correction is harshest inside one document, and a
+    strong verdict requires two independent sources, so a one-document company is
+    capped regardless of what its filing said.
+    """
+    counted = (
+        select(Signal.company_id.label("cid"),
+               func.count(func.distinct(Signal.source_document_id)).label("docs"))
+        .where(Signal.source_document_id.is_not(None))
+        .group_by(Signal.company_id)
+        .subquery()
+    )
+    rows = list(db.execute(
+        select(Company, counted.c.docs)
+        .join(counted, counted.c.cid == Company.id)
+        .where(counted.c.docs < DEPTH_TARGET_DOCUMENTS)
+        .order_by(counted.c.docs.asc(), Company.sec_rank.asc().nullslast())
+    ).all())
+    return [company for company, _docs in rows]
+
+
+def _unanalysed_filing(db: Session, company: Company) -> Optional[RawDocument]:
+    """A stored annual or quarterly report for this company with no findings yet.
+
+    Newest first, and deliberately only documents already stored: the depth pass
+    spends its quota on analysis, which is the expensive half, rather than on
+    fetching a corpus it may not get to read.
+    """
+    read = select(Signal.source_document_id).where(Signal.company_id == company.id)
+    return db.execute(
+        select(RawDocument)
+        .where(RawDocument.company_id == company.id)
+        .where(RawDocument.doc_subtype.in_(ONE_SHOT_FORMS))
+        .where(RawDocument.id.not_in(read))
+        .order_by(RawDocument.published_at.desc())
+        .limit(1)
+    ).scalars().first()
+
+
 def drip_reads(db: Session, *, limit: int = READS_PER_RUN) -> DripResult:
     """Read one filing for companies Loom has never read.
 
@@ -230,13 +289,28 @@ def drip_reads(db: Session, *, limit: int = READS_PER_RUN) -> DripResult:
     from app.storage.blob_store import get_blob_store
 
     pending = companies_needing_a_read(db)
-    result = DripResult(remaining=len(pending))
+    deeper = companies_needing_depth(db)
+    result = DripResult(remaining=len(pending) + len(deeper))
     blob_store = get_blob_store()
 
-    for company in pending[:limit]:
+    # Split, rather than spending the whole quota on first reads. Depth is
+    # worth more per call on the companies already covered, and breadth is what
+    # keeps the genre norms from being a measurement of one sector, so neither
+    # is allowed to starve the other. Whichever queue is empty yields its share.
+    depth_share = limit // 2 if pending else limit
+    breadth_share = limit - depth_share
+    if not deeper:
+        breadth_share, depth_share = limit, 0
+    queue = [(c, False) for c in pending[:breadth_share]]
+    queue += [(c, True) for c in deeper[:depth_share]]
+
+    for company, is_depth in queue:
         try:
-            document = _newest_filing(db, company)
-            if document is None:
+            document = (
+                _unanalysed_filing(db, company) if is_depth
+                else _newest_filing(db, company)
+            )
+            if document is None and not is_depth:
                 document = _fetch_one_filing(
                     db, company, DOCUMENT_ADAPTERS, blob_store, _persist_document
                 )
@@ -257,8 +331,9 @@ def drip_reads(db: Session, *, limit: int = READS_PER_RUN) -> DripResult:
         if written:
             result.covered += 1
             logger.info(
-                "Read drip: %s read once (%s), %d findings.",
-                company.ticker, document.doc_subtype, written,
+                "Read drip: %s %s (%s), %d findings.",
+                company.ticker, "read deeper" if is_depth else "read once",
+                document.doc_subtype, written,
             )
 
     result.remaining = max(0, result.remaining - result.covered)
@@ -314,7 +389,9 @@ def _aware(value: datetime) -> datetime:
 
 
 __all__ = [
+    "DEPTH_TARGET_DOCUMENTS",
     "ONE_SHOT_FORMS",
+    "companies_needing_depth",
     "PRIORS_PER_RUN",
     "READS_PER_RUN",
     "STALE_PRIOR_DAYS",

@@ -1,0 +1,329 @@
+cross-sections used: 105   elapsed 18s
+
+================ horizon 21 sessions (87 cross-sections, median 300 names) ===
+
+-- information coefficient (rank correlation of score with forward excess return)
+   signal                           n  mean IC     IR       t       p   p(BH)    >0
+   volatility                      87  -0.0372  -0.18  -1.598   0.114   0.463  0.43
+   sales_yield                     87   0.0354   0.26   2.298   0.024   0.360  0.56
+   cash_flow_yield                 87   0.0233   0.17   1.565   0.121   0.463  0.51
+   earnings_yield                  87   0.0209   0.17   1.529   0.130   0.463  0.51
+   book_to_price                   87   0.0167   0.13   1.246   0.216   0.463  0.52
+   cash_to_assets                  87   0.0145   0.14   1.364   0.176   0.463  0.54
+   composite_flat                  87   0.0132   0.11   1.029   0.306   0.520  0.51
+   leverage_change                 87  -0.0086  -0.13  -1.291   0.200   0.463  0.49
+   cash_conversion                 87  -0.0071  -0.10  -1.017   0.312   0.520  0.47
+   net_share_issuance              72   0.0071   0.06   0.488   0.627   0.912  0.53
+   composite_weighted              87   0.0048   0.04   0.381   0.704   0.912  0.51
+   return_on_assets                87  -0.0047  -0.04  -0.346   0.730   0.912  0.43
+   accruals                        87  -0.0004  -0.00  -0.043   0.966   0.993  0.56
+   asset_growth                    87  -0.0002  -0.00  -0.015   0.988   0.993  0.49
+   momentum                        87  -0.0002  -0.00  -0.009   0.993   0.993  0.56
+
+-- Fama-MacBeth slope of forward excess return on the composite percentile
+   n=87  mean=-0.009686048610484187  t=-0.6663036399265413  p=0.5070005425328445  95% CI [-0.03618403893136285, 0.017747724802144205]
+
+-- portfolios (mean excess over QQQ per holding period)
+   book                         n   excess       t       p     vol   maxDD  Sharpe    hit    HHI  names
+   control_equal               87  -0.0001  -0.027   0.979   0.178  -0.045   1.900   0.47  0.003  329.7
+   control_random              87   0.0007   0.183   0.855   0.182  -0.046   1.890   0.48  0.016   65.5
+   loom_long                   87  -0.0013  -0.285   0.776   0.157  -0.040   1.936   0.47  0.016   65.5
+   loom_long_flat              87  -0.0004  -0.089   0.929   0.163  -0.041   1.961   0.47  0.016   67.1
+   loom_long_short             87  -0.0208  -2.836   0.006   0.058  -0.018  -0.566   0.47  0.008  131.1
+   loom_sized                  87  -0.0202  -2.792   0.006   0.053  -0.017  -0.368   0.47  0.005  329.5
+
+-- calibration: mean forward excess return by composite decile
+   decile  0  n=  2908   +0.325%  #
+   decile  1  n=  2863   +0.196%  
+   decile  2  n=  2877   +0.053%  
+   decile  3  n=  2854   -0.032%  
+   decile  4  n=  2856   -0.598%  ##
+   decile  5  n=  2891   +0.210%  
+   decile  6  n=  2862   +0.030%  
+   decile  7  n=  2869   -0.165%  
+   decile  8  n=  2871   -0.222%  
+   decile  9  n=  2830   -0.113%  
+   monotonicity (Spearman of decile against mean return): -0.6363636363636364
+
+-- where Loom's book differs from holding everything
+   missed_upside      n= 10877  total    -261.7 pts  mean  -0.02%
+   avoided_loss       n= 12103  total    +262.3 pts  mean  +0.02%
+   captured_upside    n=  2678  total    +232.0 pts  mean  +0.09%
+   added_loss         n=  3023  total    -242.9 pts  mean  -0.08%
+
+-- universe robustness (IC inside size strata)
+   mega       n= 87 mean IC -0.007568340580845412  t=-0.4304172760144032  p=0.6679688716932787
+   mid        n= 87 mean IC 0.010839168678975311  t=0.887578273749861  p=0.3772432302215949
+   small      n=  6 mean IC -0.009596846301728962  t=-0.8634215021341627  p=0.42737239051939613
+
+-- sector robustness (IC inside sector)
+   Financials                 n= 87 mean IC -0.03600770708000423  t=-1.4326433754879773
+   Health Care                n= 87 mean IC 0.00869175370420154  t=0.4052346350714994
+   Industrials                n= 87 mean IC -0.010783201856605432  t=-0.5915324024579043
+   Technology                 n= 87 mean IC 0.022634873012633824  t=1.252506378017639
+   Consumer Discretionary     n=  6 mean IC 0.02056067338684703  t=0.3254643024395804
+   Utilities                  n=  6 mean IC 0.15070168659126973  t=1.3505017432868451
+   Energy and Materials       n=  6 mean IC -0.022617693812269593  t=-0.5898541303433752
+
+-- regime conditioning: the same books, split by what the market did
+   falling — 29 cross-sections, benchmark -12.2% to -0.1%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             29   0.0146   2.450   0.218  -0.075  -1.616
+      control_random            29   0.0147   2.131   0.224  -0.076  -1.577
+      loom_long                 29   0.0232   3.842   0.193  -0.064  -1.272
+      loom_long_flat            29   0.0216   2.927   0.200  -0.067  -1.338
+      loom_long_short           29   0.0540   7.929   0.068  -0.017   1.175
+      loom_sized                29   0.0537   8.190   0.061  -0.015   1.316
+
+   flat — 29 cross-sections, benchmark -0.1% to +4.2%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             29   0.0025   0.407   0.155  -0.036   2.248
+      control_random            29   0.0011   0.162   0.160  -0.037   2.013
+      loom_long                 29   0.0011   0.155   0.137  -0.032   2.310
+      loom_long_flat            29   0.0039   0.498   0.140  -0.033   2.509
+      loom_long_short           29  -0.0243  -5.531   0.049  -0.015  -0.657
+      loom_sized                29  -0.0229  -5.131   0.045  -0.014  -0.239
+
+   rising — 29 cross-sections, benchmark +4.3% to +15.7%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             29  -0.0173  -2.925   0.160  -0.025   5.068
+      control_random            29  -0.0136  -2.340   0.161  -0.025   5.235
+      loom_long                 29  -0.0281  -4.298   0.142  -0.023   4.769
+      loom_long_flat            29  -0.0268  -4.011   0.148  -0.024   4.711
+      loom_long_short           29  -0.0921 -12.620   0.057  -0.022  -2.217
+      loom_sized                29  -0.0912 -12.944   0.053  -0.020  -2.182
+
+-- individual factors, long-short quintile books
+   factor                           n   excess       t  Sharpe
+   accruals                        87  -0.0167  -2.932   0.660
+   asset_growth                    87  -0.0189  -2.605  -0.353
+   book_to_price                   87  -0.0163  -2.593   0.438
+   cash_conversion                 87  -0.0191  -3.156  -0.231
+   cash_flow_yield                 87  -0.0180  -2.497  -0.189
+   cash_to_assets                  87  -0.0154  -2.969   1.164
+   earnings_yield                  87  -0.0199  -2.750  -0.506
+   leverage_change                 87  -0.0202  -3.301  -0.232
+   momentum                        87  -0.0173  -2.589   0.546
+   net_share_issuance              49  -0.0287  -2.946  -1.087
+   return_on_assets                87  -0.0242  -3.242  -1.398
+   sales_yield                     87  -0.0153  -2.210   0.425
+   volatility                      87  -0.0304  -3.343  -1.500
+
+================ horizon 63 sessions (85 cross-sections, median 300 names) ===
+
+-- information coefficient (rank correlation of score with forward excess return)
+   signal                           n  mean IC     IR       t       p   p(BH)    >0
+   volatility                      85  -0.0745  -0.37  -2.391   0.019   0.143  0.41
+   sales_yield                     85   0.0584   0.41   2.416   0.018   0.143  0.60
+   cash_flow_yield                 85   0.0317   0.25   1.547   0.126   0.471  0.55
+   book_to_price                   85   0.0246   0.21   1.274   0.206   0.488  0.49
+   return_on_assets                85  -0.0235  -0.19  -1.267   0.209   0.488  0.39
+   net_share_issuance              70   0.0192   0.15   0.873   0.386   0.578  0.49
+   earnings_yield                  85   0.0188   0.17   1.133   0.260   0.488  0.51
+   cash_to_assets                  85   0.0186   0.20   1.180   0.241   0.488  0.60
+   cash_conversion                 85  -0.0158  -0.25  -1.653   0.102   0.471  0.41
+   leverage_change                 85  -0.0102  -0.16  -1.008   0.316   0.527  0.45
+   composite_weighted              85  -0.0057  -0.05  -0.306   0.761   0.948  0.41
+   composite_flat                  85   0.0042   0.04   0.242   0.809   0.948  0.46
+   accruals                        85  -0.0030  -0.04  -0.226   0.822   0.948  0.54
+   asset_growth                    85  -0.0021  -0.02  -0.101   0.920   0.958  0.47
+   momentum                        85   0.0014   0.01   0.053   0.958   0.958  0.60
+
+-- Fama-MacBeth slope of forward excess return on the composite percentile
+   n=85  mean=-0.043332586755684126  t=-1.2370452843713118  p=0.21951748017018635  95% CI [-0.11012164399889378, 0.028866849470504448]
+
+-- portfolios (mean excess over QQQ per holding period)
+   book                         n   excess       t       p     vol   maxDD  Sharpe    hit    HHI  names
+   control_equal               85   0.0030   0.307   0.759   0.188  -0.082   1.692   0.46  0.003  329.9
+   control_random              85   0.0022   0.217   0.829   0.192  -0.083   1.618   0.46  0.016   65.6
+   loom_long                   85   0.0001   0.009   0.993   0.166  -0.071   1.748   0.45  0.016   65.6
+   loom_long_flat              85   0.0025   0.197   0.844   0.172  -0.073   1.829   0.47  0.016   67.2
+   loom_long_short             85  -0.0629  -3.291   0.001   0.058  -0.035  -0.729   0.45  0.008  131.2
+   loom_sized                  85  -0.0603  -3.194   0.002   0.053  -0.032  -0.564   0.46  0.005  329.7
+
+-- calibration: mean forward excess return by composite decile
+   decile  0  n=  2843   +1.709%  ######
+   decile  1  n=  2799   +1.543%  ######
+   decile  2  n=  2813   -0.092%  
+   decile  3  n=  2790   +0.080%  
+   decile  4  n=  2793   -0.384%  #
+   decile  5  n=  2826   -0.302%  #
+   decile  6  n=  2798   +0.206%  
+   decile  7  n=  2805   -0.791%  ###
+   decile  8  n=  2807   -0.418%  #
+   decile  9  n=  2767   +0.160%  
+   monotonicity (Spearman of decile against mean return): -0.5393939393939394
+
+-- where Loom's book differs from holding everything
+   missed_upside      n= 10360  total    -482.2 pts  mean  -0.05%
+   avoided_loss       n= 12107  total    +459.1 pts  mean  +0.04%
+   captured_upside    n=  2520  total    +439.3 pts  mean  +0.17%
+   added_loss         n=  3054  total    -439.2 pts  mean  -0.14%
+
+-- universe robustness (IC inside size strata)
+   mega       n= 85 mean IC -0.025496125847137136  t=-0.9526379969582417  p=0.34350676188337503
+   mid        n= 85 mean IC 0.004279371743999384  t=0.24666059902000895  p=0.8057727040250833
+   small      n=  6 mean IC -0.012756164880847362  t=-0.650378452819286  p=0.5441446332908284
+
+-- sector robustness (IC inside sector)
+   Financials                 n= 85 mean IC -0.05158567369666744  t=-1.2352263782773445
+   Health Care                n= 85 mean IC -0.0033888849444977088  t=-0.1050978384622257
+   Industrials                n= 85 mean IC -0.0338065074011706  t=-1.4054331004493217
+   Technology                 n= 85 mean IC 0.028997679484268468  t=1.0080411635165578
+   Consumer Discretionary     n=  6 mean IC -0.005444777148605862  t=-0.09731833782388406
+   Utilities                  n=  6 mean IC 0.022379126442136767  t=0.1693185936174953
+   Energy and Materials       n=  6 mean IC -0.07962705149512113  t=-3.567706695487286
+
+-- regime conditioning: the same books, split by what the market did
+   falling — 28 cross-sections, benchmark -22.0% to +1.6%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             28   0.0376   2.865   0.235  -0.121   0.051
+      control_random            28   0.0346   2.517   0.236  -0.122  -0.082
+      loom_long                 28   0.0567   3.247   0.202  -0.101   0.461
+      loom_long_flat            28   0.0556   2.929   0.212  -0.106   0.502
+      loom_long_short           28   0.0634   3.892   0.072  -0.033   0.428
+      loom_sized                28   0.0654   4.046   0.066  -0.030   0.598
+
+   flat — 29 cross-sections, benchmark +1.7% to +8.7%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             29   0.0092   1.084   0.154  -0.062   1.830
+      control_random            29   0.0104   1.151   0.161  -0.064   1.774
+      loom_long                 29   0.0030   0.267   0.140  -0.057   1.834
+      loom_long_flat            29   0.0060   0.534   0.140  -0.056   1.930
+      loom_long_short           29  -0.0671 -10.712   0.049  -0.030  -0.878
+      loom_sized                29  -0.0644 -10.389   0.045  -0.027  -0.722
+
+   rising — 28 cross-sections, benchmark +8.7% to +30.3%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             28  -0.0381  -3.233   0.175  -0.063   3.189
+      control_random            28  -0.0388  -3.230   0.179  -0.065   3.157
+      loom_long                 28  -0.0595  -5.353   0.158  -0.056   2.946
+      loom_long_flat            28  -0.0543  -4.451   0.164  -0.058   3.050
+      loom_long_short           28  -0.1849 -15.155   0.052  -0.041  -1.733
+      loom_sized                28  -0.1819 -14.419   0.048  -0.038  -1.560
+
+-- individual factors, long-short quintile books
+   factor                           n   excess       t  Sharpe
+   accruals                        85  -0.0487  -3.323   0.539
+   asset_growth                    85  -0.0561  -2.860  -0.426
+   book_to_price                   85  -0.0490  -2.990   0.395
+   cash_conversion                 85  -0.0561  -3.505  -0.215
+   cash_flow_yield                 85  -0.0548  -2.878  -0.159
+   cash_to_assets                  85  -0.0440  -3.373   1.105
+   earnings_yield                  85  -0.0609  -3.392  -0.448
+   leverage_change                 85  -0.0593  -3.635  -0.393
+   momentum                        85  -0.0496  -2.909   0.395
+   net_share_issuance              47  -0.0746  -3.055  -0.777
+   return_on_assets                85  -0.0727  -3.807  -1.444
+   sales_yield                     85  -0.0434  -2.354   0.626
+   volatility                      85  -0.0887  -3.863  -1.381
+
+================ horizon 126 sessions (82 cross-sections, median 300 names) ===
+
+-- information coefficient (rank correlation of score with forward excess return)
+   signal                           n  mean IC     IR       t       p   p(BH)    >0
+   volatility                      82  -0.1036  -0.58  -2.458   0.016   0.121  0.23
+   sales_yield                     82   0.0787   0.56   2.523   0.014   0.121  0.65
+   return_on_assets                82  -0.0401  -0.33  -1.393   0.167   0.437  0.40
+   cash_flow_yield                 82   0.0392   0.33   1.451   0.151   0.437  0.61
+   net_share_issuance              67   0.0343   0.24   1.089   0.280   0.525  0.58
+   book_to_price                   82   0.0335   0.28   1.346   0.182   0.437  0.54
+   cash_to_assets                  82   0.0230   0.23   0.914   0.363   0.605  0.66
+   momentum                        82   0.0226   0.14   0.660   0.511   0.767  0.59
+   cash_conversion                 82  -0.0159  -0.28  -1.472   0.145   0.437  0.46
+   leverage_change                 82  -0.0151  -0.25  -1.281   0.204   0.437  0.37
+   earnings_yield                  82   0.0087   0.09   0.399   0.691   0.942  0.55
+   composite_flat                  82   0.0056   0.05   0.221   0.826   0.979  0.49
+   composite_weighted              82  -0.0015  -0.01  -0.057   0.955   0.979  0.49
+   asset_growth                    82  -0.0013  -0.01  -0.045   0.964   0.979  0.44
+   accruals                        82   0.0005   0.01   0.027   0.979   0.979  0.51
+
+-- Fama-MacBeth slope of forward excess return on the composite percentile
+   n=82  mean=-0.12949817714473205  t=-1.7636745757348868  p=0.08155761912012356  95% CI [-0.24069075457613717, 0.0017600566673056602]
+
+-- portfolios (mean excess over QQQ per holding period)
+   book                         n   excess       t       p     vol   maxDD  Sharpe    hit    HHI  names
+   control_equal               82   0.0065   0.326   0.745   0.196  -0.116   1.541   0.45  0.003  330.2
+   control_random              82   0.0058   0.278   0.781   0.201  -0.118   1.501   0.45  0.016   65.6
+   loom_long                   82   0.0008   0.032   0.975   0.174  -0.101   1.621   0.45  0.016   65.6
+   loom_long_flat              82   0.0048   0.184   0.854   0.180  -0.105   1.694   0.46  0.016   67.3
+   loom_long_short             82  -0.1294  -3.210   0.002   0.057  -0.054  -0.769   0.45  0.008  131.3
+   loom_sized                  82  -0.1245  -3.161   0.002   0.052  -0.047  -0.607   0.45  0.005  330.0
+
+-- calibration: mean forward excess return by composite decile
+   decile  0  n=  2744   +4.102%  ################
+   decile  1  n=  2703   +4.805%  ###################
+   decile  2  n=  2717   +0.141%  
+   decile  3  n=  2694   +0.551%  ##
+   decile  4  n=  2697   -0.562%  ##
+   decile  5  n=  2727   -1.597%  ######
+   decile  6  n=  2702   +0.335%  #
+   decile  7  n=  2709   -1.088%  ####
+   decile  8  n=  2711   -0.425%  #
+   decile  9  n=  2671   +0.093%  
+   monotonicity (Spearman of decile against mean return): -0.6242424242424243
+
+-- where Loom's book differs from holding everything
+   missed_upside      n=  9694  total    -721.5 pts  mean  -0.07%
+   avoided_loss       n= 11999  total    +659.9 pts  mean  +0.06%
+   captured_upside    n=  2405  total    +630.3 pts  mean  +0.26%
+   added_loss         n=  2977  total    -620.5 pts  mean  -0.21%
+
+-- universe robustness (IC inside size strata)
+   mega       n= 82 mean IC -0.011495849648402683  t=-0.3290815947487735  p=0.7429433881134553
+   mid        n= 82 mean IC 0.0013373506879330878  t=0.05385242814913544  p=0.9571853392003598
+   small      n=  6 mean IC -0.06701746018882615  t=-6.730429641148724  p=0.0010977134082822435
+
+-- sector robustness (IC inside sector)
+   Financials                 n= 82 mean IC -0.03194053210069165  t=-0.5591343741440216
+   Health Care                n= 82 mean IC 0.017753027749890894  t=0.3891472829708904
+   Industrials                n= 82 mean IC -0.046348231638195674  t=-1.2589294585898911
+   Technology                 n= 82 mean IC 0.0254141070928315  t=0.6052006778580049
+   Consumer Discretionary     n=  6 mean IC 0.060132354057218396  t=3.8033258307855644
+   Utilities                  n=  6 mean IC -0.08252406287764621  t=-0.9630912519221523
+   Energy and Materials       n=  6 mean IC -0.12321126285368184  t=-3.157928042779752
+
+-- regime conditioning: the same books, split by what the market did
+   falling — 27 cross-sections, benchmark -27.6% to +8.3%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             27   0.0562   3.509   0.225  -0.153   0.381
+      control_random            27   0.0568   3.111   0.227  -0.153   0.360
+      loom_long                 27   0.0786   2.541   0.194  -0.127   0.656
+      loom_long_flat            27   0.0736   2.559   0.204  -0.136   0.598
+      loom_long_short           27   0.0487   0.843   0.070  -0.051   0.044
+      loom_sized                27   0.0476   0.843   0.065  -0.048   0.035
+
+   flat — 28 cross-sections, benchmark +8.6% to +17.2%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             28   0.0088   0.566   0.167  -0.094   1.899
+      control_random            28   0.0161   0.877   0.172  -0.094   1.941
+      loom_long                 28  -0.0026  -0.162   0.153  -0.085   1.923
+      loom_long_flat            28   0.0037   0.212   0.155  -0.085   2.049
+      loom_long_short           28  -0.1503 -33.345   0.046  -0.045  -0.920
+      loom_sized                28  -0.1431 -28.522   0.042  -0.039  -0.661
+
+   rising — 27 cross-sections, benchmark +17.4% to +45.2%
+      book                       n   excess       t     vol   maxDD  Sharpe
+      control_equal             27  -0.0455  -1.902   0.198  -0.103   2.331
+      control_random            27  -0.0560  -2.384   0.204  -0.107   2.185
+      loom_long                 27  -0.0735  -2.964   0.175  -0.093   2.274
+      loom_long_flat            27  -0.0630  -2.092   0.183  -0.094   2.422
+      loom_long_short           27  -0.2859 -18.839   0.056  -0.066  -1.426
+      loom_sized                27  -0.2772 -16.227   0.050  -0.055  -1.194
+
+-- individual factors, long-short quintile books
+   factor                           n   excess       t  Sharpe
+   accruals                        82  -0.0969  -3.230   0.611
+   asset_growth                    82  -0.1166  -2.857  -0.423
+   book_to_price                   82  -0.0988  -2.916   0.410
+   cash_conversion                 82  -0.1124  -3.428  -0.066
+   cash_flow_yield                 82  -0.1145  -2.900  -0.213
+   cash_to_assets                  82  -0.0890  -3.453   1.049
+   earnings_yield                  82  -0.1283  -3.531  -0.560
+   leverage_change                 82  -0.1216  -3.638  -0.519
+   momentum                        82  -0.1002  -2.995   0.415
+   net_share_issuance              44  -0.1399  -3.274  -0.664
+   return_on_assets                82  -0.1493  -3.747  -1.452
+   sales_yield                     82  -0.0894  -2.336   0.606
+   volatility                      82  -0.1783  -3.795  -1.299
+
