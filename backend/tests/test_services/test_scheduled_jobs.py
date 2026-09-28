@@ -13,6 +13,11 @@ def test_the_scheduled_jobs_are_the_expected_set():
     ids = {job_id for job_id, *_ in scheduler_module._FREE_JOBS}
     assert ids == {
         "refresh-prices", "replay-priors", "score-factors",
+        # Fetching filings costs no model quota, only SEC's shared rate limit,
+        # so it earns a place on the clock cheaply. It is also the job the rest
+        # depend on: the risk diff needs two filings of the same company, and
+        # the corpus held 322 across a thousand companies.
+        "fetch-filings",
         "refresh-briefs", "send-digests", "coverage-drip",
         # Corpus-wide tables every page reads and none should build. Measured
         # at a thousand companies, the precedent base took 1.5 seconds, landing
@@ -32,6 +37,40 @@ def test_only_the_coverage_drip_spends_model_quota():
     from app.engine.coverage import PRIORS_PER_RUN, READS_PER_RUN
 
     assert PRIORS_PER_RUN <= 5 and READS_PER_RUN <= 5
+
+
+def test_filings_are_fetched_before_anything_tries_to_read_them():
+    """A document cannot be analysed before it is stored, and the drip spends
+    model quota looking for one. Running the read first wastes the scarcest
+    resource in the system on a company whose filing has not arrived."""
+    offsets = {job_id: offset for job_id, _, _, _, offset in scheduler_module._FREE_JOBS}
+    assert offsets["fetch-filings"] < offsets["coverage-drip"]
+
+
+def test_fetching_filings_runs_far_more_often_than_reading_them():
+    """Deliberate asymmetry. Storing a filing is free and bounded by SEC's rate
+    limit; reading one costs a model call from a twenty-a-day allowance. The
+    corpus is allowed to run ahead of the reading, because a filing that exists
+    can be read later and one that was never fetched cannot."""
+    minutes = {job_id: m for job_id, _, _, m, _ in scheduler_module._FREE_JOBS}
+    assert minutes["fetch-filings"] <= minutes["coverage-drip"]
+
+
+def test_the_filing_backfill_is_bounded_per_run():
+    """It runs hourly, so an unbounded sweep would hold SEC's rate limiter for
+    the whole hour and starve every other source that shares it."""
+    from app.engine.filings import COMPANIES_PER_RUN, FETCHES_PER_RUN
+
+    assert 0 < FETCHES_PER_RUN <= 50
+    assert 0 < COMPANIES_PER_RUN <= 100
+
+
+def test_the_filing_target_allows_a_diff():
+    """Below two filings the risk diff cannot run at all, which is the signal
+    priority.py trusts most and the only one checkable against source text."""
+    from app.engine.filings import TARGET_FILINGS
+
+    assert TARGET_FILINGS >= 2
 
 
 def test_priors_are_built_before_the_filings_that_get_scored_against_them():

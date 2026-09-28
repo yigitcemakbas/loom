@@ -31,6 +31,7 @@ from app.scheduling.jobs import (
     run_brief_refresh,
     run_measured_tables,
     run_coverage_drip,
+    run_filing_backfill,
     run_digests,
     run_factor_scoring,
     run_price_refresh,
@@ -59,6 +60,20 @@ _REFRESH_JOB_ID = "refresh-watchlist"
 # brief reads the scores.
 _FREE_JOBS: tuple[tuple[str, object, str, int, int], ...] = (
     # id, callable, description, interval minutes, startup offset minutes
+    (
+        "fetch-filings", run_filing_backfill,
+        "Deepen and refresh the annual and quarterly report corpus",
+        # Hourly, and it can be: fetching costs no model quota, only SEC's
+        # shared rate limit, and each run is bounded to twenty-five documents.
+        # Frequent because the corpus was 322 filings across a thousand
+        # companies and 36 of the 46 read companies held exactly one, which
+        # disabled the risk diff — Loom's only deterministic, checkable signal —
+        # for most of what it had read.
+        #
+        # It also keeps the corpus current, so the interval is a currency
+        # requirement once the backfill is done rather than only a catch-up rate.
+        60, 2,
+    ),
     (
         "refresh-prices", run_price_refresh,
         "Store yesterday's closes for the universe",

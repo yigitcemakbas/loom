@@ -15,11 +15,18 @@ from sqlalchemy.orm import Session
 from app.engine import brief as brief_engine
 from app.engine import clustering, diffing, extraction, fact_rules, signal_writer
 from app.engine.llm_client import PROMPT_VERSION, LLMClient, LLMUnavailableError, get_llm_client
-from app.engine.prompts import emerging_pattern, news_digest, quarter_comparison, risk_diff
+from app.engine.prompts import (
+    emerging_pattern,
+    news_digest,
+    quarter_comparison,
+    risk_diff,
+    risk_resolution,
+)
 from app.engine.prompts.emerging_pattern import EmergingPatternResult
 from app.engine.prompts.news_digest import NewsDigestResult
 from app.engine.prompts.quarter_comparison import QuarterComparisonResult
 from app.engine.prompts.risk_diff import RiskDiffResult
+from app.engine.prompts.risk_resolution import RiskResolutionResult
 from app.models.signal import AnalysisStatus
 from app.engine.norms import load_norms
 from app.repositories.company_repository import CompanyRepository
@@ -197,12 +204,13 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
     if prior is None:
         return []
 
-    changed, n_current, n_prior = diffing.find_changed_paragraphs(
+    diff = diffing.diff_section(
         _document_text(document.blob_uri),
         _document_text(prior.blob_uri),
         section=plan["section"],
     )
-    if not changed:
+    changed, n_current, n_prior = diff.added, diff.current_total, diff.prior_total
+    if not changed and not diff.removed:
         logger.info(
             "%s %s: no unmatched paragraphs in Item %s (%d vs %d).",
             ticker, document.doc_subtype, plan["section"], n_current, n_prior,
@@ -210,8 +218,8 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
         return []
 
     logger.info(
-        "%s %s: assessing %d changed paragraphs from Item %s.",
-        ticker, document.doc_subtype, len(changed), plan["section"],
+        "%s %s: assessing %d added and %d withdrawn paragraphs from Item %s.",
+        ticker, document.doc_subtype, len(changed), len(diff.removed), plan["section"],
     )
     prior_period = str((prior.published_at or prior.fetched_at).date())
 
@@ -252,7 +260,7 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
     if result is None:
         return []
 
-    return signal_writer.build_diff_signals(
+    signals = signal_writer.build_diff_signals(
         result.assessments,
         company_id=document.company_id,
         document_id=document.id,
@@ -260,6 +268,37 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
         occurred_at=occurred_at,
         comparison=plan["comparison"],
     )
+
+    # The other half of the comparison. Paragraphs the prior filing carried and
+    # this one does not: the engine's only source of a positive finding from a
+    # filing, and absent until now, which is why every verdict the risk diff
+    # could influence leaned negative by construction.
+    #
+    # Annual filings only. A 10-Q's risk section is normally a cross reference
+    # back to the 10-K, so a paragraph "missing" from it was never there to
+    # begin with, and reading that as a resolution would manufacture good news
+    # out of a filing convention.
+    if plan["kind"] == "risk" and diff.removed:
+        resolution = client.parse(
+            system=risk_resolution.SYSTEM,
+            user_content=risk_resolution.build_user_content(
+                ticker=ticker,
+                current_period=str(occurred_at.date()),
+                prior_period=prior_period,
+                paragraphs=diff.removed,
+            ),
+            schema=RiskResolutionResult,
+        )
+        if resolution is not None:
+            signals += signal_writer.build_resolution_signals(
+                resolution.assessments,
+                company_id=document.company_id,
+                document_id=document.id,
+                compared_document_id=prior.id,
+                occurred_at=occurred_at,
+            )
+
+    return signals
 
 
 def select_recent_documents(ticker: str, db: Session) -> list[uuid.UUID]:

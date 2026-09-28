@@ -91,6 +91,82 @@ class SecEdgarAdapter(DocumentSourceAdapter):
             timeout=30.0,
         )
 
+    # The forms a backfill wants depth in. Annual first: a 10-K carries the risk
+    # factors a verdict rests on, and the risk diff needs two of them.
+    PERIODIC_FORMS = ("10-K", "10-Q")
+
+    def document_url(self, cik10: str, accession: str, primary_doc: str) -> str:
+        """Where a filing's primary document lives.
+
+        Public because it is derivable from the submissions index alone, which is
+        what lets a caller skip a filing it already holds without downloading it.
+        """
+        return (
+            f"{_ARCHIVES_BASE}/{int(cik10)}/{accession.replace('-', '')}/{primary_doc}"
+        )
+
+    def periodic_filings(
+        self,
+        ticker: str,
+        *,
+        limit: int = 4,
+        skip_urls: frozenset[str] = frozenset(),
+    ) -> list[RawDocumentDTO]:
+        """The company's most recent annual and quarterly reports, newest first.
+
+        Separate from `fetch` because a backfill wants depth in two form types
+        rather than breadth across all of them, and because it can afford to be
+        exact: the document URL is derivable from the submissions index, so a
+        filing already stored costs one dictionary lookup instead of a full
+        document download. Over a thousand companies that is the difference
+        between a job that can run on a clock and one that cannot.
+
+        `limit` counts documents actually fetched, so a company already holding
+        three of its four target filings fetches one.
+        """
+        info = get_company_lookup_service().lookup(ticker)
+        if info is None:
+            logger.warning("SEC EDGAR: no CIK found for ticker %s", ticker)
+            return []
+        submissions = self._fetch_submissions(info.cik)
+        if submissions is None:
+            return []
+
+        recent = submissions.get("filings", {}).get("recent", {})
+        rows = list(zip(
+            recent.get("form", []),
+            recent.get("filingDate", []),
+            recent.get("accessionNumber", []),
+            recent.get("primaryDocument", []),
+            strict=False,
+        ))
+        # Newest first, annual ahead of quarterly on the same date.
+        rows = [r for r in rows if r[0] in self.PERIODIC_FORMS and r[3]]
+        rows.sort(key=lambda r: (r[1], r[0] != "10-K"), reverse=True)
+
+        out: list[RawDocumentDTO] = []
+        for form, filing_date, accession, primary_doc in rows:
+            if len(out) >= limit:
+                break
+            if self.document_url(info.cik, accession, primary_doc) in skip_urls:
+                continue
+            try:
+                published_at = datetime.strptime(filing_date, "%Y-%m-%d").replace(
+                    tzinfo=timezone.utc
+                )
+                dto = self._fetch_filing_document(
+                    ticker=ticker, cik10=info.cik, form=form, accession=accession,
+                    primary_doc=primary_doc, published_at=published_at,
+                )
+            except Exception:
+                logger.exception(
+                    "SEC EDGAR: failed to fetch %s %s for %s", form, accession, ticker
+                )
+                continue
+            if dto is not None:
+                out.append(dto)
+        return out
+
     def fetch(self, ticker: str, since: datetime | None = None) -> list[RawDocumentDTO]:
         info = get_company_lookup_service().lookup(ticker)
         if info is None:

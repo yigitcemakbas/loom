@@ -189,6 +189,9 @@ _ROUTINE_WORTH_SAYING = 0.35
 # to decide whether we have enough to say anything at all.
 _SUBSTANTIVE_TYPES = {
     SignalType.NEW_RISK_FACTOR,
+    # The positive half of the risk comparison. Without it in this set the diff
+    # could produce evidence the stance would never see.
+    SignalType.RESOLVED_RISK_FACTOR,
     SignalType.QOQ_ANOMALY,
     SignalType.GUIDANCE_CHANGE,
     SignalType.EMERGING_PATTERN,

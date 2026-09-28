@@ -13,6 +13,15 @@ from app.db.base import Base
 class SignalType(str, enum.Enum):
     SENTIMENT_SHIFT = "sentiment_shift"
     NEW_RISK_FACTOR = "new_risk_factor"
+    # A risk the company disclosed last year and does not disclose now.
+    #
+    # Added because its absence was structural: the year-over-year comparison
+    # only ever looked for paragraphs in the current filing with no match in the
+    # prior one, so every finding the risk diff could produce was negative and
+    # the verdict was negative by construction. Established the same way as its
+    # counterpart — a deterministic comparison of two filings, checkable against
+    # the source text — and therefore carries the same weight in priority.py.
+    RESOLVED_RISK_FACTOR = "resolved_risk_factor"
     NOTABLE_QUOTE = "notable_quote"
     QOQ_ANOMALY = "qoq_anomaly"
     GUIDANCE_CHANGE = "guidance_change"

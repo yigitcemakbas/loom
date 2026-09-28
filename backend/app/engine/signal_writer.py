@@ -17,6 +17,7 @@ from app.engine.prompts.market_reaction import MarketReaction
 from app.engine.prompts.news_digest import NewsDigestResult
 from app.engine.prompts.quarter_comparison import QuarterChange
 from app.engine.prompts.risk_diff import RiskAssessment
+from app.engine.prompts.risk_resolution import ResolutionAssessment
 from app.models.signal import Signal, SignalType
 
 # Applied when analysis ran on a whole document rather than its relevant
@@ -107,6 +108,70 @@ def build_document_signals(
             reaction=result.guidance_change.market_reaction,
         )
 
+    return signals
+
+
+def build_resolution_signals(
+    assessments: list[ResolutionAssessment],
+    *,
+    company_id: uuid.UUID,
+    document_id: uuid.UUID,
+    compared_document_id: uuid.UUID,
+    occurred_at: datetime,
+) -> list[Signal]:
+    """Convert withdrawn risk-factor paragraphs into signals.
+
+    The counterpart to `build_diff_signals`, and the engine's only source of a
+    positive documentary finding from a filing. Without it the risk comparison
+    could only ever produce negative evidence, which made the verdict negative by
+    construction — the stance had no route to improvement except the company
+    saying something reassuring in a different section.
+
+    Written as its own signal type rather than another `comparison` variant of
+    QOQ_ANOMALY, because the sign is the point: `engine/direction.py` reads the
+    type to decide which way a finding points, and a resolution is the one kind
+    of filing evidence that points up.
+
+    Only genuine resolutions become signals. A paragraph the model judged to be
+    merged, reorganised or trimmed is dropped here, for the same reason cosmetic
+    additions are: crediting a company with resolving a risk its lawyers merely
+    consolidated reads better than the filings support, and that is the more
+    dangerous of the two errors.
+    """
+    signals: list[Signal] = []
+    for item in assessments:
+        if not item.is_resolved:
+            continue
+        confidence = min(max(item.confidence, 0.0), 1.0)
+        reaction = item.market_reaction
+        signals.append(
+            Signal(
+                company_id=company_id,
+                signal_type=SignalType.RESOLVED_RISK_FACTOR,
+                summary=f"No longer disclosed — {item.label}: {item.why_it_matters}",
+                detail=reaction.rationale if reaction else None,
+                sentiment_score=None,
+                confidence=confidence,
+                priority=priority.score(
+                    SignalType.RESOLVED_RISK_FACTOR, confidence, occurred_at,
+                    magnitude=reaction.magnitude if reaction else None,
+                ),
+                # The quote is from the *prior* filing, which is the only place
+                # this text exists. `compared_document_id` is what makes that
+                # checkable rather than confusing.
+                evidence_quote=item.quote,
+                source_document_id=document_id,
+                compared_document_id=compared_document_id,
+                occurred_at=occurred_at,
+                market_direction=reaction.direction if reaction else None,
+                market_magnitude=reaction.magnitude if reaction else None,
+                market_horizon=reaction.horizon if reaction else None,
+                signal_metadata=_meta({
+                    "comparison": "year_over_year_risk_factors",
+                    "withdrawn_from_prior_filing": True,
+                }),
+            )
+        )
     return signals
 
 

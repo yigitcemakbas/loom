@@ -15,6 +15,7 @@ that provably has no close match in the prior filing.
 """
 
 import logging
+from dataclasses import dataclass, field
 from difflib import SequenceMatcher
 
 from app.engine.sections import extract_section, split_paragraphs
@@ -63,10 +64,78 @@ def best_similarity(paragraph: str, candidates: list[str]) -> float:
     return best
 
 
+@dataclass
+class SectionDiff:
+    """What changed in a section, in both directions.
+
+    `removed` exists because for most of this engine's life it did not, and the
+    omission was structural rather than cosmetic. The comparison only ever
+    iterated the current filing looking for paragraphs with no match in the
+    prior one, so Loom could see a risk appear and never see one resolve. Every
+    finding the risk diff could produce was therefore negative, which made the
+    verdict negative by construction: the stance had no way to improve except by
+    the company saying something reassuring elsewhere.
+
+    A paragraph present last year and absent now is the company withdrawing a
+    disclosure it previously felt obliged to make. That is not automatically good
+    news — it can be a consolidation or a rewrite — which is exactly why it goes
+    to the same language judgement the additions already go through, rather than
+    being counted as a positive on the strength of the deterministic step alone.
+    """
+
+    added: list[str] = field(default_factory=list)
+    removed: list[str] = field(default_factory=list)
+    current_total: int = 0
+    prior_total: int = 0
+
+
+def _unmatched(source: list[str], against: list[str]) -> list[str]:
+    """Paragraphs in `source` with no close match in `against`, least similar
+    first, capped so a restructured section cannot become one enormous prompt."""
+    scored = [(best_similarity(para, against), para) for para in source]
+    changed = sorted(
+        ((sim, para) for sim, para in scored if sim < SIMILARITY_THRESHOLD),
+        key=lambda pair: pair[0],
+    )
+    return [para for _, para in changed[:MAX_PARAGRAPHS_TO_ASSESS]]
+
+
+def diff_section(
+    current_text: str, prior_text: str, section: str = "1A"
+) -> SectionDiff:
+    """Compare a section in both directions in one pass.
+
+    One pass because the expensive parts — extracting the section and splitting it
+    into comparable paragraphs — are shared, and doing them twice to get the
+    symmetric answer would double the cost of the cheap half of the feature.
+    """
+    current_section = extract_section(current_text, section)
+    prior_section = extract_section(prior_text, section)
+    if current_section is None or prior_section is None:
+        logger.info("Item %s missing from one of the filings; skipping diff.", section)
+        return SectionDiff()
+
+    current = split_paragraphs(current_section)
+    prior = split_paragraphs(prior_section)
+    if not current or not prior:
+        return SectionDiff(current_total=len(current), prior_total=len(prior))
+
+    return SectionDiff(
+        added=_unmatched(current, prior),
+        removed=_unmatched(prior, current),
+        current_total=len(current),
+        prior_total=len(prior),
+    )
+
+
 def find_changed_paragraphs(
     current_text: str, prior_text: str, section: str = "1A"
 ) -> tuple[list[str], int, int]:
     """Return (unmatched_current_paragraphs, current_total, prior_total).
+
+    Kept as the additions-only view over `diff_section`, because several callers
+    and tests want exactly that and the symmetric result would change their
+    meaning. New code should prefer `diff_section`.
 
     Unmatched paragraphs are candidates for a real change, not conclusions.
     Deciding whether a candidate is substantive is the model's job.
@@ -77,24 +146,5 @@ def find_changed_paragraphs(
     reference, and the section that actually moves is Item 2, management's own
     discussion of the quarter's results.
     """
-    current_section = extract_section(current_text, section)
-    prior_section = extract_section(prior_text, section)
-    if current_section is None or prior_section is None:
-        logger.info("Item %s missing from one of the filings; skipping diff.", section)
-        return ([], 0, 0)
-
-    current = split_paragraphs(current_section)
-    prior = split_paragraphs(prior_section)
-    if not current or not prior:
-        return ([], len(current), len(prior))
-
-    scored = [(best_similarity(para, prior), para) for para in current]
-    changed = sorted(
-        ((sim, para) for sim, para in scored if sim < SIMILARITY_THRESHOLD),
-        key=lambda pair: pair[0],
-    )
-    return (
-        [para for _, para in changed[:MAX_PARAGRAPHS_TO_ASSESS]],
-        len(current),
-        len(prior),
-    )
+    diff = diff_section(current_text, prior_text, section)
+    return diff.added, diff.current_total, diff.prior_total

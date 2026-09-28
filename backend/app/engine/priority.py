@@ -30,6 +30,12 @@ TYPE_WEIGHTS: dict[SignalType, float] = {
     # is rather than by how good its evidence is, and this table means the
     # latter. A pattern therefore sits alongside its constituents in the feed
     # rather than automatically on top of them.
+    # Established exactly as its counterpart is — a deterministic comparison of
+    # two filings, checkable against the source text — so it carries the same
+    # weight. Slightly below NEW_RISK_FACTOR only because judging that a risk is
+    # *gone* is harder than judging that one appeared: a merged or reorganised
+    # paragraph looks identical to a resolution from outside the document.
+    SignalType.RESOLVED_RISK_FACTOR: 0.95,
     SignalType.EMERGING_PATTERN: 1.0,
     SignalType.GUIDANCE_CHANGE: 0.9,   # concrete, usually quoted verbatim
     # Derived by arithmetic from filed transactions, so the *fact* is beyond

@@ -514,3 +514,29 @@ def _drip_reads_step(db) -> bool:
             result.remaining, ", quota exhausted" if result.exhausted else "",
         )
     return result.exhausted
+
+def run_filing_backfill() -> None:
+    """Keep the periodic-filing corpus deep enough for the engine to work on.
+
+    The only ingestion job that costs nothing but SEC's shared rate limit, which
+    is why it can run often. It stores documents and does not read them: analysis
+    spends model quota and belongs to the coverage drip, which is bounded against
+    a free tier. Separating the two lets the corpus get deep while the reading
+    catches up at whatever rate the provider allows.
+
+    Two jobs in one, and the second is why this is on a clock rather than being a
+    one-off migration. Companies below the target depth are filled in first, and
+    whatever room is left goes to revisiting companies already at target so a
+    newly published 10-Q is picked up rather than waiting for someone to notice.
+    A corpus that is complete once and then goes stale is the failure the price
+    refresh already exists to prevent, and filings deserve the same treatment.
+    """
+    from app.engine.filings import backfill_filings
+
+    db = SessionLocal()
+    try:
+        result = backfill_filings(db)
+        logger.info("Filing backfill: %s", result)
+    finally:
+        db.close()
+
