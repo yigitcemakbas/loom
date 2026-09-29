@@ -58,13 +58,7 @@ The omission is structural. The module implements no path to the assessment laye
 
 Disclosure volume is served as observed and peer-expected counts rather than as a derived residual, leaving the comparison to the caller. Every response states how much Loom has read for the company, so the depth behind a packet is explicit.
 
-| Endpoint | Returns |
-|---|---|
-| `GET /v1/evidence/capabilities` | Machine-readable description of the surface and its stated omissions |
-| `GET /v1/evidence/coverage` | Companies held, with reading depth |
-| `GET /v1/evidence/{ticker}` | Full evidence packet |
-| `GET /v1/evidence/{ticker}/findings` | Paginated findings, filterable by kind |
-| `GET /v1/evidence/{ticker}/changes` | Paragraphs added to and withdrawn from the latest filing |
+Endpoints, parameters, and worked examples are documented under [Evidence API reference](#evidence-api-reference).
 
 ### Structured data
 
@@ -149,6 +143,159 @@ The watchlist is initially empty. Entering a ticker resolves it against the SEC 
 Retrieval of a company's full filing history takes several minutes. SEC rate limits constrain throughput, and the interface updates as records arrive.
 
 Selecting a company presents its assessment, findings, contradictions, insider record, factor ranks, price history, and complete document text.
+
+---
+
+## API access
+
+The backend is served at `http://localhost:8000`. Interactive documentation is generated from the route definitions and available at `/docs`, with the raw specification at `/openapi.json`.
+
+### Authentication
+
+Loom authenticates with a bearer token. Tokens are issued on sign-in and are valid for 90 days.
+
+Create an account, which sends a six-digit verification code to the supplied address:
+
+```bash
+curl -X POST http://localhost:8000/auth/signup \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"you@example.com","username":"you","password":"your-password"}'
+```
+
+Exchange the code for a token:
+
+```bash
+curl -X POST http://localhost:8000/auth/verify \
+  -H 'Content-Type: application/json' \
+  -d '{"email":"you@example.com","code":"123456"}'
+```
+
+```json
+{ "token": "...", "email": "you@example.com", "username": "you" }
+```
+
+Subsequent sign-ins accept either the email address or the username:
+
+```bash
+curl -X POST http://localhost:8000/auth/signin \
+  -H 'Content-Type: application/json' \
+  -d '{"identifier":"you","password":"your-password"}'
+```
+
+Present the token on every request:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/auth/me
+```
+
+`POST /auth/request-code` reissues a code. `POST /auth/logout` invalidates the token immediately.
+
+**Retrieving the verification code.** The compose stack includes a local mail catcher. Codes are held rather than delivered, and are readable at `http://localhost:8025`. If an SMTP server is configured, the code is delivered normally. If neither is available, the code is written to the backend log and can be read with `docker compose logs backend | tail -20`.
+
+### Access control
+
+| Route group | Token |
+|---|---|
+| `/v1/evidence/*` | Required on every endpoint |
+| `/positions`, `/digest` | Required |
+| `/auth/me`, `/auth/logout` | Required |
+| `/admin/*` | Required, admin account |
+| Research read routes (companies, signals, briefs, factors, documents, tape, changes, priors, exposure) | Optional; responses personalise when a token is present |
+| `/health`, `/status`, `/capabilities` | Open |
+
+### Evidence API reference
+
+The agent-facing surface. Every endpoint requires a token and accepts `as_of` as an ISO date, which restricts the response to what was on file at the end of that day.
+
+| Endpoint | Parameters | Returns |
+|---|---|---|
+| `GET /v1/evidence/capabilities` | | Machine-readable description of the surface, the fields it withholds, and how each finding kind is established |
+| `GET /v1/evidence/coverage` | `as_of`, `limit` (50) | Companies held, ordered by reading depth |
+| `GET /v1/evidence/{ticker}` | `as_of`, `findings_limit` (40) | Full packet: coverage, findings, contradictions, disclosure volume, peer ranks, dependents |
+| `GET /v1/evidence/{ticker}/findings` | `as_of`, `limit` (50), `offset` (0), `kind` | Paginated findings |
+| `GET /v1/evidence/{ticker}/changes` | `as_of`, `section` (`1A`) | Paragraphs added to and withdrawn from the latest filing |
+
+`kind` accepts one of `new_risk_factor`, `resolved_risk_factor`, `qoq_anomaly`, `guidance_change`, `insider_activity`, `short_interest_spike`, `emerging_pattern`, `notable_quote`, `sentiment_shift`. An unrecognised value returns 400 with the valid set, so a misspelled filter does not present as an absence of findings.
+
+Retrieve a company packet as it stood on a past date:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+  "http://localhost:8000/v1/evidence/AAPL?as_of=2026-06-30&findings_limit=10"
+```
+
+Retrieve risk factor additions only:
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" \
+  "http://localhost:8000/v1/evidence/AAPL/findings?kind=new_risk_factor&limit=5"
+```
+
+```json
+{
+  "ticker": "AAPL",
+  "offset": 0,
+  "returned": 1,
+  "findings": [
+    {
+      "id": "12f2d679-530b-4d68-bb22-b2255138cd92",
+      "kind": "new_risk_factor",
+      "direction": "negative",
+      "occurred_at": "2026-07-31T00:00:00Z",
+      "summary": "European regulatory delays on artificial intelligence features...",
+      "quote": "Interoperability and other requirements have in the past, and may in the future, cause the Company to not launch or maintain products, services and features, such as Siri AI, in certain jurisdictions.",
+      "source": {
+        "document_id": "30cddec1-033c-4817-ba30-0ca0360757d6",
+        "compared_document_id": null,
+        "form": "10-Q",
+        "published": "2026-07-31",
+        "url": "https://www.sec.gov/Archives/edgar/data/320193/000032019326000020/aapl-20260627.htm"
+      },
+      "materiality": "minor",
+      "confidence": 0.9,
+      "how_established": "deterministic comparison of two filings; checkable against the source text"
+    }
+  ]
+}
+```
+
+Agents should begin at `/v1/evidence/capabilities`, which describes the surface and its omissions without requiring this document.
+
+### Application API
+
+The interface is built on the same HTTP API, which is available directly.
+
+| Group | Endpoints |
+|---|---|
+| Companies | `GET /companies`, `GET /companies/{ticker}`, `GET /companies/{ticker}/timeline` |
+| Assessment | `GET /briefs`, `GET /companies/{ticker}/brief`, `GET /companies/{ticker}/brief/horizon`, `POST /companies/{ticker}/brief/refresh` |
+| Findings | `GET /signals`, `GET /signals/{id}`, `POST /signals/{id}/dismiss`, `POST /signals/{id}/note`, `POST /companies/{ticker}/analyze` |
+| Contradictions | `GET /companies/{ticker}/contradictions` |
+| Case file | `GET /companies/{ticker}/case` |
+| Changes | `GET /changes` |
+| Quantitative | `GET /factors/leaderboard`, `GET /companies/{ticker}/factors` |
+| Facts | `GET /companies/{ticker}/facts`, `GET /companies/{ticker}/insider-activity` |
+| Earnings | `GET /earnings/upcoming`, `GET /companies/{ticker}/earnings` |
+| Documents | `GET /documents`, `GET /documents/search`, `GET /documents/{id}` |
+| Prices | `GET /companies/{ticker}/prices`, `GET /ranges` |
+| Dependencies | `GET /exposure` |
+| Priors | `GET /priors`, `GET /companies/{ticker}/prior` |
+| Watchlists | `GET`/`POST /watchlists`, `GET`/`POST /watchlists/{id}/items`, `DELETE /watchlists/{id}/items/{company_id}` |
+| Positions | `GET /positions`, `PUT`/`DELETE /positions/{ticker}`, `GET`/`PUT /digest` |
+| Feed | `GET /tape`, `GET /dashboard` |
+| Instance | `GET /health`, `GET /status`, `GET /capabilities` |
+| Administration | `GET /admin/engine`, `GET /admin/accounts`, `POST /admin/accounts/{username}/revoke-sessions`, `DELETE /admin/accounts/{username}` |
+
+Adding a company to a watchlist begins ingestion. Watchlists are identified by UUID, retrievable from `GET /watchlists`:
+
+```bash
+WATCHLIST=$(curl -s http://localhost:8000/watchlists | python3 -c 'import sys,json;print(json.load(sys.stdin)[0]["id"])')
+
+curl -X POST "http://localhost:8000/watchlists/$WATCHLIST/items" \
+  -H "Authorization: Bearer $TOKEN" \
+  -H 'Content-Type: application/json' \
+  -d '{"ticker":"AAPL"}'
+```
 
 ---
 
