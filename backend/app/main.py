@@ -16,6 +16,7 @@ from app.api.routes import (
     companies,
     contradictions,
     earnings,
+    evidence,
     experiment,
     exposure,
     factors,
@@ -169,6 +170,10 @@ app.include_router(contradictions.router)
 app.include_router(changes.router)
 app.include_router(case.router)
 app.include_router(priors.router)
+# Last, and deliberately separate from briefs.router: the evidence API serves the
+# same reading with the verdict structurally unreachable, because in the reader
+# benchmark the verdict cost an agent 10.10 points against the evidence alone.
+app.include_router(evidence.router)
 
 
 @app.get("/health")
