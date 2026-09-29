@@ -54,6 +54,18 @@ WEIGHT_MARKET_MOVED = 78
 WEIGHT_EXTREME = 70
 WEIGHT_MAJOR_FINDING = 60
 WEIGHT_LIVE_EVENT = 55
+# Something disclosed by a company this one depends on.
+#
+# Just below a live event about the company itself, because it is one inference
+# removed, and well above ordinary context, because it is the one thing on this
+# page no screener can produce: the dependency is read out of the filer's own
+# risk factors, where material dependencies must be disclosed, so the edge is
+# evidence rather than a sector label.
+#
+# It argues in no direction. A supplier filing an 8-K is a reason to look, and
+# deciding it is bullish or bearish would invent the synthesis engine/
+# contradiction.py refuses for the same reason.
+WEIGHT_DEPENDENCY = 52
 WEIGHT_FINDING = 40
 WEIGHT_VALUATION = 35
 WEIGHT_PRICE_CONTEXT = 30
@@ -284,6 +296,10 @@ def build_case(
     standing=None,
     moves: Optional[dict] = None,
     precedents: Optional[dict] = None,
+    # (hub_ticker, mentions, recent_note) per company this one depends on.
+    # Passed in rather than queried, keeping this module free of a session on the
+    # same boundary engine/disclosure.py keeps.
+    exposures: Optional[list] = None,
     sector_move=None,
     routine_ids: Optional[set] = None,
     peers: int = 0,
@@ -593,6 +609,35 @@ def build_case(
     # the twelfth was behind a count and is the first thing a reader sees now
     # that the rest is reachable. Collapsed after sorting, so the copy that
     # survives is the highest-weighted one.
+    # What the companies this one depends on have just disclosed. Ranked here
+    # rather than shown in a side panel, because the ordering is what the case
+    # file is for: a reader stops near the top, and "a company you depend on
+    # filed something material today" belongs there rather than three scrolls
+    # down under a heading called Relationships.
+    for hub, mentions, note in (exposures or [])[:3]:
+        if not hub:
+            continue
+        points.append(CasePoint(
+            key=f"dependency:{hub}",
+            headline=(
+                f"{hub} disclosed something new, and {ticker} names it as a dependency"
+                if note else f"{ticker} names {hub} as a dependency"
+            ),
+            detail=(
+                note if note else
+                f"{ticker}'s own filings name {hub} {mentions} times. Material "
+                f"dependencies are disclosable, so this edge is read out of the "
+                f"filings rather than assumed from a sector map."
+            ),
+            side="unclear",
+            weight=WEIGHT_DEPENDENCY if note else WEIGHT_CONTEXT,
+            source=f"{ticker} filings naming {hub}",
+            settles_it=(
+                f"What {hub} said, and whether {ticker}'s next filing changes how "
+                f"it describes the dependency."
+            ),
+        ))
+
     points = _collapse(points)
     points = _apply_precedents(points, pending_precedents)
     valuation.sort(key=lambda p: p.weight, reverse=True)

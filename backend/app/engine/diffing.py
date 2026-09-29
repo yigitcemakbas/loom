@@ -17,6 +17,7 @@ that provably has no close match in the prior filing.
 import logging
 from dataclasses import dataclass, field
 from difflib import SequenceMatcher
+from typing import Callable, Optional
 
 from app.engine.sections import extract_section, split_paragraphs
 
@@ -89,19 +90,62 @@ class SectionDiff:
     prior_total: int = 0
 
 
-def _unmatched(source: list[str], against: list[str]) -> list[str]:
-    """Paragraphs in `source` with no close match in `against`, least similar
-    first, capped so a restructured section cannot become one enormous prompt."""
-    scored = [(best_similarity(para, against), para) for para in source]
-    changed = sorted(
-        ((sim, para) for sim, para in scored if sim < SIMILARITY_THRESHOLD),
-        key=lambda pair: pair[0],
-    )
-    return [para for _, para in changed[:MAX_PARAGRAPHS_TO_ASSESS]]
+# How the two novelty signals trade off when the candidate list has to be cut.
+#
+# Novelty against this company's own prior filing is weighted twice as heavily as
+# rarity against the corpus, and the ratio is the safeguard rather than a tuning
+# knob. A risk written entirely in the industry's vocabulary can be the decisive
+# fact for one filer the year it first appears — "our largest customer may not
+# renew" is in hundreds of 10-Ks and is the story of exactly one of them — so a
+# paragraph new to this company must outrank a rare-worded paragraph the company
+# has carried for years, whatever the corpus thinks of the words.
+#
+# With every candidate already below SIMILARITY_THRESHOLD, corpus rarity acts as a
+# tie-break among paragraphs that are all new to the filer, which is the only
+# place it can help and the only place it is safe.
+WEIGHT_COMPANY_NOVELTY = 1.0
+WEIGHT_CORPUS_RARITY = 0.5
+
+
+def rank_score(similarity: float, rarity: Optional[float]) -> float:
+    """How far up the candidate list a paragraph belongs. Higher ranks first."""
+    score = (1.0 - similarity) * WEIGHT_COMPANY_NOVELTY
+    if rarity is not None:
+        score += rarity * WEIGHT_CORPUS_RARITY
+    return score
+
+
+def _unmatched(
+    source: list[str],
+    against: list[str],
+    rarity: Optional[Callable[[str], Optional[float]]] = None,
+) -> list[str]:
+    """Paragraphs in `source` with no close match in `against`, most novel first,
+    capped so a restructured section cannot become one enormous prompt.
+
+    `rarity` is optional and only ever reorders. The cap below existed before it
+    did and removes exactly as many paragraphs either way, so supplying a
+    vocabulary cannot drop anything that would otherwise have survived — it can
+    only change which of the over-cap paragraphs is the one lost, and it changes
+    it in favour of the more distinctive. Without a vocabulary this degrades to
+    the ordering used before: least similar to the prior filing, first.
+    """
+    scored = []
+    for para in source:
+        similarity = best_similarity(para, against)
+        if similarity >= SIMILARITY_THRESHOLD:
+            continue
+        measured = rarity(para) if rarity is not None else None
+        scored.append((rank_score(similarity, measured), para))
+    scored.sort(key=lambda pair: pair[0], reverse=True)
+    return [para for _, para in scored[:MAX_PARAGRAPHS_TO_ASSESS]]
 
 
 def diff_section(
-    current_text: str, prior_text: str, section: str = "1A"
+    current_text: str,
+    prior_text: str,
+    section: str = "1A",
+    rarity: Optional[Callable[[str], Optional[float]]] = None,
 ) -> SectionDiff:
     """Compare a section in both directions in one pass.
 
@@ -121,8 +165,8 @@ def diff_section(
         return SectionDiff(current_total=len(current), prior_total=len(prior))
 
     return SectionDiff(
-        added=_unmatched(current, prior),
-        removed=_unmatched(prior, current),
+        added=_unmatched(current, prior, rarity),
+        removed=_unmatched(prior, current, rarity),
         current_total=len(current),
         prior_total=len(prior),
     )

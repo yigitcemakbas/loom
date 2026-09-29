@@ -66,6 +66,72 @@ SEEN_LOOKBACK_HOURS = 24
 # stays fast on the largest filing anyone might send.
 MAX_MATCH_CHARS = 60_000
 
+
+# Periodic forms worth storing the moment they are accepted. Deliberately not
+# 8-K: the fast path above already assesses those against a prior, and an 8-K is
+# not what the year-over-year comparison reads.
+_LIVE_STORE_FORMS = frozenset({"10-K", "10-Q"})
+
+
+def _store_periodic_filings(db, company_repo, notices) -> int:
+    """Persist any newly accepted 10-K or 10-Q for a company Loom holds.
+
+    The feed covers the whole market in one request, so matching every company
+    rather than only the prior-carrying ones costs nothing extra. Volume is small:
+    a thousand companies file roughly four periodic reports a year, about eleven a
+    day across the universe.
+
+    Stores only. Reading costs model quota and stays with the coverage drip.
+    """
+    from app.ingestion.registry import _persist_document
+    from app.storage.blob_store import get_blob_store
+
+    periodic = [n for n in notices if getattr(n, "form", None) in _LIVE_STORE_FORMS]
+    if not periodic:
+        return 0
+
+    everything = {c.cik: c for c in company_repo.list_all() if c.cik}
+    matched = [n for n in periodic if n.cik in everything]
+    if not matched:
+        return 0
+
+    adapter = SecEdgarAdapter()
+    blob_store = get_blob_store()
+    stored = 0
+    for notice in matched:
+        company = everything[notice.cik]
+        try:
+            # One filing, by the accession the feed already gave us, skipping
+            # anything already held so a re-poll costs nothing.
+            held = frozenset(
+                url for (url,) in db.execute(
+                    _held_urls_query(company.id)
+                ).all()
+            )
+            dtos = adapter.periodic_filings(company.ticker, limit=1, skip_urls=held)
+        except Exception:
+            logger.exception("Watcher: fetch failed for %s", company.ticker)
+            continue
+        for dto in dtos:
+            if _persist_document(dto, company_id=company.id, db=db, blob_store=blob_store):
+                stored += 1
+    if stored:
+        db.commit()
+        logger.info("Watcher: stored %d newly accepted periodic filings.", stored)
+    return stored
+
+
+def _held_urls_query(company_id):
+    from sqlalchemy import select
+
+    from app.models.document import RawDocument
+
+    return (
+        select(RawDocument.source_url)
+        .where(RawDocument.company_id == company_id)
+        .where(RawDocument.source_url.is_not(None))
+    )
+
 # How often the loop says it is still alive, in seconds. Without this a
 # watcher that is working perfectly and seeing nothing produces exactly the
 # same output as one that died on its first cycle, which is the failure this
@@ -160,6 +226,27 @@ def run_cycle(db=None) -> int:
         seen = assessment_repo.seen_external_ids(
             datetime.now(timezone.utc) - timedelta(hours=SEEN_LOOKBACK_HOURS)
         )
+
+        # Store any periodic filing for any company Loom holds, not just the ones
+        # carrying a prior.
+        #
+        # The asymmetry this fixes: the feed above is ONE request covering the
+        # whole market, while `engine/filings.py` polls EDGAR company by company on
+        # an hourly job. So the cheapest possible way to acquire a filing is
+        # already happening every sixty seconds and was being thrown away for the
+        # 876 companies that cannot be prior-scored.
+        #
+        # Deliberately only the periodic forms, and deliberately not analysed here:
+        # storing a document costs one request and no model quota, while reading it
+        # costs a call from a twenty-a-day allowance and belongs to the drip. This
+        # makes acquisition real time and leaves interpretation on its own budget.
+        try:
+            _store_periodic_filings(db, company_repo, notices)
+        except Exception:
+            # Acquisition is a bonus on top of the fast path. A failure here must
+            # not cost the prior-scoring the loop exists for.
+            logger.exception("Watcher: storing periodic filings failed.")
+            db.rollback()
 
         relevant = [
             n for n in notices

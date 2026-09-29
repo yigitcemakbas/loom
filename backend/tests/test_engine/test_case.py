@@ -614,3 +614,52 @@ def test_the_basis_counts_only_factors_that_computed():
     )
 
     assert case.basis.factors == 1
+
+
+# ---- what a company depends on -----------------------------------------------
+
+
+def test_a_dependency_with_news_outranks_a_standing_dependency():
+    """The ordering is the product here. "A company you depend on filed something
+    today" belongs near the top; a structural relationship with nothing attached is
+    context. Both are shown, at different weights."""
+    from app.engine.case import WEIGHT_CONTEXT, WEIGHT_DEPENDENCY, build_case
+
+    with_news = build_case(
+        ticker="AMD", name="AMD",
+        exposures=[("NVDA", 136, "NVDA filed an 8-K on datacenter demand.")],
+    )
+    standing = build_case(ticker="AMD", name="AMD", exposures=[("NVDA", 136, None)])
+
+    live = next(p for p in with_news.points if p.key == "dependency:NVDA")
+    quiet = next(p for p in standing.points if p.key == "dependency:NVDA")
+
+    assert live.weight == WEIGHT_DEPENDENCY > quiet.weight == WEIGHT_CONTEXT
+
+
+def test_a_dependency_argues_in_no_direction():
+    """A supplier filing an 8-K is a reason to look. Calling it bullish or bearish
+    would invent the synthesis engine/contradiction.py refuses for the same
+    reason."""
+    from app.engine.case import build_case
+
+    case = build_case(
+        ticker="AMD", name="AMD", exposures=[("NVDA", 136, "NVDA filed an 8-K.")]
+    )
+
+    point = next(p for p in case.points if p.key == "dependency:NVDA")
+    assert point.side == "unclear"
+    assert point.settles_it
+
+
+def test_a_dependency_says_why_the_edge_is_evidence_rather_than_a_guess():
+    """The edge is read out of the filer's own risk factors, where material
+    dependencies must be disclosed. That provenance is the whole reason this
+    outranks a sector label, so the reader is told it."""
+    from app.engine.case import build_case
+
+    case = build_case(ticker="AMD", name="AMD", exposures=[("NVDA", 136, None)])
+
+    point = next(p for p in case.points if p.key == "dependency:NVDA")
+    assert "136" in point.detail
+    assert "NVDA" in point.source

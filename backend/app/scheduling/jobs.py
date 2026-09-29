@@ -540,3 +540,53 @@ def run_filing_backfill() -> None:
     finally:
         db.close()
 
+
+def run_corpus_refresh() -> None:
+    """Re-measure the boilerplate baseline over the stored filings.
+
+    Weekly, and deliberately no more often. Document frequency over four hundred
+    companies barely moves when one filing arrives, whereas rebuilding it reads
+    every stored filing out of the blob store — measured at twelve seconds for
+    2,016 filings, which is cheap but not free.
+
+    Costs no model quota. The baseline exists precisely because it needs none:
+    the genre norms in engine/disclosure.py are measured from findings the model
+    extracted, so they share the extractor's bias, and this is the one expectation
+    table that can disagree with it.
+    """
+    from app.engine.corpus import build_vocabulary
+
+    db = SessionLocal()
+    try:
+        vocabulary = build_vocabulary(db)
+        logger.info(
+            "Corpus refresh: %d companies, %d terms retained.",
+            vocabulary.companies, len(vocabulary.document_frequency),
+        )
+    finally:
+        db.close()
+
+
+def run_reliability_refresh() -> None:
+    """Re-measure what each kind of finding has been worth, and store it.
+
+    The loop that was open for most of this project's life: evaluation.py could
+    answer whether findings predicted anything and nothing read the answer.
+
+    Costs no model quota — it is arithmetic over stored findings and stored prices.
+    Weekly, because it can only change when findings have had time to resolve at
+    the measured horizon, and because a multiplier that moved daily would make
+    ranking unreproducible for no gain.
+    """
+    from app.engine import reliability
+
+    db = SessionLocal()
+    try:
+        measured = reliability.measure(db, horizon=5)
+        trusted = reliability.persist(db, measured, horizon=5)
+        logger.info(
+            "Reliability refresh: %d types measured, %d trusted.",
+            len(measured), trusted,
+        )
+    finally:
+        db.close()

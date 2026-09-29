@@ -13,7 +13,15 @@ from datetime import date, datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 
 from app.engine import brief as brief_engine
-from app.engine import clustering, diffing, extraction, fact_rules, signal_writer
+from app.engine import (
+    clustering,
+    corpus,
+    diffing,
+    extraction,
+    fact_rules,
+    labels,
+    signal_writer,
+)
 from app.engine.llm_client import PROMPT_VERSION, LLMClient, LLMUnavailableError, get_llm_client
 from app.engine.prompts import (
     emerging_pattern,
@@ -204,10 +212,15 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
     if prior is None:
         return []
 
+    # The corpus vocabulary only reorders the candidate list; it never shortens
+    # it. Loading it is best-effort, and without it the ordering falls back to
+    # what it was before this existed.
+    vocabulary = corpus.load_vocabulary(db)
     diff = diffing.diff_section(
         _document_text(document.blob_uri),
         _document_text(prior.blob_uri),
         section=plan["section"],
+        rarity=vocabulary.rarity if vocabulary.measured else None,
     )
     changed, n_current, n_prior = diff.added, diff.current_total, diff.prior_total
     if not changed and not diff.removed:
@@ -239,6 +252,18 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
         )
         if result is None:
             return []
+        labels.record_assessments(
+            db,
+            company_id=document.company_id,
+            document_id=document.id,
+            compared_document_id=prior.id,
+            kind=labels.KIND_QUARTER_CHANGE,
+            section=plan["section"],
+            assessments=result.changes,
+            accepted_attr="is_substantive",
+            model=getattr(client, "model", None),
+            prompt_version=PROMPT_VERSION,
+        )
         return signal_writer.build_quarter_change_signals(
             result.changes,
             company_id=document.company_id,
@@ -259,6 +284,23 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
     )
     if result is None:
         return []
+
+    # Both classes, recorded before the builder drops the rejections. This is the
+    # only place the model's negative judgements exist: `build_diff_signals`
+    # discards them and nothing downstream ever sees them again, which is why the
+    # corpus had 262 positives and no negatives.
+    labels.record_assessments(
+        db,
+        company_id=document.company_id,
+        document_id=document.id,
+        compared_document_id=prior.id,
+        kind=labels.KIND_NEW_RISK,
+        section=plan["section"],
+        assessments=result.assessments,
+        accepted_attr="is_substantive",
+        model=getattr(client, "model", None),
+        prompt_version=PROMPT_VERSION,
+    )
 
     signals = signal_writer.build_diff_signals(
         result.assessments,
@@ -290,6 +332,18 @@ def _comparison_signals(document, ticker: str, db: Session, client: LLMClient) -
             schema=RiskResolutionResult,
         )
         if resolution is not None:
+            labels.record_assessments(
+                db,
+                company_id=document.company_id,
+                document_id=document.id,
+                compared_document_id=prior.id,
+                kind=labels.KIND_RESOLVED_RISK,
+                section=plan["section"],
+                assessments=resolution.assessments,
+                accepted_attr="is_resolved",
+                model=getattr(client, "model", None),
+                prompt_version=PROMPT_VERSION,
+            )
             signals += signal_writer.build_resolution_signals(
                 resolution.assessments,
                 company_id=document.company_id,

@@ -34,6 +34,7 @@ from sqlalchemy import select
 
 from app.db.session import SessionLocal
 from app.engine.brief import build_brief
+from app.engine.direction import documentary_sign
 from app.engine.disclosure import measure_norms
 from app.models.brief import Stance
 from app.models.company import Company
@@ -105,34 +106,42 @@ def run(db) -> dict:
                      if cutoff < s.occurred_at
                      <= datetime.combine(as_of + timedelta(days=EVIDENCE_HORIZON_DAYS),
                                          datetime.max.time(), timezone.utc)]
-            # Compared in the stance's own units, not in raw sentiment.
+            # Compared against the documentary direction of what arrived next.
             #
-            # The stance is a residual: how far this company's disclosure departs
-            # from what documents of its kind normally carry. Raw subsequent
-            # sentiment is a level. A company can legitimately read "better than
-            # usual" while the raw tone of its next filing is negative, because
-            # every annual report's risk section is negative, and scoring the
-            # verdict against the level would count that as a miss. That
-            # mismatch is the whole reason the genre correction exists, and
-            # measuring against it would have manufactured a null.
+            # This used to average `norms.excess_for` over the later findings —
+            # the per-finding residual against the genre's expected direction.
+            # That quantity is now zero by construction: direction comes from a
+            # finding's type, so a type's norm equals its direction. Measured on
+            # the corpus, mean absolute excess for a risk factor was 0.0018, so
+            # the old comparison would have produced a null whatever the verdict
+            # said, and the null would have been an artifact of the measurement.
+            #
+            # The documentary sign still varies, because the *mix* of types
+            # varies: risk factors appearing point down, risks resolving point
+            # up, tone shifts go either way. So the question this asks is the
+            # right one — did the disclosure that arrived next lean the way Loom
+            # said the disclosure so far was leaning.
             later_dir = None
             if later:
-                excesses = [norms.excess_for(s) for s in later]
-                excesses = [e for e in excesses if e is not None]
-                if excesses:
-                    later_dir = sum(excesses) / len(excesses)
-                else:
-                    tones = [s.sentiment_score for s in later
-                             if s.sentiment_score is not None]
-                    if tones:
-                        later_dir = sum(tones) / len(tones)
+                signs = [documentary_sign(s) for s in later]
+                signs = [x for x in signs if x is not None]
+                if signs:
+                    later_dir = sum(signs) / len(signs)
 
+            documents = (brief.evidence or {}).get("documents_read") or 0
             row = {
                 "as_of": as_of.isoformat(), "ticker": ticker,
                 "stance": brief.stance.value, "score": SCORE[brief.stance],
                 "confidence": brief.confidence,
                 "strength": strength, "informative_count": n_inf,
-                "group": ("established" if (strength or 0) >= OLD_STRENGTH_BAR else "new"),
+                "documents_read": documents,
+                "incidence_residual": (brief.evidence or {}).get("incidence_residual"),
+                # Split on whether the verdict had more than one filing behind it.
+                # This replaces a split on the old strength bar, which no longer
+                # measures the same thing, and it tests the live constraint: a
+                # company with one document cannot have had its risk section
+                # diffed at all, so its verdict rests on a single snapshot.
+                "group": ("multi_document" if documents >= 2 else "single_document"),
                 "later_findings": len(later), "later_direction": later_dir,
             }
             for horizon in (21, 63):
@@ -147,7 +156,7 @@ def run(db) -> dict:
 
 def _summarise(obs: list[dict]) -> dict:
     out: dict = {}
-    for group in ("all", "established", "new"):
+    for group in ("all", "multi_document", "single_document"):
         sel = obs if group == "all" else [o for o in obs if o["group"] == group]
         if not sel:
             continue
@@ -209,7 +218,7 @@ if __name__ == "__main__":
     (HERE / "results_verdict.json").write_text(json.dumps(result, indent=1, default=str))
     s = result["summary"]
     print(f"{len(result['observations'])} directional verdicts across {len(DATES)} dates\n")
-    for group in ("all", "established", "new"):
+    for group in ("all", "multi_document", "single_document"):
         b = s.get(group)
         if not b:
             continue

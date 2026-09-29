@@ -90,6 +90,7 @@ def score(
     occurred_at: datetime,
     now: datetime | None = None,
     magnitude: str | None = None,
+    reliability: float = 1.0,
 ) -> float:
     """Return the feed ranking score for one signal.
 
@@ -100,6 +101,13 @@ def score(
     confidence = min(max(confidence, 0.0), 1.0)
     weight = TYPE_WEIGHTS.get(signal_type, 0.5)
     material = MAGNITUDE_WEIGHTS.get((magnitude or "").lower(), _DEFAULT_MAGNITUDE)
+    # What this type has actually been worth, where that has been measured. It is
+    # 1.0 — no adjustment — unless engine/reliability.py found enough directional
+    # calls and a spread far enough from chance, so an unmeasured type keeps the
+    # weight a human wrote for a stated reason. See that module for why the
+    # adjustment is bounded even once trusted.
     return round(
-        confidence * weight * material * recency_factor(occurred_at, now), 6
+        confidence * weight * material * reliability
+        * recency_factor(occurred_at, now),
+        6,
     )

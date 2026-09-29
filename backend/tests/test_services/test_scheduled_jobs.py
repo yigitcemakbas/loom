@@ -18,6 +18,13 @@ def test_the_scheduled_jobs_are_the_expected_set():
         # depend on: the risk diff needs two filings of the same company, and
         # the corpus held 322 across a thousand companies.
         "fetch-filings",
+        # Measured from documents rather than from findings, so it needs no model
+        # quota and is the one expectation table that can disagree with the
+        # extractor it is meant to check.
+        "refresh-corpus",
+        # The loop that was open for most of the project: evaluation could measure
+        # whether findings predicted anything and nothing read the answer.
+        "refresh-reliability",
         "refresh-briefs", "send-digests", "coverage-drip",
         # Corpus-wide tables every page reads and none should build. Measured
         # at a thousand companies, the precedent base took 1.5 seconds, landing
@@ -71,6 +78,17 @@ def test_the_filing_target_allows_a_diff():
     from app.engine.filings import TARGET_FILINGS
 
     assert TARGET_FILINGS >= 2
+
+
+def test_the_boilerplate_baseline_is_rebuilt_far_less_often_than_it_is_read():
+    """Document frequency over hundreds of companies is stable; a rebuild reads
+    every stored filing out of the blob store. The read path caches it for half an
+    hour, so a weekly rebuild is comfortably inside what the readers tolerate."""
+    minutes = {job_id: m for job_id, _, _, m, _ in scheduler_module._FREE_JOBS}
+    from app.engine.corpus import TTL_SECONDS
+
+    assert minutes["refresh-corpus"] >= minutes["fetch-filings"]
+    assert TTL_SECONDS * 60 < minutes["refresh-corpus"] * 60
 
 
 def test_priors_are_built_before_the_filings_that_get_scored_against_them():

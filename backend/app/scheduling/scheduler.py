@@ -30,7 +30,9 @@ from app.config import settings
 from app.scheduling.jobs import (
     run_brief_refresh,
     run_measured_tables,
+    run_corpus_refresh,
     run_coverage_drip,
+    run_reliability_refresh,
     run_filing_backfill,
     run_digests,
     run_factor_scoring,
@@ -60,6 +62,23 @@ _REFRESH_JOB_ID = "refresh-watchlist"
 # brief reads the scores.
 _FREE_JOBS: tuple[tuple[str, object, str, int, int], ...] = (
     # id, callable, description, interval minutes, startup offset minutes
+    (
+        "refresh-reliability", run_reliability_refresh,
+        "Re-measure what each kind of finding has been worth",
+        # Weekly. Findings need time to resolve at the measured horizon before
+        # their record changes, and a multiplier that moved daily would make
+        # ranking unreproducible for no gain. No model quota.
+        60 * 24 * 7, 31,
+    ),
+    (
+        "refresh-corpus", run_corpus_refresh,
+        "Re-measure the boilerplate baseline across stored filings",
+        # Weekly. Document frequency over hundreds of companies is stable, and a
+        # rebuild reads every stored filing. No model quota: this is the one
+        # expectation table measured from documents rather than from findings,
+        # which is what lets it disagree with the extractor.
+        60 * 24 * 7, 26,
+    ),
     (
         "fetch-filings", run_filing_backfill,
         "Deepen and refresh the annual and quarterly report corpus",
