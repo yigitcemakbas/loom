@@ -10,6 +10,21 @@ Loom is consumed three ways: a web interface for human readers, an authenticated
 
 ---
 
+## Using Loom
+
+Loom is a hosted web application. Open it in a browser, create an account, and start tracking companies. There is nothing to install, no image to build, and no API key to obtain. Model and data credentials belong to the instance and are injected at runtime by the operator.
+
+> Instance address: `loom.example.org`. Substitute your own throughout this document.
+
+1. **Open** `https://loom.example.org`.
+2. **Create an account** with an email address, a username, and a password. Loom sends a six-digit code to the address; entering it activates the account and signs you in. Sessions last 90 days.
+3. **Add a ticker.** Any listed US company resolves against the SEC company directory. Loom begins retrieving its filings, earnings call transcripts, insider transactions, and price history immediately.
+4. **Read.** Retrieving a company's full filing history takes several minutes, and the interface updates as records arrive. Selecting a company presents its assessment, findings, contradictions, insider record, factor ranks, price history, and complete document text.
+
+Reading is open to anyone with the address. An account is required to add or remove companies, request analysis, and annotate findings.
+
+---
+
 ## What Loom produces
 
 ### Assessment
@@ -118,37 +133,27 @@ All sources are free of charge. No paid API tier is used.
 
 ---
 
-## Requirements
-
-Docker Desktop. No other software is required.
-
-## Installation
-
-```bash
-git clone https://github.com/yigitcemakbas/loom.git
-cd loom
-docker compose up
-```
-
-The initial build takes several minutes. Subsequent starts complete in seconds.
-
-The application is served at `http://localhost:5173`.
-
-Three containers are started: PostgreSQL, the backend API, and the frontend. Database migrations are applied automatically at startup. No further configuration is required to run the system.
-
-## Operation
-
-The watchlist is initially empty. Entering a ticker resolves it against the SEC company directory and begins retrieving its filings, earnings call transcripts, insider transactions, and price history.
-
-Retrieval of a company's full filing history takes several minutes. SEC rate limits constrain throughput, and the interface updates as records arrive.
-
-Selecting a company presents its assessment, findings, contradictions, insider record, factor ranks, price history, and complete document text.
-
----
-
 ## API access
 
-The backend is served at `http://localhost:8000`. Interactive documentation is generated from the route definitions and available at `/docs`, with the raw specification at `/openapi.json`.
+Loom exposes two HTTP surfaces on the same instance that serves the interface. Both use the account you already created; there is no separate API key to request and no developer registration step.
+
+- The **evidence API** under `/v1/evidence`, designed for language model agents. It serves findings, filing changes, contradictions, peer ranks, and disclosure counts, and withholds the assessment.
+- The **application API**, which is the surface the interface itself is built on.
+
+The process is three steps:
+
+1. **Create an account**, in the web interface or over HTTP.
+2. **Exchange your credentials for a bearer token** at `POST /auth/signin`. Tokens last 90 days.
+3. **Send the token** as an `Authorization: Bearer` header on every request.
+
+Every example below uses `$LOOM_API` as the base URL. Set it once to the instance you are addressing:
+
+```bash
+export LOOM_API=https://loom.example.org/api   # deployed instance
+export LOOM_API=http://localhost:8000          # local compose stack
+```
+
+A deployed instance serves the API under `/api` on the same origin as the interface, proxied by nginx. A local compose stack publishes the backend directly on port 8000. Interactive documentation is generated from the route definitions and available at `$LOOM_API/docs`, with the raw specification at `$LOOM_API/openapi.json`.
 
 ### Authentication
 
@@ -157,7 +162,7 @@ Loom authenticates with a bearer token. Tokens are issued on sign-in and are val
 Create an account, which sends a six-digit verification code to the supplied address:
 
 ```bash
-curl -X POST http://localhost:8000/auth/signup \
+curl -X POST $LOOM_API/auth/signup \
   -H 'Content-Type: application/json' \
   -d '{"email":"you@example.com","username":"you","password":"your-password"}'
 ```
@@ -165,7 +170,7 @@ curl -X POST http://localhost:8000/auth/signup \
 Exchange the code for a token:
 
 ```bash
-curl -X POST http://localhost:8000/auth/verify \
+curl -X POST $LOOM_API/auth/verify \
   -H 'Content-Type: application/json' \
   -d '{"email":"you@example.com","code":"123456"}'
 ```
@@ -177,7 +182,7 @@ curl -X POST http://localhost:8000/auth/verify \
 Subsequent sign-ins accept either the email address or the username:
 
 ```bash
-curl -X POST http://localhost:8000/auth/signin \
+curl -X POST $LOOM_API/auth/signin \
   -H 'Content-Type: application/json' \
   -d '{"identifier":"you","password":"your-password"}'
 ```
@@ -185,23 +190,32 @@ curl -X POST http://localhost:8000/auth/signin \
 Present the token on every request:
 
 ```bash
-curl -H "Authorization: Bearer $TOKEN" http://localhost:8000/auth/me
+curl -H "Authorization: Bearer $TOKEN" $LOOM_API/auth/me
 ```
 
 `POST /auth/request-code` reissues a code. `POST /auth/logout` invalidates the token immediately.
 
-**Retrieving the verification code.** The compose stack includes a local mail catcher. Codes are held rather than delivered, and are readable at `http://localhost:8025`. If an SMTP server is configured, the code is delivered normally. If neither is available, the code is written to the backend log and can be read with `docker compose logs backend | tail -20`.
+**Retrieving the verification code.** On a deployed instance the code arrives by email. On a local compose stack it is held by the bundled mail catcher and readable at `http://localhost:8025`. If no mail server is reachable at all, the code is written to the backend log and can be read with `docker compose logs backend | tail -20`.
 
 ### Access control
+
+Reads are open. Every route that mutates state or spends an external quota requires a token.
 
 | Route group | Token |
 |---|---|
 | `/v1/evidence/*` | Required on every endpoint |
+| `POST`/`DELETE /watchlists*` | Required |
+| `POST /companies/{ticker}/analyze` | Required |
+| `POST /companies/{ticker}/brief/refresh` | Required |
+| `POST /signals/{id}/dismiss`, `POST /signals/{id}/note` | Required |
+| `POST /experiment/decisions` | Required |
 | `/positions`, `/digest` | Required |
 | `/auth/me`, `/auth/logout` | Required |
 | `/admin/*` | Required, admin account |
 | Research read routes (companies, signals, briefs, factors, documents, tape, changes, priors, exposure) | Optional; responses personalise when a token is present |
 | `/health`, `/status`, `/capabilities` | Open |
+
+Adding a ticker is authenticated because it is the one request that commits the instance to outbound work: an unrecognised ticker queues a full filing-history ingest against SEC's rate limit and, downstream, the model quota.
 
 ### Evidence API reference
 
@@ -221,14 +235,14 @@ Retrieve a company packet as it stood on a past date:
 
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/v1/evidence/AAPL?as_of=2026-06-30&findings_limit=10"
+  "$LOOM_API/v1/evidence/AAPL?as_of=2026-06-30&findings_limit=10"
 ```
 
 Retrieve risk factor additions only:
 
 ```bash
 curl -H "Authorization: Bearer $TOKEN" \
-  "http://localhost:8000/v1/evidence/AAPL/findings?kind=new_risk_factor&limit=5"
+  "$LOOM_API/v1/evidence/AAPL/findings?kind=new_risk_factor&limit=5"
 ```
 
 ```json
@@ -289,9 +303,9 @@ The interface is built on the same HTTP API, which is available directly.
 Adding a company to a watchlist begins ingestion. Watchlists are identified by UUID, retrievable from `GET /watchlists`:
 
 ```bash
-WATCHLIST=$(curl -s http://localhost:8000/watchlists | python3 -c 'import sys,json;print(json.load(sys.stdin)[0]["id"])')
+WATCHLIST=$(curl -s $LOOM_API/watchlists | python3 -c 'import sys,json;print(json.load(sys.stdin)[0]["id"])')
 
-curl -X POST "http://localhost:8000/watchlists/$WATCHLIST/items" \
+curl -X POST "$LOOM_API/watchlists/$WATCHLIST/items" \
   -H "Authorization: Bearer $TOKEN" \
   -H 'Content-Type: application/json' \
   -d '{"ticker":"AAPL"}'
@@ -299,9 +313,39 @@ curl -X POST "http://localhost:8000/watchlists/$WATCHLIST/items" \
 
 ---
 
-## Credentials
+---
 
-Loom operates without credentials. Two capabilities require one, both free of charge. The interface reports which are absent.
+## Running your own instance
+
+This section is for operators. Nobody using a hosted Loom needs any of it.
+
+### Requirements
+
+Docker Desktop. No other software is required.
+
+### Installation
+
+```bash
+git clone https://github.com/yigitcemakbas/loom.git
+cd loom
+docker compose up
+```
+
+The initial build takes several minutes. Subsequent starts complete in seconds. The interface is served at `http://localhost:5173`.
+
+Three containers are started: PostgreSQL, the backend API, and the frontend. Database migrations are applied automatically at startup. No further configuration is required to bring the system up.
+
+### Serving an instance publicly
+
+Two requirements apply to an instance reachable from the internet and do not apply locally.
+
+**Configure SMTP.** Account verification codes are delivered by email. Without an SMTP server the code is written to the backend log, which a visitor cannot read, and sign-up cannot complete. The bundled mail catcher is for local development only.
+
+**Publish only the frontend.** The default compose file publishes PostgreSQL on 5432 and the backend on 8000 for local convenience. Neither should be reachable from the internet; bind them to the loopback interface or remove the mappings, and let nginx proxy `/api/` to the backend on the internal network.
+
+### Credentials
+
+These credentials belong to the instance and are read by the backend at process start. Users of a running Loom never supply them. Loom starts without any; two capabilities require one, both free of charge, and the interface reports which are absent.
 
 | Capability | Credential | Registration |
 |---|---|---|
@@ -322,13 +366,13 @@ Credentials are supplied as files rather than environment variables. An environm
 
 Changing a credential requires `docker compose restart backend`. A rebuild is not required.
 
-### Operation without credentials
+#### Operation without credentials
 
 Without a Gemini credential, Loom collects and presents source material without evaluating it. Filings, transcripts, insider records, price history, factor ranks, and full-text search remain available. Assessment requires this credential.
 
 Without a Finnhub credential, company news and earnings dates are unavailable. No other capability is affected.
 
-### SEC identification
+#### SEC identification
 
 SEC enforces its fair-access policy through the User-Agent header. The header must contain a contact email address and must not contain a URL; requests that do not comply are refused. The supplied default satisfies these constraints. Operators making sustained use of the system should substitute their own contact details in a `.env` file adjacent to `docker-compose.yml`:
 
@@ -339,7 +383,7 @@ SCRAPER_USER_AGENT="Name email@example.com"
 
 ---
 
-## Operational characteristics
+### Operational characteristics
 
 **Analysis throughput is bounded by the free model tier.** Gemini's free tier permits a limited number of requests per minute against a daily ceiling; evaluating one document consumes one request. Loom paces requests to remain within the limit, retries transient failures, falls back across models, and terminates cleanly on quota exhaustion. Evaluating a full watchlist therefore spans more than one session. On a paid tier, set `LLM_MIN_CALL_INTERVAL_SECONDS=0` to remove pacing.
 
@@ -351,7 +395,7 @@ SCRAPER_USER_AGENT="Name email@example.com"
 
 ---
 
-## Configuration
+### Configuration
 
 Under Docker, configuration is read from a `.env` file adjacent to `docker-compose.yml`. Outside Docker, from `backend/.env`. Credentials are read from `secrets/`. `.env.example` documents the full set.
 
