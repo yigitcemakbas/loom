@@ -6,7 +6,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://loom-two-mu.vercel.app/:path*"
+      "destination": "https://nitrogen-mailing-partition-refine.trycloudflare.com/:path*"
     },
     {
       "source": "/(.*)",
