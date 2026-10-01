@@ -1,6 +1,8 @@
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
 from app.api.deps import CompanyRepo, WatchlistRepo
+from app.api.routes.auth import CurrentUser
+from app.models.account import User
 from app.schemas.company import CompanyCreate, CompanyOut
 from app.schemas.watchlist import AddTickerRequest, WatchlistCreate, WatchlistOut
 from app.scheduling.jobs import run_initial_ingest
@@ -21,7 +23,9 @@ def list_watchlists(watchlist_repo: WatchlistRepo):
 
 
 @router.post("", response_model=WatchlistOut)
-def create_watchlist(data: WatchlistCreate, watchlist_repo: WatchlistRepo):
+def create_watchlist(
+    data: WatchlistCreate, watchlist_repo: WatchlistRepo, user: User = CurrentUser
+):
     return watchlist_repo.create(data)
 
 
@@ -37,8 +41,14 @@ def add_ticker(
     background_tasks: BackgroundTasks,
     watchlist_repo: WatchlistRepo,
     company_repo: CompanyRepo,
+    user: User = CurrentUser,
 ):
     """Add any real ticker, not just ones already known to Loom.
+
+    Authenticated because this is the one read path that commits the instance to
+    outbound work: an unknown ticker queues a full filing-history ingest, which
+    spends SEC rate limit and, downstream, model quota. On a publicly reachable
+    deployment that makes it the cheapest way to exhaust both.
 
     An unknown ticker is resolved on the fly against SEC's public ticker
     directory (the same one the SEC EDGAR adapter uses), created, and
@@ -72,6 +82,11 @@ def add_ticker(
 
 
 @router.delete("/{watchlist_id}/items/{company_id}", response_model=list[CompanyOut])
-def remove_ticker(watchlist_id: str, company_id: str, watchlist_repo: WatchlistRepo):
+def remove_ticker(
+    watchlist_id: str,
+    company_id: str,
+    watchlist_repo: WatchlistRepo,
+    user: User = CurrentUser,
+):
     watchlist_repo.remove_company(watchlist_id, company_id)
     return watchlist_repo.list_companies(watchlist_id)

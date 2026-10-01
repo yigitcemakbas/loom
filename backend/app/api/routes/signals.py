@@ -106,6 +106,7 @@ def annotate_signal(
     signal_repo: SignalRepo,
     company_repo: CompanyRepo,
     document_repo: DocumentRepo,
+    user: User = CurrentUser,
 ):
     """Writing a note is what marks a signal reviewed (see SignalRepository.set_note)."""
     signal = signal_repo.set_note(signal_id, body.note)
@@ -115,7 +116,13 @@ def annotate_signal(
 
 
 @router.post("/signals/{signal_id}/dismiss", response_model=SignalWithContext)
-def dismiss_signal(signal_id: str, signal_repo: SignalRepo, company_repo: CompanyRepo, document_repo: DocumentRepo):
+def dismiss_signal(
+    signal_id: str,
+    signal_repo: SignalRepo,
+    company_repo: CompanyRepo,
+    document_repo: DocumentRepo,
+    user: User = CurrentUser,
+):
     signal = signal_repo.mark_dismissed(signal_id)
     if signal is None:
         raise HTTPException(status_code=404, detail="Signal not found")

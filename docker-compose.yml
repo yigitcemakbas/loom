@@ -98,9 +98,15 @@ services:
       SMTP_USERNAME: ${SMTP_USERNAME:-loom}
       SMTP_FROM: ${SMTP_FROM:-Loom <no-reply@loom.local>}
       SMTP_USE_SSL: ${SMTP_USE_SSL:-false}
-      # Mailpit accepts any credentials; a real provider will not, and this is
-      # the one value that should come from the secrets mount.
-      SMTP_PASSWORD: ${SMTP_PASSWORD:-local}
+      # SMTP_PASSWORD is deliberately absent from this list. An environment
+      # variable outranks the secrets mount in pydantic-settings, and it does so
+      # even when empty, so forwarding it here at any default silently overrode
+      # ./secrets/smtp_password and left a real provider rejecting AUTH with the
+      # password sitting correctly on disk. Omitting the variable entirely is
+      # what makes the secrets file the thing that is actually read.
+      #
+      # Mailpit needs no password: it accepts any credentials and does not
+      # require AUTH, and the mailer skips login when no password is set.
       # STARTTLS is meaningless against a container on the same bridge and
       # fails outright, so it is off for the local catcher and on for anything
       # else.

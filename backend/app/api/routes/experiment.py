@@ -14,6 +14,8 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 
 from app.api.deps import CompanyRepo, DbSession
+from app.api.routes.auth import CurrentUser
+from app.models.account import User
 from app.ingestion.prices import get_price_source
 from app.models.company import Company
 from app.models.experiment import ACTIONS, COHORTS, AgentDecision
@@ -74,7 +76,12 @@ class CohortSummary(BaseModel):
 
 
 @router.post("/decisions", response_model=DecisionOut, status_code=201)
-def submit_decision(payload: DecisionIn, company_repo: CompanyRepo, db: DbSession):
+def submit_decision(
+    payload: DecisionIn,
+    company_repo: CompanyRepo,
+    db: DbSession,
+    user: User = CurrentUser,
+):
     if payload.cohort not in COHORTS:
         raise HTTPException(status_code=400, detail=f"cohort must be one of {list(COHORTS)}")
     if payload.action not in ACTIONS:

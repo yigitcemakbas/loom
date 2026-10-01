@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import BriefRepo, CompanyRepo, DbSession, WatchlistRepo
+from app.api.routes.auth import CurrentUser
+from app.models.account import User
 from app.engine.brief import HORIZONS, SOURCE_LABELS, STANCE_LABELS, build_brief
 from app.engine.norms import load_norms
 from app.engine.pipeline import regenerate_brief
@@ -111,7 +113,9 @@ def brief_for_horizon(
 
 
 @router.post("/companies/{ticker}/brief/refresh", response_model=BriefOut)
-def refresh_brief(ticker: str, company_repo: CompanyRepo, db: DbSession):
+def refresh_brief(
+    ticker: str, company_repo: CompanyRepo, db: DbSession, user: User = CurrentUser
+):
     company = company_repo.get_by_ticker(ticker)
     if company is None:
         raise HTTPException(status_code=404, detail=f"Unknown ticker {ticker!r}")
