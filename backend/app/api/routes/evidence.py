@@ -79,6 +79,67 @@ HOW_ESTABLISHED = {
 MAX_PAGE = 200
 
 
+# What each source is, what Loom holds of it, and what it is good for.
+#
+# Framed as what the source *offers* rather than as a verifiability score, which
+# was the first design and the wrong one. A boolean "verifiable" flag reads as a
+# defect marker, and an agent seeing it on a news item would discard the item
+# for the wrong reason: news is the fastest source Loom has and routinely the
+# only one for something a company has not filed yet. Timeliness and
+# authoritativeness are different virtues and neither dominates.
+#
+# `loom_holds` is the one fact an agent cannot work out for itself and genuinely
+# needs. Loom stores filings and transcripts in full, and for news it stores the
+# headline and summary only: a 10-K runs to a median of 324,000 characters and a
+# news item to 247. A passage attributed to a news item is therefore drawn from
+# that headline and summary rather than from an article body Loom never had, and
+# an agent comparing it against the publisher's page should expect the body to
+# say more, not to disagree.
+SOURCE_PROVENANCE = {
+    "10-K": {
+        "source_type": "annual_report",
+        "loom_holds": "complete_document",
+        "offers": "The authoritative annual record, filed under legal attestation "
+                  "and restating risk factors in full, which is what makes a "
+                  "year-over-year comparison meaningful.",
+    },
+    "10-Q": {
+        "source_type": "quarterly_report",
+        "loom_holds": "complete_document",
+        "offers": "Management's discussion of the quarter just ended, at the "
+                  "cadence most decisions are actually taken on.",
+    },
+    "8-K": {
+        "source_type": "current_report",
+        "loom_holds": "complete_document",
+        "offers": "A specific event the company was obliged to report promptly, "
+                  "so it carries the detail of one development rather than a "
+                  "periodic survey.",
+    },
+    "earnings_call": {
+        "source_type": "earnings_call_transcript",
+        "loom_holds": "complete_document",
+        "offers": "Management's own framing under questioning, including what "
+                  "they were asked and chose not to answer, which no filing shows.",
+    },
+    "news": {
+        "source_type": "news",
+        "loom_holds": "headline_and_summary",
+        "offers": "The fastest source here, and often the only one for something "
+                  "not yet filed. Loom stores the headline and summary rather "
+                  "than the article body, so a passage from a news item is drawn "
+                  "from those; the publisher's page is the fuller record.",
+    },
+}
+
+_DEFAULT_PROVENANCE = {
+    "source_type": "document",
+    "loom_holds": "complete_document",
+    "offers": "A document Loom ingested and read in full.",
+}
+
+
+
 def _cutoff(as_of: Optional[date]) -> datetime:
     if as_of is None:
         return datetime.now(timezone.utc)
@@ -122,7 +183,23 @@ class Source(BaseModel):
     )
     form: Optional[str] = None
     published: Optional[date] = None
-    url: Optional[str] = None
+    url: Optional[str] = Field(
+        default=None, description="The primary record, at the publisher or at SEC."
+    )
+    source_type: Optional[str] = None
+    loom_holds: Optional[str] = Field(
+        default=None,
+        description="Whether Loom stores this document in full or only its "
+        "headline and summary. Filings and transcripts are complete; news is "
+        "stored as headline and summary, so a quote from one is drawn from that "
+        "rather than from an article body Loom does not hold.",
+    )
+    offers: Optional[str] = Field(
+        default=None,
+        description="What this kind of source is good for. Sources are described "
+        "rather than ranked: a filing is authoritative and a news item is fast, "
+        "and which matters depends on the question being asked.",
+    )
 
 
 class Finding(BaseModel):
@@ -137,7 +214,11 @@ class Finding(BaseModel):
     occurred_at: datetime
     summary: str
     quote: Optional[str] = Field(
-        default=None, description="Verbatim from the filing. Never paraphrased."
+        default=None,
+        description="A passage from the source, not a paraphrase of it. Taken "
+        "from whatever Loom holds of that source, which `source.loom_holds` "
+        "states: the full document for a filing or transcript, the headline and "
+        "summary for a news item.",
     )
     source: Optional[Source] = Field(
         default=None,
@@ -259,11 +340,13 @@ def _findings(db, company, cutoff, limit, offset, kind: Optional[str] = None) ->
         kind = str(getattr(signal.signal_type, "value", signal.signal_type))
         source = None
         if document is not None:
+            facts = SOURCE_PROVENANCE.get(document.doc_subtype or "", _DEFAULT_PROVENANCE)
             source = Source(
                 document_id=str(document.id),
                 form=document.doc_subtype,
                 published=document.published_at.date() if document.published_at else None,
                 url=document.source_url,
+                **facts,
             )
         out.append(Finding(
             id=str(signal.id),
@@ -437,6 +520,17 @@ def capabilities(user: User = CurrentUser) -> dict:
             "prices are read strictly backwards."
         ),
         "how_established": HOW_ESTABLISHED,
+        "sources": SOURCE_PROVENANCE,
+        "on_weighting_sources": (
+            "Sources are described, not ranked. A filing is authoritative and "
+            "complete; a news item is faster and is often the only source for "
+            "something not yet filed; a transcript carries management's framing "
+            "under questioning. Which of those matters depends on the question, "
+            "so no ordering is imposed here. The one fact worth acting on is "
+            "`loom_holds`: for news, Loom stores the headline and summary rather "
+            "than the article body, so expect the publisher's page to say more "
+            "than the quote rather than to contradict it."
+        ),
         "limits": {"max_page_size": MAX_PAGE},
     }
 

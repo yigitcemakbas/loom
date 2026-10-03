@@ -127,7 +127,27 @@ class Settings(BaseSettings):
 
     # Which LLM backs the analysis engine: "gemini" (free tier) or
     # "anthropic" (paid). Only the selected provider's key is needed.
+    # The provider chain, tried in order. Each free tier is separately metered,
+    # so naming several multiplies the daily allowance rather than merely adding
+    # redundancy: throughput has been capped by one provider's daily limit since
+    # Loom started reading filings. Providers with no key are skipped, so one
+    # chain works on an install holding one key or five.
+    #
+    # Order matters and is not arbitrary. Gemini first because its structured
+    # output is enforced natively; Cerebras next because its per-minute lane is
+    # the only free one wide enough for a full risk section; Groq after it for
+    # small inputs, which is most of the news corpus; OpenRouter last because
+    # fifty requests a day cannot carry a backfill.
+    llm_providers: str = "gemini,cerebras,groq,mistral,openrouter"
+
+    # Kept for installs configured before the chain existed. Used only when
+    # LLM_PROVIDERS names a single provider.
     llm_provider: str = "gemini"
+
+    cerebras_api_key: str = ""
+    groq_api_key: str = ""
+    mistral_api_key: str = ""
+    openrouter_api_key: str = ""
     anthropic_api_key: str = ""
     gemini_api_key: str = ""
 

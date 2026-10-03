@@ -135,6 +135,12 @@ services:
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       WATCHER_ENABLED: ${WATCHER_ENABLED:-false}
       WATCHER_INTERVAL_SECONDS: ${WATCHER_INTERVAL_SECONDS:-60}
+      # The provider chain, tried in order. Each free tier is metered
+      # separately, so naming several multiplies the daily allowance rather than
+      # only adding redundancy. Keys live in ./secrets, one file per provider,
+      # and a provider without a key is skipped, so this default is safe on an
+      # install that holds only a Gemini key.
+      LLM_PROVIDERS: ${LLM_PROVIDERS:-gemini,cerebras,groq,mistral,openrouter}
       LLM_MIN_CALL_INTERVAL_SECONDS: ${LLM_MIN_CALL_INTERVAL_SECONDS:-6.5}
       BLOB_STORE_DIR: /app/data/blobs
     volumes:

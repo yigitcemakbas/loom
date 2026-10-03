@@ -14,6 +14,7 @@ real schema needs Postgres column types.
 """
 
 import ast
+import json
 import pathlib
 from datetime import date, datetime, timezone
 
@@ -119,11 +120,19 @@ def test_the_least_verifiable_kind_says_so_plainly():
     assert "no model" in evidence.HOW_ESTABLISHED["insider_activity"]
 
 
-def test_a_quote_is_described_as_verbatim_rather_than_as_a_summary():
-    """The quote is the thing an agent can check. Saying so is part of the
-    contract, because a paraphrase that looks like a quote is worse than no
-    quote at all."""
-    assert "verbatim" in (evidence.Finding.model_fields["quote"].description or "").lower()
+def test_a_quote_is_described_as_a_passage_and_never_as_a_paraphrase():
+    """The quote is the thing an agent can check, so the contract has to say so.
+
+    This asserted the word "verbatim from the filing" until the faithfulness
+    work showed that claim was false for the 6.6% of findings sourced from news,
+    where Loom holds a headline and summary rather than an article body. The
+    contract now promises no paraphrasing and points at `loom_holds` for what
+    the passage was taken from, which is true of every source.
+    """
+    described = (evidence.Finding.model_fields["quote"].description or "").lower()
+
+    assert "paraphrase" in described
+    assert "loom_holds" in described
 
 
 def test_direction_is_documented_as_documentary_and_not_as_a_forecast():
@@ -289,3 +298,58 @@ def test_a_document_with_no_directional_findings_is_not_framed_as_a_deficit():
 
     assert "not a deficit" in described
     assert "silence is not good news" in described
+
+
+# ---- provenance ------------------------------------------------------------
+
+
+def test_every_ingested_source_type_is_described():
+    """A source Loom reads but cannot describe would reach an agent with no
+    provenance at all, which is the gap this field exists to close."""
+    for form in ("10-K", "10-Q", "8-K", "earnings_call", "news"):
+        assert form in evidence.SOURCE_PROVENANCE
+        facts = evidence.SOURCE_PROVENANCE[form]
+        assert set(facts) == {"source_type", "loom_holds", "offers"}
+
+
+def test_news_is_the_only_source_not_held_in_full():
+    """The one fact an agent cannot work out for itself. A 10-K runs to a median
+    of 324,000 stored characters and a news item to 247, so a passage from a
+    news item is drawn from a headline and summary rather than an article body
+    Loom never had."""
+    partial = {
+        form for form, facts in evidence.SOURCE_PROVENANCE.items()
+        if facts["loom_holds"] != "complete_document"
+    }
+
+    assert partial == {"news"}
+    assert evidence.SOURCE_PROVENANCE["news"]["loom_holds"] == "headline_and_summary"
+
+
+def test_no_source_is_marked_unverifiable_or_otherwise_scored():
+    """Deliberately not a verifiability flag.
+
+    A boolean would read as a defect marker, and an agent seeing it on a news
+    item would discard the item for the wrong reason. Timeliness and
+    authoritativeness are different virtues; the schema states what a source
+    holds and offers and leaves the weighting to the caller.
+    """
+    blob = json.dumps(evidence.SOURCE_PROVENANCE).lower()
+
+    for word in ("verifiable", "unverifiable", "unreliable", "trust", "score", "rank"):
+        assert word not in blob, f"{word!r} implies a ranking the caller should make"
+
+    assert not any(
+        isinstance(v, bool) for facts in evidence.SOURCE_PROVENANCE.values()
+        for v in facts.values()
+    )
+
+
+def test_every_source_says_what_it_is_good_for():
+    """Including news. A source described only by what it lacks invites an agent
+    to drop it, and news is the fastest evidence Loom has."""
+    for form, facts in evidence.SOURCE_PROVENANCE.items():
+        assert len(facts["offers"]) > 40, form
+    assert "fastest" in evidence.SOURCE_PROVENANCE["news"]["offers"].lower()
+
+

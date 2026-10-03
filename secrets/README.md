@@ -7,6 +7,15 @@ No quotes, no `NAME=` prefix, no trailing newline needed.
     secrets/finnhub_api_key     https://finnhub.io/register
     secrets/smtp_password       https://myaccount.google.com/apppasswords
 
+Optional LLM providers. Each free tier is metered separately, so adding keys
+multiplies the daily allowance rather than only adding redundancy. Any subset
+works; providers with no key are skipped.
+
+    secrets/cerebras_api_key    https://cloud.cerebras.ai
+    secrets/groq_api_key        https://console.groq.com/keys
+    secrets/mistral_api_key     https://console.mistral.ai/api-keys
+    secrets/openrouter_api_key  https://openrouter.ai/keys
+
 For example:
 
     echo -n "AIza..." > secrets/gemini_api_key
