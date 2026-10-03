@@ -37,6 +37,7 @@ import re
 import sys
 import unicodedata
 from collections import Counter, defaultdict
+from difflib import SequenceMatcher
 from dataclasses import dataclass, field
 from datetime import timezone
 from pathlib import Path
@@ -116,6 +117,38 @@ def normalise(text: str) -> str:
     """
     text = unicodedata.normalize("NFKC", text).translate(_QUOTE_CHARS)
     return re.sub(r"\s+", " ", text).strip()
+
+
+def coverage(quote: str, text: str) -> float:
+    """How much of the quote appears in the document, in order, allowing gaps.
+
+    The honest test of whether the model quoted faithfully, and the reason the
+    strict substring test was the wrong one.
+
+    Filing text arrives with page breaks spliced into the middle of sentences:
+    one 10-K stores "...approximately 89.3% 21. Table of Contents Alphabet Inc.
+    outstanding Class B stock...", where a reader sees one unbroken sentence.
+    A model quoting that sentence correctly fails a substring check through no
+    fault of its own, and 22 of 36 apparent failures were this.
+
+    So insertions on the document side are forgiven and gaps in the quote are
+    not. Every character of the quote must be accounted for by in-order matches;
+    a paraphrase leaves quote characters unmatched and still fails, which is the
+    distinction worth measuring. Diagnosed cases: a spliced page break scores
+    1.00, a one-character trailing difference 0.99, a rewrite 0.59.
+    """
+    if not quote:
+        return 0.0
+    matcher = SequenceMatcher(None, quote, text, autojunk=False)
+    matched = sum(block.size for block in matcher.get_matching_blocks())
+    return matched / len(quote)
+
+
+# Below this, the quote is not accounted for by the document's own words and is
+# a rewrite rather than a transcription. Set from the diagnosed distribution,
+# which is strongly bimodal: artifacts land at 0.99 and above, paraphrases at
+# 0.59 and below, with nothing in between.
+MIN_COVERAGE = 0.97
 
 
 def is_tabular(quote: str) -> bool:
@@ -298,14 +331,21 @@ def measure(db, sample: int, kind_filter: Optional[str]) -> Result:
         in_prior = bool(prior_text and quote in prior_text)
 
         # A withdrawn paragraph is legitimately absent from the filing that
-        # reported it, so "found in either document" is the honest test of
-        # whether the text was fabricated.
+        # reported it, so either document counts as the source.
         found = in_current or in_prior
         if not found:
-            loose = quote.casefold() in current.casefold() or bool(
+            found = quote.casefold() in current.casefold() or bool(
                 prior_text and quote.casefold() in prior_text.casefold()
             )
-            found = loose
+        if not found:
+            # Last, the gap-tolerant test. Page furniture spliced into a
+            # sentence breaks a substring match without the model having done
+            # anything wrong, so fidelity is judged on whether the document
+            # accounts for every character of the quote, in order.
+            best = coverage(quote, current)
+            if prior_text:
+                best = max(best, coverage(quote, prior_text))
+            found = best >= MIN_COVERAGE
         check = "quote_verbatim_tabular" if is_tabular(quote) else "quote_verbatim_prose"
         result.record(check, found, kind, {
             "signal": str(signal.id),
