@@ -13,6 +13,8 @@ Every finding also carries a market_reaction (see market_reaction.py):
 qualitative direction/magnitude/horizon, never a fabricated price number.
 """
 
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from app.engine.prompts.market_reaction import MARKET_REACTION_RULES, MarketReaction
@@ -33,7 +35,36 @@ class ExtractedRisk(BaseModel):
 
 
 class GuidanceChange(BaseModel):
+    """A change to forward guidance, recorded so its direction is derivable.
+
+    `description` alone was not enough. Guidance is the one finding type whose
+    direction the document states outright and which Loom nonetheless scored as
+    unassessed, because nothing captured *which* figure moved: "capital
+    investment increased" and "operating margin increased" are the same sentence
+    shape and opposite news. Splitting the metric from the movement lets
+    `engine/direction.py` decide, and lets it abstain where the metric genuinely
+    has no polarity rather than guessing from wording.
+    """
+
     description: str = Field(description="What changed in forward guidance or outlook.")
+    metric: str = Field(
+        description=(
+            "The single figure the guidance concerns, lowercase and unadorned: "
+            "'revenue', 'operating margin', 'earnings per share', 'free cash flow', "
+            "'capital expenditure', 'operating expenses', 'tax rate', 'subscribers'. "
+            "Use the company's own term where it names one. If the change covers "
+            "several figures, name the one the company led with."
+        )
+    )
+    movement: Literal["raised", "lowered", "withdrawn", "reaffirmed", "initiated"] = Field(
+        description=(
+            "What the company did to the guidance. 'raised' or 'lowered' for a "
+            "changed number, judged on the number itself and not on whether it is "
+            "good news. 'withdrawn' when guidance previously given is removed or "
+            "suspended. 'reaffirmed' when restated unchanged. 'initiated' when "
+            "guidance for this figure is given for the first time."
+        )
+    )
     market_reaction: MarketReaction
 
 

@@ -59,6 +59,7 @@ def build_document_signals(
         quote: str | None,
         sentiment: float | None = None,
         reaction: MarketReaction | None = None,
+        extra: dict | None = None,
     ) -> None:
         signals.append(
             Signal(
@@ -77,7 +78,8 @@ def build_document_signals(
                 market_magnitude=reaction.magnitude if reaction else None,
                 market_horizon=reaction.horizon if reaction else None,
                 signal_metadata=_meta(
-                    {"used_sections": used_sections, "doc_subtype": doc_subtype}
+                    {"used_sections": used_sections, "doc_subtype": doc_subtype,
+                     **(extra or {})}
                 ),
             )
         )
@@ -101,11 +103,19 @@ def build_document_signals(
         )
 
     if result.guidance_change:
+        guidance = result.guidance_change
         add(
             SignalType.GUIDANCE_CHANGE,
-            result.guidance_change.description,
+            guidance.description,
             None,
-            reaction=result.guidance_change.market_reaction,
+            reaction=guidance.market_reaction,
+            # Stored separately rather than parsed back out of the description
+            # later: the direction of a guidance change is a fact the document
+            # states, and reconstructing it from prose would make it a guess.
+            extra={
+                "metric": (guidance.metric or "").strip().lower() or None,
+                "movement": guidance.movement,
+            },
         )
 
     return signals

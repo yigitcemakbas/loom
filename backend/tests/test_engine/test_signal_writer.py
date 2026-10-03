@@ -47,7 +47,12 @@ RESULT = DocumentAnalysisResult(
             why_it_matters="Single point of failure.", market_reaction=_NEGATIVE_REACTION,
         )
     ],
-    guidance_change=GuidanceChange(description="Full-year outlook lowered.", market_reaction=_NEGATIVE_REACTION),
+    guidance_change=GuidanceChange(
+        description="Full-year outlook lowered.",
+        metric="revenue",
+        movement="lowered",
+        market_reaction=_NEGATIVE_REACTION,
+    ),
 )
 
 

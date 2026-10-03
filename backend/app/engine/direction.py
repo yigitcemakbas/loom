@@ -105,25 +105,101 @@ def documentary_sign(signal) -> Optional[float]:
             return -1.0
         return None
 
-    # A quote is evidence, not a vote. A guidance change has a direction the
-    # document states, but which figure moved is not stored, and "capital
-    # investment increased" is not good or bad on its face.
+    if kind == SignalType.GUIDANCE_CHANGE:
+        return _guidance_sign(meta)
+
+    # A quote is evidence, not a vote. However strongly a passage reads, the
+    # company did not take a direction by being quotable.
     return None
 
 
+# Metrics whose movement has a settled meaning, and the metrics that do not.
+#
+# The split is the whole content of the guidance rule. Revenue guidance going up
+# is good news in a way that needs no interpretation; cost guidance going up is
+# bad news on the same terms. Capital expenditure is neither: a company raising
+# capex may be investing into demand or bleeding into maintenance, and the
+# guidance sentence alone does not say which. Spend is listed as ambiguous for
+# that reason rather than being forced into one bucket to raise coverage.
+_HIGHER_IS_BETTER = (
+    "revenue", "sales", "earnings", "eps", "earnings per share", "income",
+    "profit", "margin", "cash flow", "fcf", "ebitda", "bookings", "backlog",
+    "orders", "subscribers", "users", "units", "shipments", "yield",
+    "utilisation", "utilization", "same-store", "comparable sales",
+)
+_HIGHER_IS_WORSE = (
+    "cost", "costs", "expense", "expenses", "opex", "sg&a", "churn",
+    "attrition", "tax rate", "leverage", "debt", "dilution", "interest expense",
+    "impairment", "provision", "loss", "deficit", "warranty",
+)
+# Named so the abstention is deliberate and visible rather than a fallthrough.
+_POLARITY_UNCLEAR = (
+    "capital expenditure", "capex", "capital investment", "headcount",
+    "employees", "inventory", "research and development", "r&d",
+    "buyback", "repurchase", "dividend", "spend", "investment",
+)
+
+
+def _metric_polarity(metric: str) -> Optional[float]:
+    """+1 where a higher figure is better, -1 where worse, None where neither.
+
+    Ambiguity is checked first. "capital expenditure" contains no token from the
+    other two lists today, but a future addition such as "investment income"
+    would collide, and an ambiguous metric silently acquiring a polarity is the
+    failure worth guarding against rather than the reverse.
+    """
+    if not metric:
+        return None
+    text = metric.strip().lower()
+    if any(term in text for term in _POLARITY_UNCLEAR):
+        return None
+    if any(term in text for term in _HIGHER_IS_WORSE):
+        return -1.0
+    if any(term in text for term in _HIGHER_IS_BETTER):
+        return 1.0
+    return None
+
+
+def _guidance_sign(meta: dict) -> Optional[float]:
+    """The direction a guidance change states, from the figure and the move.
+
+    Withdrawal is signed without consulting the metric. Removing a forecast the
+    company previously committed to is a negative act about any figure: it
+    narrows what a reader knows, and companies do not generally suspend guidance
+    on good news. Reaffirming and initiating are genuinely directionless, and
+    `None` says so rather than pretending to neutrality.
+    """
+    movement = str(meta.get("movement") or "").strip().lower()
+    if movement == "withdrawn":
+        return -1.0
+    if movement not in ("raised", "lowered"):
+        return None
+
+    polarity = _metric_polarity(str(meta.get("metric") or ""))
+    if polarity is None:
+        return None
+    return polarity if movement == "raised" else -polarity
+
+
 # Types whose direction a document can state at all. A quote is not a
-# direction-bearing finding however strongly it reads, and a guidance change is
-# one only once the extraction records *which* figure moved — see the note in
-# `documentary_sign`. Separating "cannot have a direction" from "has not been
-# given one" is what keeps the sufficiency gate honest: the first is normal and
-# the second is a gap, and counting quotes as gaps would refuse a verdict on
-# every company whose record contains quotes.
+# direction-bearing finding however strongly it reads.
+#
+# Separating "cannot have a direction" from "has not been given one" is what
+# keeps the sufficiency gate honest: the first is normal and the second is a
+# gap, and counting quotes as gaps would refuse a verdict on every company whose
+# record contains quotes.
+#
+# Guidance belongs here now that extraction records which figure moved. It is
+# listed on what the document could state, not on what Loom managed to read, so
+# a guidance change left unassessed counts against sufficiency rather than
+# excusing itself. Findings written before the metric was captured are
+# therefore unassessed gaps, which is the accurate description of them.
 _DIRECTION_BEARING = frozenset(
     t for t in (
         getattr(SignalType, name, None) for name in (
             "NEW_RISK_FACTOR", "RESOLVED_RISK_FACTOR", "QOQ_ANOMALY",
             "INSIDER_ACTIVITY", "SHORT_INTEREST_SPIKE", "SENTIMENT_SHIFT",
-            "EMERGING_PATTERN",
+            "EMERGING_PATTERN", "GUIDANCE_CHANGE",
         )
     ) if t is not None
 )
