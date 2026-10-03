@@ -41,6 +41,18 @@ _PAGE_FOOTER = re.compile(r"^.{0,80}\|.{0,60}\|\s*\d+\s*$")
 # Bare page numbers left behind by the HTML-to-text pass.
 _BARE_PAGE_NUMBER = re.compile(r"^\s*\d{1,4}\s*$")
 
+# The running "Table of Contents" link large filers repeat at every page break.
+#
+# Dropped because it corrupts the comparison rather than merely adding noise.
+# `split_paragraphs` rejoins lines until sentence-ending punctuation, and this
+# line has none, so it is glued onto the front of whichever paragraph follows
+# it. Where a page break falls in one year's filing and not the next, two
+# otherwise identical risk factors stop matching, and the carried-over paragraph
+# is emitted as a new risk. The faithfulness harness traced a 0.99-similar pair
+# to exactly this: one copy read "Table of Contents The terms of our agreements
+# with Kioxia...". It affected 4.2% of risk-factor paragraphs.
+_TOC_MARKER = re.compile(r"^\s*table of contents\s*\d{0,4}\s*$", re.IGNORECASE)
+
 _SENTENCE_END = (".", "?", "!", '"', "”", "’")
 
 # A real section must have at least this many lines of body text. Tuned to sit
@@ -101,6 +113,7 @@ def _clean(lines: list[str]) -> list[str]:
         if line.strip()
         and not _PAGE_FOOTER.match(line)
         and not _BARE_PAGE_NUMBER.match(line)
+        and not _TOC_MARKER.match(line)
     ]
 
 

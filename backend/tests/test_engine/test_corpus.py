@@ -198,3 +198,95 @@ def test_the_reasons_for_a_score_can_be_shown():
 
     assert unusual
     assert "competition" not in unusual
+
+
+# ---- the length gate -------------------------------------------------------
+
+
+def test_the_length_gate_is_derived_from_the_threshold_not_equal_to_it():
+    """`ratio()` is 2M/T and M cannot exceed the shorter sequence, so the best
+    achievable similarity for two paragraphs is 2·min/(min+max). Solving that
+    against the threshold gives min/max >= threshold/(2-threshold).
+
+    Gating on the threshold itself was stricter than the arithmetic allows.
+    """
+    from app.engine.diffing import MIN_LENGTH_RATIO, SIMILARITY_THRESHOLD
+
+    assert MIN_LENGTH_RATIO == SIMILARITY_THRESHOLD / (2 - SIMILARITY_THRESHOLD)
+    assert MIN_LENGTH_RATIO < SIMILARITY_THRESHOLD
+
+
+def test_a_paragraph_carried_over_and_expanded_is_not_reported_as_new():
+    """The defect the faithfulness harness found, as a regression test.
+
+    A risk the company kept and enlarged sits around a 0.69 length ratio and a
+    0.82 similarity. The old gate skipped the comparison entirely, so
+    `best_similarity` returned 0.0 and the paragraph was emitted as a new risk
+    factor with an 82%-similar predecessor sitting in the prior filing. This was
+    21 of 71 checkable risk-diff findings.
+    """
+    from app.engine.diffing import SIMILARITY_THRESHOLD, _unmatched, best_similarity
+
+    prior = (
+        "We face intense competition across every market in which we operate and "
+        "many competitors command greater financial resources than we do, which "
+        "may affect pricing."
+    )
+    expanded = prior + " In addition, new entrants have recently increased that pressure further."
+
+    assert len(prior) / len(expanded) < SIMILARITY_THRESHOLD, "fixture must sit inside the old gate"
+    assert best_similarity(expanded, [prior]) >= SIMILARITY_THRESHOLD
+    assert _unmatched([expanded], [prior]) == []
+
+
+def test_a_genuinely_unrelated_paragraph_is_still_reported():
+    """The fix widens what gets compared; it must not stop anything being new."""
+    from app.engine.diffing import _unmatched
+
+    prior = "We face intense competition across every market in which we operate."
+    novel = (
+        "The Irish Revenue Commissioners assessed additional tax against our Cork "
+        "subsidiary following the State Aid decision, and we have appealed."
+    )
+
+    assert _unmatched([novel], [prior]) == [novel]
+
+
+# ---- page furniture --------------------------------------------------------
+
+
+def test_the_running_table_of_contents_link_is_not_glued_onto_a_paragraph():
+    """Why page furniture is a correctness problem and not cosmetic.
+
+    `split_paragraphs` rejoins lines until sentence-ending punctuation, and the
+    repeated "Table of Contents" link has none, so it attaches to whichever
+    paragraph follows it. A page break falling in one year's filing and not the
+    next then stops two identical risk factors from matching, and the
+    carried-over paragraph is reported as new. Measured at 4.2% of risk-factor
+    paragraphs before this was stripped.
+    """
+    from app.engine.sections import _clean
+
+    assert _clean(["Table of Contents", "TABLE OF CONTENTS 12", "  table of contents  "]) == []
+    assert _clean(["Table of Contents of our material agreements is below."]) == [
+        "Table of Contents of our material agreements is below."
+    ]
+
+
+def test_an_identical_risk_factor_matches_across_a_page_break():
+    """The observed failure, end to end: the same paragraph in two filings, one
+    copy preceded by the page-break link, must still score as unchanged."""
+    from app.engine.diffing import SIMILARITY_THRESHOLD, best_similarity
+    from app.engine.sections import _clean, split_paragraphs
+
+    body = (
+        "The terms of our agreements with Kioxia with respect to Flash Ventures "
+        "require that substantially all of our flash-based memory be obtained from "
+        "Flash Ventures, which limits our ability to respond to market demand and "
+        "supply changes and makes our results less predictable."
+    )
+    current = split_paragraphs("\n".join(_clean(body.split(". "))))
+    prior = split_paragraphs("\n".join(_clean(["Table of Contents", *body.split(". ")])))
+
+    assert current and prior
+    assert best_similarity(current[0], prior) >= SIMILARITY_THRESHOLD

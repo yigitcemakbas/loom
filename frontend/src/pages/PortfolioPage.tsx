@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useDeletePosition, usePortfolio, useSavePosition } from "../hooks/usePortfolio";
 import { DigestSetting } from "../components/portfolio/DigestSetting";
+import { AddCompany } from "../components/watchlist/AddCompany";
 import { useDashboard } from "../hooks/useDashboard";
 import { verdictOf, toneClass } from "../lib/plain";
 import type { Position, Stance } from "../types/models";
@@ -96,6 +97,12 @@ export function PortfolioPage() {
           + add a position
         </button>
       )}
+
+      {/* Below the position form on purpose. Recording what you own is the
+          common action; introducing a company Loom has never read is rarer and
+          costs an ingest, so it sits second rather than competing for the same
+          click. */}
+      <AddCompany />
     </div>
   );
 }

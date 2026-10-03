@@ -36,6 +36,12 @@ SIMILARITY_THRESHOLD = 0.75
 # paragraphs are kept, since those are the likeliest to be genuinely new.
 MAX_PARAGRAPHS_TO_ASSESS = 45
 
+# The length ratio below which two paragraphs cannot possibly clear
+# SIMILARITY_THRESHOLD, derived from how SequenceMatcher.ratio() is defined
+# rather than chosen. See the working in best_similarity: anything below this is
+# provably unmatchable, and anything above it has to be measured.
+MIN_LENGTH_RATIO = SIMILARITY_THRESHOLD / (2 - SIMILARITY_THRESHOLD)
+
 
 def _normalize(text: str) -> str:
     """Compare on lowercase alphanumerics so punctuation and spacing churn
@@ -55,8 +61,25 @@ def best_similarity(paragraph: str, candidates: list[str]) -> float:
         normalized = _normalize(candidate)
         # Cheap length gate first: SequenceMatcher is the expensive part, and
         # paragraphs of very different length cannot clear the threshold.
+        #
+        # The bound is derived rather than reused. `ratio()` is 2M/T, where M is
+        # the match count and T the combined length, and M can never exceed the
+        # shorter sequence, so the best achievable ratio for two paragraphs is
+        # 2·min/(min+max). Solving that against the threshold gives
+        #
+        #     min/max  >=  threshold / (2 - threshold)
+        #
+        # which is 0.6 at a threshold of 0.75. Gating on the threshold itself
+        # was stricter than the arithmetic allows and discarded candidates that
+        # would have matched: a paragraph carried over from last year and
+        # expanded by a third sits at a length ratio near 0.69 and a similarity
+        # near 0.82, so it was never compared and its successor was reported as
+        # a new risk factor. The faithfulness harness put that class of error at
+        # 21 of 71 checkable risk-diff findings.
         shorter, longer = sorted((len(normalized), len(target)))
-        if longer == 0 or shorter / longer < SIMILARITY_THRESHOLD:
+        if longer == 0:
+            continue
+        if shorter / longer < MIN_LENGTH_RATIO:
             continue
         matcher.set_seq1(normalized)
         best = max(best, matcher.ratio())
