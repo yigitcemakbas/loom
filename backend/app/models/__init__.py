@@ -4,6 +4,7 @@ registers all of them on Base.metadata, this is what Alembic autogenerate
 """
 
 from app.models.account import LoginCode, Position, Session, User  # noqa: F401
+from app.models.api_key import ApiKey  # noqa: F401
 from app.models.assessment_label import AssessmentLabel  # noqa: F401
 from app.models.brief import CompanyBrief, Stance  # noqa: F401
 from app.models.company import Company, CompanyTier  # noqa: F401

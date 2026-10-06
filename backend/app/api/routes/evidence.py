@@ -40,7 +40,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import func, select
 
 from app.api.deps import CompanyRepo, DbSession
-from app.api.routes.auth import CurrentUser
+from app.api.routes.auth import ReadingCaller
 from app.engine.contradiction import find_contradictions
 from app.engine.direction import label as direction_label
 from app.engine.disclosure import (
@@ -483,7 +483,7 @@ def _dependents(db, company) -> list[Dependent]:
 
 
 @router.get("/capabilities")
-def capabilities(user: User = CurrentUser) -> dict:
+def capabilities(user: User = ReadingCaller) -> dict:
     """What this API serves, and what it deliberately withholds.
 
     Self-describing so an agent can discover the surface without documentation,
@@ -538,7 +538,7 @@ def capabilities(user: User = CurrentUser) -> dict:
 @router.get("/coverage")
 def coverage_index(
     db: DbSession,
-    user: User = CurrentUser,
+    user: User = ReadingCaller,
     as_of: Annotated[Optional[date], Query()] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE)] = 50,
 ) -> dict:
@@ -577,7 +577,7 @@ def packet(
     ticker: str,
     db: DbSession,
     companies: CompanyRepo,
-    user: User = CurrentUser,
+    user: User = ReadingCaller,
     as_of: Annotated[Optional[date], Query()] = None,
     findings_limit: Annotated[int, Query(ge=1, le=MAX_PAGE)] = 40,
 ) -> EvidencePacket:
@@ -624,7 +624,7 @@ def findings(
     ticker: str,
     db: DbSession,
     companies: CompanyRepo,
-    user: User = CurrentUser,
+    user: User = ReadingCaller,
     as_of: Annotated[Optional[date], Query()] = None,
     limit: Annotated[int, Query(ge=1, le=MAX_PAGE)] = 50,
     offset: Annotated[int, Query(ge=0)] = 0,
@@ -644,7 +644,7 @@ def changes(
     ticker: str,
     db: DbSession,
     companies: CompanyRepo,
-    user: User = CurrentUser,
+    user: User = ReadingCaller,
     as_of: Annotated[Optional[date], Query()] = None,
     section: Annotated[str, Query()] = "1A",
 ) -> dict:

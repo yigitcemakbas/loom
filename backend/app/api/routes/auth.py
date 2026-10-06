@@ -8,13 +8,14 @@ as a digest, so the response body is the only moment it exists in readable form.
 
 import logging
 
-from fastapi import APIRouter, Depends, Header, HTTPException, Request, status
+from fastapi import APIRouter, Depends, Header, HTTPException, Request, Response, status
 from sqlalchemy import select
 from pydantic import BaseModel, Field
 
 from app.api.deps import DbSession
 from app.config import settings
 from app.models.account import User
+from app.services import api_keys
 from app.services import auth as auth_service
 from app.services import usernames
 from app.services.mailer import send_login_code, smtp_configured
@@ -80,6 +81,28 @@ class UsernameCheck(BaseModel):
     # Null when available. A sign-up form that rejects a name without saying
     # why makes people guess.
     problem: str | None = None
+
+
+class ApiKeyRequest(BaseModel):
+    name: str = Field(max_length=80)
+
+
+class ApiKeyOut(BaseModel):
+    id: str
+    name: str
+    # The leading characters only. Enough to match a key found in a config file
+    # against this row, and far too little to authenticate with.
+    prefix: str
+    created_at: str
+    last_used_at: str | None = None
+    revoked_at: str | None = None
+
+
+class ApiKeyCreated(ApiKeyOut):
+    key: str = Field(
+        description="The key itself, shown this once. Loom stores only a digest "
+        "and cannot show it again; issue a new one if it is lost."
+    )
 
 
 class MeResponse(BaseModel):
@@ -154,9 +177,50 @@ def admin_user(
     return user
 
 
+def reading_caller(
+    db: DbSession,
+    authorization: str | None = Header(default=None),
+) -> User:
+    """A session or an API key, for read-only surfaces. 401 otherwise.
+
+    The two credentials are deliberately not interchangeable, and this function
+    is the whole of that separation.
+
+    An API key reaches the routes wired to *this* dependency and nothing else.
+    Every route that mutates state keeps `current_user`, which accepts sessions
+    only, so a key cannot add a ticker, dismiss a finding or change a position
+    however it is used. That matters more than it looks: adding a ticker queues
+    a full filing-history ingest, so a write-capable key would be a way for
+    anyone holding it to spend this instance's SEC rate limit and model quota.
+
+    Enforcing it by wiring rather than by a scope check means there is no
+    permission flag to get wrong on a future endpoint. A route is reachable by a
+    key when its author asked for this dependency, which is a decision taken in
+    the open.
+    """
+    presented = ""
+    if authorization and authorization.lower().startswith("bearer "):
+        presented = authorization[7:].strip()
+
+    if presented.startswith(api_keys.PREFIX):
+        user = api_keys.user_for_key(db, presented)
+    else:
+        user = auth_service.user_for_token(db, presented)
+
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Sign in, or present a Loom API key.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return user
+
+
 CurrentUser = Depends(current_user)
 OptionalUser = Depends(optional_user)
 AdminUser = Depends(admin_user)
+# Read-only surfaces: a browser session or an API key.
+ReadingCaller = Depends(reading_caller)
 
 
 def _deliver(email: str, code: str) -> tuple[str, str]:
@@ -329,4 +393,42 @@ def me(user: User = CurrentUser):
         display_name=user.display_name,
         created_at=user.created_at.isoformat() if user.created_at else None,
         verified=user.email_verified_at is not None,
+    )
+
+
+@router.post("/api-keys", response_model=ApiKeyCreated, status_code=201)
+def create_api_key(payload: ApiKeyRequest, db: DbSession, user: User = CurrentUser):
+    """Issue a key for programmatic access. The plaintext is returned once.
+
+    Session-only, deliberately: a key must not be able to mint another key.
+    Otherwise one leaked credential becomes permanent access that survives
+    revoking the key that was actually exposed.
+    """
+    try:
+        key, plaintext = api_keys.issue(db, user, payload.name)
+    except ValueError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    return ApiKeyCreated(**_key_out(key).model_dump(), key=plaintext)
+
+
+@router.get("/api-keys", response_model=list[ApiKeyOut])
+def list_api_keys(db: DbSession, user: User = CurrentUser):
+    return [_key_out(k) for k in api_keys.list_for(db, user)]
+
+
+@router.delete("/api-keys/{key_id}", status_code=204)
+def revoke_api_key(key_id: str, db: DbSession, user: User = CurrentUser):
+    if not api_keys.revoke(db, user, key_id):
+        # Same answer for somebody else's key and for one that does not exist,
+        # so an account cannot probe for valid key ids.
+        raise HTTPException(status_code=404, detail="No such key on this account.")
+    return Response(status_code=204)
+
+
+def _key_out(key) -> ApiKeyOut:
+    stamp = lambda value: value.isoformat() if value else None  # noqa: E731
+    return ApiKeyOut(
+        id=str(key.id), name=key.name, prefix=key.prefix,
+        created_at=key.created_at.isoformat() if key.created_at else "",
+        last_used_at=stamp(key.last_used_at), revoked_at=stamp(key.revoked_at),
     )

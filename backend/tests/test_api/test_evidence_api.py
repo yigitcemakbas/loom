@@ -191,10 +191,16 @@ def test_every_endpoint_requires_a_caller_to_be_authenticated():
     stated purpose is machine access is exactly where that recurs.
     """
     def resolves_a_user(dependant) -> bool:
-        """Whether `current_user` appears anywhere in this route's chain."""
+        """Whether either credential check appears in this route's chain.
+
+        Two names rather than one since API keys exist: these routes moved to
+        `reading_caller`, which accepts a session or a key, while mutating
+        routes elsewhere still take sessions only through `current_user`. The
+        property being asserted is that nothing here is reachable anonymously.
+        """
         for dependency in dependant.dependencies:
             name = getattr(dependency.call, "__name__", "")
-            if name == "current_user" or resolves_a_user(dependency):
+            if name in ("current_user", "reading_caller") or resolves_a_user(dependency):
                 return True
         return False
 
@@ -353,3 +359,61 @@ def test_every_source_says_what_it_is_good_for():
     assert "fastest" in evidence.SOURCE_PROVENANCE["news"]["offers"].lower()
 
 
+
+
+# ---- what an API key can and cannot reach ----------------------------------
+
+
+def _resolves_with(dependant, names: set[str]) -> bool:
+    """Whether any dependency in this route's chain is one of `names`."""
+    for dependency in dependant.dependencies:
+        if getattr(dependency.call, "__name__", "") in names:
+            return True
+        if _resolves_with(dependency, names):
+            return True
+    return False
+
+
+def test_every_evidence_endpoint_accepts_an_api_key():
+    """The surface agents are meant to use. A credential that cannot reach it
+    would make the evidence API unusable by the callers it was built for."""
+    assert evidence.router.routes
+    for route in evidence.router.routes:
+        assert _resolves_with(route.dependant, {"reading_caller"}), route.path
+
+
+def test_no_mutating_route_anywhere_accepts_an_api_key():
+    """The blast radius, enforced across the whole app rather than reviewed.
+
+    An API key reaches read routes because their authors asked for
+    `reading_caller`, and nothing else. Adding a ticker queues a full
+    filing-history ingest, so a write-capable key would let anyone holding it
+    spend this instance's SEC rate limit and model quota. Checked over every
+    registered route so a future endpoint cannot quietly widen it.
+    """
+    from app.main import app
+
+    offenders = []
+    for route in app.routes:
+        dependant = getattr(route, "dependant", None)
+        methods = getattr(route, "methods", set()) or set()
+        if dependant is None:
+            continue
+        if methods & {"POST", "PUT", "PATCH", "DELETE"}:
+            if _resolves_with(dependant, {"reading_caller"}):
+                offenders.append(f"{sorted(methods)} {route.path}")
+
+    assert not offenders, f"API keys must not reach mutating routes: {offenders}"
+
+
+def test_issuing_a_key_is_session_only():
+    """A key must not be able to mint another key, or one leaked credential
+    becomes permanent access that survives revoking the key that leaked."""
+    from app.main import app
+
+    for route in app.routes:
+        if getattr(route, "path", "") == "/auth/api-keys" and "POST" in (getattr(route, "methods", set()) or set()):
+            assert _resolves_with(route.dependant, {"current_user"})
+            assert not _resolves_with(route.dependant, {"reading_caller"})
+            return
+    raise AssertionError("POST /auth/api-keys is not registered")

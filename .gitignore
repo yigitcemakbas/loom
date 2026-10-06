@@ -23,3 +23,6 @@ frontend/dist/
 .idea/
 secrets/*
 !secrets/README.md
+
+# MCP server has its own virtualenv and dependency set.
+mcp-server/.venv/
