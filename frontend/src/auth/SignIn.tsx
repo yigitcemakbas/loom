@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { checkUsername, requestCode, signInWithPassword, signUp, verifyCode } from "../api/auth";
 import { useAuth } from "./AuthContext";
+import { LoomLogo } from "../components/layout/LoomMark";
 
 type Mode = "signin" | "signup" | "verify";
 
@@ -131,7 +132,7 @@ export function SignIn() {
   return (
     <div className="auth-shell">
       <section className="auth-pitch">
-        <div className="auth-brand">LOOM</div>
+        <div className="auth-brand"><LoomLogo size={26} subtitle="DWYCA" /></div>
         <h1 className="auth-headline">
           The filings, read.
         </h1>

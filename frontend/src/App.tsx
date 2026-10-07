@@ -14,6 +14,7 @@ import { FundamentalsPage } from "./pages/FundamentalsPage";
 import { RiskTrackerPage } from "./pages/RiskTrackerPage";
 import { SignalFeedPage } from "./pages/SignalFeedPage";
 import { SystemStatusPage } from "./pages/SystemStatusPage";
+import { LoomLogo } from "./components/layout/LoomMark";
 
 function App() {
   const { user, loading } = useAuth();
@@ -22,13 +23,13 @@ function App() {
   // during this window makes a returning user see a login form for a moment on
   // every load, which reads as having been signed out.
   if (loading) {
-    return <div className="signin-shell"><div className="signin-brand">LOOM</div></div>;
+    return <div className="signin-shell"><div className="signin-brand"><LoomLogo size={34} /></div></div>;
   }
   if (!user) return <SignIn />;
 
   return (
     <div className="app-shell">
-      <div className="brand">LOOM</div>
+      <div className="brand"><LoomLogo size={18} /></div>
       <TopBar />
       <Sidebar />
       <main className="main-content">
