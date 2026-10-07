@@ -30,6 +30,7 @@ import httpx
 
 from app.config import settings
 from app.ingestion.base import DocumentSourceAdapter, RawDocumentDTO
+from app.ingestion.scrapers.news_article import NewsArticleScraper
 from app.services.company_lookup import get_company_lookup_service
 
 logger = logging.getLogger(__name__)
@@ -42,6 +43,15 @@ DEFAULT_LOOKBACK_DAYS = 60
 
 # Below this, an item is a headline with no substance behind it.
 _MIN_SUMMARY_CHARS = 120
+
+# How many article bodies one run will fetch per company.
+#
+# Bodies cost a request to the publisher, unlike the headline feed which is one
+# request for all of a company's news, so this is the only part of news
+# ingestion whose cost scales with the number of items. Capped per run rather
+# than per day because the items are already ordered newest first and filtered
+# to this company, so the cap falls on the least recent of the relevant ones.
+MAX_BODY_FETCHES_PER_RUN = 12
 
 # Legal-form words that are never how a headline refers to a company:
 # "Apple Inc." is written "Apple", "Micron Technology, Inc." is "Micron".
@@ -84,9 +94,14 @@ class FinnhubNewsAdapter(DocumentSourceAdapter):
     source_name = "finnhub"
     source_type = "news_api"
 
-    def __init__(self, lookback_days: int = DEFAULT_LOOKBACK_DAYS):
+    def __init__(self, lookback_days: int = DEFAULT_LOOKBACK_DAYS, *, fetch_bodies: bool = True):
         self.lookback_days = lookback_days
         self._client = httpx.Client(timeout=30.0)
+        # Off switch rather than a separate code path, so the adapter behaves
+        # identically with and without bodies and a run that cannot reach
+        # publishers still produces the documents it always did.
+        self.fetch_bodies = fetch_bodies
+        self._articles = NewsArticleScraper() if fetch_bodies else None
 
     @property
     def available(self) -> bool:
@@ -108,20 +123,28 @@ class FinnhubNewsAdapter(DocumentSourceAdapter):
         items = self._fetch_news(ticker, start=start, end=now)
         documents: list[RawDocumentDTO] = []
         skipped = 0
+        fetched = 0
         for item in items:
             if not is_about_company(
                 item.get("headline") or "", company_name=company_name, ticker=ticker
             ):
                 skipped += 1
                 continue
-            dto = self._to_document(ticker, item)
+            dto = self._to_document(ticker, item, fetch_body=fetched < MAX_BODY_FETCHES_PER_RUN)
             if dto is not None:
                 documents.append(dto)
+                if dto.metadata.get("body") == "fetched":
+                    fetched += 1
 
         if skipped:
             logger.info(
                 "Finnhub: kept %d of %d items for %s, %d were about other companies.",
                 len(documents), len(items), ticker, skipped,
+            )
+        if self.fetch_bodies:
+            logger.info(
+                "Finnhub: retrieved %d article bodies of %d items kept for %s.",
+                fetched, len(documents), ticker,
             )
         return documents
 
@@ -146,8 +169,9 @@ class FinnhubNewsAdapter(DocumentSourceAdapter):
             return []
         return payload
 
-    @staticmethod
-    def _to_document(ticker: str, item: dict) -> RawDocumentDTO | None:
+    def _to_document(
+        self, ticker: str, item: dict, *, fetch_body: bool = False
+    ) -> RawDocumentDTO | None:
         # Finnhub returns HTML-encoded text, so a headline arrives as
         # "Storage &amp; Peripherals". Left as-is it renders literally in the
         # UI and, worse, reaches the model as an entity rather than a word.
@@ -161,6 +185,21 @@ class FinnhubNewsAdapter(DocumentSourceAdapter):
         if isinstance(epoch, (int, float)) and epoch > 0:
             published_at = datetime.fromtimestamp(epoch, tz=timezone.utc)
 
+        # The article itself, where the publisher allows it. Without this a
+        # news document is a headline and one line of summary — a median of 247
+        # characters against 324,000 for a 10-K — which is why news yielded 0.02
+        # findings per document while a 10-K yielded 0.68.
+        body, outcome, resolved = None, "not_attempted", None
+        if fetch_body and self._articles is not None and item.get("url"):
+            article = self._articles.body_for(item["url"])
+            body, outcome, resolved = article.text, article.outcome, article.resolved_url
+
+        # Headline first either way. It carries the framing, which is often
+        # where the claim lives, and it is what `is_about_company` matched on.
+        raw_text = f"{headline}\n\n{summary}"
+        if body:
+            raw_text = f"{headline}\n\n{summary}\n\n{body}"
+
         return RawDocumentDTO(
             company_ticker=ticker,
             source_type=FinnhubNewsAdapter.source_type,
@@ -169,13 +208,17 @@ class FinnhubNewsAdapter(DocumentSourceAdapter):
             doc_subtype="news",
             title=headline,
             published_at=published_at,
-            # The engine reads one flat string per document; keeping the
-            # headline inline means the model sees the framing, not just the
-            # body, which is often where the actual claim lives.
-            raw_text=f"{headline}\n\n{summary}",
+            raw_text=raw_text,
             metadata={
                 "publisher": item.get("source"),
                 "category": item.get("category"),
                 "finnhub_id": item.get("id"),
+                # Recorded so the evidence API can state per document whether
+                # Loom holds the article or only its headline, rather than
+                # assuming all news is a stub. A reader checking a quote needs
+                # to know which.
+                "body": outcome,
+                "body_chars": len(body) if body else 0,
+                "article_url": resolved,
             },
         )

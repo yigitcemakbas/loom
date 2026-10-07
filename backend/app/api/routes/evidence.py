@@ -146,6 +146,31 @@ def _cutoff(as_of: Optional[date]) -> datetime:
     return datetime.combine(as_of, time.max, tzinfo=timezone.utc)
 
 
+def _provenance_for(document) -> dict:
+    """What Loom holds of this document, decided per document rather than per type.
+
+    News was described as headline-and-summary for every item, which was true
+    when that was all the adapter stored. It now retrieves the article body
+    where the publisher's robots.txt allows, so the same source type covers
+    documents Loom holds in full and documents it holds a stub of. An agent
+    checking a quote needs to know which it has, and a type-level answer would
+    be wrong for one of them whichever way it was written.
+    """
+    facts = dict(SOURCE_PROVENANCE.get(document.doc_subtype or "", _DEFAULT_PROVENANCE))
+    if (document.doc_subtype or "") != "news":
+        return facts
+
+    meta = getattr(document, "doc_metadata", None) or {}
+    if meta.get("body") == "fetched":
+        facts["loom_holds"] = "complete_document"
+        facts["offers"] = (
+            "The fastest source here, and often the only one for something not "
+            "yet filed. Loom retrieved this publisher's article text, so the "
+            "passage comes from the article itself."
+        )
+    return facts
+
+
 def _signal_type(kind: str):
     """Resolve a `kind` string, rejecting an unknown one rather than filtering to
     nothing.
@@ -340,7 +365,7 @@ def _findings(db, company, cutoff, limit, offset, kind: Optional[str] = None) ->
         kind = str(getattr(signal.signal_type, "value", signal.signal_type))
         source = None
         if document is not None:
-            facts = SOURCE_PROVENANCE.get(document.doc_subtype or "", _DEFAULT_PROVENANCE)
+            facts = _provenance_for(document)
             source = Source(
                 document_id=str(document.id),
                 form=document.doc_subtype,

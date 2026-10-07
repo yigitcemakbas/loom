@@ -12,6 +12,16 @@ _SUMMARY = (
 )
 
 
+
+def _adapter() -> FinnhubNewsAdapter:
+    """An adapter that maps items without reaching any publisher.
+
+    `fetch_bodies=False` matters: these tests cover the item-to-DTO mapping, and
+    a unit test that silently fetched a live article would be slow, flaky and
+    dependent on a publisher's robots.txt.
+    """
+    return FinnhubNewsAdapter(fetch_bodies=False)
+
 def _item(**overrides) -> dict:
     base = {
         "headline": "Apple flags rising component costs",
@@ -27,7 +37,7 @@ def _item(**overrides) -> dict:
 
 
 def test_item_becomes_a_document():
-    dto = FinnhubNewsAdapter._to_document("AAPL", _item())
+    dto = _adapter()._to_document("AAPL", _item())
 
     assert dto is not None
     assert dto.source_type == "news_api"
@@ -39,7 +49,7 @@ def test_item_becomes_a_document():
 def test_headline_is_kept_in_the_body():
     """The claim often lives in the framing, not the body; dropping the
     headline would hand the engine the weaker half of the item."""
-    dto = FinnhubNewsAdapter._to_document("AAPL", _item())
+    dto = _adapter()._to_document("AAPL", _item())
 
     assert dto is not None
     assert dto.raw_text.startswith("Apple flags rising component costs")
@@ -50,7 +60,7 @@ def test_html_entities_are_decoded():
     """Finnhub returns HTML-encoded text. Left encoded it renders as
     "Storage &amp; Peripherals" in the UI and reaches the model as an
     entity rather than a word."""
-    dto = FinnhubNewsAdapter._to_document(
+    dto = _adapter()._to_document(
         "AAPL",
         _item(headline="Storage &amp; Peripherals rally", summary=f"{_SUMMARY} &quot;quoted&quot;"),
     )
@@ -64,23 +74,23 @@ def test_html_entities_are_decoded():
 def test_thin_items_are_skipped():
     """A bare headline gives the engine nothing defensible to say, and every
     item it does keep costs a model call."""
-    assert FinnhubNewsAdapter._to_document("AAPL", _item(summary="Shares moved.")) is None
-    assert FinnhubNewsAdapter._to_document("AAPL", _item(summary="")) is None
+    assert _adapter()._to_document("AAPL", _item(summary="Shares moved.")) is None
+    assert _adapter()._to_document("AAPL", _item(summary="")) is None
 
 
 def test_items_without_a_headline_are_skipped():
-    assert FinnhubNewsAdapter._to_document("AAPL", _item(headline="")) is None
+    assert _adapter()._to_document("AAPL", _item(headline="")) is None
 
 
 def test_timestamp_is_converted_to_utc():
-    dto = FinnhubNewsAdapter._to_document("AAPL", _item(datetime=1787000000))
+    dto = _adapter()._to_document("AAPL", _item(datetime=1787000000))
 
     assert dto is not None
     assert dto.published_at == datetime.fromtimestamp(1787000000, tz=timezone.utc)
 
 
 def test_missing_timestamp_is_tolerated():
-    dto = FinnhubNewsAdapter._to_document("AAPL", _item(datetime=0))
+    dto = _adapter()._to_document("AAPL", _item(datetime=0))
 
     assert dto is not None
     assert dto.published_at is None
