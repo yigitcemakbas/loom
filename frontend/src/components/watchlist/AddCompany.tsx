@@ -50,7 +50,10 @@ export function AddCompany() {
 
   return (
     <div style={{ marginTop: 14 }}>
-      <div className="sidebar-section" style={{ paddingLeft: 0 }}>
+      {/* .section-label, not .sidebar-section. The latter is scoped to the
+          chrome and paints --on-chrome, so on this page it was cream type on
+          the cream page at 1.00:1 — the heading was simply not there. */}
+      <div className="section-label" style={{ padding: "0 0 2px" }}>
         Add a company Loom has not read
       </div>
       <AddTickerForm
@@ -59,7 +62,7 @@ export function AddCompany() {
         label={add.isPending ? "Adding…" : loadingLists ? "Loading…" : "Add company"}
       />
       {note && (
-        <p className="empty-state" style={{ padding: "8px 0 0" }} role="status">
+        <p className="empty-state enter" style={{ padding: "8px 0 0" }} role="status">
           {note}
         </p>
       )}

@@ -157,6 +157,17 @@ export function TodayPage() {
         </div>
       )}
 
+      {/* Prices sit directly under the earnings banner, above the verdicts.
+          The chart cycles through the same companies the verdicts below are
+          about, so it reads as the setup for the argument rather than as a
+          separate section — and the banner names the companies reporting, which
+          is exactly when the recent move is worth seeing. */}
+      {chartTickers.length > 0 && (
+        <div className="today-prices">
+          <TrendingCharts tickers={chartTickers} />
+        </div>
+      )}
+
       <div className="verdict-grid">
         {withView.map((brief) => {
           const company = nameById.get(brief.company_id);
@@ -172,16 +183,6 @@ export function TodayPage() {
           );
         })}
       </div>
-
-      {/* Prices sit below the verdicts rather than above them. What a stock
-          did is context for a judgement, not a substitute for one, and leading
-          with a moving chart invites reading the squiggle instead of the
-          argument. */}
-      {chartTickers.length > 0 && (
-        <div className="today-prices">
-          <TrendingCharts tickers={chartTickers} />
-        </div>
-      )}
 
       {/* The ratio is the honest part. Most of the universe is tracked for
           numbers but has not been read, and a reader deserves to know the

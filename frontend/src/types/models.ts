@@ -499,6 +499,9 @@ export interface Position {
   /** Live. Null when the provider is unreachable, never zero: a zero would
    *  read as a wipeout rather than as a missing quote. */
   last_price: number | null;
+  /** The 24h move, distinct from unrealised_percent: that one is measured
+   *  against a cost basis and is null for a company only being watched. */
+  change_percent: number | null;
   market_value: number | null;
   unrealised: number | null;
   unrealised_percent: number | null;

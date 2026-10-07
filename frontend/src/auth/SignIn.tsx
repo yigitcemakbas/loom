@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { checkUsername, requestCode, signInWithPassword, signUp, verifyCode } from "../api/auth";
 import { useAuth } from "./AuthContext";
-import { LoomLogo } from "../components/layout/LoomMark";
+import { AuthSystemPanel } from "./AuthSystemPanel";
 
 type Mode = "signin" | "signup" | "verify";
 
@@ -131,35 +131,10 @@ export function SignIn() {
 
   return (
     <div className="auth-shell">
-      <section className="auth-pitch">
-        <div className="auth-brand"><LoomLogo size={26} subtitle="DWYCA" /></div>
-        <h1 className="auth-headline">
-          The filings, read.
-        </h1>
-        <p className="auth-sub">
-          Loom reads annual reports, earnings calls, insider filings and news for
-          130 companies, scores every one of them against its peers on measures
-          drawn from their own accounts, and tells you the part that should change
-          your mind.
-        </p>
-        <ul className="auth-points">
-          <li>
-            <strong>Evidence, not opinion.</strong> Every claim carries the sentence
-            it came from.
-          </li>
-          <li>
-            <strong>It says when it disagrees with itself.</strong> Confident
-            language over deteriorating cash is a finding, not an average.
-          </li>
-          <li>
-            <strong>It says when it does not know.</strong> A company Loom has not
-            read is reported as unread, never as calm.
-          </li>
-        </ul>
-      </section>
+      <AuthSystemPanel />
 
       <section className="auth-panel">
-        <div className="auth-card">
+        <div className="auth-card auth-panel-enter">
           {mode !== "verify" && (
             <div className="auth-tabs" role="tablist">
               <button

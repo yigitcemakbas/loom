@@ -14,6 +14,8 @@ import { FundamentalsPage } from "./pages/FundamentalsPage";
 import { RiskTrackerPage } from "./pages/RiskTrackerPage";
 import { SignalFeedPage } from "./pages/SignalFeedPage";
 import { SystemStatusPage } from "./pages/SystemStatusPage";
+import { CalendarPage } from "./pages/CalendarPage";
+import { ApiPage } from "./pages/ApiPage";
 import { LoomLogo } from "./components/layout/LoomMark";
 
 function App() {
@@ -43,6 +45,12 @@ function App() {
           <Route path="/signals" element={<SignalFeedPage />} />
           <Route path="/risks" element={<RiskTrackerPage />} />
           <Route path="/filings" element={<FilingsPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          {/* Not "/api": both the Vite dev proxy and nginx forward every path
+              beginning with /api to the backend, so a route there would 404
+              against the API on a reload or a pasted link, and only work when
+              reached by a client-side click. */}
+          <Route path="/developers" element={<ApiPage />} />
           <Route path="/system" element={<SystemStatusPage />} />
           <Route path="/companies/:ticker" element={<CompanyDetailPage />} />
         </Routes>

@@ -52,6 +52,9 @@ class PositionOut(BaseModel):
     # when the provider is unreachable, never zero: a zero would read as a
     # wipeout rather than as a missing quote.
     last_price: float | None = None
+    # The 24h move. Separate from unrealised_percent, which is measured
+    # against a cost basis and only exists for a position actually held.
+    change_percent: float | None = None
     market_value: float | None = None
     unrealised: float | None = None
     unrealised_percent: float | None = None
@@ -82,18 +85,27 @@ class PortfolioOut(BaseModel):
     total_unrealised: float | None
 
 
-def _price(ticker: str) -> float | None:
+def _quote(ticker: str) -> tuple[float | None, float | None]:
+    """Last price and the move across the last 24 hours.
+
+    The series was already being fetched for the price alone and the move was
+    being discarded, so the second figure costs nothing. It is the window's
+    own change, not the move since yesterday's close, which is why the
+    interface labels it 24h rather than today.
+    """
     try:
         series = get_price_source().get(ticker, "24H")
     except Exception:
-        return None
-    return series.last if series else None
+        return None, None
+    if not series:
+        return None, None
+    return series.last, series.change_percent
 
 
 def _to_out(position: Position, company: Company, brief, composite) -> PositionOut:
     shares = float(position.shares) if position.shares is not None else None
     cost = float(position.cost_basis) if position.cost_basis is not None else None
-    price = _price(company.ticker)
+    price, move = _quote(company.ticker)
 
     value = shares * price if (shares is not None and price is not None) else None
     spent = shares * cost if (shares is not None and cost is not None) else None
@@ -111,6 +123,7 @@ def _to_out(position: Position, company: Company, brief, composite) -> PositionO
         opened_at=position.opened_at,
         is_held=position.is_held,
         last_price=price,
+        change_percent=round(move, 2) if move is not None else None,
         market_value=value,
         unrealised=unrealised,
         unrealised_percent=round(percent, 2) if percent is not None else None,

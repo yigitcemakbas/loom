@@ -100,7 +100,7 @@ export function StaleBuildNotice() {
         marginBottom: 8,
         border: "1px solid var(--accent-dim)",
         background: "var(--bg-inset)",
-        color: "var(--accent)",
+        color: "var(--accent-ink)",
       }}
     >
       <span>A newer build of Loom is available. This tab is still running the old one.</span>

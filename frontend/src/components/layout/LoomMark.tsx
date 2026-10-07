@@ -32,8 +32,23 @@ interface Props {
 // boxes — the overhang is what makes it a loom and not a window.
 const WARP = [30, 50, 70]; // verticals
 const WEFT = [30, 50, 70]; // horizontals
-const SPAN = { start: 9, end: 91 };
-const WIDTH = 11;
+
+// Measured off the supplied artwork rather than guessed. There the bars are
+// 20px thick on a 53px grid pitch, a ratio of 0.38; the first version of this
+// used 10 on a pitch of 20, which is 0.50 and read as a blocky hash instead of
+// a weave. On this 100-unit grid the pitch is 20, so the thread is 7.5.
+const WIDTH = 7.5;
+
+// The two accent threads run longer than the four neutral ones, which is in the
+// artwork and is the detail that makes it a loom: the coloured threads are the
+// ones being drawn through. Green spans 212px against the navy verticals' ~180,
+// so it overhangs by about half a pitch more at each end.
+const SPAN = { start: 11, end: 89 };
+const ACCENT_SPAN = { start: 6, end: 94 };
+
+// Flat ends. The artwork's are barely radiused and this interface's own rule is
+// that nothing has rounded corners, so they are cut square.
+const CAP = "butt" as const;
 
 export function LoomMark({ size = 20, monochrome = false, title }: Props) {
   const neutral = "currentColor";
@@ -60,18 +75,20 @@ export function LoomMark({ size = 20, monochrome = false, title }: Props) {
       {WEFT.map((y, row) => (
         <line
           key={`weft-${y}`}
-          x1={SPAN.start} y1={y} x2={SPAN.end} y2={y}
+          x1={row === 1 ? ACCENT_SPAN.start : SPAN.start} y1={y}
+          x2={row === 1 ? ACCENT_SPAN.end : SPAN.end} y2={y}
           stroke={row === 1 ? red : neutral}
-          strokeWidth={WIDTH} strokeLinecap="round"
+          strokeWidth={WIDTH} strokeLinecap={CAP}
         />
       ))}
 
       {WARP.map((x, col) => (
         <line
           key={`warp-${x}`}
-          x1={x} y1={SPAN.start} x2={x} y2={SPAN.end}
+          x1={x} y1={col === 1 ? ACCENT_SPAN.start : SPAN.start}
+          x2={x} y2={col === 1 ? ACCENT_SPAN.end : SPAN.end}
           stroke={col === 1 ? green : neutral}
-          strokeWidth={WIDTH} strokeLinecap="round"
+          strokeWidth={WIDTH} strokeLinecap={CAP}
         />
       ))}
 

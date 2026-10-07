@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../../auth/AuthContext";
+import { ThemeToggle } from "./ThemeToggle";
+import { SidebarWatchlist } from "./SidebarWatchlist";
 
 /** Two front doors, then the machinery.
  *
@@ -18,6 +20,7 @@ export function Sidebar() {
         <NavLink to="/" end className={cls}>Today</NavLink>
         <NavLink to="/portfolio" className={cls}>Portfolio</NavLink>
         <NavLink to="/changed" className={cls}>What changed</NavLink>
+        <NavLink to="/calendar" className={cls}>Calendar</NavLink>
         <NavLink to="/terminal" className={cls}>Terminal</NavLink>
         <NavLink to="/numbers" className={cls}>The numbers</NavLink>
 
@@ -25,8 +28,18 @@ export function Sidebar() {
         <NavLink to="/signals" className={cls}>Findings</NavLink>
         <NavLink to="/risks" className={cls}>Risks</NavLink>
         <NavLink to="/filings" className={cls}>Filings</NavLink>
+        <NavLink to="/developers" className={cls}>API</NavLink>
         <NavLink to="/system" className={cls}>System</NavLink>
       </nav>
+
+      {/* Navigation is where you can go; this is what is happening. Keeping
+          the second in the rail means the price, the 24h move and Loom's read
+          on everything you follow stay in view on the filings page, the risk
+          page and everywhere else, instead of only on the one page about
+          them. */}
+      <SidebarWatchlist />
+
+      <div className="rail-spacer" />
 
       {/* Bottom of the rail, out of the way. Who you are is worth showing so a
           shared machine cannot quietly serve the wrong portfolio, and worth
@@ -35,7 +48,10 @@ export function Sidebar() {
         {/* The username, not the address. An email on screen discloses a
             private contact detail to anyone glancing at a shared display. */}
         <span className="account-email" title={user?.email}>{user?.username}</span>
-        <button className="account-signout" onClick={() => void signOut()}>sign out</button>
+        <div className="sidebar-account-row">
+          <button className="account-signout" onClick={() => void signOut()}>sign out</button>
+          <ThemeToggle />
+        </div>
       </div>
     </aside>
   );

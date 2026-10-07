@@ -15,39 +15,244 @@
      grid, exactly like a terminal.
    - Monospace with tabular figures for all data, so columns of numbers line up
      digit for digit. Sans is reserved for actual prose.
-   - Colour is data, never decoration. Green and red mean direction; amber is
-     the single interactive/brand accent and means nothing about a value. */
+   - Colour is data, never decoration. Green and red mean direction; orange is
+     the single interactive/brand accent and means nothing about a value.
+   - Light scheme. The palette is three supplied colours plus the logo's navy;
+     contrast was measured for every text pairing, which is what ruled the
+     orange and the blue out of carrying type at all. */
 
 :root {
-  --bg: #08090b;
-  --bg-panel: #0e1013;
-  --bg-inset: #050506;
-  --bg-hover: #191d22;
-  --bg-header: #141619;
-  --border: #22252a;
-  --border-strong: #34383e;
+  /* Light scheme, built from three supplied colours plus the logo's own navy.
+     Every value below is either one of those four or derived from them, and
+     every text pairing was measured against its background rather than chosen
+     by eye — the measurements are what decided which colour does which job.
 
-  --text: #e6e6e4;
-  --text-dim: #8a9096;
-  --text-faint: #5a5f65;
+     The orange (#F98513) is 2.22:1 on the background and the blue (#9BACD8) is
+     2.01:1. Neither can legally carry text, so neither does: the orange is a
+     fill, an indicator and a focus ring, the blue is structure. All type is the
+     logo navy, which measures 9.76:1. */
 
-  --accent: #d99a3f;
-  --accent-dim: #7a5c2b;
+  /* Three supplied colours, each doing structural work.
+     Cream is the page, blue is the chrome, orange is the action — and the
+     separation between those three zones is what gives the screen its
+     contrast, rather than text weight doing all of it.
 
-  --positive: #35c46b;
-  --positive-dim: #1c6d3d;
-  --negative: #e0524a;
-  --negative-dim: #7d2f2a;
-  --neutral: #8a9096;
-  --warn: #d9a93f;
+     The first attempt used the cream and a little orange, put the blue in a
+     1px border where it was invisible, and let the logo's navy carry
+     everything. That read as cream-and-navy. The mistake was treating "cannot
+     carry text" as "cannot be used": the blue measures 2.01:1 against the page,
+     which disqualifies it as type and makes it an excellent surface. Navy on
+     the full blue measures 4.86:1, so the chrome can be properly blue with
+     properly readable text on it. */
+
+  /* Four colours, each with one job, and the division between them is what
+     gives the screen its structure:
+
+       #F4F1EC  cream   the page, where data is read
+       #2C3B4D  slate   the chrome, where navigation lives
+       #C9C1B1  taupe   rules, and the secondary voice on chrome
+       #F98513  orange  action and the active state
+
+     Slate against cream separates by 10.13:1, so chrome and content read apart
+     instantly without any help from type weight. That separation is the point:
+     the previous pale-blue chrome gave 2.01:1 and the whole screen looked flat.
+
+     The slate also rescues the orange. On cream it measures 2.22:1 and can only
+     ever be a fill; on slate it is 4.56:1 and can finally be a visible accent,
+     which is why the active navigation state lives in the chrome. */
+
+  /* Tells the browser which way round this is, which is not cosmetic: without
+     it the scrollbars, the native select menus, the autofill highlight and the
+     canvas behind the page all render light. On a near-black page a light
+     scrollbar is the brightest thing on screen. */
+  color-scheme: light;
+
+  --bg: #F4F1EC;              /* cream — the page */
+  --bg-panel: #FBF9F6;        /* a card lifted off the page */
+  --bg-inset: #EAE5DB;        /* recessed: inputs and wells, taupe-leaning */
+  --bg-hover: #E8E3D8;
+  --bg-header: #EFEAE1;
+
+  --chrome: #2C3B4D;          /* slate — sidebar, brand bar, top bar */
+  --chrome-hover: #3A4B60;
+  --on-chrome: #F4F1EC;       /* 10.13:1 on the slate */
+  --on-chrome-dim: #C9C1B1;   /* taupe, 6.38:1 — the secondary voice on chrome */
+
+  /* Direction, for the chrome. --positive and --negative are measured against
+     the cream page and land at 2.05:1 and 2.04:1 on the slate, so a green
+     figure in the sidebar would be very nearly invisible. These are the same
+     two hues lifted until they clear the chrome AND its hover fill, which is
+     the darker of the two surfaces type sits on there. */
+  --on-chrome-positive: #6ED3AC;  /* 6.29 on chrome, 4.92 on chrome hover */
+  --on-chrome-negative: #FFA8AB;  /* 6.22 / 4.86 */
+
+  --border: #C9C1B1;          /* taupe — 1.59:1 on cream, right for a hairline */
+  --border-strong: #AFA694;
+
+  --text: #2C3B4D;            /* slate on cream, 10.13:1 */
+  --text-dim: #5E6875;        /* 5.02:1 */
+  /* Measured against --bg-hover, the darkest cream surface text sits on, rather
+     than against --bg. Tuned to --bg alone it read 4.26:1 there and 4.00:1 on
+     --bg-header, so captions failed on exactly the surfaces that have them. */
+  --text-faint: #5A6471;      /* 5.33 / 5.01 / 4.69 across the three creams */
+
+  --accent: #F98513;          /* orange — action */
+  --accent-dim: #E8C9A6;
+  --accent-ink: #9C4B09;      /* 5.44:1, for orange as type on cream */
+  --on-accent: #241A09;       /* 6.84:1 on the orange */
+
+  --positive: #097754;        /* the logo green */
+  --positive-dim: #BFDCCF;
+  --negative: #C9222A;        /* the logo red */
+  --negative-dim: #EFC5C6;
+  --neutral: #5E6875;
+  --warn: #9C4B09;
 
   --font-mono: "Menlo", "IBM Plex Mono", "Consolas", ui-monospace, monospace;
   --font-sans: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 
   --row-h: 22px;
+
+  /* Type scale. Twenty-two distinct font sizes were in use, including 8.5,
+     9.5, 10.5, 11.5, 12.5 and 13.5 — half-pixel steps that no screen renders
+     distinctly and that leave nothing reading as deliberate. These ten steps
+     replace them. The ratio is tight at the bottom, where this interface
+     actually lives, and widens at the top where the jumps need to be obvious.
+     Density is preserved: the working range is still 9px to 13px. */
+  --fs-micro: 9px;    /* tags, captions, carets */
+  --fs-xs: 10px;      /* table headers, secondary labels */
+  --fs-sm: 11px;      /* UI chrome: nav, buttons, inputs */
+  --fs-base: 12px;    /* body and data */
+  --fs-md: 13px;      /* emphasis */
+  --fs-lg: 15px;      /* section headings */
+  --fs-xl: 18px;      /* page headings */
+  --fs-2xl: 22px;     /* display */
+  --fs-3xl: 26px;     /* large display */
+  --fs-hero: 38px;    /* the sign-in headline, used once */
+
+  /* Motion. The built-in CSS easings are too weak to read at these durations,
+     so these are the stronger curves rather than `ease-out` literally.
+
+     The governing rule is the one the rest of this file already follows: motion
+     is feedback, never decoration. An interface this dense is read, not watched,
+     and anything the eye is trying to parse — table rows, figures, the signal
+     feed — does not move. What animates is the handful of moments where the
+     interface would otherwise change with no bridge at all. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-press: 120ms;   /* press feedback, under the 160ms ceiling */
+  --dur-enter: 200ms;   /* something appearing that was not there */
+}
+
+/* ---- dark mode ----------------------------------------------------------
+
+   The same four colours with the stack inverted: the slate becomes the page
+   instead of the chrome, and the cream becomes the type instead of the ground.
+   Orange and taupe keep their jobs, and both are measurably better off here —
+   orange reads 5.51:1 on the dark page against 2.22:1 on the cream one, so the
+   accent is finally free to be type as well as a fill.
+
+   Three things do not simply invert.
+
+   The page is near-black rather than navy. An inverted palette would make the
+   supplied slate the panel surface, but slate against this background measures
+   1.57:1 — closer than some borders, so it would read as a smudge rather than a
+   raised card. The surfaces are therefore a neutral ramp off #171717, and the
+   brand survives where it can actually be seen: cream carries the type, taupe
+   the secondary voice, orange the action.
+
+   The logo's own green and red are dark colours: 3.23:1 and 3.20:1 here. Keeping
+   them would make every direction indicator in the product unreadable, so dark
+   mode uses lightened versions of the same two hues. The mark itself keeps the
+   originals, because it sits on its own.
+
+   Surface separation is unavoidably narrower than in light mode. Slate against
+   cream is 10.13:1; no two near-black surfaces can be that far apart, and this
+   page is darker than the last one, which narrows the range further. Dark mode
+   therefore leans on borders to divide space, which is why --border is lifted
+   well clear of the page rather than being a hairline tint, and why the sidebar
+   is separated from the content by a rule and not by its fill.
+
+   Applied through one selector only. The first version of this also matched
+   `:root:not([data-theme="light"])` outside any media query, which quietly made
+   dark the default for everyone rather than the choice it is meant to be. The
+   system preference is resolved to an explicit `data-theme` before first paint
+   by the inline script in index.html, so this file never has to express the
+   same palette twice and the two definitions cannot drift apart. */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #171717;              /* the page */
+  --bg-panel: #1F1F1F;        /* a card lifted off the page */
+  --bg-inset: #101010;        /* recessed: inputs and wells */
+  --bg-hover: #292929;        /* the lightest surface type sits on, so every
+                                 text token below is measured against this one
+                                 and not against the page */
+  --bg-header: #1C1C1C;
+
+  --chrome: #0D0D0D;          /* chrome sits below the page, as in light mode */
+  --chrome-hover: #1F1F1F;
+  --on-chrome: #F4F1EC;       /* 17.25:1 */
+  --on-chrome-dim: #C9C1B1;   /* taupe, 10.87:1 */
+
+  /* On a near-black chrome the page's own green and red are already clear
+     (8.20 and 8.24, and 6.95 / 6.99 on the hover fill), so dark mode needs no
+     separate pair. */
+  --on-chrome-positive: #46BC90;
+  --on-chrome-negative: #F58A8E;
+
+  --border: #383838;          /* 1.53:1 — the same weight as the taupe hairline
+                                 against cream, which is 1.59:1 */
+  --border-strong: #525252;   /* 2.29:1, and the sidebar's own edge */
+
+  --text: #F4F1EC;            /* cream, 15.91 page / 12.91 worst surface */
+  --text-dim: #C9C1B1;        /* taupe, 10.03 / 8.14 */
+  --text-faint: #A39C91;      /* 6.59 / 5.35 */
+
+  --accent: #F98513;          /* 7.16 / 5.81. On cream it is 2.22:1 and can only
+                                 be a fill; here it can carry type as well */
+  --accent-dim: #7A4710;      /* borders and the confidence bar, 2.34:1 */
+  --accent-ink: #F98513;      /* no darkening needed on a dark page, so ink and
+                                 accent are the same colour */
+  --on-accent: #241A09;       /* 6.84:1 on the orange */
+
+  --positive: #46BC90;        /* the logo green, lightened. 7.56 / 6.14 */
+  /* The *-dim pair are cell fills with their own colour as the text on top, so
+     they are measured against that, not against the page. The navy palette used
+     #1E4A3A here, which gave the green 4.23:1 on its own cell — a number in a
+     coloured cell being the one place this must not fail. */
+  --positive-dim: #15342A;    /* green on it: 5.69:1 */
+  --negative: #F58A8E;        /* the logo red, lightened. 7.61 / 6.17 */
+  --negative-dim: #3E1518;    /* red on it: 6.72:1 */
+  --neutral: #C9C1B1;
+  --warn: #F0A23C;            /* 8.48 / 6.89 */
 }
 
 * { box-sizing: border-box; }
+
+/* One focus treatment, applied everywhere.
+   Five rules in this file removed the browser outline and only three put
+   anything back, so a keyboard user could tab into an input, a tab strip or a
+   search box and see nothing at all. `:focus-visible` rather than `:focus`, so
+   a mouse click never shows a ring and a Tab key always does. Offset outward
+   so it reads on a 20px control without covering the content inside it. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+  border-radius: 0;
+}
+
+/* Inputs already signal focus with a border colour, so the ring would be a
+   second, louder answer to the same question. They get the border treatment
+   strengthened instead. */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+.terminal-search:focus-visible {
+  outline: 1px solid var(--accent);
+  outline-offset: 0;
+}
 
 html, body, #root { height: 100%; margin: 0; }
 
@@ -55,12 +260,12 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: var(--fs-base);
   line-height: 1.35;
   -webkit-font-smoothing: antialiased;
 }
 
-a { color: var(--accent); text-decoration: none; }
+a { color: var(--accent-ink); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 .mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
@@ -68,7 +273,7 @@ a:hover { text-decoration: underline; }
 
 button, select, input, textarea {
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--fs-sm);
 }
 
 /* ---- shell ---- */
@@ -89,7 +294,7 @@ button, select, input, textarea {
   padding: 0 10px;
   border-bottom: 1px solid var(--border);
   background: var(--bg-header);
-  font-size: 11px;
+  font-size: var(--fs-sm);
 }
 
 .topbar-item {
@@ -102,8 +307,13 @@ button, select, input, textarea {
 
 .sidebar {
   grid-area: sidebar;
-  border-right: 1px solid var(--border);
-  background: var(--bg-panel);
+  border-right: 1px solid var(--border-strong);
+  /* The chrome is blue and the page is cream. That division is what separates
+     navigation from data at a glance, and it is the job the supplied blue is
+     actually suited to — it cannot carry type but it makes an excellent
+     surface, and navy on it measures 4.86:1. */
+  background: var(--chrome);
+  color: var(--on-chrome);
   padding: 4px 0;
   overflow-y: auto;
 }
@@ -133,7 +343,7 @@ button, select, input, textarea {
 }
 
 .panel-title {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -182,17 +392,17 @@ button, select, input, textarea {
 }
 
 .quote-ticker {
-  font-size: 20px;
+  font-size: var(--fs-2xl);
   letter-spacing: 0.02em;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 .quote-name {
-  font-size: 12px;
+  font-size: var(--fs-base);
   color: var(--text);
 }
 
-.quote-meta { font-size: 10px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+.quote-meta { font-size: var(--fs-xs); color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.06em; }
 
 /* Horizontal strip of key figures under the identity line. */
 .stat-strip {
@@ -211,7 +421,7 @@ button, select, input, textarea {
 .stat:last-child { border-right: none; }
 
 .stat-label {
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-faint);
@@ -219,18 +429,18 @@ button, select, input, textarea {
 }
 
 .stat-value {
-  font-size: 15px;
+  font-size: var(--fs-lg);
   font-variant-numeric: tabular-nums;
   line-height: 1.25;
   white-space: nowrap;
 }
 
-.stat-sub { font-size: 10px; color: var(--text-faint); font-variant-numeric: tabular-nums; }
+.stat-sub { font-size: var(--fs-xs); color: var(--text-faint); font-variant-numeric: tabular-nums; }
 
 /* Same strip inside a narrow side panel, where four figures at the default
    minimum would wrap onto a second line. */
 .stat-strip-tight .stat { min-width: 70px; padding: 3px 6px; }
-.stat-strip-tight .stat-value { font-size: 13px; }
+.stat-strip-tight .stat-value { font-size: var(--fs-md); }
 
 /* ---- data tables ---- */
 
@@ -240,17 +450,19 @@ table.data-table {
   width: 100%;
   border-collapse: collapse;
   font-variant-numeric: tabular-nums;
-  font-size: 11px;
+  font-size: var(--fs-sm);
 }
 
 table.data-table thead th {
+  background: var(--bg-header);
+  color: var(--on-chrome);
   position: sticky;
   top: 0;
   z-index: 1;
   height: 20px;
   padding: 0 6px;
   text-align: left;
-  font-size: 9px;
+  font-size: var(--fs-micro);
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -330,13 +542,13 @@ td.center, th.center { text-align: center; }
 
 /* Finviz-style filled cell: the value's own background carries its sign, so a
    column can be read at a glance without reading any number in it. */
-.cell-pos { background: rgba(53, 196, 107, 0.13); color: var(--positive); }
-.cell-neg { background: rgba(224, 82, 74, 0.13); color: var(--negative); }
+.cell-pos { background: var(--positive-dim); color: var(--positive); }
+.cell-neg { background: var(--negative-dim); color: var(--negative); }
 
 .ticker-symbol {
   font-family: var(--font-mono);
   letter-spacing: 0.04em;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 a.ticker-symbol:hover { text-decoration: underline; }
 
@@ -345,7 +557,7 @@ a.ticker-symbol:hover { text-decoration: underline; }
 .tag {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   padding: 0 4px;
@@ -357,8 +569,8 @@ a.ticker-symbol:hover { text-decoration: underline; }
 
 .tag-risk { color: var(--negative); border-color: var(--negative-dim); }
 .tag-positive { color: var(--positive); border-color: var(--positive-dim); }
-.tag-accent { color: var(--accent); border-color: var(--accent-dim); }
-.tag-solid { background: var(--accent); color: #14100a; border-color: var(--accent); }
+.tag-accent { color: var(--accent-ink); border-color: var(--accent-dim); }
+.tag-solid { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 
 /* ---- confidence / meters ---- */
 
@@ -367,7 +579,7 @@ a.ticker-symbol:hover { text-decoration: underline; }
   align-items: center;
   gap: 4px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
   font-variant-numeric: tabular-nums;
 }
@@ -403,7 +615,7 @@ a.ticker-symbol:hover { text-decoration: underline; }
 }
 
 .filter-label {
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-faint);
@@ -425,25 +637,41 @@ input[type="text"]:focus, select:focus, textarea:focus {
 .btn {
   background: transparent;
   border: 1px solid var(--accent-dim);
-  color: var(--accent);
+  color: var(--accent-ink);
   padding: 2px 8px;
   height: 20px;
   cursor: pointer;
   text-transform: uppercase;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.06em;
 }
-.btn:hover { background: var(--accent); color: #14100a; }
+.btn:hover { background: var(--accent); color: var(--on-accent); }
+
+/* Press feedback. The one thing 19 hover states did not provide: an
+   acknowledgement that the click landed. Kept near-imperceptible because
+   buttons here are 20px tall and pressed often — at this size 0.97 is about
+   half a pixel, which registers as firmness rather than as movement. */
+.btn:active:not(:disabled),
+.link-button:active:not(:disabled),
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn, .link-button, button {
+  transition: transform var(--dur-press) var(--ease-out),
+              background-color var(--dur-press) var(--ease-out),
+              color var(--dur-press) var(--ease-out);
+}
 .btn:disabled { opacity: 0.4; cursor: default; }
-.btn:disabled:hover { background: transparent; color: var(--accent); }
+.btn:disabled:hover { background: transparent; color: var(--accent-ink); }
 
 .link-button {
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--accent-ink);
   cursor: pointer;
   padding: 0;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -461,7 +689,7 @@ input[type="text"]:focus, select:focus, textarea:focus {
 
 .page-title-row h2 {
   margin: 0;
-  font-size: 12px;
+  font-size: var(--fs-base);
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -471,11 +699,11 @@ input[type="text"]:focus, select:focus, textarea:focus {
 .empty-state {
   padding: 14px 8px;
   color: var(--text-faint);
-  font-size: 11px;
+  font-size: var(--fs-sm);
 }
 
-.error-text { color: var(--negative); font-size: 11px; margin: 0 0 8px; }
-.notice { color: var(--text-dim); font-size: 11px; }
+.error-text { color: var(--negative); font-size: var(--fs-sm); margin: 0 0 8px; }
+.notice { color: var(--text-dim); font-size: var(--fs-sm); }
 
 /* ---- evidence ---- */
 
@@ -486,7 +714,7 @@ input[type="text"]:focus, select:focus, textarea:focus {
   background: var(--bg-inset);
   color: var(--text-dim);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
   white-space: normal;
 }
@@ -495,7 +723,7 @@ input[type="text"]:focus, select:focus, textarea:focus {
   display: block;
   margin-top: 4px;
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-xs);
 }
 
 /* ---- expandable detail row ---- */
@@ -509,7 +737,7 @@ tr.detail-row > td {
 
 .detail-prose {
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--text);
   margin: 0 0 5px;
@@ -541,27 +769,39 @@ tr.detail-row > td {
 .sidebar nav a {
   display: block;
   padding: 4px 10px;
-  color: var(--text-dim);
-  font-size: 11px;
+  color: var(--on-chrome);
+  font-size: var(--fs-sm);
   letter-spacing: 0.05em;
   text-transform: uppercase;
   border-left: 2px solid transparent;
 }
 
-.sidebar nav a:hover { background: var(--bg-hover); color: var(--text); text-decoration: none; }
+/* Colour only, and deliberately no movement. Navigation is used tens of times
+   a day, which is the tier where motion starts to feel like latency; a route
+   change must stay instant. The transition is on the indicator, not the page. */
+.sidebar nav a {
+  transition: color var(--dur-press) var(--ease-out),
+              border-left-color var(--dur-press) var(--ease-out),
+              background-color var(--dur-press) var(--ease-out);
+}
+
+/* --chrome-hover, not --bg-header. The sidebar is chrome and --bg-header is a
+   page surface: in light mode that painted a cream fill behind cream text at
+   1.06:1, so hovering a nav item erased its label. 7.91:1 now. */
+.sidebar nav a:hover { background: var(--chrome-hover); color: var(--on-chrome); text-decoration: none; }
 
 .sidebar nav a.active {
-  color: var(--accent);
+  color: var(--on-accent);
   border-left-color: var(--accent);
-  background: var(--bg-hover);
+  background: var(--accent);
 }
 
 .sidebar-section {
+  color: var(--on-chrome);
   padding: 8px 10px 2px;
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-faint);
 }
 
 .brand {
@@ -571,16 +811,16 @@ tr.detail-row > td {
   padding: 0 10px;
   border-right: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
-  background: var(--bg-header);
-  color: var(--accent);
-  font-size: 13px;
+  background: var(--chrome);
+  color: var(--on-chrome);
+  font-size: var(--fs-md);
   letter-spacing: 0.22em;
 }
 
 /* ---- section labels (brief view) ---- */
 
 .section-label {
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-faint);
@@ -641,7 +881,7 @@ tr.detail-row > td {
   padding: 0 10px;
   border-right: 1px solid var(--border);
   background: var(--bg-inset);
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-dim);
@@ -661,13 +901,11 @@ tr.detail-row > td {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(
-    to right,
-    var(--bg-panel) 0,
-    transparent 24px,
-    transparent calc(100% - 24px),
-    var(--bg-panel) 100%
-  );
+  /* Was a left/right fade. Replaced with hairlines: the tape now ends at a
+     border like every other edge in this interface, which is the grid rule
+     this file opens with rather than an exception to it. */
+  border-left: 1px solid var(--border);
+  border-right: 1px solid var(--border);
 }
 
 .tape-track {
@@ -710,7 +948,7 @@ tr.detail-row > td {
   padding: 6px 14px;
   white-space: nowrap;
   border-right: 1px solid var(--border);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text);
   text-decoration: none;
 }
@@ -718,7 +956,7 @@ tr.detail-row > td {
 .tape-item:hover { background: var(--bg-hover); }
 
 .tape-chip {
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.06em;
   padding: 1px 5px;
   border: 1px solid var(--border-strong);
@@ -729,15 +967,15 @@ tr.detail-row > td {
 .tape-chip-urgent {
   background: var(--accent);
   border-color: var(--accent);
-  color: #14100a;
+  color: var(--on-accent);
   font-weight: 600;
 }
-.tape-chip-accent { border-color: var(--accent-dim); color: var(--accent); }
+.tape-chip-accent { border-color: var(--accent-dim); color: var(--accent-ink); }
 .tape-chip-positive { border-color: var(--positive-dim); color: var(--positive); }
 .tape-chip-negative { border-color: var(--negative-dim); color: var(--negative); }
 
 .tape-detail { color: var(--text-dim); }
-.tape-time { color: var(--text-faint); font-size: 10px; }
+.tape-time { color: var(--text-faint); font-size: var(--fs-xs); }
 
 /* A strip that moves on its own is exactly the pattern that triggers motion
    sensitivity, and it carries real information, so it must stay readable
@@ -759,7 +997,7 @@ tr.detail-row > td {
 .today-head h1 {
   margin: 0 0 4px;
   font-family: var(--font-sans);
-  font-size: 22px;
+  font-size: var(--fs-2xl);
   font-weight: 600;
   letter-spacing: -0.01em;
 }
@@ -767,7 +1005,7 @@ tr.detail-row > td {
   margin: 0;
   max-width: 68ch;
   font-family: var(--font-sans);
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   color: var(--text-dim);
 }
@@ -778,11 +1016,11 @@ tr.detail-row > td {
   border: 1px solid var(--accent-dim);
   background: var(--bg-inset);
   font-family: var(--font-sans);
-  font-size: 12.5px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   color: var(--text-dim);
 }
-.today-banner strong { color: var(--accent); }
+.today-banner strong { color: var(--accent-ink); }
 
 /* Wide enough for an argument to be readable, narrow enough that two fit on a
    large screen. Prose in a full-width column is where dashboards go to die. */
@@ -806,24 +1044,44 @@ tr.detail-row > td {
   gap: 10px;
   margin-bottom: 9px;
 }
+/* The lockup grew, so it needs somewhere to go on a narrow card: without
+   these it pushes the earnings tag off the right edge rather than wrapping. */
+.verdict-head > div:first-child {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 2px;
+  min-width: 0;
+}
+.verdict-head .tag { flex: none; }
+/* The identity is the largest thing on the card, above the verdict itself.
+   On a page answering "which of mine need a look", the first question a
+   reader asks of a card is which company it is; the ticker was 15px against
+   an 18px verdict label, so the answer to that question was the second
+   biggest thing on the card. */
 .verdict-ticker {
   font-family: var(--font-mono);
-  font-size: 15px;
+  font-size: var(--fs-2xl);
   font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--accent);
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  color: var(--accent-ink);
 }
-.verdict-name { margin-left: 8px; font-size: 12px; color: var(--text-faint); }
+.verdict-name {
+  margin-left: 9px;
+  font-size: var(--fs-lg);
+  color: var(--text-dim);
+}
 
 .verdict-label {
-  font-size: 17px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.2;
 }
 .verdict-meaning {
   margin: 2px 0 9px;
-  font-size: 12.5px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   color: var(--text-faint);
 }
@@ -831,7 +1089,7 @@ tr.detail-row > td {
   margin: 0 0 11px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--border);
-  font-size: 13.5px;
+  font-size: var(--fs-lg);
   line-height: 1.55;
   color: var(--text);
 }
@@ -840,7 +1098,7 @@ tr.detail-row > td {
 .verdict-section h4 {
   margin: 0 0 5px;
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-micro);
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -850,7 +1108,7 @@ tr.detail-row > td {
 .verdict-section li,
 .verdict-section p {
   margin: 0 0 6px;
-  font-size: 12.5px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   color: var(--text-dim);
 }
@@ -865,9 +1123,9 @@ tr.detail-row > td {
 .driver-rarity {
   display: block;
   margin-top: 3px;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.45;
-  color: var(--accent);
+  color: var(--accent-ink);
   letter-spacing: 0.01em;
 }
 
@@ -887,16 +1145,16 @@ tr.detail-row > td {
   gap: 6px;
   padding-top: 9px;
   border-top: 1px solid var(--border);
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text-faint);
 }
-.verdict-more { margin-left: auto; color: var(--accent); white-space: nowrap; }
+.verdict-more { margin-left: auto; color: var(--accent-ink); white-space: nowrap; }
 
 .today-uncovered {
   margin: 16px 0 0;
   max-width: 78ch;
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: var(--fs-base);
   line-height: 1.6;
   color: var(--text-faint);
 }
@@ -917,28 +1175,110 @@ tr.detail-row > td {
   background: var(--bg-inset);
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-sm);
 }
 .terminal-search:focus { outline: none; border-color: var(--accent-dim); }
-.sort-caret { margin-left: 3px; color: var(--accent); font-size: 7px; }
+.sort-caret { margin-left: 3px; color: var(--accent-ink); font-size: var(--fs-micro); }
 
 /* ---- propagation map --------------------------------------------------- */
+
+/* The map sizes itself to the panel and the camera fits the graph to whatever
+   that turns out to be. Height is a clamp rather than an aspect ratio: a
+   dependency graph is read by area, and a 16:9 box on a tall window wastes the
+   bottom half of the screen while a square one on a laptop pushes the panel
+   beside it off the fold. */
+.map-host {
+  position: relative;
+  height: clamp(400px, 58vh, 720px);
+  background: var(--bg-inset);
+  overflow: hidden;
+}
 
 .propagation-map {
   display: block;
   width: 100%;
-  height: auto;
-  background: var(--bg-inset);
+  height: 100%;
+  cursor: grab;
+  /* The wheel is bound to zoom, so the browser must not also treat the gesture
+     as a scroll or a page pinch. */
+  touch-action: none;
 }
+.propagation-map:active { cursor: grabbing; }
+
+.map-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--text-faint);
+  font-size: var(--fs-sm);
+}
+
+/* Dimming is a fade. The selection changes the state of every node and edge at
+   once, and switching a hundred and thirty of them instantly reads as the
+   picture being replaced rather than as one company being singled out. */
+.map-edge {
+  transition: opacity var(--dur-enter) var(--ease-out),
+              stroke var(--dur-enter) var(--ease-out),
+              stroke-width var(--dur-enter) var(--ease-out);
+}
+.map-node {
+  cursor: pointer;
+  transition: opacity var(--dur-enter) var(--ease-out);
+}
+.map-node circle {
+  transition: stroke var(--dur-press) var(--ease-out),
+              stroke-width var(--dur-press) var(--ease-out);
+}
+
 .map-label {
   font-family: var(--font-mono);
-  font-size: 8.5px;
   letter-spacing: 0.03em;
   pointer-events: none;
   user-select: none;
 }
 
-.today-prices { margin-top: 16px; }
+.map-controls {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+.map-controls button {
+  min-width: 22px;
+  padding: 2px 6px;
+  border: 0;
+  border-left: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  font-size: var(--fs-xs);
+  line-height: 1.4;
+  cursor: pointer;
+  transition: background-color var(--dur-press) var(--ease-out),
+              color var(--dur-press) var(--ease-out);
+}
+.map-controls button:first-child { border-left: 0; }
+.map-controls button:hover { background: var(--bg-hover); color: var(--text); }
+.map-zoom {
+  display: grid;
+  place-items: center;
+  min-width: 42px;
+  padding: 2px 4px;
+  border-left: 1px solid var(--border);
+  color: var(--text-faint);
+  font-size: var(--fs-micro);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-edge, .map-node, .map-node circle { transition: none; }
+}
+
+/* Spaced off the verdict grid beneath it. Whatever sits above — the earnings
+   banner or the header itself — already carries a 14px bottom margin. */
+.today-prices { margin: 0 0 16px; }
 
 /* ---- horizon selector -------------------------------------------------- */
 
@@ -950,7 +1290,7 @@ tr.detail-row > td {
 }
 .horizon-hint {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-faint);
@@ -963,7 +1303,7 @@ tr.detail-row > td {
   background: transparent;
   color: var(--text-faint);
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.04em;
   cursor: pointer;
 }
@@ -971,7 +1311,7 @@ tr.detail-row > td {
 .horizon-btn.active {
   background: var(--accent);
   border-color: var(--accent);
-  color: #14100a;
+  color: var(--on-accent);
   font-weight: 600;
 }
 
@@ -983,13 +1323,13 @@ tr.detail-row > td {
 .factor-summary { padding: 9px 11px; border-bottom: 1px solid var(--border); }
 .factor-verdict {
   margin: 0 0 5px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.45;
   color: var(--text);
   font-weight: 600;
 }
-.factor-health { margin: 0 0 5px; font-size: 11.5px; line-height: 1.5; color: var(--text-dim); }
-.factor-note { margin: 0; font-size: 10px; line-height: 1.5; }
+.factor-health { margin: 0 0 5px; font-size: var(--fs-base); line-height: 1.5; color: var(--text-dim); }
+.factor-note { margin: 0; font-size: var(--fs-xs); line-height: 1.5; }
 
 .factor-list { display: flex; flex-direction: column; }
 .factor-row {
@@ -1004,8 +1344,8 @@ tr.detail-row > td {
   justify-content: space-between;
   gap: 8px;
 }
-.factor-label { font-size: 11.5px; color: var(--text); font-weight: 600; }
-.factor-value { font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text-dim); }
+.factor-label { font-size: var(--fs-base); color: var(--text); font-weight: 600; }
+.factor-value { font-size: var(--fs-base); font-variant-numeric: tabular-nums; color: var(--text-dim); }
 
 .factor-bar {
   margin: 4px 0 3px;
@@ -1020,10 +1360,10 @@ tr.detail-row > td {
 .factor-row.good .factor-value { color: var(--positive); }
 .factor-row.bad  .factor-value { color: var(--negative); }
 
-.factor-row-foot { font-size: 10px; color: var(--text-dim); line-height: 1.4; }
+.factor-row-foot { font-size: var(--fs-xs); color: var(--text-dim); line-height: 1.4; }
 .factor-meaning {
   margin: 4px 0 0;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
   color: var(--text-dim);
 }
@@ -1032,7 +1372,7 @@ tr.detail-row > td {
    rather than trust. */
 .factor-source {
   margin: 2px 0 0;
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   line-height: 1.4;
   color: var(--text-faint);
   font-style: italic;
@@ -1052,7 +1392,7 @@ tr.detail-row > td {
 .contradiction:last-of-type { border-bottom: none; }
 .contradiction h4 {
   margin: 0 0 7px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.4;
   color: var(--text);
   font-weight: 600;
@@ -1074,7 +1414,7 @@ tr.detail-row > td {
 .contradiction-sides p {
   margin: 0;
   padding: 7px 9px;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.5;
   background: var(--bg-inset);
   border-radius: 3px;
@@ -1082,7 +1422,7 @@ tr.detail-row > td {
 }
 .side-better { border-left: 2px solid var(--positive); color: var(--text-dim); }
 .side-worse  { border-left: 2px solid var(--negative); color: var(--text-dim); }
-.side-mark { font-size: 9px; }
+.side-mark { font-size: var(--fs-micro); }
 .side-better .side-mark { color: var(--positive); }
 .side-worse .side-mark { color: var(--negative); }
 
@@ -1090,14 +1430,14 @@ tr.detail-row > td {
    that makes it a thesis rather than an observation. */
 .contradiction-why {
   margin: 0;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--text);
 }
 
 .contradiction-settles {
   margin: 8px 0 0;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-dim);
 }
@@ -1110,7 +1450,7 @@ tr.detail-row > td {
   margin-top: 6px;
   padding: 0;
   font-family: inherit;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.04em;
   color: var(--text-faint);
   background: none;
@@ -1122,7 +1462,7 @@ tr.detail-row > td {
   margin: 6px 0 0;
   padding-left: 8px;
   border-left: 2px solid var(--border);
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   color: var(--text-faint);
 }
@@ -1130,7 +1470,7 @@ tr.detail-row > td {
 .contradiction-note {
   margin: 0;
   padding: 7px 12px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   line-height: 1.5;
   border-top: 1px solid var(--border);
 }
@@ -1138,7 +1478,7 @@ tr.detail-row > td {
 .contradiction-agree {
   margin: 0;
   padding: 10px 12px;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--text-dim);
 }
@@ -1159,7 +1499,7 @@ tr.detail-row > td {
 }
 .change-head h2 {
   margin: 0;
-  font-size: 18px;
+  font-size: var(--fs-xl);
   font-weight: 650;
   letter-spacing: -0.01em;
   color: var(--text);
@@ -1168,7 +1508,7 @@ tr.detail-row > td {
 .change-group { margin-bottom: 12px; }
 .change-group h3 {
   margin: 0 0 5px;
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -1196,15 +1536,15 @@ tr.detail-row > td {
 
 /* Colour carries the kind, so the three are distinguishable at a glance
    without a label taking up a column. */
-.change-row.verdict { border-left-color: var(--accent); }
+.change-row.verdict { border-left-color: var(--accent-ink); }
 .change-row.factor  { border-left-color: var(--border-strong); }
 .change-row.event   { border-left-color: var(--border-strong); }
 .change-row.prominent { background: var(--bg-inset); }
 
 .change-ticker {
-  font-size: 12px;
+  font-size: var(--fs-base);
   font-weight: 650;
-  color: var(--accent);
+  color: var(--accent-ink);
   text-decoration: none;
   letter-spacing: 0.02em;
 }
@@ -1212,7 +1552,7 @@ tr.detail-row > td {
 
 .change-headline {
   margin: 0;
-  font-size: 12.5px;
+  font-size: var(--fs-md);
   line-height: 1.45;
   color: var(--text);
   font-weight: 600;
@@ -1221,13 +1561,13 @@ tr.detail-row > td {
 
 .change-detail {
   margin: 2px 0 0;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
   color: var(--text-dim);
 }
 
 .change-when {
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   white-space: nowrap;
 }
@@ -1235,7 +1575,7 @@ tr.detail-row > td {
 .change-quiet {
   margin: 0;
   padding: 10px 12px;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--text-dim);
   border: 1px solid var(--border);
@@ -1256,7 +1596,7 @@ tr.detail-row > td {
   width: 190px;
   padding: 3px 7px;
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text);
   background: var(--bg-inset);
   border: 1px solid var(--border);
@@ -1279,7 +1619,7 @@ tr.detail-row > td {
   background: var(--bg-panel);
   border: 1px solid var(--border-strong);
   border-radius: 3px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 8px 22px rgba(45, 60, 91, 0.28);
 }
 .search-results li {
   display: flex;
@@ -1291,15 +1631,15 @@ tr.detail-row > td {
   min-width: 0;
 }
 .search-results li.highlighted { background: var(--bg-inset); }
-.search-ticker { font-size: 11.5px; font-weight: 650; color: var(--accent); }
+.search-ticker { font-size: var(--fs-base); font-weight: 650; color: var(--accent-ink); }
 .search-name {
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   color: var(--text-dim);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.search-empty { font-size: 10.5px; color: var(--text-faint); cursor: default; }
+.search-empty { font-size: var(--fs-sm); color: var(--text-faint); cursor: default; }
 
 /* ---- tracking -----------------------------------------------------------
    A quiet, reversible preference. It changes what Loom shows first, not what
@@ -1310,7 +1650,7 @@ tr.detail-row > td {
   gap: 4px;
   padding: 1px 5px;
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text-faint);
   background: transparent;
   border: 1px solid transparent;
@@ -1318,9 +1658,9 @@ tr.detail-row > td {
   cursor: pointer;
 }
 .track-btn:hover:not(:disabled) { color: var(--text-dim); border-color: var(--border); }
-.track-btn.on { color: var(--accent); }
+.track-btn.on { color: var(--accent-ink); }
 .track-btn:disabled { opacity: 0.4; cursor: default; }
-.track-btn.compact { font-size: 12px; padding: 0 3px; }
+.track-btn.compact { font-size: var(--fs-base); padding: 0 3px; }
 
 /* ---- the standing view --------------------------------------------------
    What every arriving filing is scored against. Shown so the fast path's
@@ -1328,7 +1668,7 @@ tr.detail-row > td {
 .prior-summary {
   margin: 0;
   padding: 9px 11px;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--text-dim);
   border-bottom: 1px solid var(--border);
@@ -1348,26 +1688,26 @@ tr.detail-row > td {
   justify-content: space-between;
   gap: 8px;
 }
-.watch-topic { font-size: 11.5px; font-weight: 600; color: var(--text); }
+.watch-topic { font-size: var(--fs-base); font-weight: 600; color: var(--text); }
 .watch-severity {
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--text-faint);
 }
-.watch-why { margin: 3px 0 0; font-size: 10.5px; line-height: 1.5; color: var(--text-dim); }
+.watch-why { margin: 3px 0 0; font-size: var(--fs-sm); line-height: 1.5; color: var(--text-dim); }
 
 /* The literal phrases the matcher fires on. Unglamorous, and the thing that
    makes the claim checkable rather than magical. */
 .watch-keywords { margin: 5px 0 0; display: flex; flex-wrap: wrap; gap: 3px; }
 .keyword {
   padding: 0 4px;
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   background: var(--bg-inset);
   border-radius: 2px;
 }
-.watch-note { margin: 0; padding: 7px 11px; font-size: 10px; line-height: 1.5; }
+.watch-note { margin: 0; padding: 7px 11px; font-size: var(--fs-xs); line-height: 1.5; }
 
 /* ---- account in the rail ------------------------------------------------ */
 .sidebar-account {
@@ -1380,18 +1720,20 @@ tr.detail-row > td {
   min-width: 0;
 }
 .account-email {
-  font-size: 9.5px;
-  color: var(--text-faint);
+  font-size: var(--fs-xs);
+  /* On the blue chrome, so it takes the on-surface navy like everything else
+     there. --text-faint is tuned against cream and measures 2.52:1 here. */
+  color: var(--on-chrome);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .account-signout {
+  color: var(--on-chrome);
   align-self: flex-start;
   padding: 0;
   font-family: inherit;
-  font-size: 9.5px;
-  color: var(--text-dim);
+  font-size: var(--fs-xs);
   background: none;
   border: none;
   cursor: pointer;
@@ -1413,19 +1755,19 @@ tr.detail-row > td {
   min-width: 0;
 }
 .pf-label {
-  font-size: 9px;
+  font-size: var(--fs-micro);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-faint);
 }
 .pf-value {
   margin-top: 3px;
-  font-size: 17px;
+  font-size: var(--fs-xl);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text);
 }
-.pf-sub { margin-top: 2px; font-size: 9.5px; color: var(--text-faint); }
+.pf-sub { margin-top: 2px; font-size: var(--fs-xs); color: var(--text-faint); }
 
 .position-edit {
   display: flex;
@@ -1440,7 +1782,7 @@ tr.detail-row > td {
   width: 130px;
   padding: 4px 7px;
   font-family: inherit;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   color: var(--text);
   background: var(--bg-panel);
   border: 1px solid var(--border);
@@ -1452,7 +1794,7 @@ tr.detail-row > td {
 .row-action {
   padding: 0 4px;
   font-family: inherit;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-faint);
   background: none;
   border: none;
@@ -1464,6 +1806,90 @@ tr.detail-row > td {
 /* The rail becomes a column so the account block can sit at its foot. */
 .sidebar { display: flex; flex-direction: column; }
 .sidebar nav { flex: 1 1 auto; }
+
+/* ---- the rail's live blocks ------------------------------------------- */
+
+/* The nav no longer grows to fill the column: with the watchlist beneath it,
+   `flex: 1` pushed the two apart and left the gap in the middle instead of at
+   the bottom. The spacer below takes the slack, so the links stay together at
+   the top and the account stays pinned to the floor. */
+.sidebar nav { flex: 0 0 auto; }
+.rail-spacer { flex: 1 1 auto; min-height: 8px; }
+
+.rail-block {
+  flex: 0 0 auto;
+  margin-top: 10px;
+  padding-top: 7px;
+  border-top: 1px solid var(--border);
+}
+
+.rail-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 6px;
+  padding: 0 10px 4px;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--on-chrome-dim);
+}
+.rail-count { font-size: var(--fs-micro); letter-spacing: 0; }
+
+/* Capped rather than left to grow. A fifty-name watchlist would otherwise push
+   the earnings block and the account row below the fold on every page. */
+.rail-rows {
+  display: flex;
+  flex-direction: column;
+  max-height: 34vh;
+  overflow-y: auto;
+}
+
+.rail-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 7px;
+  align-items: baseline;
+  padding: 2px 10px 2px 8px;
+  border-left: 2px solid transparent;
+  color: var(--on-chrome);
+  font-size: var(--fs-xs);
+  transition: background-color var(--dur-press) var(--ease-out);
+}
+.rail-row:hover { background: var(--chrome-hover); text-decoration: none; }
+.rail-row.active { background: var(--chrome-hover); }
+
+/* Loom's standing read, in the row's left edge. It is two pixels because the
+   figure beside it is the thing being read; the stance is context for it and
+   should not compete with the price for the same glance. */
+.rail-row.is-positive { border-left-color: var(--on-chrome-positive); }
+.rail-row.is-negative { border-left-color: var(--on-chrome-negative); }
+.rail-row.is-mixed { border-left-color: var(--accent); }
+
+.rail-tkr { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rail-px { color: var(--on-chrome-dim); }
+.rail-chg { min-width: 42px; text-align: right; }
+.rail-when { color: var(--on-chrome-dim); }
+
+/* The semantic colours in here are the chrome's, not the page's. */
+.rail-chg.value-positive { color: var(--on-chrome-positive); }
+.rail-chg.value-negative { color: var(--on-chrome-negative); }
+.rail-chg.dim { color: var(--on-chrome-dim); }
+
+.rail-foot {
+  padding: 5px 10px 0;
+  font-size: var(--fs-micro);
+  line-height: 1.45;
+  color: var(--on-chrome-dim);
+}
+
+.rail-empty {
+  display: block;
+  padding: 1px 10px 2px;
+  font-size: var(--fs-xs);
+  color: var(--on-chrome-dim);
+}
+.rail-empty:hover { color: var(--on-chrome); text-decoration: underline; }
 
 /* ---- the front door -----------------------------------------------------
    Two panels: what Loom is on the left, the form on the right. The left half
@@ -1487,56 +1913,93 @@ tr.detail-row > td {
   flex-direction: column;
   justify-content: center;
   padding: 56px 54px;
-  border-right: 1px solid var(--border);
-  /* A single very soft wash, so the panel reads as a surface rather than as a
-     gradient somebody was proud of. */
-  background:
-    radial-gradient(900px 520px at 12% 18%, rgba(201, 162, 77, 0.055), transparent 62%),
-    var(--bg-panel);
+  border-right: 1px solid var(--border-strong);
+  /* Flat and blue. Flat because a wash would be decoration, blue because this
+     is chrome rather than data and the chrome is blue throughout. */
+  background: var(--chrome);
+  color: var(--on-chrome);
   min-width: 0;
 }
-.auth-brand {
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.34em;
-  color: var(--accent);
+.auth-brand { margin-bottom: 30px; }
+
+/* One descriptive line. Not a headline, not a claim — the category the product
+   belongs to, which is what an institutional sign-in screen states. */
+.auth-role {
+  margin: 0 0 34px;
+  font-size: var(--fs-md);
+  letter-spacing: 0.04em;
+  color: var(--text-dim);
+}
+
+/* Readouts, not sections. Each is a label and a set of facts, laid out the way
+   the rest of the product lays out data: hairline rule, dense rows, figures
+   right-aligned in mono so they line up. */
+.auth-readout { margin-bottom: 26px; max-width: 340px; }
+
+.auth-readout-head {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.auth-stats { margin: 0; }
+.auth-stats > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 3px 0;
+}
+.auth-stats dt { font-size: var(--fs-base); color: var(--text-dim); }
+.auth-stats dd { margin: 0; font-size: var(--fs-base); color: var(--text); }
+
+/* The two headline figures. Large, mono, tabular — the only place on this
+   screen where something is sized to be read from across a desk. */
+.auth-figures {
+  display: flex;
+  gap: 34px;
   margin-bottom: 30px;
 }
-.auth-headline {
-  margin: 0 0 14px;
-  font-size: 38px;
-  line-height: 1.08;
-  font-weight: 650;
-  letter-spacing: -0.02em;
+.auth-figures > div { display: flex; flex-direction: column; gap: 3px; }
+
+.auth-figure {
+  font-size: var(--fs-2xl);
+  font-weight: 400;
+  line-height: 1;
   color: var(--text);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
-.auth-sub {
-  margin: 0 0 26px;
-  max-width: 44ch;
-  font-size: 13px;
-  line-height: 1.68;
-  color: var(--text-dim);
+.auth-figure-label {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
 }
-.auth-points { margin: 0; padding: 0; list-style: none; max-width: 46ch; }
-.auth-points li {
-  position: relative;
-  margin-bottom: 13px;
-  padding-left: 16px;
-  font-size: 12px;
-  line-height: 1.62;
-  color: var(--text-dim);
+
+.auth-source-down {
+  display: block;
+  max-width: 340px;
+  font-size: var(--fs-base);
+  color: var(--negative);
+  line-height: 1.55;
+  border-left: 2px solid var(--negative);
+  padding-left: 10px;
+  margin: 0 0 24px;
 }
-.auth-points li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 8px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--accent-dim);
+
+.auth-foot {
+  margin: 30px 0 0;
+  max-width: 340px;
+  font-size: var(--fs-xs);
+  line-height: 1.6;
+  color: var(--text-faint);
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
 }
-.auth-points strong { color: var(--text); font-weight: 600; }
 
 .auth-panel {
   display: flex;
@@ -1560,7 +2023,7 @@ tr.detail-row > td {
 .auth-tabs button {
   padding: 7px;
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-faint);
@@ -1575,18 +2038,18 @@ tr.detail-row > td {
 .auth-label {
   display: block;
   margin-bottom: 6px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--text-faint);
 }
-.auth-hint { display: block; margin-top: 5px; font-size: 10.5px; color: var(--text-faint); }
+.auth-hint { display: block; margin-top: 5px; font-size: var(--fs-sm); color: var(--text-faint); }
 .auth-input {
   width: 100%;
   padding: 10px 12px;
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text);
   background: var(--bg-inset);
   border: 1px solid var(--border);
@@ -1603,7 +2066,7 @@ tr.detail-row > td {
 /* Six digits read as six digits, not as a number. */
 .auth-code {
   text-align: center;
-  font-size: 26px;
+  font-size: var(--fs-3xl);
   letter-spacing: 0.34em;
   text-indent: 0.34em;
   padding: 13px;
@@ -1614,10 +2077,10 @@ tr.detail-row > td {
   width: 100%;
   padding: 11px;
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: var(--fs-md);
   font-weight: 650;
   letter-spacing: 0.03em;
-  color: #15100a;
+  color: var(--on-accent);
   background: var(--accent);
   border: none;
   border-radius: 4px;
@@ -1630,7 +2093,7 @@ tr.detail-row > td {
 .auth-verify-head { margin-bottom: 14px; }
 .auth-verify-label {
   display: block;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -1639,7 +2102,7 @@ tr.detail-row > td {
 .auth-verify-email {
   display: block;
   margin-top: 4px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   color: var(--text);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1649,7 +2112,7 @@ tr.detail-row > td {
 .auth-link {
   padding: 0;
   font-family: inherit;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   color: var(--text-faint);
   background: none;
   border: none;
@@ -1659,11 +2122,11 @@ tr.detail-row > td {
 .auth-link:hover:not(:disabled) { color: var(--text-dim); }
 .auth-link:disabled { opacity: 0.4; cursor: default; }
 
-.auth-fine { margin: 13px 0 0; font-size: 10.5px; line-height: 1.6; color: var(--text-faint); }
+.auth-fine { margin: 13px 0 0; font-size: var(--fs-sm); line-height: 1.6; color: var(--text-faint); }
 .auth-note {
   margin: 15px 0 0;
   padding: 9px 11px;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-dim);
   background: var(--bg-inset);
@@ -1673,7 +2136,7 @@ tr.detail-row > td {
 .auth-error {
   margin: 13px 0 0;
   padding: 9px 11px;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--negative);
   background: var(--bg-inset);
@@ -1693,14 +2156,14 @@ tr.detail-row > td {
 }
 .today-onboard h1 {
   margin: 0 0 12px;
-  font-size: 23px;
+  font-size: var(--fs-2xl);
   font-weight: 650;
   letter-spacing: -0.015em;
   color: var(--text);
 }
 .today-onboard p {
   margin: 0 0 22px;
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.68;
   color: var(--text-dim);
 }
@@ -1709,7 +2172,7 @@ tr.detail-row > td {
   flex-direction: column;
   align-items: center;
   gap: 11px;
-  font-size: 11px;
+  font-size: var(--fs-sm);
 }
 .today-onboard-btn {
   display: inline-block;
@@ -1720,7 +2183,7 @@ tr.detail-row > td {
 .today-onboard kbd {
   padding: 1px 5px;
   font-family: inherit;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
   background: var(--bg-inset);
   border: 1px solid var(--border);
@@ -1736,27 +2199,27 @@ tr.detail-row > td {
 .case-head { margin-bottom: 14px; }
 .case-verdict-block { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .case-verdict {
-  font-size: 21px;
+  font-size: var(--fs-2xl);
   font-weight: 650;
   letter-spacing: -0.015em;
 }
 .case-held {
   padding: 1px 7px;
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-ink);
   border: 1px solid var(--accent-dim);
   border-radius: 10px;
 }
 .case-headline {
   margin: 6px 0 0;
   max-width: 78ch;
-  font-size: 13.5px;
+  font-size: var(--fs-lg);
   line-height: 1.6;
   color: var(--text-dim);
 }
-.case-confidence { margin: 5px 0 0; font-size: 10.5px; color: var(--text-faint); }
+.case-confidence { margin: 5px 0 0; font-size: var(--fs-sm); color: var(--text-faint); }
 
 /* Its own block above the list, never a row inside it. A page showing only
    the case for a conclusion is a sales pitch. */
@@ -1768,22 +2231,22 @@ tr.detail-row > td {
   border-radius: 3px;
 }
 .case-counter-label {
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 .case-counter-headline {
   margin: 5px 0 0;
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   font-weight: 600;
   color: var(--text);
 }
 .case-counter-detail {
   margin: 4px 0 0;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.55;
   color: var(--text-dim);
 }
@@ -1800,14 +2263,14 @@ tr.detail-row > td {
 .case-point > * { min-width: 0; }
 .case-point:last-child { border-bottom: none; }
 
-.case-mark { font-size: 9px; line-height: 1.9; }
+.case-mark { font-size: var(--fs-micro); line-height: 1.9; }
 .case-point.for .case-mark { color: var(--positive); }
 .case-point.against .case-mark { color: var(--negative); }
-.case-point.unclear .case-mark { color: var(--accent); }
+.case-point.unclear .case-mark { color: var(--accent-ink); }
 
 .case-point-headline {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-md);
   line-height: 1.5;
   font-weight: 600;
   color: var(--text);
@@ -1818,13 +2281,13 @@ tr.detail-row > td {
   display: inline-block;
   min-width: 15px;
   margin-right: 6px;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   font-weight: 500;
   color: var(--text-faint);
 }
 .case-point-detail {
   margin: 3px 0 0;
-  font-size: 11.5px;
+  font-size: var(--fs-base);
   line-height: 1.6;
   color: var(--text-dim);
 }
@@ -1835,11 +2298,11 @@ tr.detail-row > td {
   gap: 9px;
   margin-top: 5px;
 }
-.case-source { font-size: 10px; color: var(--text-faint); }
+.case-source { font-size: var(--fs-xs); color: var(--text-faint); }
 .case-toggle {
   padding: 0;
   font-family: inherit;
-  font-size: 10px;
+  font-size: var(--fs-xs);
   color: var(--text-dim);
   background: none;
   border: none;
@@ -1851,7 +2314,7 @@ tr.detail-row > td {
 .case-quote {
   margin: 0;
   padding: 7px 10px;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   color: var(--text-dim);
   background: var(--bg-inset);
@@ -1860,7 +2323,7 @@ tr.detail-row > td {
 }
 .case-settles {
   margin: 6px 0 0;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-dim);
 }
@@ -1881,7 +2344,7 @@ tr.detail-row > td {
   gap: 8px;
   padding: 0;
   font-family: inherit;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   font-weight: 600;
   letter-spacing: 0.02em;
   color: var(--text-dim);
@@ -1897,7 +2360,7 @@ tr.detail-row > td {
 .case-withheld-note {
   margin: 8px 0 6px;
   max-width: 78ch;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   color: var(--text-faint);
 }
@@ -1907,7 +2370,7 @@ tr.detail-row > td {
    it means the reader is looking at an older period than the date suggests. */
 .driver-stale {
   margin: 3px 0 0 16px;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   line-height: 1.5;
   color: var(--warn);
 }
@@ -1917,7 +2380,7 @@ tr.detail-row > td {
 .case-routine-tag {
   margin-left: 6px;
   padding: 1px 5px;
-  font-size: 8.5px;
+  font-size: var(--fs-micro);
   font-weight: 600;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -1936,14 +2399,14 @@ tr.detail-row > td {
   gap: 8px;
   margin: 6px 0 0;
   max-width: 82ch;
-  font-size: 11px;
+  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-dim);
 }
 .case-basis-mark {
   flex: none;
   padding: 1px 6px;
-  font-size: 8.5px;
+  font-size: var(--fs-micro);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1959,7 +2422,7 @@ tr.detail-row > td {
 .case-price .case-point { --case-tone: var(--text-dim); }
 .case-section h4, .case-gaps h4 {
   margin: 0 0 6px;
-  font-size: 9.5px;
+  font-size: var(--fs-xs);
   font-weight: 600;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -1969,7 +2432,7 @@ tr.detail-row > td {
 .case-gaps p {
   margin: 0 0 6px;
   max-width: 78ch;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   line-height: 1.6;
   color: var(--text-faint);
 }
@@ -1992,14 +2455,14 @@ tr.detail-row > td {
   justify-content: space-between;
   gap: 10px;
 }
-.digest-label { font-size: 11.5px; font-weight: 600; color: var(--text); }
+.digest-label { font-size: var(--fs-base); font-weight: 600; color: var(--text); }
 .digest-message {
   margin: 7px 0 0;
-  font-size: 10.5px;
+  font-size: var(--fs-sm);
   line-height: 1.55;
   color: var(--text-faint);
 }
-.digest-message.warn { color: var(--accent); }
+.digest-message.warn { color: var(--accent-ink); }
 
 
 /* ---- brand ---- */
@@ -2007,6 +2470,19 @@ tr.detail-row > td {
 .loom-logo {
   display: inline-flex;
   letter-spacing: normal;
+  /* OLD NOTE, now wrong, kept short: the lockup used to pin itself to --text
+     to stop it inheriting the amber accent. With slate chrome that pin put a
+     slate wordmark on a slate bar at 1.00:1 and the logo vanished. It inherits
+     again, and the two places it appears set the colour: .brand and .auth-pitch
+     are chrome and set --on-chrome, everything else is cream and gets --text.
+     The mark draws its neutral threads in `currentColor`, which makes it legible
+     on any panel — but it also meant the weave took the colour of whatever
+     container it landed in, and `.auth-brand` sets the amber accent. The result
+     was a yellow logo, which the artwork does not have. Fixing the wordmark
+     alone would have left the threads amber and only half-solved it. */
+  /* No colour of its own: it takes the surface's. Pinning it to --text put a
+     slate wordmark on the slate chrome at 1.00:1 and the logo disappeared. */
+  color: inherit;
   align-items: center;
   gap: 7px;
   line-height: 1;
@@ -2018,16 +2494,290 @@ tr.detail-row > td {
   font-family: var(--font-sans);
   font-weight: 900;
   letter-spacing: 0.2em;
-  /* The wordmark is set in the brand colour while the mark inherits the text
-     colour, so the weave stays legible on any panel and the name carries the
-     accent. Reversing this made the mark vanish against --bg-header. */
-  color: var(--accent);
+  /* Neutral, matching the mark beside it. In the original artwork the wordmark
+     and the weave are the same navy, and the only colour in the whole piece is
+     the one green thread and the one red one. Navy is unreadable on this
+     background, so the dark-theme equivalent is the primary text colour: one
+     neutral lockup, two coloured threads. Setting the wordmark in the amber
+     accent broke that — it made the name compete with the threads for the
+     eye and read as a third colour the logo does not have.
+
+     `currentColor` so it tracks its surface: cream on the slate chrome, slate
+     on the cream page. Naming a colour here is what made it invisible. */
+  color: currentColor;
 }
 
 .loom-subtitle {
   font-family: var(--font-sans);
-  font-size: 8px;
+  font-size: var(--fs-micro);
   font-weight: 400;
   letter-spacing: 0.3em;
   color: var(--text-faint);
 }
+
+
+/* ---- motion ------------------------------------------------------------- */
+
+/* Something arriving that was not there a moment ago.
+   `@starting-style` gives an entrance with no JS and no mount hook, so a
+   conditionally rendered element bridges instead of teleporting. Transform and
+   opacity only: both skip layout and paint. The rise is 3px — enough to read as
+   arriving from somewhere, too little to be watched. */
+.enter {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity var(--dur-enter) var(--ease-out),
+              transform var(--dur-enter) var(--ease-out);
+}
+
+@starting-style {
+  .enter {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+}
+
+/* The sign-in panel. Rare enough to earn a longer beat than anything else
+   here — this screen is seen once every ninety days — but still inside the
+   300ms UI budget. Never scale(0): nothing appears out of nothing. */
+.auth-panel-enter {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out);
+}
+
+@starting-style {
+  .auth-panel-enter {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+
+/* Reduced motion keeps the fade and drops every transform, so the bridge
+   survives for anyone who still wants one and nothing travels across the
+   screen for anyone who does not. Shipped with the animation, not after it. */
+@media (prefers-reduced-motion: reduce) {
+  .enter, .auth-panel-enter {
+    transition: opacity var(--dur-enter) var(--ease-out);
+    transform: none;
+  }
+  @starting-style {
+    .enter, .auth-panel-enter { transform: none; }
+  }
+  .btn:active:not(:disabled),
+  .link-button:active:not(:disabled),
+  button:active:not(:disabled) {
+    transform: none;
+  }
+}
+
+
+/* ---- theme toggle -------------------------------------------------------- */
+
+.sidebar-account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.theme-toggle {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  line-height: 1;
+  font-size: var(--fs-sm);
+  background: none;
+  border: 1px solid transparent;
+  color: var(--on-chrome-dim);
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--on-chrome);
+  border-color: var(--border);
+  background: var(--chrome-hover);
+}
+
+/* ---- API access -------------------------------------------------------- */
+
+.key-form {
+  display: flex;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.key-form .search-input { flex: 1 1 auto; min-width: 0; }
+.key-submit {
+  flex: none;
+  padding: 0 11px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity var(--dur-press) var(--ease-out);
+}
+.key-submit:hover:not(:disabled) { opacity: 0.88; }
+.key-submit:disabled { opacity: 0.4; cursor: default; }
+
+.key-error {
+  margin: 0;
+  padding: 6px 10px;
+  font-size: var(--fs-sm);
+  color: var(--negative);
+  background: var(--negative-dim);
+}
+
+/* The one-time reveal. Loud on purpose: everything else on this page can be
+   returned to, and this cannot. */
+.key-reveal {
+  margin: 0;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  background: var(--bg-inset);
+}
+.key-reveal-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+}
+.key-plaintext {
+  display: block;
+  margin: 5px 0;
+  padding: 6px 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--bg-panel);
+  font-size: var(--fs-base);
+  color: var(--text);
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+.key-reveal p {
+  margin: 0;
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.key-dismiss {
+  margin-top: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-ink);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.copy-btn {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: var(--fs-micro);
+  cursor: pointer;
+  transition: background-color var(--dur-press) var(--ease-out),
+              color var(--dur-press) var(--ease-out);
+}
+.copy-btn:hover { background: var(--bg-hover); color: var(--text); }
+
+/* Revoking cannot be undone, so the control states what it is before it is
+   armed and shifts to the warning colour once it is. */
+.revoke-btn {
+  padding: 0 4px;
+  border: 1px solid transparent;
+  background: none;
+  color: var(--text-faint);
+  font-size: var(--fs-micro);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: color var(--dur-press) var(--ease-out),
+              border-color var(--dur-press) var(--ease-out);
+}
+.revoke-btn:hover { color: var(--negative); }
+.revoke-btn.is-arming {
+  color: var(--negative);
+  border-color: var(--negative);
+}
+tr.is-revoked td { opacity: 0.45; }
+
+.code-block {
+  display: block;
+  margin: 0;
+  padding: 8px 10px;
+  font-size: var(--fs-xs);
+  line-height: 1.55;
+  color: var(--text);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.endpoint-path { font-size: var(--fs-base); color: var(--accent-ink); }
+.endpoint-what {
+  margin-top: 1px;
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--text-dim);
+  white-space: normal;
+}
+
+.panel-note {
+  margin: 0;
+  padding: 7px 10px;
+  border-top: 1px solid var(--border);
+  font-family: var(--font-sans);
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+.panel-note:first-child { border-top: 0; }
+.panel-note code { font-size: var(--fs-xs); color: var(--accent-ink); }
+
+/* ---- earnings calendar -------------------------------------------------- */
+
+.scope-switch { display: flex; gap: 3px; }
+
+/* The date as a heading rather than a repeated column. Twenty rows carrying
+   the same date is twenty chances to misread which day a row belongs to. */
+.calendar-day td {
+  padding-top: 7px;
+  background: var(--bg-header);
+  border-top: 1px solid var(--border-strong);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.calendar-name {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-dim);
+}
+
+/* Your own companies, marked in the edge rather than by a column of ticks:
+   on a page listing the whole universe the only question being asked of each
+   row is whether it is yours. */
+.calendar-table tr.is-yours td:first-child {
+  box-shadow: inset 2px 0 0 var(--accent);
+}
+.calendar-table tr.is-yours td { background: var(--bg-hover); }

@@ -4,10 +4,13 @@ Both tables (document_analyses, llm_usage_runs) are already populated by
 every analysis run, this route is purely the read path that was missing.
 """
 
-from app.models.signal import AnalysisStatus
 from fastapi import APIRouter
+from sqlalchemy import func, select
 
-from app.api.deps import CompanyRepo, DocumentRepo, SignalRepo, UsageRepo
+from app.api.deps import CompanyRepo, DbSession, DocumentRepo, SignalRepo, UsageRepo
+from app.models.company import Company
+from app.models.document import RawDocument
+from app.models.signal import AnalysisStatus, Signal
 from app.schemas.status import AnalysisRunOut, SystemStatusResponse, UsageRunOut
 
 router = APIRouter(tags=["status"])
@@ -49,3 +52,42 @@ def get_status(
         total_cost_usd=sum(u.cost_usd for u in usage_rows),
         total_calls=sum(u.calls for u in usage_rows),
     )
+
+
+@router.get("/coverage-stats")
+def coverage_stats(db: DbSession) -> dict:
+    """Counts describing the size of what this instance holds.
+
+    Open, like /status and /health, and deliberately aggregate-only: it answers
+    "how much has Loom read" without naming a company, a finding or a filing.
+    Nothing here is derivable about any individual issuer.
+
+    It exists for the sign-in screen. That screen used to carry three sentences
+    of marketing and now reports what the instance can actually account for,
+    which needed numbers that an unauthenticated visitor is allowed to see.
+    """
+    def count(model, *where):
+        q = select(func.count()).select_from(model)
+        for clause in where:
+            q = q.where(clause)
+        return int(db.execute(q).scalar() or 0)
+
+    periodic = ("10-K", "10-Q", "8-K")
+    return {
+        "companies_tracked": count(Company),
+        "companies_read": int(db.execute(
+            select(func.count(func.distinct(Signal.company_id)))
+            .where(Signal.dismissed_at.is_(None))
+        ).scalar() or 0),
+        "documents": count(RawDocument),
+        "sec_filings": count(RawDocument, RawDocument.doc_subtype.in_(periodic)),
+        "transcripts": count(RawDocument, RawDocument.doc_subtype == "earnings_call"),
+        "news_items": count(RawDocument, RawDocument.doc_subtype == "news"),
+        "findings": count(Signal, Signal.dismissed_at.is_(None)),
+        # The newest thing Loom has read, so the page shows currency and not
+        # just volume. A large corpus that stopped updating is a different
+        # claim from a large corpus that is current.
+        "latest_document": (lambda d: d.isoformat() if d else None)(
+            db.execute(select(func.max(RawDocument.published_at))).scalar()
+        ),
+    }

@@ -45,7 +45,7 @@ export function SetupBanner() {
       className="panel"
       style={{ borderLeft: "3px solid var(--accent-dim)", padding: "6px 10px", marginBottom: 8 }}
     >
-      <span className="mono" style={{ fontSize: 9, color: "var(--accent)", letterSpacing: "0.08em" }}>
+      <span className="mono" style={{ fontSize: 9, color: "var(--accent-ink)", letterSpacing: "0.08em" }}>
         OPTIONAL SETUP
       </span>
       <p className="sans dim" style={{ margin: "3px 0 0", fontSize: 11, lineHeight: 1.5 }}>

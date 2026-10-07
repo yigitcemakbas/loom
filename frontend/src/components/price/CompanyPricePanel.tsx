@@ -45,7 +45,7 @@ export function CompanyPricePanel({ ticker }: { ticker: string }) {
             className="btn"
             style={{
               padding: "1px 6px", height: 18, fontSize: 9,
-              ...(r === range ? { background: "var(--accent)", color: "#14100a" } : {}),
+              ...(r === range ? { background: "var(--accent)", color: "var(--on-accent)" } : {}),
             }}
             onClick={() => setRange(r)}
           >

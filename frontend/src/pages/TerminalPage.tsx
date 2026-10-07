@@ -85,7 +85,8 @@ export function TerminalPage() {
         <p className="today-sub">
           Built from {graph.edges.length} dependencies Loom found by reading what these{" "}
           {graph.nodes.length} companies disclose about each other. Bigger circles are
-          companies more others depend on. Click one to see what an event there reaches.
+          companies more others depend on. Click one to see what an event there reaches;
+          drag to pan, scroll to zoom, double-click to fit the whole graph.
         </p>
       </header>
 
@@ -102,6 +103,7 @@ export function TerminalPage() {
         <div className="stack">
           {detail && detail.node ? (
             <ExposureDetail
+              key={selected as string}
               ticker={selected as string}
               node={detail.node}
               downstream={detail.downstream}
@@ -118,7 +120,19 @@ export function TerminalPage() {
                 </thead>
                 <tbody>
                   {hubs.map((n) => (
-                    <tr key={n.ticker} className="clickable" onClick={() => setSelected(n.ticker)}>
+                    <tr
+                      key={n.ticker}
+                      className="clickable"
+                      tabIndex={0}
+                      role="button"
+                      aria-label={`Select ${n.ticker}`}
+                      onClick={() => setSelected(n.ticker)}
+                      onKeyDown={(e) => {
+                        if (e.key !== "Enter" && e.key !== " ") return;
+                        e.preventDefault();
+                        setSelected(n.ticker);
+                      }}
+                    >
                       <td><span className="ticker-symbol">{n.ticker}</span></td>
                       <td className="num">{n.reach}</td>
                       <td className="num dim">{n.upstream}</td>
@@ -150,7 +164,11 @@ function ExposureDetail({
 }) {
   const verdict = brief ? verdictOf(brief.stance as Stance) : null;
   return (
-    <div className="panel">
+    /* Keyed on the ticker by the caller, so `enter` replays whenever the
+       selection changes. The panel is the answer to the click and it swaps its
+       entire contents in place; without the entrance a reader who picked a
+       company from the table beside the map cannot tell the panel responded. */
+    <div className="panel enter">
       <div className="panel-head">
         <span className="panel-title">{ticker}</span>
         <Link className="faint" style={{ fontSize: 9 }} to={`/companies/${ticker}`}>OPEN →</Link>

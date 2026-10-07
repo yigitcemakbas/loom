@@ -199,7 +199,7 @@ export function SignalTable({ signals, showTicker = true, emptyMessage }: Props)
 
                     {s.note && noteFor !== s.id && (
                       <div className="evidence" style={{ borderLeftColor: "var(--accent)", marginTop: 6 }}>
-                        <span className="mono" style={{ color: "var(--accent)", fontSize: 9 }}>YOUR NOTE</span>
+                        <span className="mono" style={{ color: "var(--accent-ink)", fontSize: 9 }}>YOUR NOTE</span>
                         <div>{s.note}</div>
                       </div>
                     )}

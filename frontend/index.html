@@ -15,6 +15,23 @@
     <title>Loom</title>
   </head>
   <body>
+    <!-- Resolve the theme before first paint.
+         The stylesheet defines dark under [data-theme="dark"] alone, so the
+         system preference has to become an explicit attribute, and it has to
+         happen here rather than in React: resolving it after hydration shows
+         every dark-mode user a flash of the light palette on every load. -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("loom.theme");
+          var system = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          document.documentElement.dataset.theme =
+            stored === "dark" || stored === "light" ? stored : system ? "dark" : "light";
+        } catch (e) {
+          document.documentElement.dataset.theme = "light";
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
