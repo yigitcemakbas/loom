@@ -176,7 +176,26 @@ def _get(path: str, params: Optional[dict] = None) -> Any:
         raise LoomError(f"Loom returned an error ({response.status_code}).")
 
     response.raise_for_status()
-    return response.json()
+    try:
+        return response.json()
+    except ValueError as exc:
+        # A deployed Loom serves the API under /api and the web app at the
+        # root, and the web app answers any unknown path with index.html so a
+        # single-page route can resolve. So a LOOM_API_URL missing the /api
+        # returns 200 with HTML, and the only symptom is a JSON decode error
+        # several frames away from the cause. Say what actually happened.
+        body = response.text.lstrip()[:40].lower()
+        if body.startswith("<!doctype html") or body.startswith("<html"):
+            raise LoomError(
+                f"{API_URL} returned a web page rather than data. That is "
+                f"Loom's interface answering, which means LOOM_API_URL is "
+                f"missing the API path — a deployed instance serves it under "
+                f"/api, as in https://your-host/api."
+            ) from exc
+        raise LoomError(
+            f"Loom returned {response.status_code} with a body that is not "
+            f"JSON. ({exc})"
+        ) from exc
 
 
 @server.tool(
