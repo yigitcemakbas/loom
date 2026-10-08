@@ -65,7 +65,16 @@ export function TimelinePanel({ documents }: Props) {
                 <span className="tag">{TYPE_LABELS[doc.doc_subtype] ?? doc.doc_subtype}</span>
               )}
             </td>
-            <td>
+            {/* `prose`, because this is the one column whose content has no
+                bound: a news headline runs to 210 characters and a source URL
+                further. The cell already had nowrap and overflow:hidden, but
+                neither constrains an auto table layout — the column was sized
+                to its longest headline, 1403px inside a 706px panel, and the
+                overflow ran under the column beside it. `prose` is this
+                file's existing answer: max-width 0 so the column claims no
+                intrinsic width, width 100% so it takes what is left, and the
+                ellipsis finally has a boundary to act on. */}
+            <td className="prose" title={doc.title ?? doc.source_url ?? undefined}>
               {doc.source_url ? (
                 <a href={doc.source_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
                   {doc.title ?? doc.source_url}

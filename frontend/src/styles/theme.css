@@ -522,6 +522,31 @@ table.data-table tbody td.prose-wrap {
   white-space: normal;
 }
 
+/* A cell that must not dictate the column's width but does hold more than one
+   line — a title with a search snippet under it. `prose` would be wrong here:
+   its fixed row height and nowrap clip the second block away entirely.
+
+   Selector written at the same reach as `table.data-table tbody td` for the
+   reason given above: a bare `td.cell-fill` loses on specificity and the base
+   rule's height and white-space quietly win. */
+table.data-table tbody td.cell-fill {
+  max-width: 0;      /* claim no intrinsic width from the auto layout */
+  width: 100%;       /* then take whatever the fixed columns leave */
+  height: auto;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  white-space: normal;
+  overflow: hidden;
+}
+
+/* The one line inside it that should still truncate rather than wrap. */
+table.data-table tbody td.cell-fill > .cell-line {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 table.data-table tbody td.prose-wrap > span {
   display: -webkit-box;
   -webkit-box-orient: vertical;

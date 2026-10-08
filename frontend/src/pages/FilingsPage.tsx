@@ -118,14 +118,22 @@ export function FilingsPage() {
                       <span className="tag">{TYPE_LABELS[f.doc_subtype] ?? f.doc_subtype}</span>
                     )}
                   </td>
-                  <td>
-                    {f.source_url ? (
-                      <a href={f.source_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
-                        {f.title ?? f.source_url}
-                      </a>
-                    ) : (
-                      f.title ?? "untitled document"
-                    )}
+                  {/* Same unbounded column as the company page's document
+                      list, and overflowing for the same reason, but not the
+                      same fix: this cell also carries a search snippet, and
+                      `prose` pins the row to one line and would clip it away.
+                      `cell-fill` constrains the width and leaves the height
+                      alone; `cell-line` truncates just the title. */}
+                  <td className="cell-fill" title={f.title ?? f.source_url ?? undefined}>
+                    <span className="cell-line">
+                      {f.source_url ? (
+                        <a href={f.source_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()}>
+                          {f.title ?? f.source_url}
+                        </a>
+                      ) : (
+                        f.title ?? "untitled document"
+                      )}
+                    </span>
                     {isSearchHit(f) && f.snippet && (
                       <div
                         style={{

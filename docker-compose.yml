@@ -14,7 +14,12 @@ services:
       POSTGRES_PASSWORD: loom
       POSTGRES_DB: loom
     ports:
-      - "5432:5432"
+      # Bound to the loopback, not 0.0.0.0. Docker publishes through its own
+      # iptables chain, which sits in front of ufw and firewalld: a port
+      # published the usual way on a cloud VM is reachable from the internet
+      # even with the host firewall closed. This database answers to
+      # loom/loom, so the difference is the whole security of the instance.
+      - "127.0.0.1:5432:5432"
     volumes:
       - loom_pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -47,8 +52,11 @@ services:
     ports:
       # 8025 is the inbox in a browser. 1025 is SMTP, published so a host-side
       # script can use it too.
-      - "8025:8025"
-      - "1025:1025"
+      # Loopback for the reason on postgres above, and more urgently: this
+      # inbox receives sign-in codes, so published publicly it is an account
+      # takeover rather than a leak. Reach it over an SSH tunnel instead.
+      - "127.0.0.1:8025:8025"
+      - "127.0.0.1:1025:1025"
     healthcheck:
       test: ["CMD", "/mailpit", "readyz"]
       interval: 10s
@@ -157,7 +165,10 @@ services:
       # clone just gets an empty directory, which is correct.
       - ./backend/data/blobs:/app/data/blobs
     ports:
-      - "8000:8000"
+      # The frontend's nginx already proxies /api to this service over the
+      # compose network, so nothing outside needs the port. Loopback keeps it
+      # available for curl and the MCP server on the host.
+      - "127.0.0.1:8000:8000"
 
   frontend:
     build: ./frontend
@@ -166,7 +177,10 @@ services:
     depends_on:
       - backend
     ports:
-      - "5173:80"
+      # In production Caddy reaches this over the compose network and
+      # terminates TLS; see docker-compose.prod.yml. Loopback here means the
+      # only thing the internet can talk to is Caddy.
+      - "127.0.0.1:5173:80"
 
 volumes:
   loom_pgdata:
