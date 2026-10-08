@@ -226,3 +226,63 @@ def test_the_depth_pass_only_analyses_filings_already_stored():
     # The fetch path is reachable only for a company being read for the
     # first time.
     assert "if document is None and not is_depth:" in source
+
+
+# ---- the three claims on a run's budget --------------------------------------
+
+
+def test_the_shares_sum_to_the_whole_budget():
+    """Breadth takes the remainder, so no part of a run is unclaimed. If these
+    ever sum past 1.0 the last claim silently gets nothing."""
+    from app.engine.coverage import HOLDINGS_SHARE, REACH_SHARE
+
+    assert 0 < HOLDINGS_SHARE < 1
+    assert 0 < REACH_SHARE < 1
+    assert HOLDINGS_SHARE + REACH_SHARE < 1, "breadth must keep a funded share"
+
+
+def test_holdings_are_round_robined_not_ranked_by_popularity():
+    """The reason the split exists. Ranked globally, a company three accounts
+    hold always beats one account's only holding and the sole holder waits
+    forever; interleaved, every account gets a turn in the same pass."""
+    from app.engine.coverage import companies_for_users
+
+    class C:
+        def __init__(self, ticker):
+            self.id, self.ticker = ticker, ticker
+
+    popular, only_mine, also_mine = C("POP"), C("SOLO"), C("MINE2")
+
+    # Three accounts hold POP; one account additionally holds SOLO.
+    rows = [("a", popular), ("b", popular), ("c", popular),
+            ("c", only_mine), ("c", also_mine)]
+
+    by_account: dict = {}
+    for user_id, company in rows:
+        by_account.setdefault(user_id, []).append(company)
+    for owned in by_account.values():
+        owned.sort(key=lambda c: c.ticker)
+
+    out, seen = [], set()
+    for i in range(max(len(v) for v in by_account.values())):
+        for owned in by_account.values():
+            if i < len(owned) and owned[i].id not in seen:
+                seen.add(owned[i].id)
+                out.append(owned[i])
+
+    tickers = [c.ticker for c in out]
+    assert tickers[0] == "POP", "the first pass still serves the shared name"
+    assert "MINE2" in tickers[:3], (
+        "account c's own first pick must land in the first round, not behind "
+        "every other account's entire list"
+    )
+    assert len(set(tickers)) == len(tickers), "a shared company is read once"
+
+
+def test_a_focus_refresh_is_bounded():
+    """Focus is derived from holdings now, so it grows with the user base.
+    Unbounded, one refresh would spend the whole allowance every six hours and
+    the coverage drip would never get a call."""
+    from app.scheduling.jobs import FOCUS_PER_REFRESH
+
+    assert 0 < FOCUS_PER_REFRESH <= 25

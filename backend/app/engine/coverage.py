@@ -40,7 +40,9 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.engine.llm_client import LLMUnavailableError
+from app.models.account import Position
 from app.models.company import Company, CompanyTier
+from app.models.exposure import CompanyExposure
 from app.models.document import RawDocument
 from app.models.prior import CompanyPrior
 from app.models.signal import Signal
@@ -64,6 +66,31 @@ logger = logging.getLogger(__name__)
 # hour interval, and clears the 121 companies still queued in about a day.
 PRIORS_PER_RUN = 3
 READS_PER_RUN = 8
+
+# How a run's budget is divided between three claims that are not the same
+# thing and must not be funded out of one pot.
+#
+#   HOLDINGS  what somebody actually owns. Round-robin across accounts rather
+#             than by popularity, so the only holder of a name is not starved
+#             by a name three people hold.
+#   REACH     companies other filers name in their own 10-Ks. Reading one with
+#             reach 8 improves the read-across for eight others, which is value
+#             delivered to users who do not hold it.
+#   BREADTH   least-covered sector first. This is the one that looks skippable
+#             and is not: a stance is a residual against what documents of that
+#             kind normally say, and those norms are measured across the
+#             corpus. Fund only holdings and reach and the norms come from a
+#             self-selected sample of hubs and mega-caps, which degrades every
+#             verdict including the held ones. The failure is silent, which is
+#             why breadth gets its own share rather than whatever is left over
+#             by accident.
+#
+# Reach also has a rich-get-richer bias — it is computed from filings already
+# read, so an unread sector looks like it has no hubs — and an independently
+# funded breadth share is what breaks that loop.
+HOLDINGS_SHARE = 0.5
+REACH_SHARE = 0.25
+# Breadth takes the remainder, so the three always sum to the whole budget.
 
 # The filings a one-shot read looks at. Annual first, because a 10-K carries
 # the risk factors and the full-year picture that a verdict actually rests on.
@@ -248,6 +275,127 @@ def drip_priors(
     return result
 
 
+def _document_counts(db: Session) -> dict:
+    """How many distinct documents Loom has findings from, per company.
+
+    Computed once and shared by all three claims, because every one of them
+    asks the same question about need and asking it three times is three table
+    scans for one answer.
+    """
+    return dict(db.execute(
+        select(Signal.company_id,
+               func.count(func.distinct(Signal.source_document_id)))
+        .where(Signal.source_document_id.is_not(None))
+        .where(Signal.dismissed_at.is_(None))
+        .group_by(Signal.company_id)
+    ).all())
+
+
+def _needs_work(company: Company, counts: dict) -> bool:
+    """True while a company is short of the depth a verdict actually rests on."""
+    return counts.get(company.id, 0) < DEPTH_TARGET_DOCUMENTS
+
+
+def companies_for_users(db: Session) -> list[Company]:
+    """What accounts hold, one company per account per pass.
+
+    Round-robin rather than ranked by holder count, and that is the whole
+    point. Ranking globally means a company three people hold always beats one
+    person's only holding, so whoever is the sole holder of a name waits
+    forever. Interleaving gives every account the same claim on a pass
+    regardless of how popular its picks are: somebody who follows one company
+    gets it read, somebody who follows twenty gets them read more slowly.
+
+    A company two accounts hold appears once. The corpus is shared, so reading
+    it serves both.
+    """
+    counts = _document_counts(db)
+    rows = db.execute(
+        select(Position.user_id, Company)
+        .join(Company, Company.id == Position.company_id)
+    ).all()
+
+    by_account: dict = {}
+    for user_id, company in rows:
+        if _needs_work(company, counts):
+            by_account.setdefault(user_id, []).append(company)
+
+    # Neediest first within each account, so a held company with nothing at all
+    # is served before one that already has two documents.
+    for owned in by_account.values():
+        owned.sort(key=lambda c: (counts.get(c.id, 0), c.ticker))
+
+    out: list[Company] = []
+    seen: set = set()
+    for tier in range(max((len(v) for v in by_account.values()), default=0)):
+        for owned in by_account.values():
+            if tier < len(owned) and owned[tier].id not in seen:
+                seen.add(owned[tier].id)
+                out.append(owned[tier])
+    return out
+
+
+def companies_by_reach(db: Session) -> list[Company]:
+    """Companies other filers name most, neediest first.
+
+    Reach is how many tracked companies name this one in their own filings, so
+    it measures what reading it is worth to the rest of the corpus rather than
+    how large it is. Market capitalisation would be the obvious proxy and is
+    the wrong one: it is exogenous, it says nothing about whether reading the
+    company improves Loom's answers, and it duplicates what every other tool
+    already covers.
+    """
+    counts = _document_counts(db)
+    reach = dict(db.execute(
+        select(CompanyExposure.hub_company_id, func.count())
+        .group_by(CompanyExposure.hub_company_id)
+    ).all())
+    if not reach:
+        return []
+
+    rows = list(db.execute(
+        select(Company).where(Company.id.in_(list(reach)))
+    ).scalars())
+    candidates = [c for c in rows if _needs_work(c, counts)]
+    candidates.sort(key=lambda c: (-reach.get(c.id, 0), counts.get(c.id, 0), c.ticker))
+    return candidates
+
+
+def derive_tiers(db: Session) -> int:
+    """Promote every held company to the focus tier. Returns how many moved.
+
+    Tier was a field somebody set by hand, which is how eleven companies chosen
+    during testing ended up being the entire deep-read set while companies
+    users actually hold sat in the watch tier getting no news, no 8-K and no
+    document-level findings at all.
+
+    It becomes an output instead: a company is focus *because* an account holds
+    it. The column stays because ingestion needs a fast per-company answer at
+    fetch time without consulting every account, but it is now a cached view of
+    demand rather than an independent opinion.
+
+    Promotion only. Demotion would take a company's news and 8-K away the
+    moment its last holder sold, and a corpus that forgets is worse than one
+    that carries a few names nobody owns any more; the focus set is bounded by
+    real holdings either way.
+    """
+    held = list(db.execute(
+        select(Company)
+        .join(Position, Position.company_id == Company.id)
+        .where(Company.tier != CompanyTier.FOCUS)
+        .distinct()
+    ).scalars())
+    for company in held:
+        company.tier = CompanyTier.FOCUS
+    if held:
+        db.commit()
+        logger.info(
+            "Tier: promoted %d held companies to focus (%s).",
+            len(held), ", ".join(c.ticker for c in held[:8]),
+        )
+    return len(held)
+
+
 def companies_needing_depth(db: Session) -> list[Company]:
     """Companies Loom has read once and should read again, shallowest first.
 
@@ -314,21 +462,48 @@ def drip_reads(db: Session, *, limit: int = READS_PER_RUN) -> DripResult:
     from app.ingestion.registry import DOCUMENT_ADAPTERS, _persist_document
     from app.storage.blob_store import get_blob_store
 
+    # Tier is derived from holdings, so a company somebody added since the last
+    # run is already in the deep set by the time this picks candidates.
+    derive_tiers(db)
+
+    held = companies_for_users(db)
+    hubs = companies_by_reach(db)
     pending = companies_needing_a_read(db)
     deeper = companies_needing_depth(db)
-    result = DripResult(remaining=len(pending) + len(deeper))
     blob_store = get_blob_store()
 
-    # Split, rather than spending the whole quota on first reads. Depth is
-    # worth more per call on the companies already covered, and breadth is what
-    # keeps the genre norms from being a measurement of one sector, so neither
-    # is allowed to starve the other. Whichever queue is empty yields its share.
-    depth_share = limit // 2 if pending else limit
-    breadth_share = limit - depth_share
-    if not deeper:
-        breadth_share, depth_share = limit, 0
-    queue = [(c, False) for c in pending[:breadth_share]]
-    queue += [(c, True) for c in deeper[:depth_share]]
+    # Which companies already have findings decides which document a candidate
+    # wants: a first read takes the newest filing, a depth read takes one that
+    # has not been analysed yet. Read once here rather than per candidate.
+    _read_already = set(_document_counts(db))
+
+    # Three claims, funded separately. An empty queue yields its share to the
+    # others rather than idling, so a run is always worth its full budget —
+    # which is also what makes the split safe to set before anyone has measured
+    # it: getting the ratio wrong costs ordering, never throughput.
+    breadth = [c for c in pending + deeper if c.id not in {h.id for h in held}]
+    claims = [
+        (held, int(limit * HOLDINGS_SHARE)),
+        (hubs, int(limit * REACH_SHARE)),
+        (breadth, limit),  # the remainder, capped below
+    ]
+
+    queue: list = []
+    taken: set = set()
+    for candidates, share in claims:
+        room = min(share, limit - len(queue))
+        for company in candidates:
+            if room <= 0 or len(queue) >= limit:
+                break
+            if company.id in taken:
+                continue
+            taken.add(company.id)
+            # Depth rather than a first read once a company already has
+            # findings; the two paths look for different documents.
+            queue.append((company, company.id in _read_already))
+            room -= 1
+
+    result = DripResult(remaining=len(pending) + len(deeper))
 
     for company, is_depth in queue:
         try:

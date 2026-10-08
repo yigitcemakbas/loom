@@ -609,8 +609,15 @@ class OpenAICompatibleClient(LLMClient):
                     retry_after=wait,
                 )
             raise _QuotaExhausted(f"{self.name}: allowance spent.")
-        if response.status_code in (401, 403):
+        if response.status_code == 401:
             raise LLMUnavailableError(f"{self.name} rejected the API key.")
+        if response.status_code == 403:
+            # The key is fine; this model is not available to it. Aggregators
+            # gate individual models by tier, so treating it as a dead key took
+            # the whole provider down over one inaccessible entry in the list.
+            raise _ModelGone(
+                f"{self.name} does not grant this key access to this model."
+            )
         if response.status_code >= 500:
             raise _Transient(f"{self.name} returned {response.status_code}.")
         if response.status_code == 400 and "response_format" in response.text:
@@ -832,9 +839,19 @@ class OpenRouterClient(OpenAICompatibleClient):
 
     name = "openrouter"
     base_url = "https://openrouter.ai/api/v1"
-    model = "openai/gpt-oss-120b:free"
-    fallback_models = ("meta-llama/llama-3.3-70b-instruct:free",)
-    max_input_tokens = 30_000
+    # Verified against the live catalogue: both previously configured models had
+    # been withdrawn, the same turnover that took Groq's entire Llama line.
+    model = "nvidia/nemotron-3.5-lightning:free"
+    fallback_models = (
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "dots-studio/dots-3-note-preview:free",
+    )
+    # The widest lane in the chain after Gemini, and the reason this provider
+    # earns its place: a 10-K runs past every other free tier's per-minute
+    # ceiling, so without this the large filings have nowhere to go on the days
+    # Gemini's allowance is spent. Set well under the model's stated 1M context,
+    # because the binding limit here is throughput rather than context.
+    max_input_tokens = 200_000
     min_interval_seconds = 3.0
 
     @classmethod

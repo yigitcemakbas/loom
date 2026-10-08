@@ -10,6 +10,8 @@ difference really is one number and splitting them into two lists means two
 things to keep in step.
 """
 
+import logging
+
 from datetime import datetime, timezone
 from decimal import Decimal
 
@@ -17,6 +19,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 
+from app.engine.coverage import derive_tiers
 from app.api.deps import DbSession
 from app.api.routes.auth import CurrentUser
 from app.ingestion.prices import get_price_source
@@ -26,6 +29,8 @@ from app.models.company import Company
 from app.models.factor import COMPOSITE_KEY, FactorScore
 
 router = APIRouter(tags=["positions"])
+
+logger = logging.getLogger(__name__)
 
 
 class PositionIn(BaseModel):
@@ -230,6 +235,15 @@ def upsert_position(ticker: str, payload: PositionIn, db: DbSession, user: User 
     )
     db.commit()
     db.refresh(position)
+
+    # Holding something is what puts it in the deep set, so the promotion
+    # happens here rather than waiting for a scheduled pass to notice. Guarded:
+    # a failure to re-tier must not fail the save, because the position is the
+    # thing the caller asked for and tiering is a consequence of it.
+    try:
+        derive_tiers(db)
+    except Exception:
+        logger.exception("Could not re-derive tiers after saving %s", company.ticker)
 
     briefs, composites = _context(db, [company.id])
     return _to_out(position, company, briefs.get(company.id), composites.get(company.id))

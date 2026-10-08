@@ -1,0 +1,69 @@
+# Production overlay. Used alongside the base file, never instead of it:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# What it changes, and why each one is a deployment concern rather than a
+# default: TLS and a public address, the background jobs switched on, real mail
+# instead of the local catcher, and a database password that is not the word
+# "loom". The base file is correct for a laptop and wrong for a public host on
+# exactly these four points.
+
+services:
+  # The only service the internet can reach. Caddy obtains and renews a
+  # Let's Encrypt certificate on its own, which is the whole reason it is here
+  # rather than nginx with certbot: no cron, no renewal hook, no second
+  # container whose failure is silent until a certificate expires.
+  caddy:
+    image: caddy:2-alpine
+    container_name: loom-caddy
+    restart: unless-stopped
+    depends_on:
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      # Named volumes, not bind mounts: these hold the issued certificates and
+      # the ACME account key. Losing them means re-issuing on every deploy,
+      # and Let's Encrypt rate-limits that to five per week per domain.
+      - caddy_data:/data
+      - caddy_config:/config
+
+  postgres:
+    environment:
+      # Required. The base file's loom/loom is fine behind a loopback bind on
+      # a laptop and is not a password on a host with a public address.
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+
+  backend:
+    environment:
+      DATABASE_URL: postgresql+psycopg://loom:${POSTGRES_PASSWORD}@postgres:5432/loom
+
+      # Both default to false so a fresh clone does not start spending someone's
+      # AI quota unasked. On a deployed instance that reasoning inverts: an
+      # engine that only runs when a person remembers to trigger it is the
+      # thing this deployment exists to stop.
+      SCHEDULER_ENABLED: "true"
+      WATCHER_ENABLED: "true"
+
+      # Real mail. The password stays in ./secrets/smtp_password and is
+      # deliberately not named here — an environment variable outranks the
+      # secrets mount in pydantic-settings even when empty, so setting it here
+      # at any default would silently override the file that holds the real one.
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: "587"
+      SMTP_USERNAME: loomresearchlab@gmail.com
+      SMTP_FROM: Loom <loomresearchlab@gmail.com>
+      SMTP_STARTTLS: "true"
+
+      # SEC blocks a User-Agent that carries a URL and one that carries no
+      # email-shaped token, and it is stricter than its wording suggests. A
+      # deployed instance makes far more of these requests than a laptop does,
+      # so it is worth being reachable.
+      SEC_EDGAR_USER_AGENT: ${SEC_EDGAR_USER_AGENT:-Loom research-tool loomresearchlab@gmail.com}
+      SCRAPER_USER_AGENT: ${SCRAPER_USER_AGENT:-Loom research-tool loomresearchlab@gmail.com}
+
+volumes:
+  caddy_data:
+  caddy_config:

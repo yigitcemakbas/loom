@@ -1,0 +1,32 @@
+# TLS and the public address. Caddy answers on 80 and 443 and is the only
+# service bound to anything but the loopback.
+#
+# Certificates are issued on the first request to the domain and renewed
+# automatically, which needs two things to be true before the first deploy:
+# loomintel.me must already resolve to this machine, and ports 80 and 443 must
+# be open in BOTH the VCN security list and the instance's own iptables.
+# Oracle images ship with iptables rules that drop everything except 22, and
+# that second firewall is the usual reason a correctly configured security
+# list still times out.
+
+loomintel.me, www.loomintel.me {
+	encode zstd gzip
+
+	# Over the compose network, so the frontend's own port stays on the
+	# loopback. Its nginx already proxies /api to the backend, so there is one
+	# origin and CORS never enters into it.
+	reverse_proxy frontend:80
+
+	# Tell the browser the connection must stay encrypted. Off by default in
+	# Caddy because it is hard to undo: a wrong max-age pins every visitor to
+	# HTTPS for that long with no way to reach them. One week is long enough
+	# to be worth having and short enough to climb out of.
+	header Strict-Transport-Security "max-age=604800"
+
+	log {
+		output file /data/access.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}

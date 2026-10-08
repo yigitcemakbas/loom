@@ -15,6 +15,8 @@ import logging
 import time
 from datetime import datetime, timezone
 
+from sqlalchemy import func, select
+
 from app.config import settings
 from app.db.session import SessionLocal
 from app.engine.pipeline import analyze_company_recent
@@ -22,6 +24,7 @@ from app.engine.prior import build_prior
 from app.engine.llm_client import LLMUnavailableError
 from app.ingestion.registry import ingest_all, ingest_many
 from app.models.company import CompanyTier
+from app.models.document import RawDocument
 from app.repositories.company_repository import CompanyRepository
 from app.repositories.prior_repository import PriorRepository
 from app.repositories.watchlist_repository import WatchlistRepository
@@ -66,6 +69,32 @@ def run_analysis(ticker: str, force: bool = False) -> None:
         db.close()
 
 
+#: How many focus companies one refresh re-analyses. Sized so a pass fits
+#: inside a free-tier allowance with room left for the coverage drip, which is
+#: the job that closes the coverage gap and must not be crowded out by the job
+#: that maintains what is already covered.
+FOCUS_PER_REFRESH = 8
+
+
+def _rotate_focus(db, focus: list) -> list[str]:
+    """The focus companies least recently analysed, oldest first.
+
+    Sorting by last analysis rather than slicing a fixed prefix is what makes
+    this a rotation instead of a permanent cut: without it the same eight
+    companies would be refreshed forever and the rest would be in the tier in
+    name only.
+    """
+    from app.models.signal import DocumentAnalysis
+
+    last = dict(db.execute(
+        select(RawDocument.company_id, func.max(DocumentAnalysis.created_at))
+        .join(DocumentAnalysis, DocumentAnalysis.document_id == RawDocument.id)
+        .group_by(RawDocument.company_id)
+    ).all())
+    focus.sort(key=lambda c: (last.get(c.id) is not None, last.get(c.id), c.ticker))
+    return [c.ticker for c in focus[:FOCUS_PER_REFRESH]]
+
+
 def run_scheduled_refresh() -> None:
     """Re-ingest and re-analyse every ticker on the watchlist.
 
@@ -100,7 +129,17 @@ def run_scheduled_refresh() -> None:
     # so are confined to the focus tier. This split is the whole point of
     # tiering: the universe can grow without the model bill growing with it.
     tickers = [company.ticker for company in companies]
-    focus_tickers = [c.ticker for c in companies if c.tier == CompanyTier.FOCUS]
+    # Rotated, not exhaustive. This used to re-analyse every focus ticker on
+    # every pass, which was affordable while focus was eleven hand-picked
+    # companies and is not now that the tier is derived from holdings and grows
+    # with the user base. Unbounded, one pass would spend the whole allowance
+    # every six hours and the coverage drip would never get a call.
+    #
+    # Rotation is by least-recently-analysed, so the set is still covered, just
+    # over several passes instead of one.
+    focus_tickers = _rotate_focus(
+        db, [c for c in companies if c.tier == CompanyTier.FOCUS]
+    )
     # Priors, and therefore live coverage, extend to the watch tier. Document
     # analysis does not, which is the entire cost difference between them.
     prior_tickers = [
