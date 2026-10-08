@@ -96,6 +96,32 @@ def _document_text(blob_uri: str) -> str:
     return get_blob_store().get(blob_uri).decode("utf-8", errors="replace")
 
 
+def _record_usage(db: Session, client: LLMClient, *, ticker: str, documents: int) -> None:
+    """Log what a run spent.
+
+    Guarded, because this is a record of work that already happened: a gap in
+    the accounting must never discard the analysis or stop a batch. That is not
+    hypothetical — `model` does not exist on ChainClient, so the other call site
+    raised AttributeError on every run from the day the chain landed, and the
+    usage table sat frozen while the engine was down for six days.
+    """
+    if not client.calls:
+        return
+    try:
+        UsageRepository(db).record(
+            ticker=ticker,
+            provider=getattr(client, "name", type(client).__name__).lower(),
+            model=getattr(client, "model", "unknown"),
+            calls=client.calls,
+            input_tokens=client.input_tokens,
+            output_tokens=client.output_tokens,
+            cost_usd=client.cost_usd,
+            documents_analyzed=documents,
+        )
+    except Exception:
+        logger.exception("Recording LLM usage for %s failed; the read stands.", ticker)
+
+
 def analyze_document(
     document_id: uuid.UUID,
     db: Session,
@@ -192,6 +218,10 @@ def analyze_document(
         signal_count=len(signals),
     )
     logger.info("Analysed %s %s: %d signals", ticker, document.doc_subtype, len(signals))
+    # The coverage drip calls this directly and is the only scheduled job that
+    # spends quota, so without this the meter never sees the one thing worth
+    # measuring.
+    _record_usage(db, client, ticker=ticker, documents=1)
     return len(signals)
 
 
@@ -801,16 +831,6 @@ def analyze_company_recent(ticker: str, db: Session, *, force: bool = False) -> 
     except Exception:
         logger.exception("Brief regeneration failed for %s", ticker)
 
-    if client.calls:
-        UsageRepository(db).record(
-            ticker=ticker,
-            provider=type(client).__name__.replace("Client", "").lower(),
-            model=client.model,
-            calls=client.calls,
-            input_tokens=client.input_tokens,
-            output_tokens=client.output_tokens,
-            cost_usd=client.cost_usd,
-            documents_analyzed=len(documents),
-        )
+    _record_usage(db, client, ticker=ticker, documents=len(documents))
 
     return total

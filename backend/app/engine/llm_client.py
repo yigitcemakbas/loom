@@ -65,6 +65,39 @@ class LLMClient(ABC):
     input_cost_per_mtok: float = 0.0
     output_cost_per_mtok: float = 0.0
 
+    # Quota state lives here rather than on one provider family, because every
+    # provider has an allowance and the chain has to treat them alike. On the
+    # class, not the instance: quota belongs to the key and the pipeline builds
+    # a fresh client per ticker, so an instance attribute would shadow this and
+    # rediscover a spent allowance once per company.
+    exhausted: bool = False
+    #: When it was marked. Zero means "set by hand" and stays until cleared by
+    #: hand, which is what the tests rely on.
+    exhausted_at: float = 0.0
+    #: Free allowances reset on rolling windows, so holding the flag for the
+    #: life of the process turns one bad hour into a dead day. The scheduler
+    #: drips every two hours; this clears well inside that.
+    quota_cooldown_seconds: float = 30 * 60
+
+    def _mark_spent(self) -> None:
+        """Record a spent allowance, with the time it happened."""
+        cls = type(self)
+        cls.exhausted = True
+        cls.exhausted_at = time.monotonic()
+
+    def _allowance_available(self) -> bool:
+        """False while a recorded exhaustion is still inside its window."""
+        cls = type(self)
+        if (
+            cls.exhausted
+            and cls.exhausted_at
+            and time.monotonic() - cls.exhausted_at >= self.quota_cooldown_seconds
+        ):
+            logger.info("%s: cooldown elapsed; trying it again.", self.name)
+            cls.exhausted = False
+            cls.exhausted_at = 0.0
+        return not cls.exhausted
+
     def __init__(self) -> None:
         self.input_tokens = 0
         self.output_tokens = 0
@@ -164,7 +197,7 @@ class GeminiClient(LLMClient):
 
     @property
     def available(self) -> bool:
-        return bool(self._api_key)
+        return bool(self._api_key) and self._allowance_available()
 
     def _ensure_client(self):
         if not self._api_key:
@@ -282,6 +315,12 @@ class GeminiClient(LLMClient):
         # check the network.
         if "RESOURCE_EXHAUSTED" in str(last_error) or "429" in str(last_error):
             detail = "the free-tier quota is exhausted (it resets on a rolling window)"
+            # The comment above this method says a spent allowance affects every
+            # later call, so the batch should stop rather than fail one document
+            # at a time. The flag that does that was never set, so the chain
+            # re-probed a dead provider for every single document: three model
+            # fallbacks with backoff, about twenty seconds, per read.
+            self._mark_spent()
         elif isinstance(last_error, httpx.TransportError):
             detail = (
                 f"the request kept failing at the network layer "
@@ -308,6 +347,7 @@ class GeminiClient(LLMClient):
                 # affects every subsequent call, so stop rather than grind
                 # through a batch failing one document at a time.
                 if "RESOURCE_EXHAUSTED" in message or "429" in message:
+                    self._mark_spent()
                     raise LLMUnavailableError(
                         "Gemini free-tier quota is exhausted. It resets on a rolling "
                         "window, retry later, or reduce how many filings are analysed."
@@ -351,7 +391,7 @@ class AnthropicClient(LLMClient):
 
     @property
     def available(self) -> bool:
-        return bool(self._api_key)
+        return bool(self._api_key) and self._allowance_available()
 
     def _ensure_client(self):
         if not self._api_key:
@@ -467,8 +507,6 @@ class OpenAICompatibleClient(LLMClient):
     # the API key, and the pipeline builds a fresh client per ticker, so an
     # instance attribute would shadow this and reset the flag on every ticker.
     # The first version of this did exactly that and a test caught it.
-    exhausted: bool = False
-
     def __init__(self, api_key: str | None = None):
         super().__init__()
         self._api_key = (api_key if api_key is not None else self._configured_key()) or ""
@@ -479,7 +517,7 @@ class OpenAICompatibleClient(LLMClient):
 
     @property
     def available(self) -> bool:
-        return bool(self._api_key) and not self.exhausted
+        return bool(self._api_key) and self._allowance_available()
 
     def accepts(self, user_content: str, system: str = "") -> bool:
         """Whether this provider's per-minute ceiling can take the request.
@@ -543,7 +581,34 @@ class OpenAICompatibleClient(LLMClient):
                 json=body,
             )
         if response.status_code == 429:
-            raise _QuotaExhausted(f"{self.name}: rate limited or out of quota.")
+            # Two different failures arrive as 429 and they need opposite
+            # responses. A per-minute ceiling clears by itself in under a
+            # minute; a spent daily allowance does not. Treating both as
+            # exhaustion is what stopped the engine: Cerebras answers a large
+            # filing with "Tokens per minute limit exceeded" and `Retry-After:
+            # 60`, and the provider was then marked dead on the class for the
+            # rest of the process. Every drip after that reported no providers
+            # available without making a single request.
+            retry_after = response.headers.get("retry-after")
+            body = response.text[:400].lower()
+            per_minute = (
+                retry_after is not None
+                or "per minute" in body
+                or "per-minute" in body
+                or "rate limit" in body
+                or "too_many_tokens" in body
+            )
+            if per_minute:
+                try:
+                    wait = float(retry_after) if retry_after else 0.0
+                except ValueError:
+                    wait = 0.0
+                raise _Transient(
+                    f"{self.name}: per-minute ceiling reached"
+                    f"{f'; clears in {wait:.0f}s' if wait else ''}.",
+                    retry_after=wait,
+                )
+            raise _QuotaExhausted(f"{self.name}: allowance spent.")
         if response.status_code in (401, 403):
             raise LLMUnavailableError(f"{self.name} rejected the API key.")
         if response.status_code >= 500:
@@ -597,12 +662,17 @@ class OpenAICompatibleClient(LLMClient):
                         last = exc
                         if attempt == attempts - 1:
                             break
-                        time.sleep(self._BACKOFF_BASE_SECONDS * (2**attempt) + random.uniform(0, 1))
+                        # The server's own Retry-After when it sent one: an
+                        # exponential ladder starting under a second cannot
+                        # wait out a sixty second window.
+                        stated = getattr(exc, "retry_after", 0.0)
+                        delay = stated or self._BACKOFF_BASE_SECONDS * (2**attempt)
+                        time.sleep(delay + random.uniform(0, 1))
                         continue
                     except _QuotaExhausted as exc:
                         # Marked on the class: the quota is the key's, and every
                         # later client built from it is equally out.
-                        type(self).exhausted = True
+                        self._mark_spent()
                         raise LLMUnavailableError(str(exc)) from exc
 
                     self.calls += 1
@@ -618,12 +688,25 @@ class OpenAICompatibleClient(LLMClient):
                     last = LLMUnavailableError(f"{self.name}: unvalidatable output.")
                     break
 
+        if isinstance(last, (_Transient, _ModelGone)):
+            # The provider could not answer, which is different from answering
+            # badly, and the chain logs the two differently. Reporting a
+            # per-minute ceiling as "no usable output" is how a rate limit got
+            # mistaken for a prompt problem for six days.
+            raise LLMUnavailableError(str(last)) from last
         if last is not None:
             logger.error("%s could not produce valid output: %s", self.name, str(last)[:200])
         return None
 
 
 class _Transient(RuntimeError):
+    """Retryable. `retry_after` is the server's own figure when it gives one,
+    which beats guessing with an exponential ladder."""
+
+    def __init__(self, *args, retry_after: float = 0.0):
+        super().__init__(*args)
+        self.retry_after = retry_after
+
     """A server-side blip worth retrying."""
 
 
@@ -686,7 +769,11 @@ class CerebrasClient(OpenAICompatibleClient):
     # these are both of what it currently serves rather than a preference.
     model = "gpt-oss-120b"
     fallback_models = ("qwen-3.8-27b",)
-    max_input_tokens = 45_000
+    # Measured against the live endpoint rather than read off a docs page: on a
+    # clean window 26,400 tokens is accepted and 30,500 is refused, so the
+    # per-minute budget is about 30k and it has to cover the reply too. 45,000
+    # was a guess, and it meant every filing routed here was refused on arrival.
+    max_input_tokens = 22_000
     min_interval_seconds = 2.0
 
     @classmethod
@@ -782,6 +869,19 @@ class ChainClient(LLMClient):
 
     name = "chain"
 
+    #: Which member actually answered, set as the chain falls through. Usage
+    #: accounting needs it: without a `model` the recording call raised
+    #: AttributeError on every run from the day the chain landed, which froze
+    #: the usage table and hid a six day outage. The instrument has to survive
+    #: the thing it measures.
+    answered_by: LLMClient | None = None
+
+    @property
+    def model(self) -> str:
+        if self.answered_by is not None:
+            return f"{self.answered_by.name}/{self.answered_by.model}"
+        return ",".join(c.name for c in self._clients) or "none"
+
     def __init__(self, clients: list[LLMClient] | None = None):
         super().__init__()
         self._clients = clients if clients is not None else _chain_from_settings()
@@ -860,6 +960,7 @@ class ChainClient(LLMClient):
 
             answered = True
             if result is not None:
+                self.answered_by = client
                 return result
 
             # None also falls through, and the first version of this did not.

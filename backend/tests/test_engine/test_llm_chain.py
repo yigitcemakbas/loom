@@ -12,6 +12,8 @@ similar factor. Sending a filing down a narrow lane buys a 429 and a retry
 cycle, so the chain declines rather than discovering it.
 """
 
+from unittest import mock
+
 import pytest
 from pydantic import BaseModel
 
@@ -201,6 +203,106 @@ def test_a_quota_failure_marks_the_provider_down_for_the_run():
         assert not Probe().available, "exhaustion must outlive the instance"
     finally:
         Probe.exhausted = False
+
+
+def test_a_per_minute_ceiling_does_not_mark_the_provider_down():
+    """The regression that stopped the engine for six days.
+
+    Cerebras answers an oversized filing with 429, `Retry-After: 60` and a body
+    saying "Tokens per minute limit exceeded". That was classified as a spent
+    allowance, which sets the flag on the class, and because nothing ever
+    cleared it the provider stayed dead for the life of the process. The
+    scheduler runs for days, so one oversized request took the provider out
+    until somebody restarted the backend. It never recorded a single
+    successful run.
+    """
+    import httpx
+
+    class Probe(OpenAICompatibleClient):
+        name = "probe"
+        base_url = "https://example.invalid/v1"
+
+        @classmethod
+        def _configured_key(cls):
+            return "k"
+
+    limited = httpx.Response(
+        429,
+        headers={"retry-after": "60"},
+        json={"message": "Tokens per minute limit exceeded - too many tokens processed.",
+              "code": "token_quota_exceeded"},
+        request=httpx.Request("POST", "https://example.invalid/v1/chat/completions"),
+    )
+
+    probe = Probe()
+    probe.fail_fast = True  # as the chain sets it for every provider but the last
+    try:
+        with mock.patch.object(httpx.Client, "post", return_value=limited):
+            with pytest.raises(LLMUnavailableError):
+                probe.parse(system="s", user_content="u", schema=Shape)
+        assert Probe().available, "a one minute ceiling must not disable the provider"
+        assert Probe.exhausted is False
+    finally:
+        Probe.exhausted = False
+        Probe.exhausted_at = 0.0
+
+
+def test_a_spent_allowance_does_mark_the_provider_down():
+    """The other half: a 429 that is genuinely the allowance, with no
+    Retry-After and no per-minute wording, must still take the provider out so
+    the chain stops asking it once per document."""
+    import httpx
+
+    class Probe(OpenAICompatibleClient):
+        name = "probe"
+        base_url = "https://example.invalid/v1"
+
+        @classmethod
+        def _configured_key(cls):
+            return "k"
+
+    spent = httpx.Response(
+        429,
+        json={"message": "You exceeded your current quota for the day."},
+        request=httpx.Request("POST", "https://example.invalid/v1/chat/completions"),
+    )
+    probe = Probe()
+    probe.fail_fast = True
+    try:
+        with mock.patch.object(httpx.Client, "post", return_value=spent):
+            with pytest.raises(LLMUnavailableError):
+                probe.parse(system="s", user_content="u", schema=Shape)
+        assert not Probe().available, "a spent allowance is not worth re-asking"
+    finally:
+        Probe.exhausted = False
+        Probe.exhausted_at = 0.0
+
+
+def test_a_spent_allowance_clears_once_its_window_has_passed():
+    """Free allowances reset on a rolling window, so the flag must not outlive
+    it. Held forever, one bad hour costs a whole day of ingest."""
+    import time as _time
+
+    class Probe(OpenAICompatibleClient):
+        name = "probe"
+        base_url = "https://example.invalid/v1"
+        quota_cooldown_seconds = 60
+
+        @classmethod
+        def _configured_key(cls):
+            return "k"
+
+    try:
+        Probe.exhausted = True
+        Probe.exhausted_at = _time.monotonic()
+        assert not Probe().available, "still inside the window"
+
+        Probe.exhausted_at = _time.monotonic() - 61
+        assert Probe().available, "the window has passed; try it again"
+        assert Probe.exhausted is False, "and the flag is cleared, not just ignored"
+    finally:
+        Probe.exhausted = False
+        Probe.exhausted_at = 0.0
 
 
 # ---- accounting ------------------------------------------------------------

@@ -22,9 +22,17 @@ NOW = datetime(2026, 9, 23, tzinfo=timezone.utc)
 
 def test_a_run_is_bounded_so_a_free_tier_is_not_asked_for_a_burst():
     """The point is steady progress inside a quota that refuses long runs, not
-    racing through the universe and then failing for a day."""
-    assert 0 < PRIORS_PER_RUN <= 5
-    assert 0 < READS_PER_RUN <= 5
+    racing through the universe and then failing for a day.
+
+    The ceiling here is deliberately loose. What this protects is the property
+    that a run is bounded at all, so one pass cannot sit in the scheduler for
+    hours and overlap the next; it is not a claim about the right number. That
+    number is a throughput decision and it has already moved once, when the
+    measured backlog turned out to be hours of provider time rather than the
+    months a broken chain's throughput implied.
+    """
+    assert 0 < PRIORS_PER_RUN <= 25
+    assert 0 < READS_PER_RUN <= 25
 
 
 def test_a_refusal_is_reported_rather_than_counted_as_failure():

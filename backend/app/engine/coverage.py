@@ -47,12 +47,23 @@ from app.models.signal import Signal
 
 logger = logging.getLogger(__name__)
 
-# How many companies one drip run may touch. Small on purpose: the point is to
-# make steady progress inside a quota that refuses bursts, not to race through
-# the universe and then fail for a day. At this rate the remaining priors are
-# covered in a few days of ordinary running.
+# How many companies one drip run may touch.
+#
+# These were chosen when one exhausted Gemini tier was the whole ceiling, and
+# two reads every two hours is 24 a day. That described a real constraint then
+# and does not now: the measured backlog is 6,068 documents at a mean prepared
+# payload of 9,760 tokens, about 59M input tokens in total, which is hours of
+# provider time rather than months.
+#
+# Raising this is safe because the run self-limits. A drip stops cleanly the
+# moment every provider refuses, so a figure set too high ends the run early
+# instead of burning an allowance in a burst — the limit is an upper bound on
+# work attempted, not a promise to attempt it.
+#
+# Eight reads is roughly ten minutes of wall time, comfortably inside the two
+# hour interval, and clears the 121 companies still queued in about a day.
 PRIORS_PER_RUN = 3
-READS_PER_RUN = 2
+READS_PER_RUN = 8
 
 # The filings a one-shot read looks at. Annual first, because a 10-K carries
 # the risk factors and the full-year picture that a verdict actually rests on.
@@ -82,6 +93,10 @@ STALE_PRIOR_DAYS = 120
 class DripResult:
     covered: int = 0
     failed: int = 0
+    # Companies passed over because no available provider had a lane wide
+    # enough for their filing. Separate from `failed`: nothing went wrong and
+    # the company is still a candidate next run.
+    skipped: int = 0
     # True when the provider refused. The caller stops rather than grinding
     # through the rest producing the same error once per company.
     exhausted: bool = False
@@ -277,6 +292,17 @@ def _unanalysed_filing(db: Session, company: Company) -> Optional[RawDocument]:
     ).scalars().first()
 
 
+def _some_provider_is_up() -> bool:
+    """Whether any provider still has an allowance, regardless of its width."""
+    from app.engine.llm_client import LLMUnavailableError as _Unavailable, get_llm_client
+
+    try:
+        return bool(get_llm_client().available)
+    except _Unavailable:
+        # Nothing configured at all. Stopping is right.
+        return False
+
+
 def drip_reads(db: Session, *, limit: int = READS_PER_RUN) -> DripResult:
     """Read one filing for companies Loom has never read.
 
@@ -320,6 +346,20 @@ def drip_reads(db: Session, *, limit: int = READS_PER_RUN) -> DripResult:
 
             written = analyze_document(document.id, db)
         except LLMUnavailableError as exc:
+            # Two different failures arrive here and only one is a reason to
+            # stop. If some provider is still up, the call failed because no
+            # available lane was wide enough for *this* filing — a property of
+            # the document, not the account — and the next company's filing may
+            # fit perfectly well. Breaking on that meant one oversized 10-K
+            # ended the whole run: a drip raised to eight reads still covered
+            # exactly one company before giving up.
+            if _some_provider_is_up():
+                logger.info(
+                    "Read drip: skipping %s, no lane wide enough (%s)",
+                    company.ticker, str(exc)[:120],
+                )
+                result.skipped += 1
+                continue
             logger.info("Read drip stopping: %s", exc)
             result.exhausted = True
             break
